@@ -1,0 +1,67 @@
+#include "Team.h"
+
+Team::Team(int size) : size(size) {
+    members = new Employee*[size];
+    for (int i = 0; i < size; i++) {
+        members[i] = NULL;
+    }
+}
+
+Team::~Team() {
+    for (int i = 0; i < size; i++) {
+        delete members[i];
+    }
+    delete[] members;
+}
+
+// Puts the employee in the first empty (NULL) slot. The team owns the employees added to it.
+void Team::addMember(Employee* employee) {
+    for (int i = 0; i < size; i++) {
+        if (members[i] == NULL) {
+            members[i] = employee;
+            return;
+        }
+    }
+    throw Exception("Team is full");
+}
+
+const Employee& Team::operator[](int index) {
+    if (index < 0 || index >= size || members[index] == NULL) {
+        throw Exception("Index out of bounds");
+    }
+    return *members[index];
+}
+
+int Team::getSize() {
+    return size;
+}
+
+// Counts the slots that are not empty (not NULL).
+int Team::getMemberCount() {
+    int count = 0;
+    for (int i = 0; i < size; i++) {
+        if (members[i] != NULL) {
+            count++;
+        }
+    }
+    return count;
+}
+
+// Returns the employee in slot index.
+// Throws Exception("No member at this index") for a bad index or an empty slot.
+Employee* Team::getMember(int index) {
+    if (index < 0 || index >= size || members[index] == NULL) {
+        throw Exception("No member at this index");
+    }
+    return members[index];
+}
+
+ostream& operator<<(ostream& out, const Team& t) {
+    out << "Team:" << endl;
+    for (int i = 0; i < t.size; i++) {
+        if (t.members[i] != NULL) {
+            out << "  " << *t.members[i] << endl;
+        }
+    }
+    return out;
+}

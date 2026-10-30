@@ -1,0 +1,12 @@
+{
+  "name": "COS 110 practice (g++, make, valgrind)",
+  "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu-22.04",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y valgrind",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools"
+      ]
+    }
+  }
+}
