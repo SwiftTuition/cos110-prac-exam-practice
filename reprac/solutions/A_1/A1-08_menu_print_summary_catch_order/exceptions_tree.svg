@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="422" viewBox="0 0 640 422" font-family="Consolas, 'DejaVu Sans Mono', 'Courier New', monospace" role="img" aria-label="Exception and its eight subclasses">
+<title>Exception and its eight subclasses</title>
+<rect x="0" y="0" width="640" height="422" fill="#ffffff"/>
+<path d="M 42 50 V 79 H 76" fill="none" stroke="#333333" stroke-width="1.5"/>
+<path d="M 42 50 V 123 H 76" fill="none" stroke="#333333" stroke-width="1.5"/>
+<path d="M 98 138 V 167 H 132" fill="none" stroke="#333333" stroke-width="1.5"/>
+<path d="M 98 138 V 211 H 132" fill="none" stroke="#999999" stroke-width="1.5" stroke-dasharray="5,4"/>
+<path d="M 42 50 V 255 H 76" fill="none" stroke="#333333" stroke-width="1.5"/>
+<path d="M 98 270 V 299 H 132" fill="none" stroke="#333333" stroke-width="1.5"/>
+<path d="M 98 270 V 343 H 132" fill="none" stroke="#333333" stroke-width="1.5"/>
+<path d="M 98 270 V 387 H 132" fill="none" stroke="#333333" stroke-width="1.5"/>
+<rect x="20" y="20" width="105" height="30" rx="4" fill="#ffffff" stroke="#222222" stroke-width="1.5"/>
+<text x="32" y="40" font-size="15" fill="#111111">Exception</text>
+<text x="394" y="40" font-size="13" fill="#444444" font-family="Arial, Helvetica, sans-serif">base class of the other eight</text>
+<rect x="76" y="64" width="123" height="30" rx="4" fill="#ffffff" stroke="#222222" stroke-width="1.5"/>
+<text x="88" y="84" font-size="15" fill="#111111">InvalidType</text>
+<text x="394" y="84" font-size="13" fill="#444444" font-family="Arial, Helvetica, sans-serif">thrown by findFirst and numberAbove</text>
+<rect x="76" y="108" width="213" height="30" rx="4" fill="#ffffff" stroke="#222222" stroke-width="1.5"/>
+<text x="88" y="128" font-size="15" fill="#111111">NothingMatchingFilter</text>
+<rect x="132" y="152" width="240" height="30" rx="4" fill="#ffffff" stroke="#222222" stroke-width="1.5"/>
+<text x="144" y="172" font-size="15" fill="#111111">NothingAboveMinimumValue</text>
+<text x="394" y="172" font-size="13" fill="#444444" font-family="Arial, Helvetica, sans-serif">thrown by numberAbove</text>
+<rect x="132" y="196" width="240" height="30" rx="4" fill="#ffffff" stroke="#999999" stroke-width="1.5" stroke-dasharray="5,4"/>
+<text x="144" y="216" font-size="15" fill="#888888">NothingBelowMaximumValue</text>
+<text x="394" y="216" font-size="13" fill="#888888" font-family="Arial, Helvetica, sans-serif">cannot arrive here</text>
+<rect x="76" y="240" width="177" height="30" rx="4" fill="#ffffff" stroke="#222222" stroke-width="1.5"/>
+<text x="88" y="260" font-size="15" fill="#111111">NotFoundException</text>
+<rect x="132" y="284" width="159" height="30" rx="4" fill="#ffffff" stroke="#222222" stroke-width="1.5"/>
+<text x="144" y="304" font-size="15" fill="#111111">StarterNotFound</text>
+<text x="394" y="304" font-size="13" fill="#444444" font-family="Arial, Helvetica, sans-serif">thrown by findFirst</text>
+<rect x="132" y="328" width="132" height="30" rx="4" fill="#ffffff" stroke="#222222" stroke-width="1.5"/>
+<text x="144" y="348" font-size="15" fill="#111111">MainNotFound</text>
+<text x="394" y="348" font-size="13" fill="#444444" font-family="Arial, Helvetica, sans-serif">thrown by findFirst</text>
+<rect x="132" y="372" width="159" height="30" rx="4" fill="#ffffff" stroke="#222222" stroke-width="1.5"/>
+<text x="144" y="392" font-size="15" fill="#111111">DessertNotFound</text>
+<text x="394" y="392" font-size="13" fill="#444444" font-family="Arial, Helvetica, sans-serif">thrown by findFirst</text>
+</svg>

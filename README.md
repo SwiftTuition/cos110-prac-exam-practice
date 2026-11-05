@@ -2,6 +2,9 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/SwiftTuition/cos110-prac-exam-practice)
 
+> **Re-Practical Exam (6 November 2026):** practice questions for the Menu and Binary scenario are in
+> [`reprac/`](reprac/README.md). The HRMS questions below are for the first practical exam.
+
 Practice questions based on the **published** HRMS scenario for the COS 110 Practical Exam (31 October 2026).
 They are not the real exam questions. The real exam's complete UML may differ, so on the day, read the given headers first.
 
