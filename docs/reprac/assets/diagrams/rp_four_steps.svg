@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 765" width="1060" height="765" font-family="Segoe UI, Arial, sans-serif" role="img" aria-labelledby="t d"><title id="t">Menu::operator= for a = b, step by step</title><desc id="d">Before: a has maxSize 2 and one item, Soup. Step 2: a's Soup and its array are freed, drawn dashed. Step 3: a gets maxSize 4, a new array of 4 slots, and new copies of Garlic bread, Beef burger and Malva pudding, drawn yellow; slot 3 is NULL. b still has its own array with its own three items.</desc><rect width="1060" height="765" fill="#ffffff"/><text x="30" y="30" text-anchor="start" font-size="13" font-weight="bold" fill="#1f2937" xml:space="preserve">before a = b;</text>
+<text x="30" y="52" text-anchor="start" font-size="13" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">a</text>
+<rect x="30" y="60" width="210" height="40" fill="#f3f4f6" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<line x1="135" y1="60" x2="135" y2="100" stroke="#1f2937" stroke-width="1.3"/>
+<text x="82" y="85" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">maxSize 2</text>
+<text x="170" y="85" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">items</text>
+<circle cx="215" cy="80" r="3.5" fill="#1f2937"/>
+<rect x="290" y="60" width="120" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="350.0" y="54" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[0]</text>
+<circle cx="350.0" cy="80.0" r="3.5" fill="#1f2937"/>
+<rect x="410" y="60" width="120" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="470.0" y="54" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[1]</text>
+<text x="470.0" y="84.0" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">NULL</text>
+<line x1="215" y1="80" x2="280.0" y2="80.0" stroke="#1d4ed8" stroke-width="1.4"/><polygon points="288.0,80.0 280.0,84.0 280.0,76.0" fill="#1d4ed8"/>
+<rect x="294.0" y="138" width="112" height="46" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="350.0" y="157" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2937" xml:space="preserve">Soup</text>
+<text x="350.0" y="174" text-anchor="middle" font-size="11" fill="#1f2937" xml:space="preserve">S  R50</text>
+<line x1="350.0" y1="80.0" x2="350.0" y2="128.0" stroke="#1f2937" stroke-width="1.4"/><polygon points="350.0,136.0 346.0,128.0 354.0,128.0" fill="#1f2937"/>
+<text x="30" y="205" text-anchor="start" font-size="13" font-weight="bold" fill="#1f2937" xml:space="preserve">step 2: delete each item, then delete[] items</text>
+<text x="30" y="227" text-anchor="start" font-size="13" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">a</text>
+<rect x="30" y="235" width="210" height="40" fill="#f3f4f6" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<line x1="135" y1="235" x2="135" y2="275" stroke="#1f2937" stroke-width="1.3"/>
+<text x="82" y="260" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">maxSize 2</text>
+<text x="170" y="260" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">items</text>
+<circle cx="215" cy="255" r="3.5" fill="#1f2937"/>
+<rect x="290" y="235" width="120" height="40" fill="#dbeafe" stroke="#9ca3af" stroke-width="1.4" rx="3" stroke-dasharray="5 4"/>
+<text x="350.0" y="229" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[0]</text>
+<circle cx="350.0" cy="255.0" r="3.5" fill="#9ca3af"/>
+<rect x="410" y="235" width="120" height="40" fill="#dbeafe" stroke="#9ca3af" stroke-width="1.4" rx="3" stroke-dasharray="5 4"/>
+<text x="470.0" y="229" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[1]</text>
+<text x="470.0" y="259.0" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">NULL</text>
+<line x1="215" y1="255" x2="280.0" y2="255.0" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="5 4"/><polygon points="288.0,255.0 280.0,259.0 280.0,251.0" fill="#9ca3af"/>
+<rect x="294.0" y="313" width="112" height="46" fill="#dbeafe" stroke="#9ca3af" stroke-width="1.4" rx="3" stroke-dasharray="5 4"/>
+<text x="350.0" y="332" text-anchor="middle" font-size="12" font-weight="bold" fill="#9ca3af" xml:space="preserve">Soup</text>
+<text x="350.0" y="349" text-anchor="middle" font-size="11" fill="#9ca3af" xml:space="preserve">S  R50</text>
+<line x1="350.0" y1="255.0" x2="350.0" y2="303.0" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="5 4"/><polygon points="350.0,311.0 346.0,303.0 354.0,303.0" fill="#9ca3af"/>
+<text x="560" y="260" text-anchor="start" font-size="12" fill="#b91c1c" xml:space="preserve">freed (dashed): a.items now points to freed memory</text>
+<text x="30" y="380" text-anchor="start" font-size="13" font-weight="bold" fill="#1d4ed8" xml:space="preserve">step 3: maxSize = 4; items = new Item*[4]; new Item(*other.items[i]) for each item</text>
+<text x="30" y="402" text-anchor="start" font-size="13" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">a</text>
+<rect x="30" y="410" width="210" height="40" fill="#f3f4f6" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<line x1="135" y1="410" x2="135" y2="450" stroke="#1f2937" stroke-width="1.3"/>
+<text x="82" y="435" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">maxSize 4</text>
+<text x="170" y="435" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">items</text>
+<circle cx="215" cy="430" r="3.5" fill="#1f2937"/>
+<rect x="290" y="410" width="120" height="40" fill="#fde68a" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="350.0" y="404" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[0]</text>
+<circle cx="350.0" cy="430.0" r="3.5" fill="#1f2937"/>
+<rect x="410" y="410" width="120" height="40" fill="#fde68a" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="470.0" y="404" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[1]</text>
+<circle cx="470.0" cy="430.0" r="3.5" fill="#1f2937"/>
+<rect x="530" y="410" width="120" height="40" fill="#fde68a" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="590.0" y="404" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[2]</text>
+<circle cx="590.0" cy="430.0" r="3.5" fill="#1f2937"/>
+<rect x="650" y="410" width="120" height="40" fill="#fde68a" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="710.0" y="404" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[3]</text>
+<text x="710.0" y="434.0" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">NULL</text>
+<line x1="215" y1="430" x2="280.0" y2="430.0" stroke="#1d4ed8" stroke-width="1.4"/><polygon points="288.0,430.0 280.0,434.0 280.0,426.0" fill="#1d4ed8"/>
+<rect x="294.0" y="488" width="112" height="46" fill="#fde68a" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="350.0" y="507" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2937" xml:space="preserve">Garlic bread</text>
+<text x="350.0" y="524" text-anchor="middle" font-size="11" fill="#1f2937" xml:space="preserve">S  R45.5</text>
+<line x1="350.0" y1="430.0" x2="350.0" y2="478.0" stroke="#1f2937" stroke-width="1.4"/><polygon points="350.0,486.0 346.0,478.0 354.0,478.0" fill="#1f2937"/>
+<rect x="414.0" y="488" width="112" height="46" fill="#fde68a" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="470.0" y="507" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2937" xml:space="preserve">Beef burger</text>
+<text x="470.0" y="524" text-anchor="middle" font-size="11" fill="#1f2937" xml:space="preserve">M  R120</text>
+<line x1="470.0" y1="430.0" x2="470.0" y2="478.0" stroke="#1f2937" stroke-width="1.4"/><polygon points="470.0,486.0 466.0,478.0 474.0,478.0" fill="#1f2937"/>
+<rect x="534.0" y="488" width="112" height="46" fill="#fde68a" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="590.0" y="507" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2937" xml:space="preserve">Malva pudding</text>
+<text x="590.0" y="524" text-anchor="middle" font-size="11" fill="#1f2937" xml:space="preserve">D  R60</text>
+<line x1="590.0" y1="430.0" x2="590.0" y2="478.0" stroke="#1f2937" stroke-width="1.4"/><polygon points="590.0,486.0 586.0,478.0 594.0,478.0" fill="#1f2937"/>
+<text x="30" y="555" text-anchor="start" font-size="13" font-weight="bold" fill="#1f2937" xml:space="preserve">b is not touched at any step:</text>
+<text x="30" y="577" text-anchor="start" font-size="13" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">b</text>
+<rect x="30" y="585" width="210" height="40" fill="#f3f4f6" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<line x1="135" y1="585" x2="135" y2="625" stroke="#1f2937" stroke-width="1.3"/>
+<text x="82" y="610" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">maxSize 4</text>
+<text x="170" y="610" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">items</text>
+<circle cx="215" cy="605" r="3.5" fill="#1f2937"/>
+<rect x="290" y="585" width="120" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="350.0" y="579" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[0]</text>
+<circle cx="350.0" cy="605.0" r="3.5" fill="#1f2937"/>
+<rect x="410" y="585" width="120" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="470.0" y="579" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[1]</text>
+<circle cx="470.0" cy="605.0" r="3.5" fill="#1f2937"/>
+<rect x="530" y="585" width="120" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="590.0" y="579" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[2]</text>
+<circle cx="590.0" cy="605.0" r="3.5" fill="#1f2937"/>
+<rect x="650" y="585" width="120" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="710.0" y="579" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[3]</text>
+<text x="710.0" y="609.0" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">NULL</text>
+<line x1="215" y1="605" x2="280.0" y2="605.0" stroke="#1d4ed8" stroke-width="1.4"/><polygon points="288.0,605.0 280.0,609.0 280.0,601.0" fill="#1d4ed8"/>
+<rect x="294.0" y="663" width="112" height="46" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="350.0" y="682" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2937" xml:space="preserve">Garlic bread</text>
+<text x="350.0" y="699" text-anchor="middle" font-size="11" fill="#1f2937" xml:space="preserve">S  R45.5</text>
+<line x1="350.0" y1="605.0" x2="350.0" y2="653.0" stroke="#1f2937" stroke-width="1.4"/><polygon points="350.0,661.0 346.0,653.0 354.0,653.0" fill="#1f2937"/>
+<rect x="414.0" y="663" width="112" height="46" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="470.0" y="682" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2937" xml:space="preserve">Beef burger</text>
+<text x="470.0" y="699" text-anchor="middle" font-size="11" fill="#1f2937" xml:space="preserve">M  R120</text>
+<line x1="470.0" y1="605.0" x2="470.0" y2="653.0" stroke="#1f2937" stroke-width="1.4"/><polygon points="470.0,661.0 466.0,653.0 474.0,653.0" fill="#1f2937"/>
+<rect x="534.0" y="663" width="112" height="46" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="590.0" y="682" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2937" xml:space="preserve">Malva pudding</text>
+<text x="590.0" y="699" text-anchor="middle" font-size="11" fill="#1f2937" xml:space="preserve">D  R60</text>
+<line x1="590.0" y1="605.0" x2="590.0" y2="653.0" stroke="#1f2937" stroke-width="1.4"/><polygon points="590.0,661.0 586.0,653.0 594.0,653.0" fill="#1f2937"/>
+<text x="30" y="745" text-anchor="start" font-size="12" fill="#4b5563" xml:space="preserve">Step 1 (if this == &amp;other, return) and step 4 (return *this;) change no memory. Yellow: made by step 3. a's items are new objects with the same values as b's.</text></svg>

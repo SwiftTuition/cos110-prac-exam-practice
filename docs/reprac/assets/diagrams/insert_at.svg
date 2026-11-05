@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 348" width="960" height="348" font-family="Arial, Segoe UI, sans-serif"><rect width="960" height="348" fill="#ffffff"/><text x="20" y="26" text-anchor="start" font-size="17" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">insertAt(Binary("10"), 1) on 01 -&gt; 11</text>
+<rect x="120" y="80" width="200" height="46" fill="#dbeafe" stroke="#1f2937" stroke-width="1.5" rx="3"/>
+<line x1="270" y1="80" x2="270" y2="126" stroke="#1f2937" stroke-width="1.5"/>
+<text x="195.0" y="109" text-anchor="middle" font-size="16" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">01</text>
+<circle cx="295" cy="103" r="4.5" fill="#1f2937"/>
+<rect x="560" y="80" width="200" height="46" fill="#dbeafe" stroke="#1f2937" stroke-width="1.5" rx="3"/>
+<line x1="710" y1="80" x2="710" y2="126" stroke="#1f2937" stroke-width="1.5"/>
+<text x="635.0" y="109" text-anchor="middle" font-size="16" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">11</text>
+<circle cx="735" cy="103" r="4.5" fill="#1f2937"/>
+<polyline points="295,103 547.0,103.0" fill="none" stroke="#9ca3af" stroke-width="1.7" stroke-dasharray="6 5"/>
+<polygon points="558.0,103.0 547.0,108.5 547.0,97.5" fill="#9ca3af"/>
+<line x1="431" y1="94" x2="449" y2="112" stroke="#b91c1c" stroke-width="2.6"/>
+<line x1="431" y1="112" x2="449" y2="94" stroke="#b91c1c" stroke-width="2.6"/>
+<polyline points="735,103 829.0,103.0" fill="none" stroke="#1f2937" stroke-width="1.7"/>
+<polygon points="840.0,103.0 829.0,108.5 829.0,97.5" fill="#1f2937"/>
+<text x="846" y="109" text-anchor="start" font-size="16" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">NULL</text>
+<text x="20" y="109" text-anchor="start" font-size="16" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#1d4ed8" xml:space="preserve">head</text>
+<polyline points="70,103 107.0,103.0" fill="none" stroke="#1d4ed8" stroke-width="1.7"/>
+<polygon points="118.0,103.0 107.0,108.5 107.0,97.5" fill="#1d4ed8"/>
+<text x="220" y="60" text-anchor="middle" font-size="16" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#1d4ed8" xml:space="preserve">prev</text>
+<rect x="340" y="200" width="200" height="46" fill="#fde68a" stroke="#1f2937" stroke-width="1.5" rx="3"/>
+<line x1="490" y1="200" x2="490" y2="246" stroke="#1f2937" stroke-width="1.5"/>
+<text x="415.0" y="229" text-anchor="middle" font-size="16" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">10</text>
+<circle cx="515" cy="223" r="4.5" fill="#1f2937"/>
+<text x="340" y="272" text-anchor="start" font-size="16" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#1d4ed8" xml:space="preserve">newNode</text>
+<polyline points="515,223 565,223 565,140 650,140 650.0,139.0" fill="none" stroke="#c2410c" stroke-width="1.7"/>
+<polygon points="650.0,128.0 655.5,139.0 644.5,139.0" fill="#c2410c"/>
+<circle cx="565" cy="175" r="13" fill="#c2410c"/>
+<text x="565" y="180" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff" xml:space="preserve">1</text>
+<polyline points="295,113 295,223 327.0,223.0" fill="none" stroke="#c2410c" stroke-width="1.7"/>
+<polygon points="338.0,223.0 327.0,228.5 327.0,217.5" fill="#c2410c"/>
+<circle cx="277" cy="190" r="13" fill="#c2410c"/>
+<text x="277" y="195" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff" xml:space="preserve">2</text>
+<text x="610" y="220" text-anchor="start" font-size="15" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">1: newNode-&gt;next() = prev-&gt;next();</text>
+<text x="610" y="244" text-anchor="start" font-size="15" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">2: prev-&gt;next() = newNode;</text>
+<text x="20" y="310" text-anchor="start" font-size="15" fill="#4b5563" xml:space="preserve">Red cross: the old link from 01 to 11, which step 2 replaces.</text>
+<text x="20" y="334" text-anchor="start" font-size="15" fill="#4b5563" xml:space="preserve">Order matters: if step 2 ran first, nothing would point to 11, and the rest of the list would be lost.</text></svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 296" width="820" height="296" font-family="Segoe UI, Arial, sans-serif" role="img" aria-labelledby="t d"><title id="t">How the search and count functions walk the items array</title><desc id="d">Five slots: Garlic bread (S), Beef burger (M), Veg curry (M), Malva pudding (D), NULL. findFirst of Main moves forwards: slot 0 is a starter, slot 1 is a main, so it returns a copy of Beef burger. findLast of Main moves backwards: slot 4 is NULL, slot 3 is a dessert, slot 2 is a main, so it returns a copy of Veg curry.</desc><rect width="820" height="296" fill="#ffffff"/><text x="20" y="26" text-anchor="start" font-size="13" font-weight="bold" fill="#1f2937" xml:space="preserve">A menu with maxSize 5:</text>
+<rect x="40" y="56" width="150" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="115.0" y="50" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[0]</text>
+<text x="115.0" y="80.0" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">Garlic bread S</text>
+<rect x="190" y="56" width="150" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="265.0" y="50" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[1]</text>
+<text x="265.0" y="80.0" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">Beef burger M</text>
+<rect x="340" y="56" width="150" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="415.0" y="50" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[2]</text>
+<text x="415.0" y="80.0" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">Veg curry M</text>
+<rect x="490" y="56" width="150" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="565.0" y="50" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[3]</text>
+<text x="565.0" y="80.0" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1f2937" xml:space="preserve">Malva pudding D</text>
+<rect x="640" y="56" width="150" height="40" fill="#dbeafe" stroke="#1f2937" stroke-width="1.4" rx="3"/>
+<text x="715.0" y="50" text-anchor="middle" font-size="11" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">[4]</text>
+<text x="715.0" y="80.0" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#4b5563" xml:space="preserve">NULL</text>
+<text x="40" y="128" text-anchor="start" font-size="12" font-weight="bold" fill="#1d4ed8" xml:space="preserve">findFirst("Main"): i = 0, 1, ... (forwards)</text>
+<line x1="115.0" y1="140" x2="247.0" y2="140.0" stroke="#1d4ed8" stroke-width="1.4"/><polygon points="255.0,140.0 247.0,144.0 247.0,136.0" fill="#1d4ed8"/>
+<text x="115.0" y="158" text-anchor="middle" font-size="12" fill="#1f2937" xml:space="preserve">S: no</text>
+<text x="265.0" y="158" text-anchor="middle" font-size="12" font-weight="bold" fill="#15803d" xml:space="preserve">M: return a copy</text>
+<text x="40" y="196" text-anchor="start" font-size="12" font-weight="bold" fill="#1d4ed8" xml:space="preserve">findLast("Main"): i = 4, 3, 2, ... (backwards)</text>
+<line x1="715.0" y1="208" x2="433.0" y2="208.0" stroke="#1d4ed8" stroke-width="1.4"/><polygon points="425.0,208.0 433.0,204.0 433.0,212.0" fill="#1d4ed8"/>
+<text x="715.0" y="226" text-anchor="middle" font-size="12" fill="#1f2937" xml:space="preserve">NULL: no</text>
+<text x="565.0" y="226" text-anchor="middle" font-size="12" fill="#1f2937" xml:space="preserve">D: no</text>
+<text x="415.0" y="226" text-anchor="middle" font-size="12" font-weight="bold" fill="#15803d" xml:space="preserve">M: return a copy</text>
+<text x="40" y="262" text-anchor="start" font-size="12" fill="#4b5563" xml:space="preserve">averagePrice and numberAbove / numberBelow / numberEqual visit every slot (no early return), then throw if nothing matched.</text>
+<text x="40" y="280" text-anchor="start" font-size="12" fill="#4b5563" xml:space="preserve">Every test is  items[i] != NULL &amp;&amp; items[i]-&gt;getType() == code ...  : the NULL test comes first.</text></svg>

@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Practice | Re-Practical Exam: Menu and Binary | COS 110</title>
+  <link rel="stylesheet" href="assets/css/house.css">
+  <link rel="stylesheet" href="assets/css/computing.css">
+  <link rel="stylesheet" href="assets/css/pipeline-contracts.css">
+  <script defer src="assets/vendor/cpp98-grammar.js"></script>
+  <script defer src="assets/js/learning-components.js"></script>
+</head>
+<body data-current-page="practice" data-template-id="cos110-template-v2.0.0">
+  <header class="site-header">
+    <div class="site-header__inner">
+      <div class="brand"><span class="brand__name">Swift Tuition</span><span class="brand__chapter">COS 110</span></div>
+      <span class="site-header__tag">Program Design: Introduction</span>
+    </div>
+  </header>
+  <header class="page-head">
+    <p class="eyebrow">Practice · Re-Practical Exam</p>
+    <h1 class="page-title">Practice tasks and downloads</h1>
+    <p class="page-subtitle">A_1 to B_3</p>
+  </header>
+  <nav class="page-tabs" aria-label="Page navigation"><div class="page-tabs__inner"><a href="index.html">Home</a><a href="theory.html">Theory</a><a href="examples.html">Examples</a><a href="practice.html" aria-current="page">Practice</a><a href="quiz.html">Quiz</a></div></nav>
+  <main class="chapter-page">
+<section id="practice-intro"><h2>How to practise</h2><p>Try each task on paper or in your editor before you open the answer.</p><p>The rules marked Assumed can differ from one practice question to the next, as they may in the exam. Read each task’s rules, not the ones you remember.</p><p>For timed practice, download a section’s starter files from <a href="#downloads">the downloads below</a>, pick a question, and give yourself 40 minutes for a first question or 30 for a second, with only the headers and <code>main.cpp</code> open.</p></section><section id="downloads"><h2>Downloads: the practice questions</h2><p>Each download holds one folder per practice question: the question text (<code>QUESTION.md</code>), hints for some questions (<code>HINTS.md</code>), the starter folder you build in, and extra tests (<code>tests/main_edge.cpp</code> with its expected output). Unzip it, go into a question’s starter folder, and run make followed by the section name: <code>make A_1</code>, <code>make A_2</code>, <code>make A_3</code>, <code>make B_1</code>, <code>make B_2</code> or <code>make B_3</code>. To run the extra tests, copy <code>main_edge.cpp</code> over <code>main.cpp</code>.</p><section class="block block--caution"><p class="block__label">Assumed</p><p>Each <code>QUESTION.md</code> ends with a part on building, uploading and marking. Those rules (the makefile, <code>-Werror</code>, valgrind, uploading one file, and a mark of 0) come from the HRMS practical, not from the re-practical paper. Each download has a <code>READ_FIRST.md</code> that says so.</p></section><table class="attribute-table"><thead><tr><th scope="col">Section</th><th scope="col">Questions</th><th scope="col">Download</th></tr></thead><tbody><tr><td>A_1 Exceptions</td><td>A1-01, A1-02, A1-03, A1-04, A1-05, A1-06, A1-07, A1-08</td><td><a href="assets/downloads/A_1_practice_starters.zip" download="A_1_practice_starters.zip">Starter files and tests</a></td></tr><tr><td>A_2 Operator overloading</td><td>A2-01, A2-02, A2-03, A2-04, A2-05, A2-06, A2-07, A2-08</td><td><a href="assets/downloads/A_2_practice_starters.zip" download="A_2_practice_starters.zip">Starter files and tests</a></td></tr><tr><td>A_3 Assignment operator</td><td>A3-01, A3-02, A3-03, A3-04, A3-05</td><td><a href="assets/downloads/A_3_practice_starters.zip" download="A_3_practice_starters.zip">Starter files and tests</a></td></tr><tr><td>B_1 Recursion</td><td>B1-01, B1-02, B1-03, B1-04, B1-05, B1-06, B1-07</td><td><a href="assets/downloads/B_1_practice_starters.zip" download="B_1_practice_starters.zip">Starter files and tests</a></td></tr><tr><td>B_2 Linked lists</td><td>B2-01, B2-02, B2-03, B2-04, B2-05, B2-06, B2-07, B2-08</td><td><a href="assets/downloads/B_2_practice_starters.zip" download="B_2_practice_starters.zip">Starter files and tests</a></td></tr><tr><td>B_3 Template specialisation</td><td>B3-01, B3-02, B3-03, B3-04, B3-05, B3-06</td><td><a href="assets/downloads/B_3_practice_starters.zip" download="B_3_practice_starters.zip">Starter files and tests</a></td></tr></tbody></table><p>valgrind runs on Linux, so on Windows use WSL (Windows Subsystem for Linux, which runs Linux commands inside Windows) or the lab computers. Without a local setup, use the same questions on GitHub, at <a href="https://github.com/SwiftTuition/cos110-prac-exam-practice/tree/main/reprac" target="_blank" rel="noopener">github.com/SwiftTuition/cos110-prac-exam-practice/tree/main/reprac</a>. The main page of the repository has a Codespaces link that opens it in an online editor with a terminal.</p><p>Try a question fully before you look at its solution. The solutions are kept separately:</p><section class="reveal" data-component="practice-reveal" id="downloads-solutions-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution downloads</button><div id="downloads-solutions-solution" class="reveal__body" data-practice-solution hidden><ul><li><a href="assets/downloads/A_1_practice_solutions.zip" download="A_1_practice_solutions.zip">A_1 Exceptions: solutions</a></li><li><a href="assets/downloads/A_2_practice_solutions.zip" download="A_2_practice_solutions.zip">A_2 Operator overloading: solutions</a></li><li><a href="assets/downloads/A_3_practice_solutions.zip" download="A_3_practice_solutions.zip">A_3 Assignment operator: solutions</a></li><li><a href="assets/downloads/B_1_practice_solutions.zip" download="B_1_practice_solutions.zip">B_1 Recursion: solutions</a></li><li><a href="assets/downloads/B_2_practice_solutions.zip" download="B_2_practice_solutions.zip">B_2 Linked lists: solutions</a></li><li><a href="assets/downloads/B_3_practice_solutions.zip" download="B_3_practice_solutions.zip">B_3 Template specialisation: solutions</a></li></ul><p>Each question’s folder holds its solution file and an <code>EXPLANATION.md</code> that walks through it. The solution file replaces the starter file of the same name, for example <code>A_1.cpp</code>.</p></div></section></section><section id="practice-general"><h2>The rules, the UML and the routine</h2><section class="question" id="practice-marks"><p class="question-label">Calculate</p><h3>The final mark</h3><p>Suppose you score A_1 = 45, A_3 = 70, B_2 = 20 and B_3 = 55, each out of 100. What is your final mark out of 33?</p><p><em>Hint: one fraction per section.</em></p><section class="reveal" data-component="practice-reveal" id="practice-marks-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-marks-solution" class="reveal__body" data-practice-solution hidden><p>Section A: the larger of 0.45 and 0.70 is 0.70, and 0.70 × 16.5 = 11.55. Section B: the larger of 0.20 and 0.55 is 0.55, and 0.55 × 16.5 = 9.075. Final mark: 11.55 + 9.075 = 20.625 out of 33.</p></div></section></section><section class="question" id="practice-uml"><p class="question-label">Translate</p><h3>From the Menu header to UML</h3><p>Draw the UML box for this class from the reference code. Then say which lines on Figure 1 match its attributes.</p><pre data-component="cpp-highlight"><code>class Menu {
+   private:
+    int maxSize;
+    Item** items;
+
+   public:
+    Menu(int maxSize);
+    ~Menu();
+    Menu&amp; operator+(Item* item);
+    Item findFirst(string type);
+    Item findLast(string type);
+    float averagePrice(string type);
+    int numberAbove(string type, float value);
+    int numberBelow(string type, float value);
+    int numberEqual(string type, float value);
+
+    friend ostream&amp; operator&lt;&lt;(ostream&amp; out, const Menu&amp; menu);
+};</code></pre><p><em>Hint: name first, type second; the friend function is not drawn.</em></p><section class="reveal" data-component="practice-reveal" id="practice-uml-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-uml-solution" class="reveal__body" data-practice-solution hidden><pre>Menu
+----------------------------------------
+- maxSize: int
+- items: Item**
+----------------------------------------
++ Menu(int)
++ ~Menu()
++ operator+(Item*): Menu&amp;
++ findFirst(string): Item
++ findLast(string): Item
++ averagePrice(string): float
++ numberAbove(string, float): int
++ numberBelow(string, float): int
++ numberEqual(string, float): int</pre><p><code>items</code> is an <code>Item**</code>, which matches the line from Menu to Item. Figure 1 shows <code>operator+(Item*)</code> with no return type; the header gives <code>Menu&amp;</code> (Assumed, gap 1).</p></div></section></section><section class="question" id="practice-stubs"><p class="question-label">Write</p><h3>Stubs that build</h3><p>Write a stub (step 3 of the routine) for each declaration. Each must build with <code>-Wall -Werror</code>.</p><ol><li><code>float averagePrice(string type);</code> in <code>Menu</code></li><li><code>bool&amp; operator[](int index);</code> in <code>Binary</code></li><li><code>Menu&amp; operator=(const Menu&amp; other);</code> in <code>Menu</code></li></ol><p><em>Hint: a reference return type needs something that lives on after the function returns.</em></p><section class="reveal" data-component="practice-reveal" id="practice-stubs-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-stubs-solution" class="reveal__body" data-practice-solution hidden><ol><li><code>float Menu::averagePrice(string type) {</code>, <code>return 0;</code>, <code>}</code>.</li><li><code>bool&amp; Binary::operator[](int index) {</code>, <code>return array[0];</code>, <code>}</code>. A reference to a member element is safe to return. <code>return false;</code> does not compile, because <code>false</code> is not an object a reference can refer to.</li><li><code>Menu&amp; Menu::operator=(const Menu&amp; other) {</code>, <code>return *this;</code>, <code>}</code>.</li></ol></div></section></section><section class="question" id="practice-errors"><p class="question-label">Read the message</p><h3>Which mistake caused this?</h3><p>For each message, name the mistake and the fix.</p><pre>A_2.cpp:8:30: error: identifier ‘nullptr’ is a keyword in C++11 [-Werror=c++11-compat]
+
+A_3.cpp:9:11: error: control reaches end of non-void function [-Werror=return-type]
+
+main.cpp:16:(.text+0xf9): undefined reference to `void printValue&lt;Binary&gt;(Binary const&amp;)&#x27;</pre><p><em>Hint: one is about C++98, one is inside a function, and one is at the link step.</em></p><section class="reveal" data-component="practice-reveal" id="practice-errors-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-errors-solution" class="reveal__body" data-practice-solution hidden><ol><li><code>nullptr</code> does not exist in C++98. Write <code>NULL</code>.</li><li>A function with a return type can reach its end without a <code>return</code>. Here <code>Item::operator=</code> lacks <code>return *this;</code>.</li><li>A link error: the specialisation <code>printValue&lt;Binary&gt;</code> is declared in the header, but no file defines it. Write it in <code>B_3.cpp</code>.</li></ol></div></section></section></section><section id="practice-a1"><h2>A_1 Exceptions</h2><section class="question" id="practice-a1-complete"><p class="question-label">Complete the function</p><h3>Menu::numberEqual (A1-07)</h3><p>Write <code>int Menu::numberEqual(string type, float value)</code>. It counts the items of that type whose price equals <code>value</code>. An invalid name throws <code>InvalidType(type)</code>, and a count of 0 throws <code>NothingMatchingFilter(type)</code>, not one of its subclasses.</p><p><em>Hint: the same shape as numberBelow; two parts change.</em></p><section class="reveal" data-component="practice-reveal" id="practice-a1-complete-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a1-complete-solution" class="reveal__body" data-practice-solution hidden><pre data-component="cpp-highlight"><code>#include &quot;Menu.h&quot;
+
+int Menu::numberEqual(string type, float value) {
+    char code;
+    if (type == &quot;Starter&quot;) {
+        code = &#x27;S&#x27;;
+    } else if (type == &quot;Main&quot;) {
+        code = &#x27;M&#x27;;
+    } else if (type == &quot;Dessert&quot;) {
+        code = &#x27;D&#x27;;
+    } else {
+        throw InvalidType(type);
+    }
+    int count = 0;
+    for (int i = 0; i &lt; maxSize; i++) {
+        // The NULL check comes first: &amp;&amp; stops at the first false part.
+        if (items[i] != NULL &amp;&amp; items[i]-&gt;getType() == code &amp;&amp; items[i]-&gt;getPrice() == value) {
+            count++;
+        }
+    }
+    // No item has this price. The message names the type.
+    if (count == 0) {
+        throw NothingMatchingFilter(type);
+    }
+    return count;
+}</code></pre><p>The comparison is <code>==</code>, and the class takes the type name, so the message says which type had no match. The expected output:</p><pre>Main equal to R95.5: 2
+Main equal to R120: 1
+NothingMatchingFilter caught: Exception: Nothing matching filter: Main
+NothingMatchingFilter caught: Exception: Nothing matching filter: Dessert
+Starter equal to R45.5: 1
+InvalidType caught: Exception: Invalid type: Snack</pre></div></section></section><section class="question" id="practice-a1-trace"><p class="question-label">Trace</p><h3>numberEqual(&quot;Main&quot;, 95.5) (A1-07)</h3><p>A1-07’s <code>main.cpp</code> makes a <code>Menu(7)</code> with Garlic bread (S, 45.5), Beef burger (M, 120), Veg curry (M, 95.5), Malva pudding (D, 60), Soup (S, 50), Pap and wors (M, 95.5) and one <code>NULL</code> slot. Trace <code>numberEqual(&quot;Main&quot;, 95.5)</code>: for each pass of the loop, say which part of the condition decides it and give <code>count</code> after the pass.</p><pre data-component="cpp-highlight"><code>        if (items[i] != NULL &amp;&amp; items[i]-&gt;getType() == code &amp;&amp; items[i]-&gt;getPrice() == value) {
+            count++;
+        }</code></pre><p><em>Hint: <code>&quot;Main&quot;</code> becomes the letter <code>&#x27;M&#x27;</code> before the loop.</em></p><section class="reveal" data-component="practice-reveal" id="practice-a1-trace-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a1-trace-solution" class="reveal__body" data-practice-solution hidden><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>items[i] != NULL</code></td><td>the slot holds an item, so the next part is tested</td><td>an empty slot; <code>&amp;&amp;</code> stops here</td></tr><tr><td><code>items[i]-&gt;getType() == code</code></td><td>the item is a Main (<code>&#x27;M&#x27;</code>)</td><td>another type; the price is not tested</td></tr><tr><td><code>items[i]-&gt;getPrice() == value</code></td><td>the price is exactly 95.5, so <code>count++</code> runs</td><td>another price</td></tr></tbody></table><table class="attribute-table"><thead><tr><th scope="col"><code>i</code></th><th scope="col">Slot</th><th scope="col">What decides it</th><th scope="col"><code>count</code> after</th></tr></thead><tbody><tr><td>0</td><td>Garlic bread (S, 45.5)</td><td>type <code>&#x27;S&#x27;</code> is not <code>&#x27;M&#x27;</code></td><td>0</td></tr><tr><td>1</td><td>Beef burger (M, 120)</td><td>type matches; 120 == 95.5 is false</td><td>0</td></tr><tr><td>2</td><td>Veg curry (M, 95.5)</td><td>all three parts true</td><td>1</td></tr><tr><td>3</td><td>Malva pudding (D, 60)</td><td>type <code>&#x27;D&#x27;</code> is not <code>&#x27;M&#x27;</code></td><td>1</td></tr><tr><td>4</td><td>Soup (S, 50)</td><td>type <code>&#x27;S&#x27;</code> is not <code>&#x27;M&#x27;</code></td><td>1</td></tr><tr><td>5</td><td>Pap and wors (M, 95.5)</td><td>all three parts true</td><td>2</td></tr><tr><td>6</td><td><code>NULL</code></td><td><code>items[i] != NULL</code> is false</td><td>2</td></tr></tbody></table><p>Then <code>i</code> is 7 and <code>7 &lt; 7</code> is false, so the loop ends. The count is 2, not 0, so nothing is thrown. The first line of A1-07’s output:</p><pre>Main equal to R95.5: 2</pre></div></section></section><section class="question" id="practice-a1-predict"><p class="question-label">Predict the output</p><h3>Which catch fits? (A1-01)</h3><p>A1-01’s <code>main.cpp</code> throws each exception class in turn. Predict the nine lines it prints.</p><pre data-component="cpp-highlight"><code>void throwOne(int which) {
+    if (which == 0) {
+        throw InvalidType(&quot;Drink&quot;);
+    }
+    if (which == 1) {
+        throw NothingMatchingFilter(&quot;Dessert&quot;);
+    }
+    if (which == 2) {
+        throw NothingAboveMinimumValue();
+    }
+    if (which == 3) {
+        throw NothingBelowMaximumValue();
+    }
+    if (which == 4) {
+        throw StarterNotFound();
+    }
+    if (which == 5) {
+        throw MainNotFound();
+    }
+    throw DessertNotFound();
+}</code></pre><pre data-component="cpp-highlight"><code>int main() {
+    Exception plain(&quot;Kitchen closed&quot;);
+    plain.printException();
+    cout &lt;&lt; plain &lt;&lt; endl;
+
+    for (int which = 0; which &lt;= 6; which++) {
+        try {
+            throwOne(which);
+        } catch (NothingMatchingFilter&amp; e) {
+            cout &lt;&lt; &quot;Filter: &quot;;
+            e.printException();
+        } catch (NotFoundException&amp; e) {
+            cout &lt;&lt; &quot;Not found: &quot;;
+            e.printException();
+        } catch (Exception&amp; e) {
+            cout &lt;&lt; &quot;Other: &quot;;
+            e.printException();
+        }
+    }
+    return 0;
+}</code></pre><p><em>Hint: the first catch that fits runs; which classes are derived from NothingMatchingFilter?</em></p><section class="reveal" data-component="practice-reveal" id="practice-a1-predict-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a1-predict-solution" class="reveal__body" data-practice-solution hidden><pre>Exception: Kitchen closed
+Exception: Kitchen closed
+Other: Exception: Invalid type: Drink
+Filter: Exception: Nothing matching filter: Dessert
+Filter: Exception: Nothing matching filter: above minimum value
+Filter: Exception: Nothing matching filter: below maximum value
+Not found: Exception: Item not found
+Not found: Exception: Item not found
+Not found: Exception: Item not found</pre><p>The first two lines come from <code>plain</code>, before the loop. Then one line per pass:</p><table class="attribute-table"><thead><tr><th scope="col"><code>which</code></th><th scope="col">Thrown</th><th scope="col">The first catch that fits</th></tr></thead><tbody><tr><td>0</td><td><code>InvalidType</code></td><td>not a <code>NothingMatchingFilter</code> and not a <code>NotFoundException</code>, so <code>Exception&amp;</code>: <code>Other: </code></td></tr><tr><td>1</td><td><code>NothingMatchingFilter</code></td><td><code>NothingMatchingFilter&amp;</code>: <code>Filter: </code></td></tr><tr><td>2</td><td><code>NothingAboveMinimumValue</code></td><td>derived from <code>NothingMatchingFilter</code>: <code>Filter: </code></td></tr><tr><td>3</td><td><code>NothingBelowMaximumValue</code></td><td>derived from <code>NothingMatchingFilter</code>: <code>Filter: </code></td></tr><tr><td>4</td><td><code>StarterNotFound</code></td><td>derived from <code>NotFoundException</code>: <code>Not found: </code></td></tr><tr><td>5</td><td><code>MainNotFound</code></td><td>derived from <code>NotFoundException</code>: <code>Not found: </code></td></tr><tr><td>6</td><td><code>DessertNotFound</code></td><td>derived from <code>NotFoundException</code>: <code>Not found: </code></td></tr><tr><td>7</td><td>nothing</td><td><code>7 &lt;= 6</code> is false, so the loop ends</td></tr></tbody></table></div></section></section><section class="question" id="practice-a1-bug"><p class="question-label">Find the bug</p><h3>numberEqual does not build</h3><section class="block block--caution"><p class="block__label">This code has a bug</p><p>The loop of an A1-07 answer (the rest is correct):</p><pre data-component="cpp-highlight"><code>    for (int i = 0; i &lt; maxSize; i++) {
+        // The NULL check comes first: &amp;&amp; stops at the first false part.
+        if (items[i] != NULL &amp;&amp; items[i]-&gt;getType() == code &amp;&amp; items[i]-&gt;getPrice() = value) {
+            count++;
+        }
+    }</code></pre></section><p>The build stops with: <code>A_1.cpp:17:61: error: lvalue required as left operand of assignment</code>. Which character is missing?</p><section class="reveal" data-component="practice-reveal" id="practice-a1-bug-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a1-bug-solution" class="reveal__body" data-practice-solution hidden><p>A second <code>=</code>. One <code>=</code> assigns and <code>==</code> compares. The left side of this <code>=</code> is a value the program worked out, not a variable, so nothing can be stored in it, and the build stops. Write <code>items[i]-&gt;getPrice() == value</code>.</p><p>The working version:</p><pre data-component="cpp-highlight"><code>#include &quot;Menu.h&quot;
+
+int Menu::numberEqual(string type, float value) {
+    char code;
+    if (type == &quot;Starter&quot;) {
+        code = &#x27;S&#x27;;
+    } else if (type == &quot;Main&quot;) {
+        code = &#x27;M&#x27;;
+    } else if (type == &quot;Dessert&quot;) {
+        code = &#x27;D&#x27;;
+    } else {
+        throw InvalidType(type);
+    }
+    int count = 0;
+    for (int i = 0; i &lt; maxSize; i++) {
+        // The NULL check comes first: &amp;&amp; stops at the first false part.
+        if (items[i] != NULL &amp;&amp; items[i]-&gt;getType() == code &amp;&amp; items[i]-&gt;getPrice() == value) {
+            count++;
+        }
+    }
+    // No item has this price. The message names the type.
+    if (count == 0) {
+        throw NothingMatchingFilter(type);
+    }
+    return count;
+}</code></pre></div></section></section></section><section id="practice-a2"><h2>A_2 Operator overloading</h2><section class="question" id="practice-a2-gaps"><p class="question-label">Fill in the gaps</p><h3>Menu::operator- removes an item by name (A2-08)</h3><p>The rules: find the first item with that name, delete it, move every later pointer one slot toward index 0, and set the last slot to <code>NULL</code>. If no item has that name, change nothing. Return <code>*this</code> in both cases.</p><pre data-component="cpp-highlight" data-gaps="4"><code>Menu&amp; Menu::operator-(string name) {
+    for (int i = 0; i &lt; maxSize; i++) {
+        if (____(1)____) {
+            ____(2)____
+            for (int j = i; ____(3)____; j++) {
+                items[j] = items[j + 1];
+            }
+            ____(4)____
+            return *this;
+        }
+    }
+    return *this;
+}</code></pre><p>Write what goes in each numbered gap.</p><section class="reveal" data-component="practice-reveal" id="practice-a2-gaps-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a2-gaps-solution" class="reveal__body" data-practice-solution hidden><ol><li><code>items[i] != NULL &amp;&amp; items[i]-&gt;getName() == name</code></li><li><code>delete items[i];</code></li><li><code>j &lt; maxSize - 1</code></li><li><code>items[maxSize - 1] = NULL;</code></li></ol><p>The <code>NULL</code> test protects <code>getName()</code>. The shifting loop stops at <code>maxSize - 2</code>, because it reads <code>items[j + 1]</code>. The last slot then gets <code>NULL</code>, since its pointer was copied one place forward.</p><p>The complete tested file:</p><pre data-component="cpp-highlight"><code>#include &quot;Menu.h&quot;
+
+Menu&amp; Menu::operator-(string name) {
+    for (int i = 0; i &lt; maxSize; i++) {
+        if (items[i] != NULL &amp;&amp; items[i]-&gt;getName() == name) {
+            delete items[i];
+            // Move every later pointer one slot to the front.
+            for (int j = i; j &lt; maxSize - 1; j++) {
+                items[j] = items[j + 1];
+            }
+            // The last slot now has no item of its own.
+            items[maxSize - 1] = NULL;
+            return *this;
+        }
+    }
+    // No item has this name: the menu does not change.
+    return *this;
+}</code></pre></div></section></section><section class="question" id="practice-a2-complete"><p class="question-label">Complete the function</p><h3>Menu::operator[] returns the slot (A2-05)</h3><p>A2-05 declares <code>Item*&amp; operator[](int index);</code> in Menu. <code>menu[i]</code> reads the pointer in slot <code>i</code>, and <code>menu[i] = p;</code> stores a pointer there. Do not check the index. Write it.</p><p><em>Hint: the return type is a reference to a pointer that lives in the array.</em></p><section class="reveal" data-component="practice-reveal" id="practice-a2-complete-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a2-complete-solution" class="reveal__body" data-practice-solution hidden><pre data-component="cpp-highlight"><code>#include &quot;Menu.h&quot;
+
+Item*&amp; Menu::operator[](int index) {
+    // Return the slot itself (a reference to the pointer in the array), not a copy of it.
+    return items[index];
+}</code></pre><p>Returning <code>items[index]</code> by reference gives the caller the slot itself, so an assignment to <code>menu[2]</code> changes the array. The expected output:</p><pre>Slot 1: Beef burger (M) R120
+Slot 2 is empty
+Menu (max 3):
+  [0] Soup (S) R50
+  [1] Beef burger (M) R120
+  [2] Malva pudding (D) R60</pre></div></section></section><section class="question" id="practice-a2-trace"><p class="question-label">Trace</p><h3>menu - &quot;Beef burger&quot; (A2-08)</h3><p>A <code>Menu(4)</code> holds Garlic bread, Beef burger, Malva pudding and <code>NULL</code>. Trace <code>menu - &quot;Beef burger&quot;;</code>: give <code>i</code> when the name matches, each pass of the <code>j</code> loop, and the slots at the end.</p><p><em>Hint: the j loop starts at the slot that was freed.</em></p><section class="reveal" data-component="practice-reveal" id="practice-a2-trace-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a2-trace-solution" class="reveal__body" data-practice-solution hidden><p>The name matches at <code>i</code> = 1, and Beef burger is deleted.</p><table class="attribute-table"><thead><tr><th scope="col"><code>j</code></th><th scope="col"><code>j &lt; 3</code></th><th scope="col">Copy</th></tr></thead><tbody><tr><td>1</td><td>true</td><td>slot 1 gets Malva pudding</td></tr><tr><td>2</td><td>true</td><td>slot 2 gets slot 3 (<code>NULL</code>)</td></tr><tr><td>3</td><td>false: the loop ends</td><td>-</td></tr></tbody></table><p>Then slot 3 is set to <code>NULL</code>. The menu: Garlic bread, Malva pudding, empty, empty.</p></div></section></section><section class="question" id="practice-a2-predict"><p class="question-label">Predict the output</p><h3>operator&lt;&lt; for Exception (A2-03)</h3><p>With the A2-03 <code>operator&lt;&lt;</code> (it prints <code>Exception: </code> and the message, with no newline), predict the five lines:</p><pre data-component="cpp-highlight"><code>int main() {
+    Exception plain(&quot;Kitchen closed&quot;);
+    cout &lt;&lt; plain &lt;&lt; endl;
+
+    InvalidType bad(&quot;Drink&quot;);
+    cout &lt;&lt; bad &lt;&lt; &quot; (InvalidType)&quot; &lt;&lt; endl;
+
+    try {
+        throw NothingBelowMaximumValue();
+    } catch (Exception&amp; e) {
+        cout &lt;&lt; &quot;Caught: &quot; &lt;&lt; e &lt;&lt; endl;
+    }
+    try {
+        throw DessertNotFound();
+    } catch (NotFoundException&amp; e) {
+        cout &lt;&lt; &quot;Caught: &quot; &lt;&lt; e &lt;&lt; endl;
+    }
+
+    const Exception&amp; ref = bad;
+    cout &lt;&lt; ref &lt;&lt; &quot;!&quot; &lt;&lt; endl;
+    return 0;
+}</code></pre><p><em>Hint: a caught DessertNotFound still has the message its base class stored.</em></p><section class="reveal" data-component="practice-reveal" id="practice-a2-predict-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a2-predict-solution" class="reveal__body" data-practice-solution hidden><pre>Exception: Kitchen closed
+Exception: Invalid type: Drink (InvalidType)
+Caught: Exception: Nothing matching filter: below maximum value
+Caught: Exception: Item not found
+Exception: Invalid type: Drink!</pre><p>One function prints every class, because each one is an <code>Exception</code>. The <code>&quot; (InvalidType)&quot;</code> and <code>&quot;!&quot;</code> follow on the same line, because the operator prints no newline.</p></div></section></section><section class="question" id="practice-a2-bug"><p class="question-label">Find the bug</p><h3>operator- reads past the array</h3><section class="block block--caution"><p class="block__label">This code has a bug</p><p>The shifting loop of an A2-08 answer (the rest is correct):</p><pre data-component="cpp-highlight"><code>            for (int j = i; j &lt; maxSize; j++) {
+                items[j] = items[j + 1];
+            }</code></pre></section><p>The output is right, but valgrind reports <code>Invalid read of size 8</code> and <code> Address 0x4e1e0a0 is 0 bytes after a block of size 32 alloc&#x27;d</code>. Why?</p><section class="reveal" data-component="practice-reveal" id="practice-a2-bug-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a2-bug-solution" class="reveal__body" data-practice-solution hidden><p>In the last pass, <code>j</code> is <code>maxSize - 1</code>, so <code>items[j + 1]</code> is <code>items[maxSize]</code>, one past the end. The loop must stop one earlier: <code>j &lt; maxSize - 1</code>.</p><p>The working version:</p><pre data-component="cpp-highlight"><code>#include &quot;Menu.h&quot;
+
+Menu&amp; Menu::operator-(string name) {
+    for (int i = 0; i &lt; maxSize; i++) {
+        if (items[i] != NULL &amp;&amp; items[i]-&gt;getName() == name) {
+            delete items[i];
+            // Move every later pointer one slot to the front.
+            for (int j = i; j &lt; maxSize - 1; j++) {
+                items[j] = items[j + 1];
+            }
+            // The last slot now has no item of its own.
+            items[maxSize - 1] = NULL;
+            return *this;
+        }
+    }
+    // No item has this name: the menu does not change.
+    return *this;
+}</code></pre></div></section></section></section><section id="practice-a3"><h2>A_3 Assignment operator</h2><section class="question" id="practice-a3-gaps"><p class="question-label">Fill in the gaps</p><h3>Menu::operator= (A3-02)</h3><p><code>Menu::operator=</code> has four steps. <strong>Note:</strong> this function is solved on the <a href="theory.html#a3-assignment">Theory page</a>. Try it without looking back.</p><pre data-component="cpp-highlight" data-gaps="4"><code>Menu&amp; Menu::operator=(const Menu&amp; other) {
+    if (____(1)____) {
+        return *this;
+    }
+
+    for (int i = 0; i &lt; maxSize; i++) {
+        delete items[i];
+    }
+    ____(2)____
+
+    ____(3)____
+    items = new Item*[maxSize];
+    for (int i = 0; i &lt; maxSize; i++) {
+        if (other.items[i] == NULL) {
+            items[i] = NULL;
+        } else {
+            items[i] = ____(4)____;
+        }
+    }
+
+    return *this;
+}</code></pre><p>Write what goes in each numbered gap.</p><section class="reveal" data-component="practice-reveal" id="practice-a3-gaps-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a3-gaps-solution" class="reveal__body" data-practice-solution hidden><ol><li><code>this == &amp;other</code></li><li><code>delete[] items;</code></li><li><code>maxSize = other.maxSize;</code></li><li><code>new Item(*other.items[i])</code></li></ol><p>Step 1 compares addresses. Step 2 ends with the array. Step 3 copies the size before making the new array, and makes a new item with Item’s copy constructor.</p><p>The complete tested file:</p><pre data-component="cpp-highlight"><code>#include &quot;Menu.h&quot;
+
+Menu&amp; Menu::operator=(const Menu&amp; other) {
+    if (this == &amp;other) {
+        return *this;
+    }
+
+    for (int i = 0; i &lt; maxSize; i++) {
+        delete items[i];
+    }
+    delete[] items;
+
+    maxSize = other.maxSize;
+    items = new Item*[maxSize];
+    for (int i = 0; i &lt; maxSize; i++) {
+        if (other.items[i] == NULL) {
+            items[i] = NULL;
+        } else {
+            items[i] = new Item(*other.items[i]);
+        }
+    }
+
+    return *this;
+}</code></pre></div></section></section><section class="question" id="practice-a3-complete"><p class="question-label">Complete the function</p><h3>Menu copy constructor (A3-03)</h3><p>Write <code>Menu::Menu(const Menu&amp; other)</code>. The new menu has the same <code>maxSize</code>. Slot <code>i</code> holds a new copy of <code>other</code>’s item, or <code>NULL</code>.</p><p><strong>Note:</strong> this function is solved on the <a href="examples.html#ex-a3-03">Examples page</a>. Try it without looking back.</p><p><em>Hint: which of the four steps of operator= does a new object need?</em></p><section class="reveal" data-component="practice-reveal" id="practice-a3-complete-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a3-complete-solution" class="reveal__body" data-practice-solution hidden><pre data-component="cpp-highlight"><code>#include &quot;Menu.h&quot;
+
+Menu::Menu(const Menu&amp; other) {
+    maxSize = other.maxSize;
+    items = new Item*[maxSize];
+    for (int i = 0; i &lt; maxSize; i++) {
+        if (other.items[i] == NULL) {
+            items[i] = NULL;
+        } else {
+            items[i] = new Item(*other.items[i]);
+        }
+    }
+}</code></pre><p>Only step 3: a new object has no old memory to free and returns nothing.</p></div></section></section><section class="question" id="practice-a3-trace"><p class="question-label">Trace</p><h3>Binary::operator= (A3-05)</h3><p><code>a</code> is <code>Binary(&quot;01&quot;)</code> and <code>b</code> is <code>Binary(&quot;1101&quot;)</code>. Trace <code>a = b;</code> with the four steps: give <code>a.size</code> and what <code>a.array</code> points to after each one.</p><p><em>Hint: step 2 frees one array of 2 bools.</em></p><section class="reveal" data-component="practice-reveal" id="practice-a3-trace-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a3-trace-solution" class="reveal__body" data-practice-solution hidden><table class="attribute-table"><thead><tr><th scope="col">Step</th><th scope="col"><code>a.size</code></th><th scope="col"><code>a.array</code></th></tr></thead><tbody><tr><td>1: <code>this == &amp;other</code> is false</td><td>2</td><td>the old array: 0, 1</td></tr><tr><td>2: <code>delete[] array;</code></td><td>2</td><td>freed memory</td></tr><tr><td>3: <code>size = other.size;</code>, <code>new bool[size]</code>, copy</td><td>4</td><td>a new array: 1, 1, 0, 1</td></tr><tr><td>4: <code>return *this;</code></td><td>4</td><td>the new array</td></tr></tbody></table></div></section></section><section class="question" id="practice-a3-predict"><p class="question-label">Predict the output</p><h3>Binary assignment (A3-05)</h3><p>With a correct <code>Binary::operator=</code>, predict the five lines:</p><pre data-component="cpp-highlight"><code>int main() {
+    Binary a(&quot;01&quot;);
+    Binary b(&quot;1101&quot;);
+    cout &lt;&lt; &quot;a: &quot; &lt;&lt; a &lt;&lt; &quot;, b: &quot; &lt;&lt; b &lt;&lt; endl;
+
+    a = b;
+    cout &lt;&lt; &quot;after a = b, a: &quot; &lt;&lt; a &lt;&lt; &quot; (size &quot; &lt;&lt; a.getSize() &lt;&lt; &quot;)&quot; &lt;&lt; endl;
+
+    b[0] = false;
+    cout &lt;&lt; &quot;after b[0] = false, b: &quot; &lt;&lt; b &lt;&lt; &quot;, a: &quot; &lt;&lt; a &lt;&lt; endl;
+
+    a = a;
+    cout &lt;&lt; &quot;after a = a, a: &quot; &lt;&lt; a &lt;&lt; endl;
+
+    Binary c(&quot;000&quot;);
+    a = b = c;
+    cout &lt;&lt; &quot;after a = b = c, a: &quot; &lt;&lt; a &lt;&lt; &quot;, b: &quot; &lt;&lt; b &lt;&lt; endl;
+    return 0;
+}</code></pre><p><em>Hint: after a = b, the two objects have separate arrays.</em></p><section class="reveal" data-component="practice-reveal" id="practice-a3-predict-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a3-predict-solution" class="reveal__body" data-practice-solution hidden><pre>a: 01, b: 1101
+after a = b, a: 1101 (size 4)
+after b[0] = false, b: 0101, a: 1101
+after a = a, a: 1101
+after a = b = c, a: 000, b: 000</pre><p><code>b[0] = false;</code> changes only <code>b</code>, because <code>a</code> has its own array.</p></div></section></section><section class="question" id="practice-a3-bug"><p class="question-label">Find the bug</p><h3>The wrong delete</h3><section class="block block--caution"><p class="block__label">This code has a bug</p><p>An A3-05 answer:</p><pre data-component="cpp-highlight"><code>Binary&amp; Binary::operator=(const Binary&amp; other) {
+    if (this == &amp;other) {
+        return *this;
+    }
+
+    delete array;
+
+    size = other.size;
+    array = new bool[size];
+    for (int i = 0; i &lt; size; i++) {
+        array[i] = other.array[i];
+    }
+
+    return *this;
+}</code></pre></section><p><strong>Note:</strong> this function is solved on the <a href="theory.html#a3-assignment">Theory page</a>. Find the bug before you look back. The output is right, but valgrind reports <code>Mismatched free() / delete / delete []</code>. Why?</p><section class="reveal" data-component="practice-reveal" id="practice-a3-bug-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-a3-bug-solution" class="reveal__body" data-practice-solution hidden><p>The array was made with <code>new bool[size]</code>, the array form, so it must be freed with <code>delete[] array;</code>. <code>delete array;</code> is the form for one object.</p><p>The working version:</p><pre data-component="cpp-highlight"><code>#include &quot;Binary.h&quot;
+
+Binary&amp; Binary::operator=(const Binary&amp; other) {
+    if (this == &amp;other) {
+        return *this;
+    }
+
+    delete[] array;
+
+    size = other.size;
+    array = new bool[size];
+    for (int i = 0; i &lt; size; i++) {
+        array[i] = other.array[i];
+    }
+
+    return *this;
+}</code></pre></div></section></section></section><section id="practice-b1"><h2>B_1 Recursion</h2><section class="question" id="practice-b1-complete"><p class="question-label">Complete the function</p><h3>Binary::isPalindrome (B1-03)</h3><p>Write <code>bool Binary::isPalindrome(int start, int end)</code> with recursion and no loops (Assumed). It is <code>true</code> when the bits from <code>start</code> to <code>end</code> read the same both ways. A range of one bit or none is <code>true</code>. An invalid <code>start</code> (below 0) or <code>end</code> (<code>&gt;= size</code>) returns <code>false</code>, tested first.</p><p><em>Hint: compare the two outer bits, then call for the range inside them.</em></p><section class="reveal" data-component="practice-reveal" id="practice-b1-complete-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b1-complete-solution" class="reveal__body" data-practice-solution hidden><pre data-component="cpp-highlight"><code>#include &quot;Binary.h&quot;
+
+// True when the bits from start to end (both included) read the same in both directions.
+bool Binary::isPalindrome(int start, int end) {
+    // Invalid input: start or end outside the array.
+    if (start &lt; 0 || end &gt;= size) {
+        return false;
+    }
+    // Base case: one bit or no bits left in the range.
+    if (start &gt;= end) {
+        return true;
+    }
+    // The two outer bits differ: not a palindrome.
+    if (array[start] != array[end]) {
+        return false;
+    }
+    // Recursive case: check the range without the two outer bits.
+    return isPalindrome(start + 1, end - 1);
+}</code></pre><p>Each call moves both ends inward, so <code>start &gt;= end</code> is reached.</p></div></section></section><section class="question" id="practice-b1-trace"><p class="question-label">Trace</p><h3>isPalindrome(0, 3) on 1001 (B1-03)</h3><p>List the calls of <code>isPalindrome(0, 3)</code> for <code>1001</code>, with the test that decides each one.</p><p><em>Hint: the range has an even length, so the two ends cross without meeting.</em></p><section class="reveal" data-component="practice-reveal" id="practice-b1-trace-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b1-trace-solution" class="reveal__body" data-practice-solution hidden><table class="attribute-table"><thead><tr><th scope="col">Call</th><th scope="col">Test that decides it</th><th scope="col">Next</th></tr></thead><tbody><tr><td><code>(0, 3)</code></td><td>range valid; <code>0 &gt;= 3</code> is false; bits 1 and 1 are equal</td><td><code>(1, 2)</code></td></tr><tr><td><code>(1, 2)</code></td><td>range valid; <code>1 &gt;= 2</code> is false; bits 0 and 0 are equal</td><td><code>(2, 1)</code></td></tr><tr><td><code>(2, 1)</code></td><td>range valid; <code>2 &gt;= 1</code> is true: base case</td><td>returns <code>true</code></td></tr></tbody></table><p>Each call returns <code>true</code> to the one before it, so the answer is <code>true</code>. With <code>start == end</code> as the base case, <code>(2, 1)</code> would not stop, because 2 and 1 are not equal. <code>&gt;=</code> stops both odd and even ranges.</p></div></section></section><section class="question" id="practice-b1-predict"><p class="question-label">Predict the output</p><h3>isPalindrome on three strings (B1-03)</h3><p>With a correct <code>isPalindrome</code>, predict the seven lines:</p><pre data-component="cpp-highlight"><code>void show(Binary&amp; b, int start, int end) {
+    cout &lt;&lt; b &lt;&lt; &quot; [&quot; &lt;&lt; start &lt;&lt; &quot;, &quot; &lt;&lt; end &lt;&lt; &quot;]: &quot;;
+    if (b.isPalindrome(start, end)) {
+        cout &lt;&lt; &quot;palindrome&quot; &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; &quot;not a palindrome&quot; &lt;&lt; endl;
+    }
+}</code></pre><pre data-component="cpp-highlight"><code>int main() {
+    Binary a(&quot;1001&quot;);
+    Binary b(&quot;1011&quot;);
+    Binary c(&quot;10101&quot;);
+    show(a, 0, 3);
+    show(b, 0, 3);
+    show(c, 0, 4);
+    show(b, 0, 2);
+    show(b, 1, 2);
+    show(a, 0, 4);
+    show(a, -1, 2);
+    return 0;
+}</code></pre><p><em>Hint: test the range first; a range of one bit is a palindrome.</em></p><section class="reveal" data-component="practice-reveal" id="practice-b1-predict-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b1-predict-solution" class="reveal__body" data-practice-solution hidden><pre>1001 [0, 3]: palindrome
+1011 [0, 3]: not a palindrome
+10101 [0, 4]: palindrome
+1011 [0, 2]: palindrome
+1011 [1, 2]: not a palindrome
+1001 [0, 4]: not a palindrome
+1001 [-1, 2]: not a palindrome</pre><table class="attribute-table"><thead><tr><th scope="col">Line</th><th scope="col">Calls</th><th scope="col">Why</th></tr></thead><tbody><tr><td><code>1001 [0, 3]</code></td><td><code>(0, 3)</code>, <code>(1, 2)</code>, <code>(2, 1)</code></td><td>the outer bits match twice, then <code>2 &gt;= 1</code>: true</td></tr><tr><td><code>1011 [0, 3]</code></td><td><code>(0, 3)</code>, <code>(1, 2)</code></td><td>bits 0 and 1 differ: false</td></tr><tr><td><code>10101 [0, 4]</code></td><td><code>(0, 4)</code>, <code>(1, 3)</code>, <code>(2, 2)</code></td><td>the middle bit is reached: <code>2 &gt;= 2</code> is true</td></tr><tr><td><code>1011 [0, 2]</code></td><td><code>(0, 2)</code>, <code>(1, 1)</code></td><td>bits 1 and 1 match, then one bit: true</td></tr><tr><td><code>1011 [1, 2]</code></td><td><code>(1, 2)</code></td><td>bits 0 and 1 differ: false</td></tr><tr><td><code>1001 [0, 4]</code></td><td><code>(0, 4)</code></td><td><code>end &gt;= size</code> (4 >= 4): false, no bit is read</td></tr><tr><td><code>1001 [-1, 2]</code></td><td><code>(-1, 2)</code></td><td><code>start &lt; 0</code>: false</td></tr></tbody></table></div></section></section><section class="question" id="practice-b1-bug"><p class="question-label">Find the bug</p><h3>isPalindrome reads past the array</h3><section class="block block--caution"><p class="block__label">This code has a bug</p><p>A B1-03 answer:</p><pre data-component="cpp-highlight"><code>bool Binary::isPalindrome(int start, int end) {
+    // Invalid input: start or end outside the array.
+    if (start &lt; 0 || end &gt; size) {
+        return false;
+    }
+    // Base case: one bit or no bits left in the range.
+    if (start &gt;= end) {
+        return true;
+    }
+    // The two outer bits differ: not a palindrome.
+    if (array[start] != array[end]) {
+        return false;
+    }
+    // Recursive case: check the range without the two outer bits.
+    return isPalindrome(start + 1, end - 1);
+}</code></pre></section><p>The output is right, but valgrind reports <code>Invalid read of size 1</code>. Which call causes it, and why?</p><section class="reveal" data-component="practice-reveal" id="practice-b1-bug-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b1-bug-solution" class="reveal__body" data-practice-solution hidden><p>The call <code>show(a, 0, 4)</code> on <code>1001</code>. The size is 4, so the valid indexes are 0 to 3. The test <code>end &gt; size</code> is <code>4 &gt; 4</code>, which is false, so the function goes on and reads <code>array[4]</code>, one past the end. The test must be <code>end &gt;= size</code>.</p><p>The working version:</p><pre data-component="cpp-highlight"><code>#include &quot;Binary.h&quot;
+
+// True when the bits from start to end (both included) read the same in both directions.
+bool Binary::isPalindrome(int start, int end) {
+    // Invalid input: start or end outside the array.
+    if (start &lt; 0 || end &gt;= size) {
+        return false;
+    }
+    // Base case: one bit or no bits left in the range.
+    if (start &gt;= end) {
+        return true;
+    }
+    // The two outer bits differ: not a palindrome.
+    if (array[start] != array[end]) {
+        return false;
+    }
+    // Recursive case: check the range without the two outer bits.
+    return isPalindrome(start + 1, end - 1);
+}</code></pre></div></section></section></section><section id="practice-b2"><h2>B_2 Linked lists</h2><section class="question" id="practice-b2-gaps"><p class="question-label">Fill in the gaps</p><h3>BinaryStrings::reverse (B2-05)</h3><p>Reverse the list by turning every link around. Make and delete no nodes.</p><pre data-component="cpp-highlight" data-gaps="4"><code>void BinaryStrings::reverse() {
+    Node&lt;Binary&gt;* prev = NULL;
+    Node&lt;Binary&gt;* curr = head;
+    while (curr != NULL) {
+        ____(1)____
+        ____(2)____
+        prev = curr;
+        ____(3)____
+    }
+    ____(4)____
+}</code></pre><p>Write what goes in each numbered gap.</p><section class="reveal" data-component="practice-reveal" id="practice-b2-gaps-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b2-gaps-solution" class="reveal__body" data-practice-solution hidden><ol><li><code>Node&lt;Binary&gt;* temp = curr-&gt;next();</code></li><li><code>curr-&gt;next() = prev;</code></li><li><code>curr = temp;</code></li><li><code>head = prev;</code></li></ol><p>Save the rest of the list, turn the link, move both pointers on. At the end <code>prev</code> is the old last node, the new head.</p><p>The complete tested file:</p><pre data-component="cpp-highlight"><code>#include &quot;BinaryStrings.h&quot;
+
+// Reverses the order of the nodes by turning every link around.
+// No node is created or deleted.
+void BinaryStrings::reverse() {
+    Node&lt;Binary&gt;* prev = NULL;
+    Node&lt;Binary&gt;* curr = head;
+    while (curr != NULL) {
+        Node&lt;Binary&gt;* temp = curr-&gt;next();   // remember the rest of the list
+        curr-&gt;next() = prev;                 // turn this link around
+        prev = curr;
+        curr = temp;
+    }
+    // prev is the old last node: it is the new head.
+    head = prev;
+}</code></pre></div></section></section><section class="question" id="practice-b2-complete"><p class="question-label">Complete the function</p><h3>BinaryStrings::remove(b) (B2-04)</h3><p>Write <code>bool BinaryStrings::remove(const Binary&amp; b)</code>. It removes the first string equal to <code>b</code> (the same size and the same bit at every index), and returns <code>true</code>. If none is equal, it returns <code>false</code>. Keep <code>size</code> right, and free the removed node.</p><p><em>Hint: keep a prev pointer; prev == NULL means the head.</em></p><section class="reveal" data-component="practice-reveal" id="practice-b2-complete-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b2-complete-solution" class="reveal__body" data-practice-solution hidden><pre data-component="cpp-highlight"><code>#include &quot;BinaryStrings.h&quot;
+
+// Removes the first string in the list that is equal to b: the same size and the
+// same bit at every index. Returns true if a node was removed, false otherwise.
+bool BinaryStrings::remove(const Binary&amp; b) {
+    Node&lt;Binary&gt;* prev = NULL;
+    Node&lt;Binary&gt;* curr = head;
+    while (curr != NULL) {
+        // Compare curr&#x27;s string with b, bit by bit (Binary has no operator==).
+        Binary&amp; data = curr-&gt;getData();
+        bool same = (data.getSize() == b.getSize());
+        for (int i = 0; same &amp;&amp; i &lt; b.getSize(); i++) {
+            if (data[i] != b[i]) {
+                same = false;
+            }
+        }
+        if (same) {
+            // Unlink curr: at the front, head moves; otherwise prev skips curr.
+            if (prev == NULL) {
+                head = curr-&gt;next();
+            } else {
+                prev-&gt;next() = curr-&gt;next();
+            }
+            // Deleting the node also destroys its Binary (and so its bool array).
+            delete curr;
+            size--;
+            return true;
+        }
+        prev = curr;
+        curr = curr-&gt;next();
+    }
+    return false;
+}</code></pre><p>The expected output:</p><pre>0101 -&gt; 0011 -&gt; 101 -&gt; 0011 (size 4)
+remove(0011): true   0101 -&gt; 101 -&gt; 0011 (size 3)
+remove(11): false  0101 -&gt; 101 -&gt; 0011 (size 3)
+remove(101): true   0101 -&gt; 0011 (size 2)
+remove(0101): true   0011 (size 1)
+remove(0011): true   Empty (size 0)
+remove(0011): false  Empty (size 0)</pre></div></section></section><section class="question" id="practice-b2-trace"><p class="question-label">Trace</p><h3>reverse on four nodes (B2-05)</h3><p>Trace the loop of <code>reverse()</code> on <code>000 -&gt; 0011 -&gt; 1101 -&gt; 0101</code>: after each pass, give <code>prev</code>, <code>curr</code> and the link that was turned.</p><p><em>Hint: prev starts at NULL.</em></p><section class="reveal" data-component="practice-reveal" id="practice-b2-trace-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b2-trace-solution" class="reveal__body" data-practice-solution hidden><table class="attribute-table"><thead><tr><th scope="col">Pass</th><th scope="col">Link turned</th><th scope="col"><code>prev</code> after</th><th scope="col"><code>curr</code> after</th></tr></thead><tbody><tr><td>1</td><td><code>000</code> now points to <code>NULL</code></td><td><code>000</code></td><td><code>0011</code></td></tr><tr><td>2</td><td><code>0011</code> now points to <code>000</code></td><td><code>0011</code></td><td><code>1101</code></td></tr><tr><td>3</td><td><code>1101</code> now points to <code>0011</code></td><td><code>1101</code></td><td><code>0101</code></td></tr><tr><td>4</td><td><code>0101</code> now points to <code>1101</code></td><td><code>0101</code></td><td><code>NULL</code></td></tr></tbody></table><p><code>head = prev;</code> makes <code>0101</code> the head: <code>0101 -&gt; 1101 -&gt; 0011 -&gt; 000</code>.</p></div></section></section><section class="question" id="practice-b2-predict"><p class="question-label">Predict the output</p><h3>calculatePos after changes (B2-07)</h3><p>With the reference <code>calculatePos</code> (positive: sign bit 0 and some later bit 1, Assumed), predict the four lines:</p><pre data-component="cpp-highlight"><code>int main() {
+    BinaryStrings list;
+    cout &lt;&lt; list &lt;&lt; &quot;: &quot; &lt;&lt; list.calculatePos() &lt;&lt; &quot; positive&quot; &lt;&lt; endl;
+
+    list.prepend(Binary(&quot;0101&quot;));
+    list.prepend(Binary(&quot;1101&quot;));
+    list.prepend(Binary(&quot;0011&quot;));
+    list.prepend(Binary(&quot;000&quot;));
+    cout &lt;&lt; list &lt;&lt; &quot;: &quot; &lt;&lt; list.calculatePos() &lt;&lt; &quot; positive&quot; &lt;&lt; endl;
+
+    list.getHead()-&gt;getData()[2] = true;
+    cout &lt;&lt; list &lt;&lt; &quot;: &quot; &lt;&lt; list.calculatePos() &lt;&lt; &quot; positive&quot; &lt;&lt; endl;
+
+    list.getHead()-&gt;next()-&gt;next()-&gt;getData()[0] = false;
+    cout &lt;&lt; list &lt;&lt; &quot;: &quot; &lt;&lt; list.calculatePos() &lt;&lt; &quot; positive&quot; &lt;&lt; endl;
+    return 0;
+}</code></pre><p><em>Hint: getData() returns a reference, so [2] = true changes the string in the node.</em></p><section class="reveal" data-component="practice-reveal" id="practice-b2-predict-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b2-predict-solution" class="reveal__body" data-practice-solution hidden><pre>Empty: 0 positive
+000 -&gt; 0011 -&gt; 1101 -&gt; 0101: 2 positive
+001 -&gt; 0011 -&gt; 1101 -&gt; 0101: 3 positive
+001 -&gt; 0011 -&gt; 0101 -&gt; 0101: 4 positive</pre><p>Setting bit 2 of <code>000</code> makes it <code>001</code>, which is positive. Setting bit 0 of the third string turns <code>1101</code> into <code>0101</code>, which is positive too.</p></div></section></section><section class="question" id="practice-b2-bug"><p class="question-label">Find the bug</p><h3>reverse loses the list</h3><section class="block block--caution"><p class="block__label">This code has a bug</p><p>A B2-05 answer:</p><pre data-component="cpp-highlight"><code>void BinaryStrings::reverse() {
+    Node&lt;Binary&gt;* prev = NULL;
+    Node&lt;Binary&gt;* curr = head;
+    while (curr != NULL) {
+        curr-&gt;next() = prev;                 // turn this link around
+        prev = curr;
+        curr = curr-&gt;next();
+    }
+    // prev is the old last node: it is the new head.
+    head = prev;
+}</code></pre></section><p>After the first <code>reverse()</code>, the list prints as <code>000 (size 4)</code>, and valgrind reports <code>   definitely lost: 24 bytes in 1 blocks</code>. Why?</p><section class="reveal" data-component="practice-reveal" id="practice-b2-bug-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b2-bug-solution" class="reveal__body" data-practice-solution hidden><p>After <code>curr-&gt;next() = prev;</code>, <code>curr-&gt;next()</code> is the turned link, not the rest of the list. In the first pass it is <code>NULL</code>, so the loop ends after one node. Save <code>curr-&gt;next()</code> in <code>temp</code> before turning the link.</p><p>The working version:</p><pre data-component="cpp-highlight"><code>#include &quot;BinaryStrings.h&quot;
+
+// Reverses the order of the nodes by turning every link around.
+// No node is created or deleted.
+void BinaryStrings::reverse() {
+    Node&lt;Binary&gt;* prev = NULL;
+    Node&lt;Binary&gt;* curr = head;
+    while (curr != NULL) {
+        Node&lt;Binary&gt;* temp = curr-&gt;next();   // remember the rest of the list
+        curr-&gt;next() = prev;                 // turn this link around
+        prev = curr;
+        curr = temp;
+    }
+    // prev is the old last node: it is the new head.
+    head = prev;
+}</code></pre></div></section></section></section><section id="practice-b3"><h2>B_3 Template specialisation</h2><section class="question" id="practice-b3-gaps"><p class="question-label">Fill in the gaps</p><h3>largest&lt;Binary&gt; (B3-02)</h3><p>The general <code>template &lt;class T&gt; T largest(T a, T b)</code> returns the larger value, or <code>a</code> for equal values. The <code>Binary</code> version compares the decimal values. <strong>Note:</strong> this function is solved on the <a href="examples.html#ex-b3-02">Examples page</a>. Try it without looking back.</p><pre data-component="cpp-highlight" data-gaps="3"><code>template &lt;&gt;
+Binary ____(1)____ {
+    int valueA = 0;
+    for (int i = 0; i &lt; a.getSize(); i++) {
+        valueA = valueA * 2;
+        if (a[i]) {
+            valueA = valueA + 1;
+        }
+    }
+    int valueB = 0;
+    for (int i = 0; i &lt; b.getSize(); i++) {
+        valueB = valueB * 2;
+        if (b[i]) {
+            valueB = valueB + 1;
+        }
+    }
+    if (____(2)____) {
+        return b;
+    }
+    ____(3)____
+}</code></pre><p>Write what goes in each numbered gap.</p><section class="reveal" data-component="practice-reveal" id="practice-b3-gaps-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b3-gaps-solution" class="reveal__body" data-practice-solution hidden><ol><li><code>largest&lt;Binary&gt;(Binary a, Binary b)</code></li><li><code>valueB &gt; valueA</code></li><li><code>return a;</code></li></ol><p>The parameters match the general template, by value. Only a strictly larger <code>b</code> wins, so equal values return <code>a</code>.</p><p>The complete tested file:</p><pre data-component="cpp-highlight"><code>#include &quot;Templates.h&quot;
+
+// For two Binary objects, the larger one is the one with the larger decimal value.
+// If the values are equal, return a.
+template &lt;&gt;
+Binary largest&lt;Binary&gt;(Binary a, Binary b) {
+    int valueA = 0;
+    for (int i = 0; i &lt; a.getSize(); i++) {
+        valueA = valueA * 2;
+        if (a[i]) {
+            valueA = valueA + 1;
+        }
+    }
+    int valueB = 0;
+    for (int i = 0; i &lt; b.getSize(); i++) {
+        valueB = valueB * 2;
+        if (b[i]) {
+            valueB = valueB + 1;
+        }
+    }
+    if (valueB &gt; valueA) {
+        return b;
+    }
+    return a;
+}</code></pre></div></section></section><section class="question" id="practice-b3-complete"><p class="question-label">Complete the function</p><h3>printValue&lt;Binary&gt; (B3-01)</h3><p>The header declares <code>template &lt;&gt; void printValue&lt;Binary&gt;(const Binary&amp; value);</code>. Write it in <code>B_3.cpp</code>: print <code>Binary: </code>, the bits, a space and the decimal value in brackets, then <code>endl</code>.</p><p><strong>Note:</strong> this function is solved on the <a href="examples.html#ex-b3-01">Examples page</a>. Try it without looking back.</p><p><em>Hint: copy the two lines of the declaration first.</em></p><section class="reveal" data-component="practice-reveal" id="practice-b3-complete-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b3-complete-solution" class="reveal__body" data-practice-solution hidden><pre data-component="cpp-highlight"><code>#include &quot;Templates.h&quot;
+
+// For a Binary, print the bits and the decimal value, for example: Binary: 0101 (5)
+template &lt;&gt;
+void printValue&lt;Binary&gt;(const Binary&amp; value) {
+    int decimal = 0;
+    for (int i = 0; i &lt; value.getSize(); i++) {
+        decimal = decimal * 2;
+        if (value[i]) {
+            decimal = decimal + 1;
+        }
+    }
+    cout &lt;&lt; &quot;Binary: &quot; &lt;&lt; value &lt;&lt; &quot; (&quot; &lt;&lt; decimal &lt;&lt; &quot;)&quot; &lt;&lt; endl;
+}</code></pre><p>The expected output:</p><pre>Value: 5
+Value: 2.5
+Value: embedded
+Value: c
+Binary: 0101 (5)
+Binary: 11111111 (255)</pre></div></section></section><section class="question" id="practice-b3-trace"><p class="question-label">Trace</p><h3>countTrue from the third node (B3-06)</h3><p>The list is <code>000 -&gt; 0011 -&gt; 1101 -&gt; 0101</code>. Trace <code>countTrue&lt;Binary&gt;</code> from the third node: for each node, the true bits found and <code>count</code> after it.</p><p><em>Hint: the walk ends at NULL, not at the head.</em></p><section class="reveal" data-component="practice-reveal" id="practice-b3-trace-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b3-trace-solution" class="reveal__body" data-practice-solution hidden><table class="attribute-table"><thead><tr><th scope="col">Node</th><th scope="col">True bits</th><th scope="col"><code>count</code> after</th></tr></thead><tbody><tr><td><code>1101</code></td><td>3</td><td>3</td></tr><tr><td><code>0101</code></td><td>2</td><td>5</td></tr></tbody></table><p>Then <code>curr</code> is <code>NULL</code> and it returns 5:</p><pre>Node&lt;int&gt; chain 0 3 0 -2: 2 not zero
+Empty: 0 true bits
+000 -&gt; 0011 -&gt; 1101 -&gt; 0101: 7 true bits
+from the third node: 5 true bits</pre></div></section></section><section class="question" id="practice-b3-predict"><p class="question-label">Predict the output</p><h3>addition with a specialisation that throws (B3-04)</h3><p>The general <code>addition</code> returns <code>v1 + v2</code> with the type of the first value. The <code>Binary</code> version throws <code>&quot;Cannot add two binary strings&quot;</code>. Predict the five lines:</p><pre data-component="cpp-highlight"><code>int main() {
+    cout &lt;&lt; addition(3, 4.5) &lt;&lt; endl;
+    cout &lt;&lt; addition(2.5, 3) &lt;&lt; endl;
+    cout &lt;&lt; addition(string(&quot;10&quot;), string(&quot;01&quot;)) &lt;&lt; endl;
+
+    Binary a(&quot;0101&quot;);
+    Binary b(&quot;0011&quot;);
+    try {
+        Binary sum = addition(a, b);
+        cout &lt;&lt; sum &lt;&lt; endl;
+    } catch (const char* msg) {
+        cout &lt;&lt; &quot;Caught: &quot; &lt;&lt; msg &lt;&lt; endl;
+    }
+    cout &lt;&lt; &quot;a and b are unchanged: &quot; &lt;&lt; a &lt;&lt; &quot; &quot; &lt;&lt; b &lt;&lt; endl;
+    return 0;
+}</code></pre><p><em>Hint: the result has the type of the first argument; + on two strings joins them.</em></p><section class="reveal" data-component="practice-reveal" id="practice-b3-predict-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b3-predict-solution" class="reveal__body" data-practice-solution hidden><pre>7
+5.5
+1001
+Caught: Cannot add two binary strings
+a and b are unchanged: 0101 0011</pre><p><code>addition(3, 4.5)</code> returns an <code>int</code>, so 7.5 becomes 7. Two strings are joined: <code>&quot;10&quot; + &quot;01&quot;</code> is <code>1001</code>.</p></div></section></section><section class="question" id="practice-b3-bug"><p class="question-label">Find the bug</p><h3>A specialisation that does not link</h3><section class="block block--caution"><p class="block__label">This code has a bug</p><p>The start of a B3-06 answer, in the <code>B_3.cpp</code> that <code>Templates.h</code> includes:</p><pre data-component="cpp-highlight"><code>template &lt;&gt;
+int countTrue&lt;Binary&gt;(Node&lt;Binary&gt;* head) {</code></pre></section><p><strong>Note:</strong> this function is solved on the <a href="theory.html#b3-specialization">Theory page</a>. Find the bug before you look back. The link step stops with: <code>main.cpp:11: multiple definition of `int countTrue&lt;Binary&gt;(Node&lt;Binary&gt;*)&#x27;; /tmp/cc6ZuMlE.o:B_3.cpp:11: first defined here</code>. What is missing?</p><section class="reveal" data-component="practice-reveal" id="practice-b3-bug-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="practice-b3-bug-solution" class="reveal__body" data-practice-solution hidden><p>The keyword <code>inline</code>. <code>Templates.h</code> includes <code>B_3.cpp</code>, so the body is compiled in <code>main.cpp</code> and again in <code>B_3.cpp</code>. <code>inline</code> allows one identical copy in each file.</p><p>The working version:</p><pre data-component="cpp-highlight"><code>#ifndef B_3_CPP
+#define B_3_CPP
+
+#include &quot;Templates.h&quot;
+
+// For a list of Binary strings, count every true bit in every string.
+// inline: Templates.h includes this file, so this definition is compiled in every
+// .cpp file that includes Templates.h (main.cpp and B_3.cpp). Without inline the
+// link fails with &quot;multiple definition&quot;.
+template &lt;&gt;
+inline int countTrue&lt;Binary&gt;(Node&lt;Binary&gt;* head) {
+    int count = 0;
+    Node&lt;Binary&gt;* curr = head;
+    while (curr != NULL) {
+        Binary&amp; b = curr-&gt;getData();
+        for (int i = 0; i &lt; b.getSize(); i++) {
+            if (b[i]) {
+                count++;
+            }
+        }
+        curr = curr-&gt;next();
+    }
+    return count;
+}
+
+#endif</code></pre></div></section></section></section>
+  </main>
+  <footer class="site-footer"><div class="site-footer__inner">Swift Tuition | COS 110</div></footer>
+</body>
+</html>
