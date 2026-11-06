@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1: Pointers & Dynamic Memory - Examples | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- CodeMirror for interactive playground -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <style>
+        /* DEEP OCEAN THEME - Same as Theory.html */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0ea5e9;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: #f1f5f9;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-hamburger:hover {
+            color: #0ea5e9;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page-header {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .page-header h1 {
+            color: #0ea5e9;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+        }
+
+        /* Example Card */
+        .example-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .example-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .example-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .example-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #10b981;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .example-card p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .example-card ul, .example-card ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .example-card li {
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+
+        .example-card code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0c1222;
+            border: 2px solid #1e3a5f;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-block pre {
+            color: #f1f5f9;
+            margin: 0;
+        }
+
+        .code-block code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* Custom Prism syntax highlighting */
+        .token.comment { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        /* Callouts */
+        .callout-warning {
+            background: #2d1414;
+            border-left: 5px solid #ef4444;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-warning strong {
+            color: #ef4444;
+        }
+
+        .callout-success {
+            background: #142d1f;
+            border-left: 5px solid #10b981;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-success strong {
+            color: #10b981;
+        }
+
+        .callout-note {
+            background: #0c1e2d;
+            border-left: 5px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-note strong {
+            color: #0ea5e9;
+        }
+
+        .callout-experiment {
+            background: #1f1a2e;
+            border-left: 5px solid #a78bfa;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-experiment strong {
+            color: #a78bfa;
+        }
+
+        /* Code Playground */
+        .code-playground {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .playground-header {
+            background: #0f172a;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .playground-title::before {
+            content: "⚡";
+            font-size: 1.2rem;
+        }
+
+        .playground-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .run-btn::before {
+            content: "▶";
+            font-size: 1rem;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .loading-indicator {
+            color: #eab308;
+            font-size: 0.85rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading-indicator.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #475569;
+            border-top-color: #eab308;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .playground-editor {
+            background: #1e293b;
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 300px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            background: #1e293b !important;
+        }
+
+        .CodeMirror-gutters {
+            background: #0f172a !important;
+            border-right: 1px solid #334155;
+        }
+
+        .playground-output {
+            background: #0f172a;
+            border-top: 1px solid #334155;
+        }
+
+        .output-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .output-header::before {
+            content: "▶";
+            color: #10b981;
+        }
+
+        .output-content {
+            padding: 1.5rem;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .output-text {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .output-success {
+            color: #10b981;
+        }
+
+        .output-error {
+            color: #ef4444;
+        }
+
+        .output-info {
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-wrap: wrap;
+            }
+
+            .nav-brand {
+                gap: 0.75rem;
+            }
+
+            .nav-logo {
+                height: 38px;
+                width: 38px;
+            }
+
+            .nav-brand-company {
+                font-size: 0.6rem;
+            }
+
+            .nav-brand-title {
+                font-size: 0.9rem;
+            }
+
+            .nav-brand-subtitle {
+                font-size: 0.6rem;
+            }
+
+            .nav-hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0;
+                margin-top: 1rem;
+                background: #1e293b;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu li {
+                width: 100%;
+                border-bottom: 1px solid #334155;
+            }
+
+            .nav-menu li:last-child {
+                border-bottom: none;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: 1rem;
+                border-bottom: none !important;
+            }
+
+            .nav-menu a:hover,
+            .nav-menu a.active {
+                background: #0f172a;
+            }
+
+            .playground-header {
+                padding: 0.875rem 1rem;
+            }
+
+            .playground-title {
+                font-size: 0.875rem;
+            }
+
+            .run-btn, .reset-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .CodeMirror {
+                font-size: 13px;
+            }
+
+            .output-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 1: Pointers & Dynamic Memory</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+            ☰
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Real-World Examples</h1>
+            <p>
+                Here are four complete examples showing pointers and dynamic memory in action. Each example builds on the concepts from Theory with thorough explanations and suggestions for experiments you can try.
+            </p>
+        </div>
+
+        <!-- Example 1: Basic - Student Grade Tracker -->
+        <div class="example-card">
+            <span class="example-number">Example 1</span>
+            <h2>Student Grade Tracker with Pointers</h2>
+
+            <h3>The Scenario</h3>
+            <p>
+                Pieter, a tutor at Swift Tuition, tracks grades for three students: Chantelle, Ayanda, and Mpho. He needs functions that can modify the actual grade variables, not just copies of them. This is where pointers become useful.
+            </p>
+
+            <h3>The Problem We're Solving</h3>
+            <p>
+                When you pass a variable to a function normally (by value), C++ creates a <em>copy</em> of that variable for the function to use. Any changes the function makes only affect the copy, not your original variable. Look at what happens here:
+            </p>
+
+            <div class="code-block"><pre><code class="language-cpp">void tryToAddBonus(int grade, int bonus) {
+    grade = grade + bonus;  // Only changes the local copy!
+}
+
+int main() {
+    int chantelle = 75;
+    tryToAddBonus(chantelle, 5);
+    // chantelle is STILL 75! The function got a copy.
+}</code></pre></div>
+
+            <p>
+                The <code>grade</code> parameter inside the function is a completely separate variable from <code>chantelle</code>. When the function ends, the copy disappears, and our original <code>chantelle</code> variable remains unchanged at 75.
+            </p>
+
+            <p>
+                To actually modify the original variable, we need to pass its <strong>address</strong> (where it lives in memory) instead of its value. That's what pointers let us do.
+            </p>
+
+            <h3>The Solution: Using Pointers</h3>
+            <p>
+                Here's how we solve this with pointers. The function receives a pointer (an address), then uses the dereference operator <code>*</code> to access and modify the value at that address:
+            </p>
+
+            <div class="code-playground" id="playground1">
+                <div class="playground-header">
+                    <div class="playground-title">Complete Example: Grade Tracker</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground1')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground1')">Reset</button>
+                        <div class="loading-indicator" id="loading1">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor1">#include <iostream>
+using namespace std;
+
+// Apply a bonus to a grade using a pointer
+void applyBonus(int *gradePtr, int bonus) {
+    *gradePtr = *gradePtr + bonus;
+}
+
+// Try to apply bonus without pointer (won't work!)
+void brokenBonus(int grade, int bonus) {
+    grade = grade + bonus;
+}
+
+int main() {
+    // Pieter is tracking three students' grades
+    int chantelle = 75;
+    int ayanda = 82;
+    int mpho = 68;
+
+    cout << "Initial Grades:" << endl;
+    cout << "Chantelle: " << chantelle << endl;
+    cout << "Ayanda: " << ayanda << endl;
+    cout << "Mpho: " << mpho << endl;
+
+    // Apply +5 bonus for class participation
+    cout << "\nApplying +5 participation bonus..." << endl;
+    applyBonus(&chantelle, 5);
+    applyBonus(&ayanda, 5);
+    applyBonus(&mpho, 5);
+
+    cout << "\nGrades after bonus (using pointers):" << endl;
+    cout << "Chantelle: " << chantelle << endl;
+    cout << "Ayanda: " << ayanda << endl;
+    cout << "Mpho: " << mpho << endl;
+
+    // What happens without pointers?
+    cout << "\nTrying to add +10 WITHOUT pointers:" << endl;
+    brokenBonus(chantelle, 10);
+    cout << "Chantelle's grade: " << chantelle << endl;
+    cout << "(No change! The function only modified a copy.)" << endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>How This Code Works</h3>
+            <p>Let's break down the <code>applyBonus</code> function line by line:</p>
+            <ol>
+                <li>
+                    <strong>Function signature:</strong> <code>void applyBonus(int *gradePtr, int bonus)</code>
+                    <br>The <code>int *gradePtr</code> parameter means "gradePtr is a pointer to an int". It will store the memory address of an integer variable.
+                </li>
+                <li>
+                    <strong>Calling the function:</strong> <code>applyBonus(&chantelle, 5);</code>
+                    <br>The <code>&</code> operator gets the address of <code>chantelle</code>. So we're passing the <em>location</em> where chantelle lives in memory, not its value.
+                </li>
+                <li>
+                    <strong>Modifying through the pointer:</strong> <code>*gradePtr = *gradePtr + bonus;</code>
+                    <br>The <code>*gradePtr</code> on the left means "the value at the address stored in gradePtr". We read the current value (<code>*gradePtr</code> on the right), add the bonus, and write it back to the same memory location. This changes the original <code>chantelle</code> variable.
+                </li>
+            </ol>
+
+            <div class="callout-note">
+                <strong>Swift Note:</strong> Think of pointers like house addresses. If I want to paint your house, you give me your address (&chantelle), I go to that location (*gradePtr), and make changes there. The changes happen at your actual house, not at a photograph of it.
+            </div>
+
+            <h3>Things to Experiment With</h3>
+            <div class="callout-experiment">
+                <strong>Experiment 1:</strong> Change the <code>applyBonus</code> function to use <code>+=</code> instead of <code>= ... +</code>. Does <code>*gradePtr += bonus;</code> work the same way? Try it!
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 2:</strong> What happens if you forget the <code>&</code> when calling the function? Try changing <code>applyBonus(&chantelle, 5)</code> to <code>applyBonus(chantelle, 5)</code>. Read the compiler error carefully - it's telling you about a type mismatch.
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 3:</strong> Add a <code>cout</code> statement inside <code>applyBonus</code> to print the address: <code>cout << "Address: " << gradePtr << endl;</code>. Then in <code>main</code>, print <code>&chantelle</code>. Are they the same? They should be - the function received the exact address of chantelle.
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 4:</strong> Create a function <code>void resetGrade(int *gradePtr)</code> that sets a grade to 0. Call it with one of the student grades. Confirm it modifies the original variable.
+            </div>
+        </div>
+
+        <!-- Example 2: Intermediate - Dynamic Student Record -->
+        <div class="example-card">
+            <span class="example-number">Example 2</span>
+            <h2>Dynamic Student Record System</h2>
+
+            <h3>The Scenario</h3>
+            <p>
+                Trevor runs a small tutoring business. Students enroll and unenroll at different times, so he can't know in advance how many student records he'll need. He needs to create student records dynamically (while the program is running) and clean them up when students complete their courses.
+            </p>
+
+            <h3>Why Dynamic Memory?</h3>
+            <p>
+                So far, all our variables have been <strong>automatic</strong> (also called <strong>stack variables</strong>). They're created when we declare them and destroyed automatically when they go out of scope:
+            </p>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int student1 = 85;  // Created here
+    int student2 = 78;  // Created here
+    // ...
+}  // Both destroyed here when main() ends</code></pre></div>
+
+            <p>
+                This works fine when you know exactly how many variables you need. But what if the number changes while the program runs? What if Trevor's business grows from 2 students to 50? We can't declare 50 variables - we need to create variables <strong>at runtime</strong> based on how many students actually enroll.
+            </p>
+
+            <p>
+                That's where <strong>dynamic memory allocation</strong> comes in. The <code>new</code> operator creates variables on the <strong>heap</strong> (a separate memory area), and those variables live until you explicitly destroy them with <code>delete</code>.
+            </p>
+
+            <h3>The Complete Lifecycle</h3>
+
+            <div class="code-playground" id="playground2">
+                <div class="playground-header">
+                    <div class="playground-title">Complete Example: Dynamic Records</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground2')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground2')">Reset</button>
+                        <div class="loading-indicator" id="loading2">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor2">#include <iostream>
+using namespace std;
+
+int main() {
+    // Trevor's tutoring business - creating student records
+
+    cout << "=== Swift Tuition Student Records ===" << endl;
+    cout << endl;
+
+    // Student 1: Annelie enrolls
+    cout << "New student enrollment: Annelie" << endl;
+    int *annelieScore = new int;
+    *annelieScore = 0;
+    cout << "Created record for Annelie" << endl;
+    cout << "Initial score: " << *annelieScore << endl;
+
+    // Annelie completes first assignment
+    *annelieScore = 85;
+    cout << "After Assignment 1: " << *annelieScore << endl;
+
+    // Student 2: Sipho enrolls
+    cout << "\nNew student enrollment: Sipho" << endl;
+    int *siphoScore = new int(78);
+    cout << "Created record for Sipho" << endl;
+    cout << "Sipho's score: " << *siphoScore << endl;
+
+    // Display both students
+    cout << "\n=== Current Students ===" << endl;
+    cout << "Annelie: " << *annelieScore << endl;
+    cout << "Sipho: " << *siphoScore << endl;
+
+    // Annelie completes the course
+    cout << "\nAnnelie has completed the course!" << endl;
+    cout << "Archiving record..." << endl;
+    delete annelieScore;
+    annelieScore = NULL;
+
+    // Try to check if pointer is safe to use
+    if (annelieScore == NULL) {
+        cout << "Annelie's record safely archived." << endl;
+    }
+
+    // Sipho still active
+    cout << "\nActive students:" << endl;
+    cout << "Sipho: " << *siphoScore << endl;
+
+    // Clean up remaining record
+    delete siphoScore;
+    siphoScore = NULL;
+
+    cout << "\nAll records archived." << endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Understanding Each Step</h3>
+
+            <h4>Step 1: Creating with <code>new</code></h4>
+            <p>
+                <code>int *annelieScore = new int;</code>
+            </p>
+            <p>
+                This line does three things:
+            </p>
+            <ol>
+                <li><code>new int</code> asks the operating system for enough memory to store one integer on the heap</li>
+                <li>The OS finds a free spot in memory and reserves it for us</li>
+                <li>The address of that memory location is returned and stored in <code>annelieScore</code></li>
+            </ol>
+            <p>
+                After this line, <code>annelieScore</code> points to a valid integer in memory, but that integer contains garbage (whatever was in that memory before). That's why we immediately set it: <code>*annelieScore = 0;</code>
+            </p>
+
+            <h4>Step 2: Creating with initialization</h4>
+            <p>
+                <code>int *siphoScore = new int(78);</code>
+            </p>
+            <p>
+                This is a shortcut that combines allocation and initialization. It creates a new integer on the heap AND sets it to 78 in one line. This is better than doing it in two steps because there's never a moment where the memory contains garbage.
+            </p>
+
+            <h4>Step 3: Accessing the value</h4>
+            <p>
+                <code>cout << *annelieScore;</code>
+            </p>
+            <p>
+                Remember: <code>annelieScore</code> stores an address. To access the <em>value</em> at that address, we use the dereference operator <code>*</code>. Without it, we'd print the address (a hexadecimal number like <code>0x7ffd5e3c4a2c</code>), not the score.
+            </p>
+
+            <h4>Step 4: Deallocating with <code>delete</code></h4>
+            <p>
+                <code>delete annelieScore;</code>
+            </p>
+            <p>
+                This tells the operating system "I'm done with the memory at this address - you can use it for something else now." The memory is freed and returned to the OS. However, <code>annelieScore</code> still contains the old address! This is dangerous - it's now a <strong>dangling pointer</strong> pointing to memory we don't own anymore.
+            </p>
+
+            <h4>Step 5: Setting to NULL</h4>
+            <p>
+                <code>annelieScore = NULL;</code>
+            </p>
+            <p>
+                This makes the pointer "safe". NULL is a special value (0) that means "this pointer doesn't point to anything". Now if we accidentally try to use <code>annelieScore</code> later, we can check <code>if (annelieScore == NULL)</code> and avoid accessing invalid memory. Dereferencing a NULL pointer will crash immediately (which is actually good - it shows us there's a bug), while dereferencing a dangling pointer might appear to work but cause random, hard-to-find bugs later.
+            </p>
+
+            <div class="callout-success">
+                <strong>Best Practice:</strong> ALWAYS set pointers to NULL after deleting them. This prevents dangling pointer bugs. The pattern is: <code>delete ptr; ptr = NULL;</code>
+            </div>
+
+            <div class="callout-warning">
+                <strong>Memory Leak Warning:</strong> If you create something with <code>new</code> but forget to <code>delete</code> it, that memory stays allocated even after your program no longer has access to it. This is called a <strong>memory leak</strong>. If it happens in a loop, your program will slowly consume more and more memory until it crashes or slows down the system.
+            </div>
+
+            <h3>Things to Experiment With</h3>
+
+            <div class="callout-experiment">
+                <strong>Experiment 1:</strong> Before deleting <code>annelieScore</code>, add a line that prints its address: <code>cout << "Address: " << annelieScore << endl;</code>. Then after setting it to NULL, print it again. You'll see it change from something like <code>0x55a2b3c4d5e6</code> to <code>0</code> (which is NULL).
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 2:</strong> What happens if you comment out the <code>delete siphoScore;</code> line? The program still works, but you've created a memory leak. The memory is allocated but never freed. Try creating 1000 student records in a loop without deleting any - you'll see memory usage climb (though you'd need millions to actually run out of memory on modern systems).
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 3:</strong> What happens if you try to use a pointer after deleting it? Comment out <code>annelieScore = NULL;</code>, then try to access <code>*annelieScore</code> after the delete. This is a dangling pointer - the results are undefined. It might work, might crash, or might give you garbage values.
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 4:</strong> What happens if you delete the same pointer twice? Try adding another <code>delete siphoScore;</code> after the first one (before setting to NULL). This is called a <strong>double delete</strong> and usually causes a crash. But if you set to NULL after the first delete, the second delete is safe (deleting NULL does nothing).
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 5:</strong> Create a third student record without using a pointer variable at all: <code>new int(90);</code> with no assignment. Can you access this value later? No! You allocated memory but lost the address immediately. This is an instant memory leak. The only way to access dynamically allocated memory is through a pointer variable that stores its address.
+            </div>
+        </div>
+
+        <!-- Example 3: Advanced - Concert Ticket System -->
+        <div class="example-card">
+            <span class="example-number">Example 3</span>
+            <h2>Concert Ticket Allocation System</h2>
+
+            <h3>The Scenario</h3>
+            <p>
+                Karabo is organizing a Maître Gims concert in Johannesburg. VIP ticket sales open at 9 AM, and she doesn't know how many will sell until that moment. Once she knows the number, she needs to generate sequential ticket numbers, calculate revenue, and manage the allocation. This requires a <strong>dynamic array</strong> - an array whose size isn't known until runtime.
+            </p>
+
+            <h3>Regular Arrays vs Dynamic Arrays</h3>
+            <p>
+                You're familiar with regular arrays from COS 132:
+            </p>
+
+            <div class="code-block"><pre><code class="language-cpp">int tickets[5];  // Size must be a constant!
+// You CANNOT do: int tickets[numVIP]; if numVIP is a variable</code></pre></div>
+
+            <p>
+                In C++98, array sizes must be known at compile time. They can't be variables that change while the program runs. But what if <code>numVIP</code> is entered by the user? We need to allocate an array <em>after</em> we know the size. That's what <code>new[]</code> does - it creates an array on the heap with a size determined at runtime.
+            </p>
+
+            <h3>The Complete Example</h3>
+
+            <div class="code-playground" id="playground3">
+                <div class="playground-header">
+                    <div class="playground-title">Complete Example: Ticket System</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground3')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground3')">Reset</button>
+                        <div class="loading-indicator" id="loading3">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor3">#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "=== Maitre Gims Concert - VIP Tickets ===" << endl;
+    cout << "Venue: Johannesburg" << endl;
+    cout << endl;
+
+    // Karabo checks how many VIP tickets sold
+    int numVIP = 5;
+    cout << "VIP tickets sold: " << numVIP << endl;
+
+    // Allocate array for ticket numbers
+    int *ticketNumbers = new int[numVIP];
+
+    // Assign ticket numbers (starting from 1001)
+    cout << "\nGenerating ticket numbers..." << endl;
+    for (int i = 0; i < numVIP; i++) {
+        ticketNumbers[i] = 1001 + i;
+    }
+
+    // Display all tickets
+    cout << "\nVIP Ticket Numbers:" << endl;
+    for (int i = 0; i < numVIP; i++) {
+        cout << "  Seat " << (i+1) << ": Ticket #"
+             << ticketNumbers[i] << endl;
+    }
+
+    // Calculate statistics
+    int firstTicket = ticketNumbers[0];
+    int lastTicket = ticketNumbers[numVIP - 1];
+    int totalRevenue = numVIP * 1500;
+
+    cout << "\n=== Summary ===" << endl;
+    cout << "First ticket: #" << firstTicket << endl;
+    cout << "Last ticket: #" << lastTicket << endl;
+    cout << "Total VIP tickets: " << numVIP << endl;
+    cout << "Revenue (R1500 each): R" << totalRevenue << endl;
+
+    // Clean up the array
+    delete [] ticketNumbers;
+    ticketNumbers = NULL;
+
+    cout << "\nTicket system closed." << endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Understanding Dynamic Arrays</h3>
+
+            <h4>Allocation: <code>new[]</code> with square brackets</h4>
+            <p>
+                <code>int *ticketNumbers = new int[numVIP];</code>
+            </p>
+            <p>
+                This allocates a <em>block</em> of memory large enough for <code>numVIP</code> integers. If <code>numVIP</code> is 5, it allocates space for 5 consecutive integers in memory. The address of the first integer is stored in <code>ticketNumbers</code>. Even though <code>ticketNumbers</code> is a pointer to a single int, it now points to the first element of an array.
+            </p>
+
+            <p>
+                Memory layout after <code>new int[5]</code>:
+            </p>
+            <div class="code-block"><pre>ticketNumbers → [int][int][int][int][int]
+                 ↑                        ↑
+              index 0                  index 4
+
+The pointer stores the address of the first element.
+All 5 integers are consecutive in memory.</pre></div>
+
+            <h4>Accessing elements: Same as regular arrays</h4>
+            <p>
+                <code>ticketNumbers[i] = 1001 + i;</code>
+            </p>
+            <p>
+                Even though <code>ticketNumbers</code> is a pointer, we can use array notation <code>[]</code> to access elements. Under the hood, <code>ticketNumbers[i]</code> is actually shorthand for <code>*(ticketNumbers + i)</code> - the compiler calculates the address of the i-th element and dereferences it. But you can just think of it as a normal array. The syntax is identical.
+            </p>
+
+            <h4>Important: You MUST remember the size</h4>
+            <p>
+                Unlike regular arrays, dynamic arrays don't "remember" their size. The pointer <code>ticketNumbers</code> just stores an address - it has no idea how many elements you allocated. That's why we keep <code>numVIP</code> in a separate variable. If you lose <code>numVIP</code>, you have no way to know how large the array is, and you risk accessing memory beyond the array's end (buffer overflow).
+            </p>
+
+            <h4>Deallocation: <code>delete[]</code> with square brackets</h4>
+            <p>
+                <code>delete [] ticketNumbers;</code>
+            </p>
+            <p>
+                This is IMPORTANT. When you allocate an array with <code>new[]</code>, you MUST deallocate with <code>delete[]</code> (with the brackets). Using plain <code>delete</code> only frees the first element, leaving the other 4 integers allocated - that's a memory leak. The brackets tell C++ "this is an array, free all elements."
+            </p>
+
+            <div class="callout-warning">
+                <strong>⚠️ Common Mistake:</strong> Using <code>delete</code> instead of <code>delete[]</code> on an array. If you allocated with <code>new[]</code>, you MUST use <code>delete[]</code>. If you allocated with <code>new</code> (single object), use <code>delete</code>. Mismatching causes undefined behavior (usually a crash or memory corruption).
+            </div>
+
+            <h3>Why This Pattern Matters</h3>
+            <p>
+                Dynamic arrays are everywhere in real programs:
+            </p>
+            <ul>
+                <li><strong>User input:</strong> "How many students are enrolling?" - you don't know until the user tells you</li>
+                <li><strong>File processing:</strong> "How many lines are in this file?" - you don't know until you read it</li>
+                <li><strong>Network data:</strong> "How many packets will arrive?" - depends on network conditions</li>
+                <li><strong>Data structures:</strong> Linked lists, trees, and graphs all use dynamic memory to grow and shrink as needed</li>
+            </ul>
+
+            <p>
+                This is why you'll use <code>new</code> and <code>delete</code> constantly in COS 110, especially when we cover data structures in Units 10-11 (linked lists, stacks, queues).
+            </p>
+
+            <h3>Things to Experiment With</h3>
+
+            <div class="callout-experiment">
+                <strong>Experiment 1:</strong> Change <code>numVIP</code> to different values (try 1, 10, 100). Notice how the same code works regardless of the array size. That's the power of dynamic allocation - the size is a runtime decision.
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 2:</strong> What happens if you try to access <code>ticketNumbers[numVIP]</code>? This is one position past the end of the array (valid indices are 0 to numVIP-1). Try adding <code>cout << ticketNumbers[numVIP] << endl;</code>. It might print garbage, might crash, or might appear to work - this is undefined behavior. The program has no bounds checking.
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 3:</strong> What happens if you forget <code>delete[]</code>? Comment out the delete line and run the program. It still works, but you've leaked memory. For a small program that runs once, this doesn't matter (the OS reclaims all memory when the program exits). But if this was in a loop running thousands of times, you'd slowly consume all available memory.
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 4:</strong> What happens if you use <code>delete</code> instead of <code>delete[]</code>? Change <code>delete [] ticketNumbers</code> to <code>delete ticketNumbers</code> (no brackets). The program might crash, might appear to work, or might cause silent memory corruption. This is undefined behavior - the outcome depends on your compiler and system. ALWAYS match <code>new[]</code> with <code>delete[]</code>.
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 5:</strong> Can you create a 2D array dynamically? Try allocating an array of pointers: <code>int **grid = new int*[3];</code> then in a loop, allocate each row: <code>grid[i] = new int[4];</code>. You now have a 3x4 grid. Don't forget to delete each row and then the array of pointers!
+            </div>
+
+            <div class="callout-experiment">
+                <strong>Experiment 6:</strong> Add code that lets the user input <code>numVIP</code> with <code>cin</code>. Now the array size is truly determined at runtime by user input. This is the most common use case for dynamic arrays.
+            </div>
+        </div>
+
+        <!-- Example 4: Find the Bug! -->
+        <div class="example-card">
+            <span class="example-number">Example 4</span>
+            <h2>Find the Bug: Broken Inventory System</h2>
+
+            <h3>The Challenge</h3>
+            <p>
+                This program is supposed to track inventory items and their quantities at a store managed by Brandon, Themba, Nicole, and Lesedi. The code compiles without errors, but it has multiple memory management problems that cause crashes, leaks, or undefined behavior.
+            </p>
+
+            <p>
+                Your task: Run the code, observe what happens, then identify ALL the memory-related bugs. There are at least 3 different problems. Don't look at the solution until you've tried debugging it yourself!
+            </p>
+
+            <div class="callout-note">
+                <strong>Hint:</strong> Think about the full lifecycle of dynamic memory:
+                <ul style="margin-top: 0.5rem;">
+                    <li>Is everything allocated with <code>new</code> properly deleted?</li>
+                    <li>Are we using the correct delete operator (<code>delete</code> vs <code>delete[]</code>)?</li>
+                    <li>Do we ever lose access to allocated memory?</li>
+                    <li>Do we reassign pointers without cleaning up what they previously pointed to?</li>
+                </ul>
+            </div>
+
+            <h3>The Buggy Code</h3>
+            <div class="code-playground" id="playground4">
+                <div class="playground-header">
+                    <div class="playground-title">Debug This: Inventory System</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground4')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground4')">Reset</button>
+                        <div class="loading-indicator" id="loading4">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor4">#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "=== Inventory Management System ===" << endl;
+
+    int numItems = 3;
+    int *quantities = new int[numItems];
+
+    quantities[0] = 50;
+    quantities[1] = 30;
+    quantities[2] = 75;
+
+    cout << "Initial Inventory:" << endl;
+    for (int i = 0; i < numItems; i++) {
+        cout << "  Item " << (i+1) << ": "
+             << quantities[i] << " units" << endl;
+    }
+
+    int *newItem = new int;
+    *newItem = 100;
+
+    cout << "\nAdding new item..." << endl;
+    quantities = newItem;
+
+    cout << "New item added: " << *quantities << " units" << endl;
+
+    delete quantities;
+
+    cout << "\nSystem shutting down..." << endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Debugging Strategy</h3>
+            <p>
+                Before revealing the answer, try these debugging steps:
+            </p>
+            <ol>
+                <li>Run the code and observe the output. Does it crash? Does it complete?</li>
+                <li>Trace the memory allocations: What gets allocated with <code>new</code>?</li>
+                <li>Trace the pointer assignments: What do <code>quantities</code> and <code>newItem</code> point to at each stage?</li>
+                <li>Trace the deallocations: What gets deleted? What doesn't?</li>
+                <li>Check if the delete operators match the allocations (array vs single object)</li>
+            </ol>
+
+            <h3>The Bugs (Spoilers Ahead!)</h3>
+            <details style="margin-top: 1.5rem; padding: 1rem; background: #1e293b; border-radius: 8px; border: 1px solid #334155;">
+                <summary style="cursor: pointer; color: #0ea5e9; font-weight: 600; margin-bottom: 1rem;">Click to reveal the bugs (try debugging first!)</summary>
+                <div style="margin-top: 1rem; color: #cbd5e1;">
+                    <h4 style="color: #ef4444; margin-bottom: 0.75rem;">Bug 1: Memory Leak (Lost Array)</h4>
+                    <p style="margin-bottom: 1rem;">
+                        <strong>Location:</strong> Line 24 - <code>quantities = newItem;</code>
+                    </p>
+                    <p style="margin-bottom: 1rem;">
+                        <strong>What's wrong:</strong> The <code>quantities</code> pointer originally points to an array of 3 integers (allocated on line 9). When we reassign it to point to <code>newItem</code>, we lose the address of the original array. The 3 integers are still allocated in memory, but we have no way to access them anymore - the only pointer that knew their address now points to something else.
+                    </p>
+                    <p style="margin-bottom: 1rem;">
+                        <strong>Why it's a problem:</strong> Those 3 integers will never be freed. They're <em>leaked memory</em> - allocated but inaccessible. In a long-running program or a loop, this would slowly consume all available memory.
+                    </p>
+                    <p style="margin-bottom: 1rem;">
+                        <strong>Visual representation:</strong>
+                    </p>
+<div class="code-block"><pre>After line 9:
+quantities → [50][30][75]    (array of 3 ints)
+
+After line 21:
+newItem → [100]              (single int)
+
+After line 24:
+quantities → [100]           (now points to newItem's location)
+             [50][30][75]    (orphaned! no pointer to them)
+</pre></div>
+
+                    <h4 style="color: #ef4444; margin-top: 1.5rem; margin-bottom: 0.75rem;">Bug 2: Wrong Delete Operator</h4>
+                    <p style="margin-bottom: 1rem;">
+                        <strong>Location:</strong> Line 28 - <code>delete quantities;</code>
+                    </p>
+                    <p style="margin-bottom: 1rem;">
+                        <strong>What's wrong:</strong> After the reassignment, <code>quantities</code> points to the single integer originally allocated by <code>newItem</code>. That integer was allocated with <code>new</code> (not <code>new[]</code>), so using <code>delete</code> (not <code>delete[]</code>) is actually correct <em>at this point</em>. However, the original intent was probably to delete the array, which would require <code>delete[]</code>.
+                    </p>
+                    <p style="margin-bottom: 1rem;">
+                        But there's a deeper issue: we're deleting <code>quantities</code>, which now points to the same memory as <code>newItem</code>. This means <code>newItem</code> is now a dangling pointer (points to freed memory). If we tried to use <code>newItem</code> after this, we'd access invalid memory.
+                    </p>
+
+                    <h4 style="color: #ef4444; margin-top: 1.5rem; margin-bottom: 0.75rem;">Bug 3: Incomplete Cleanup</h4>
+                    <p style="margin-bottom: 1rem;">
+                        <strong>What's wrong:</strong> We need to free <em>both</em> allocations: the original array AND the single integer. But because we lost the pointer to the array (bug #1), we can't free it. Even if we delete <code>quantities</code> (which frees the single int), the array is still leaked.
+                    </p>
+                    <p style="margin-bottom: 1rem;">
+                        Additionally, we never set pointers to NULL after deleting, so they're dangling pointers.
+                    </p>
+
+                    <h4 style="color: #10b981; margin-top: 1.5rem; margin-bottom: 0.75rem;">The Correct Approach</h4>
+                    <p style="margin-bottom: 0.5rem;">
+                        <strong>Option 1:</strong> Delete the array before reassigning
+                    </p>
+<div class="code-block"><pre><code class="language-cpp">// Display initial inventory
+cout << "Initial Inventory:" << endl;
+for (int i = 0; i < numItems; i++) {
+    cout << "  Item " << (i+1) << ": "
+         << quantities[i] << " units" << endl;
+}
+
+// Clean up the array BEFORE reassigning the pointer
+delete [] quantities;
+quantities = NULL;
+
+// Now create the new item
+int *newItem = new int;
+*newItem = 100;
+quantities = newItem;  // Safe now - we freed the old memory
+
+cout << "\nNew item added: " << *quantities << " units" << endl;
+
+// Clean up the single integer
+delete quantities;
+quantities = NULL;
+
+cout << "\nSystem shutting down..." << endl;
+</code></pre></div>
+
+                    <p style="margin-top: 1rem; margin-bottom: 0.5rem;">
+                        <strong>Option 2:</strong> Keep both allocations separate (better design)
+                    </p>
+<div class="code-block"><pre><code class="language-cpp">// Display initial inventory
+cout << "Initial Inventory:" << endl;
+for (int i = 0; i < numItems; i++) {
+    cout << "  Item " << (i+1) << ": "
+         << quantities[i] << " units" << endl;
+}
+
+// Create new item with its own pointer
+int *newItem = new int(100);
+cout << "\nNew item added: " << *newItem << " units" << endl;
+
+// Clean up array
+delete [] quantities;
+quantities = NULL;
+
+// Clean up single item
+delete newItem;
+newItem = NULL;
+
+cout << "\nSystem shutting down..." << endl;
+</code></pre></div>
+
+                    <h4 style="color: #0ea5e9; margin-top: 1.5rem; margin-bottom: 0.75rem;">Key Lessons</h4>
+                    <ul style="margin-top: 0.5rem;">
+                        <li style="margin-bottom: 0.75rem;"><strong>Never reassign pointers without freeing the old memory first</strong> - you'll create a memory leak</li>
+                        <li style="margin-bottom: 0.75rem;"><strong>Match your delete operators to your allocations:</strong> <code>new</code> → <code>delete</code>, <code>new[]</code> → <code>delete[]</code></li>
+                        <li style="margin-bottom: 0.75rem;"><strong>Every <code>new</code> needs exactly one <code>delete</code></strong> - no more (double delete), no less (memory leak)</li>
+                        <li style="margin-bottom: 0.75rem;"><strong>Set pointers to NULL after deleting</strong> - makes dangling pointers detectable</li>
+                        <li style="margin-bottom: 0.75rem;"><strong>Keep allocations and deallocations symmetric and clear</strong> - if you allocate in one scope, try to deallocate in the same scope</li>
+                    </ul>
+
+                    <p style="margin-top: 1.5rem; font-style: italic; color: #94a3b8;">
+                        In later units (especially Unit 4), you'll learn about destructors, which automate memory cleanup. But understanding manual memory management with new/delete is essential - you need to know what's happening under the hood.
+                    </p>
+                </div>
+            </details>
+        </div>
+
+        <!-- Navigation to Next Section -->
+        <div style="background: #1e293b; padding: 2rem; border-radius: 12px; margin-top: 3rem; text-align: center; border: 1px solid #334155;">
+            <h3 style="color: #0ea5e9; margin-bottom: 1rem;">Ready for Practice?</h3>
+            <p style="color: #cbd5e1; margin-bottom: 1.5rem;">
+                Now that you've seen complete examples with thorough explanations, test your skills with hands-on practice problems!
+            </p>
+            <a href="Practice.html" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.8rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+                Go to Practice →
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        // Toggle mobile navigation menu
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                const menu = document.getElementById('navMenu');
+                menu.classList.remove('active');
+            });
+        });
+
+        // Store CodeMirror instances and original code
+        const editors = {};
+        const originalCode = {};
+
+        // Initialize CodeMirror editors
+        function initEditor(id, textareaId) {
+            const textarea = document.getElementById(textareaId);
+            if (!textarea) return null;
+
+            originalCode[id] = textarea.value;
+
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+
+            editors[id] = editor;
+            return editor;
+        }
+
+        // Initialize all editors on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            initEditor('playground1', 'editor1');
+            initEditor('playground2', 'editor2');
+            initEditor('playground3', 'editor3');
+            initEditor('playground4', 'editor4');
+        });
+
+        // Run code via Piston API
+        async function runCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const code = editor.getValue();
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+            const runBtn = document.querySelector(`#${playgroundId} .run-btn`);
+            const loadingIndicator = document.getElementById(`loading${playgroundId.replace('playground', '')}`);
+
+            // Show loading state
+            runBtn.disabled = true;
+            loadingIndicator.classList.add('active');
+            outputDiv.className = 'output-text output-info';
+            outputDiv.textContent = 'Compiling and executing your code...';
+
+            try {
+                // Call Piston API
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        stdin: '',
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                // Display results
+                if (result.compile && result.compile.code !== 0) {
+                    // Compilation error
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.innerHTML = `<div class="output-info">❌ Compilation Error:</div>${escapeHtml(result.compile.stderr || result.compile.output)}`;
+                } else if (result.run) {
+                    // Execution output
+                    if (result.run.code === 0) {
+                        // Success
+                        outputDiv.className = 'output-text output-success';
+                        const output = result.run.stdout || result.run.output || '(no output)';
+                        outputDiv.innerHTML = `<div class="output-info">✅ Executed successfully:</div>${escapeHtml(output)}`;
+                    } else {
+                        // Runtime error
+                        outputDiv.className = 'output-text output-error';
+                        const error = result.run.stderr || result.run.output || 'Runtime error';
+                        outputDiv.innerHTML = `<div class="output-info">❌ Runtime Error (exit code ${result.run.code}):</div>${escapeHtml(error)}`;
+                    }
+                } else {
+                    // Unknown error
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.textContent = 'Error: Unable to execute code. Please try again.';
+                }
+
+            } catch (error) {
+                // Network or API error
+                outputDiv.className = 'output-text output-error';
+                outputDiv.innerHTML = `<div class="output-info">❌ Error:</div>Failed to connect to compilation service. Please check your internet connection and try again.`;
+                console.error('Piston API error:', error);
+            } finally {
+                // Hide loading state
+                runBtn.disabled = false;
+                loadingIndicator.classList.remove('active');
+            }
+        }
+
+        // Reset code to original
+        function resetCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+
+            editor.setValue(originalCode[playgroundId]);
+            outputDiv.className = 'output-text output-placeholder';
+            outputDiv.textContent = 'Click "Run Code" to compile and execute...';
+        }
+
+        // Escape HTML for safe display
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 3: Introduction to Classes & Constructors - Examples | COS 110</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Primary Colors */
+            --background-primary: #0f172a;
+            --background-secondary: #1e293b;
+            --background-tertiary: #0c1222;
+
+            /* Accent Colors */
+            --accent-blue: #0ea5e9;
+            --accent-green: #10b981;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+
+            /* Text Colors */
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-code: #10b981;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--background-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            padding-bottom: 4rem;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--background-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--accent-blue);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--accent-blue);
+        }
+
+        .nav-menu a.active {
+            background: var(--accent-green);
+            color: var(--background-primary);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--accent-blue);
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: var(--accent-green);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        code {
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            background: var(--background-tertiary);
+            color: var(--text-code);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: var(--background-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: var(--background-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong {
+            color: var(--accent-blue);
+        }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid var(--accent-red);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong {
+            color: var(--accent-red);
+        }
+
+        .success-box {
+            background: #1a2d1f;
+            border-left: 4px solid var(--accent-green);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong {
+            color: var(--accent-green);
+        }
+
+        .swift-note-box {
+            background: #1f1a2e;
+            border-left: 4px solid #a78bfa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .swift-note-box strong {
+            color: #a78bfa;
+        }
+
+        /* Step Boxes */
+        .step-box {
+            background: rgba(16, 185, 129, 0.05);
+            border-left: 4px solid var(--accent-green);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .step-box h4 {
+            color: var(--accent-green);
+            margin-top: 0;
+        }
+
+        /* Interactive Playground */
+        .playground {
+            background: var(--background-secondary);
+            border: 2px solid var(--accent-green);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 200px;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #0284c7 100%);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4);
+        }
+
+        .playground-output {
+            margin-top: 1rem;
+            background: var(--background-tertiary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .output-header {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.6rem 1rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .output-content {
+            padding: 1rem;
+        }
+
+        .output-text {
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .output-success {
+            color: var(--accent-green);
+        }
+
+        .output-error {
+            color: var(--accent-red);
+        }
+
+        .loading-indicator {
+            display: none;
+            color: var(--accent-yellow);
+            font-weight: 600;
+        }
+
+        .loading-indicator.active {
+            display: block;
+        }
+
+        /* Reveal Buttons */
+        .reveal-btn {
+            background: linear-gradient(135deg, var(--accent-yellow) 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: var(--background-primary);
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--accent-yellow);
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        /* ASCII Diagrams */
+        .ascii-diagram {
+            background: var(--background-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid var(--accent-blue);
+            overflow-x: auto;
+        }
+
+        .ascii-diagram pre {
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+        }
+
+        /* Prism.js Custom Colors */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 3: Introduction to Classes & Constructors</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Examples: Classes & Constructors in Action</h1>
+
+        <p>This page contains worked examples that show you how to apply class concepts in real code. Each example includes a complete solution with step-by-step explanations, followed by experimental suggestions to help you learn by doing.</p>
+
+        <div class="info-box">
+            <strong>How to Use This Page:</strong> Read each example carefully, run the code in the playground, then try the experiments. Use the reveal buttons to check your understanding before moving on.
+        </div>
+
+        <!-- Example 1: Basic Class with Constructors -->
+        <section class="content-card">
+            <h2>Example 1: Building a Simple Class with Multiple Constructors</h2>
+
+            <h3>Problem Statement</h3>
+            <p>Create a <code>BankAccount</code> class that stores an account holder's name, account number, and balance. The class should have:</p>
+            <ul>
+                <li>A default constructor that sets name to "Unknown", account number to 0, and balance to 0.0</li>
+                <li>A parameterized constructor that accepts all three values</li>
+                <li>A display function to show account details</li>
+                <li>Deposit and withdrawal functions with validation</li>
+            </ul>
+
+            <h3>Solution Approach</h3>
+
+            <div class="step-box">
+                <h4>Step 1: Design the Class Structure</h4>
+                <p>We need private data members for name, account number, and balance. Public functions will allow controlled access to modify the balance.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Write Constructors</h4>
+                <p>Use initialization lists for efficiency. The default constructor provides safe default values. The parameterized constructor accepts specific values from the user.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Implement Member Functions</h4>
+                <p>The deposit function adds money (with validation to prevent negative deposits). The withdraw function checks if sufficient funds exist before deducting.</p>
+            </div>
+
+            <h3>Complete Solution</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">🎮 Example 1: BankAccount Class</div>
+                </div>
+
+                <textarea id="editor1">#include <iostream>
+#include <string>
+using namespace std;
+
+class BankAccount {
+private:
+    string accountHolder;
+    int accountNumber;
+    double balance;
+
+public:
+    // Default constructor
+    BankAccount() : accountHolder("Unknown"), accountNumber(0), balance(0.0) {
+        cout << "Default account created" << endl;
+    }
+
+    // Parameterized constructor
+    BankAccount(string name, int accNum, double bal)
+        : accountHolder(name), accountNumber(accNum), balance(bal) {
+        cout << "Account created for " << accountHolder << endl;
+    }
+
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            cout << "Deposited R" << amount << ". New balance: R" << balance << endl;
+        } else {
+            cout << "Invalid deposit amount!" << endl;
+        }
+    }
+
+    void withdraw(double amount) {
+        if (amount <= 0) {
+            cout << "Invalid withdrawal amount!" << endl;
+        } else if (amount > balance) {
+            cout << "Insufficient funds! Current balance: R" << balance << endl;
+        } else {
+            balance -= amount;
+            cout << "Withdrew R" << amount << ". New balance: R" << balance << endl;
+        }
+    }
+
+    void display() const {
+        cout << "----------------------------" << endl;
+        cout << "Account Holder: " << accountHolder << endl;
+        cout << "Account Number: " << accountNumber << endl;
+        cout << "Balance: R" << balance << endl;
+        cout << "----------------------------" << endl;
+    }
+};
+
+int main() {
+    BankAccount acc1;
+    acc1.display();
+
+    BankAccount acc2("Sipho Dlamini", 123456, 5000.0);
+    acc2.display();
+
+    acc2.deposit(1500.0);
+    acc2.withdraw(2000.0);
+    acc2.withdraw(10000.0);
+
+    acc2.display();
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor1', originalCode1)">↺ Reset</button>
+                </div>
+
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div id="loading1" class="loading-indicator">Running...</div>
+                        <div id="output1" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Experiments to Try</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 1:</strong> Remove the default constructor. Can you still create <code>acc1</code> without arguments?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_1')">Show Explanation</button>
+            <div class="answer-section" id="exp1_1">
+                <p><strong>What happens:</strong> Compilation error. Once you define a parameterized constructor, C++ no longer provides a default constructor automatically.</p>
+                <p><strong>Error message:</strong> "no matching function for call to 'BankAccount::BankAccount()'"</p>
+                <p><strong>Fix:</strong> Either keep the default constructor or create <code>acc1</code> with parameters: <code>BankAccount acc1("Unknown", 0, 0.0);</code></p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 2:</strong> Try calling <code>acc2.balance = 10000.0;</code> directly in <code>main()</code>. What happens?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_2')">Show Explanation</button>
+            <div class="answer-section" id="exp1_2">
+                <p><strong>What happens:</strong> Compilation error because <code>balance</code> is private.</p>
+                <p><strong>Why this is important:</strong> Encapsulation protects data from unauthorized access. Users must use <code>deposit()</code> and <code>withdraw()</code>, which include validation.</p>
+                <p><strong>Error message:</strong> "'double BankAccount::balance' is private within this context"</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 3:</strong> Change the parameterized constructor to use assignment instead of an initialization list. Does it still work?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_3')">Show Explanation</button>
+            <div class="answer-section" id="exp1_3">
+                <p><strong>What happens:</strong> It works, but it's less efficient.</p>
+                <p><strong>Assignment version:</strong></p>
+                <pre><code class="language-cpp">BankAccount(string name, int accNum, double bal) {
+    accountHolder = name;
+    accountNumber = accNum;
+    balance = bal;
+}</code></pre>
+                <p><strong>Why initialization lists are better:</strong> They directly construct the members with the correct values, avoiding default construction followed by assignment.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 4:</strong> Remove the <code>const</code> keyword from the <code>display()</code> function. Does the code still compile?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_4')">Show Explanation</button>
+            <div class="answer-section" id="exp1_4">
+                <p><strong>What happens:</strong> Yes, it still compiles and runs fine in this example.</p>
+                <p><strong>When it matters:</strong> If you pass a <code>const BankAccount&</code> to a function and try to call <code>display()</code>, it will fail if <code>display()</code> isn't marked <code>const</code>.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">void printAccount(const BankAccount& acc) {
+    acc.display();  // Only works if display() is const
+}</code></pre>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 5:</strong> Add a getter function <code>getBalance()</code> that returns the balance. Should it be <code>const</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_5')">Show Explanation</button>
+            <div class="answer-section" id="exp1_5">
+                <p><strong>Answer:</strong> Yes, it should be <code>const</code> because it doesn't modify the object.</p>
+                <p><strong>Implementation:</strong></p>
+                <pre><code class="language-cpp">double getBalance() const {
+    return balance;
+}</code></pre>
+                <p><strong>Why:</strong> Getters (accessors) should always be <code>const</code>. They only read data, never modify it.</p>
+            </div>
+        </section>
+
+        <!-- Example 2: Deep Copy with Dynamic Memory -->
+        <section class="content-card">
+            <h2>Example 2: Deep Copy Constructor for Dynamic Arrays</h2>
+
+            <h3>Problem Statement</h3>
+            <p>Create a <code>Playlist</code> class that stores a dynamic array of song titles. The class needs a proper copy constructor to perform deep copying so that each playlist object has its own independent array.</p>
+
+            <h3>Why This Matters</h3>
+            <p>Without a deep copy constructor, copying a <code>Playlist</code> object would create two objects pointing to the <strong>same array</strong>. When one object is destroyed, it deletes the array, leaving the other object with a dangling pointer (pointing to freed memory).</p>
+
+            <div class="ascii-diagram"><pre>Shallow Copy (BAD):
+playlist1:           playlist2:
++---------+          +---------+
+| songs  --\         | songs  --\
+| count=3 | \        | count=3 | |
++---------+  \       +---------+ |
+              \_____________________/
+                      |
+                      v
+              ["Song A", "Song B", "Song C"]
+
+Problem: Both point to SAME array!
+Deleting one breaks the other.
+
+
+Deep Copy (GOOD):
+playlist1:           playlist2:
++---------+          +---------+
+| songs  --|         | songs  --|
+| count=3 | |        | count=3 | |
++---------+ |        +---------+ |
+            v                    v
+   ["A","B","C"]          ["A","B","C"]
+
+Each object has independent memory.</pre></div>
+
+            <h3>Complete Solution</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">🎮 Example 2: Playlist with Deep Copy</div>
+                </div>
+
+                <textarea id="editor2">#include <iostream>
+#include <string>
+using namespace std;
+
+class Playlist {
+private:
+    string* songs;
+    int count;
+    int capacity;
+
+public:
+    Playlist(int cap) : count(0), capacity(cap) {
+        songs = new string[capacity];
+        cout << "Playlist created with capacity " << capacity << endl;
+    }
+
+    // Copy constructor - DEEP COPY
+    Playlist(const Playlist& other) : count(other.count), capacity(other.capacity) {
+        songs = new string[capacity];
+        for (int i = 0; i < count; i++) {
+            songs[i] = other.songs[i];
+        }
+        cout << "Playlist deep copied (" << count << " songs)" << endl;
+    }
+
+    ~Playlist() {
+        delete[] songs;
+        cout << "Playlist destroyed (" << count << " songs freed)" << endl;
+    }
+
+    void addSong(string title) {
+        if (count < capacity) {
+            songs[count] = title;
+            count++;
+            cout << "Added: " << title << endl;
+        } else {
+            cout << "Playlist full!" << endl;
+        }
+    }
+
+    void display() const {
+        cout << "Playlist (" << count << " songs):" << endl;
+        for (int i = 0; i < count; i++) {
+            cout << "  " << (i + 1) << ". " << songs[i] << endl;
+        }
+    }
+};
+
+int main() {
+    Playlist myPlaylist(5);
+    myPlaylist.addSong("Chaise Électrique - Fally Ipupa");
+    myPlaylist.addSong("Bella - Gims");
+    myPlaylist.addSong("Reine - Dadju");
+
+    cout << "\nOriginal playlist:" << endl;
+    myPlaylist.display();
+
+    Playlist copiedPlaylist = myPlaylist;
+
+    cout << "\nCopied playlist:" << endl;
+    copiedPlaylist.display();
+
+    copiedPlaylist.addSong("Djadja - Aya Nakamura");
+
+    cout << "\nAfter adding to copied playlist:" << endl;
+    cout << "Original:" << endl;
+    myPlaylist.display();
+    cout << "\nCopied:" << endl;
+    copiedPlaylist.display();
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor2', originalCode2)">↺ Reset</button>
+                </div>
+
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div id="loading2" class="loading-indicator">Running...</div>
+                        <div id="output2" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Experiments to Try</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 1:</strong> Comment out the copy constructor. Does the program still compile? What happens when you run it?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_1')">Show Explanation</button>
+            <div class="answer-section" id="exp2_1">
+                <p><strong>What happens:</strong> The program compiles (C++ provides a default shallow copy constructor), but the behavior is dangerous.</p>
+                <p><strong>Problem:</strong> Both <code>myPlaylist</code> and <code>copiedPlaylist</code> point to the same <code>songs</code> array. Adding a song to <code>copiedPlaylist</code> also affects <code>myPlaylist</code>.</p>
+                <p><strong>Crash risk:</strong> When <code>copiedPlaylist</code> is destroyed, it calls <code>delete[] songs;</code>. When <code>myPlaylist</code> is destroyed, it tries to delete the same memory again, causing a crash or undefined behavior.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 2:</strong> Add a print statement inside the copy constructor that shows the memory addresses. Are they different?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_2')">Show Explanation</button>
+            <div class="answer-section" id="exp2_2">
+                <p><strong>Add this to the copy constructor:</strong></p>
+                <pre><code class="language-cpp">cout << "Original songs at: " << (void*)other.songs << endl;
+cout << "Copied songs at: " << (void*)songs << endl;</code></pre>
+                <p><strong>What you'll see:</strong> Two different memory addresses, proving that each object has its own independent array.</p>
+                <p><strong>Without deep copy:</strong> Both addresses would be the same (both pointing to the same array).</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 3:</strong> What happens if you forget <code>delete[] songs;</code> in the destructor?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_3')">Show Explanation</button>
+            <div class="answer-section" id="exp2_3">
+                <p><strong>What happens:</strong> Memory leak. The dynamically allocated array is never freed.</p>
+                <p><strong>How to detect:</strong> Use Valgrind or similar tools. They'll report "X bytes in Y blocks are definitely lost".</p>
+                <p><strong>Why it matters:</strong> In a long-running program, memory leaks accumulate and eventually exhaust available memory, causing crashes.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 4:</strong> Try creating multiple copies in a chain: <code>Playlist p3 = copiedPlaylist;</code>. Does deep copying work recursively?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_4')">Show Explanation</button>
+            <div class="answer-section" id="exp2_4">
+                <p><strong>What happens:</strong> Yes! Each copy creates a completely independent object with its own array.</p>
+                <p><strong>Try this:</strong></p>
+                <pre><code class="language-cpp">Playlist p3 = copiedPlaylist;
+p3.addSong("New Song");
+// p3 has the new song, but myPlaylist and copiedPlaylist don't</code></pre>
+                <p><strong>Destructors called:</strong> Three times (once for each object), each freeing its own independent array.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 5:</strong> What if <code>capacity</code> is different between the original and copy? Should the copy constructor allocate based on <code>capacity</code> or <code>count</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_5')">Show Explanation</button>
+            <div class="answer-section" id="exp2_5">
+                <p><strong>Current implementation:</strong> Allocates based on <code>capacity</code> (copies the full array size, even if not all slots are used).</p>
+                <p><strong>Alternative approach:</strong> Allocate only <code>count</code> elements (save memory):</p>
+                <pre><code class="language-cpp">Playlist(const Playlist& other) : count(other.count), capacity(other.count) {
+    songs = new string[capacity];
+    for (int i = 0; i < count; i++) {
+        songs[i] = other.songs[i];
+    }
+}</code></pre>
+                <p><strong>Trade-off:</strong> Saves memory but reduces capacity. If you plan to add more songs, keeping the original capacity is better.</p>
+            </div>
+        </section>
+
+        <!-- Example 3: Static Members for Object Tracking -->
+        <section class="content-card">
+            <h2>Example 3: Using Static Members to Track Objects</h2>
+
+            <h3>Problem Statement</h3>
+            <p>Create a <code>Student</code> class that automatically assigns unique student ID numbers to each new student. Use a static member to track the total count and generate IDs.</p>
+
+            <h3>Concept Review</h3>
+            <p>A <code>static</code> member variable is shared across all objects of the class. When one object modifies it, all objects see the change. This makes static members perfect for counters, shared configuration, or ID generation.</p>
+
+            <h3>Complete Solution</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">🎮 Example 3: Student ID Generator</div>
+                </div>
+
+                <textarea id="editor3">#include <iostream>
+#include <string>
+using namespace std;
+
+class Student {
+private:
+    static int totalStudents;
+    static int nextID;
+
+    string name;
+    int studentID;
+    double gpa;
+
+public:
+    Student(string n, double g) : name(n), gpa(g) {
+        studentID = nextID;
+        nextID++;
+        totalStudents++;
+        cout << "Student " << name << " registered with ID " << studentID << endl;
+    }
+
+    ~Student() {
+        totalStudents--;
+        cout << "Student " << name << " (ID " << studentID << ") removed" << endl;
+    }
+
+    void display() const {
+        cout << "ID: " << studentID << " | Name: " << name << " | GPA: " << gpa << endl;
+    }
+
+    static int getTotalStudents() {
+        return totalStudents;
+    }
+
+    static int getNextID() {
+        return nextID;
+    }
+};
+
+// Initialize static members
+int Student::totalStudents = 0;
+int Student::nextID = 100001;
+
+int main() {
+    cout << "Initial student count: " << Student::getTotalStudents() << endl;
+    cout << "Next ID to assign: " << Student::getNextID() << endl;
+    cout << endl;
+
+    Student s1("Zanele Mkhize", 3.8);
+    Student s2("Johan van der Merwe", 3.5);
+    Student s3("Amahle Ndlovu", 3.9);
+
+    cout << "\nCurrent students:" << endl;
+    s1.display();
+    s2.display();
+    s3.display();
+
+    cout << "\nTotal registered: " << Student::getTotalStudents() << endl;
+
+    {
+        Student s4("Pieter Botha", 3.2);
+        cout << "Inside scope - Total: " << Student::getTotalStudents() << endl;
+    }
+
+    cout << "\nAfter scope - Total: " << Student::getTotalStudents() << endl;
+    cout << "Next ID available: " << Student::getNextID() << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor3', originalCode3)">↺ Reset</button>
+                </div>
+
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div id="loading3" class="loading-indicator">Running...</div>
+                        <div id="output3" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Experiments to Try</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 1:</strong> Remove the initialization of static members (<code>int Student::totalStudents = 0;</code>). Does the code compile?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_1')">Show Explanation</button>
+            <div class="answer-section" id="exp3_1">
+                <p><strong>What happens:</strong> Linker error (not a compiler error!).</p>
+                <p><strong>Error message:</strong> "undefined reference to Student::totalStudents"</p>
+                <p><strong>Why:</strong> Static members must be defined outside the class. The declaration in the class is just a declaration; the definition (with initialization) must appear in a .cpp file or before <code>main()</code> in a single-file program.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 2:</strong> Try to access <code>name</code> from the static function <code>getTotalStudents()</code>. What error do you get?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_2')">Show Explanation</button>
+            <div class="answer-section" id="exp3_2">
+                <p><strong>Try adding:</strong> <code>cout << name;</code> inside <code>getTotalStudents()</code></p>
+                <p><strong>Error:</strong> "invalid use of member 'name' in static member function"</p>
+                <p><strong>Why:</strong> Static functions don't have a <code>this</code> pointer. They're not tied to any specific object, so they can't access non-static members (which are specific to each object).</p>
+                <p><strong>What they CAN access:</strong> Only other static members (<code>totalStudents</code>, <code>nextID</code>, other static functions).</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 3:</strong> Create 100 students in a loop. Does each get a unique ID?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_3')">Show Explanation</button>
+            <div class="answer-section" id="exp3_3">
+                <p><strong>Try this:</strong></p>
+                <pre><code class="language-cpp">for (int i = 0; i < 10; i++) {
+    Student s("Student_" + to_string(i), 3.0);
+    s.display();
+}</code></pre>
+                <p><strong>What happens:</strong> Each student gets a unique ID (100001, 100002, 100003, ..., 100010).</p>
+                <p><strong>Why it works:</strong> <code>nextID</code> is static (shared), so incrementing it in one constructor affects all future constructions.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 4:</strong> What happens to <code>totalStudents</code> when objects are destroyed? Does it go negative?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_4')">Show Explanation</button>
+            <div class="answer-section" id="exp3_4">
+                <p><strong>What happens:</strong> <code>totalStudents</code> correctly decreases when objects are destroyed (destructor calls <code>totalStudents--;</code>).</p>
+                <p><strong>Check the output:</strong> When <code>s4</code> goes out of scope, you see "Student Pieter Botha (ID 100004) removed" and the count drops from 4 to 3.</p>
+                <p><strong>Final count:</strong> When <code>main()</code> ends, the remaining 3 students are destroyed, bringing <code>totalStudents</code> to 0.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 5:</strong> Try initializing the static variable inside the class: <code>static int totalStudents = 0;</code> in the class definition. What happens?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_5')">Show Explanation</button>
+            <div class="answer-section" id="exp3_5">
+                <p><strong>What happens:</strong> Compilation error.</p>
+                <p><strong>Error message:</strong> "ISO C++ forbids in-class initialization of non-const static member"</p>
+                <p><strong>Exception:</strong> You CAN initialize <code>static const</code> integral types in-class:</p>
+                <pre><code class="language-cpp">static const int MAX_STUDENTS = 1000;  // OK</code></pre>
+                <p><strong>For non-const statics:</strong> Always initialize outside the class.</p>
+            </div>
+        </section>
+
+        <!-- Example 4: Find the Bug -->
+        <section class="content-card">
+            <h2>Example 4: Find the Bug - const Violations</h2>
+
+            <h3>Problem Statement</h3>
+            <p>The following <code>Rectangle</code> class has several bugs related to <code>const</code> correctness. The code compiles on some compilers with warnings, but violates C++ const rules. Identify all the bugs and explain how to fix them.</p>
+
+            <div class="warning-box">
+                <strong>Challenge:</strong> Don't look at the solution immediately. Study the code carefully and try to find all the issues yourself. There are 4 bugs to find.
+            </div>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">🐛 Buggy Code: Find All const Violations</div>
+                </div>
+
+                <textarea id="editor4">#include <iostream>
+using namespace std;
+
+class Rectangle {
+private:
+    double width;
+    double height;
+    int callCount;
+
+public:
+    Rectangle(double w, double h) : width(w), height(h), callCount(0) {}
+
+    double getArea() const {
+        callCount++;
+        return width * height;
+    }
+
+    void setWidth(double w) {
+        width = w;
+    }
+
+    double getWidth() {
+        return width;
+    }
+
+    void display() const {
+        cout << "Width: " << width << ", Height: " << height << endl;
+        cout << "Area: " << getArea() << endl;
+    }
+
+    void printInfo(const Rectangle& other) const {
+        cout << "Comparing with rectangle of width " << other.getWidth() << endl;
+    }
+};
+
+void analyzeRectangle(const Rectangle& rect) {
+    rect.display();
+    rect.setWidth(10.0);
+}
+
+int main() {
+    Rectangle r1(5.0, 3.0);
+    r1.display();
+
+    const Rectangle r2(7.0, 4.0);
+    analyzeRectangle(r2);
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor4', originalCode4)">↺ Reset</button>
+                </div>
+
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div id="loading4" class="loading-indicator">Running...</div>
+                        <div id="output4" class="output-text output-placeholder">
+Click "Run Code" to see the output (will likely have compilation errors)...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Identify the Bugs</h3>
+
+            <p>Try to find all 4 bugs before revealing the answer.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('bug_solution')">Show Complete Bug Analysis</button>
+            <div class="answer-section" id="bug_solution">
+                <h4>Bug #1: Modifying Member in const Function (Line 13-14)</h4>
+                <p><strong>Location:</strong> <code>getArea()</code> function</p>
+                <p><strong>Problem:</strong></p>
+                <pre><code class="language-cpp">double getArea() const {
+    callCount++;  // BUG: Modifying member variable in const function
+    return width * height;
+}</code></pre>
+                <p><strong>Why it's wrong:</strong> A <code>const</code> member function promises not to modify the object. Incrementing <code>callCount</code> violates this promise.</p>
+                <p><strong>Fix Option 1:</strong> Remove <code>const</code> from <code>getArea()</code> (but then it can't be called on const objects).</p>
+                <p><strong>Fix Option 2:</strong> Make <code>callCount</code> mutable:</p>
+                <pre><code class="language-cpp">mutable int callCount;  // Can be modified even in const functions</code></pre>
+
+                <h4>Bug #2: Non-const Getter (Line 23)</h4>
+                <p><strong>Location:</strong> <code>getWidth()</code> function</p>
+                <p><strong>Problem:</strong></p>
+                <pre><code class="language-cpp">double getWidth() {  // BUG: Missing const
+    return width;
+}</code></pre>
+                <p><strong>Why it's wrong:</strong> Getters should be <code>const</code> because they don't modify the object. Without <code>const</code>, you can't call <code>getWidth()</code> on a <code>const Rectangle&</code>.</p>
+                <p><strong>Fix:</strong></p>
+                <pre><code class="language-cpp">double getWidth() const {
+    return width;
+}</code></pre>
+                <p><strong>Where it breaks:</strong> Line 32 calls <code>other.getWidth()</code> where <code>other</code> is a <code>const Rectangle&</code>. This fails if <code>getWidth()</code> isn't <code>const</code>.</p>
+
+                <h4>Bug #3: Calling Non-const Function on const Reference (Line 37)</h4>
+                <p><strong>Location:</strong> <code>analyzeRectangle()</code> function</p>
+                <p><strong>Problem:</strong></p>
+                <pre><code class="language-cpp">void analyzeRectangle(const Rectangle& rect) {
+    rect.display();
+    rect.setWidth(10.0);  // BUG: Calling mutator on const reference
+}</code></pre>
+                <p><strong>Why it's wrong:</strong> <code>rect</code> is a <code>const Rectangle&</code>, meaning you can't modify it. <code>setWidth()</code> is a mutator (non-const function).</p>
+                <p><strong>Fix:</strong> Remove the <code>setWidth()</code> call or remove <code>const</code> from the parameter:</p>
+                <pre><code class="language-cpp">void analyzeRectangle(Rectangle& rect) {  // Not const
+    rect.display();
+    rect.setWidth(10.0);  // Now OK
+}</code></pre>
+
+                <h4>Bug #4: Attempting to Modify const Object (Line 41)</h4>
+                <p><strong>Location:</strong> <code>main()</code> function</p>
+                <p><strong>Problem:</strong></p>
+                <pre><code class="language-cpp">const Rectangle r2(7.0, 4.0);
+analyzeRectangle(r2);  // BUG: Passing const object to function that modifies it</code></pre>
+                <p><strong>Why it's wrong:</strong> <code>r2</code> is declared <code>const</code>, so it cannot be modified. But <code>analyzeRectangle()</code> calls <code>setWidth()</code> on it.</p>
+                <p><strong>Fix Option 1:</strong> Remove <code>const</code> from <code>r2</code>.</p>
+                <p><strong>Fix Option 2:</strong> Don't call <code>analyzeRectangle()</code> on const objects.</p>
+
+                <h4>Summary of All Fixes</h4>
+                <pre><code class="language-cpp">class Rectangle {
+private:
+    double width;
+    double height;
+    mutable int callCount;  // FIX: Make mutable
+
+public:
+    Rectangle(double w, double h) : width(w), height(h), callCount(0) {}
+
+    double getArea() const {
+        callCount++;  // OK now (callCount is mutable)
+        return width * height;
+    }
+
+    void setWidth(double w) {
+        width = w;
+    }
+
+    double getWidth() const {  // FIX: Add const
+        return width;
+    }
+
+    void display() const {
+        cout << "Width: " << width << ", Height: " << height << endl;
+        cout << "Area: " << getArea() << endl;
+    }
+
+    void printInfo(const Rectangle& other) const {
+        cout << "Comparing with rectangle of width " << other.getWidth() << endl;
+    }
+};
+
+void analyzeRectangle(Rectangle& rect) {  // FIX: Remove const (or don't call setWidth)
+    rect.display();
+    rect.setWidth(10.0);
+}
+
+int main() {
+    Rectangle r1(5.0, 3.0);
+    r1.display();
+
+    Rectangle r2(7.0, 4.0);  // FIX: Remove const
+    analyzeRectangle(r2);
+
+    return 0;
+}</code></pre>
+            </div>
+        </section>
+    </div>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        // Store original code for reset functionality
+        const originalCode1 = `#include <iostream>
+#include <string>
+using namespace std;
+
+class BankAccount {
+private:
+    string accountHolder;
+    int accountNumber;
+    double balance;
+
+public:
+    // Default constructor
+    BankAccount() : accountHolder("Unknown"), accountNumber(0), balance(0.0) {
+        cout << "Default account created" << endl;
+    }
+
+    // Parameterized constructor
+    BankAccount(string name, int accNum, double bal)
+        : accountHolder(name), accountNumber(accNum), balance(bal) {
+        cout << "Account created for " << accountHolder << endl;
+    }
+
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            cout << "Deposited R" << amount << ". New balance: R" << balance << endl;
+        } else {
+            cout << "Invalid deposit amount!" << endl;
+        }
+    }
+
+    void withdraw(double amount) {
+        if (amount <= 0) {
+            cout << "Invalid withdrawal amount!" << endl;
+        } else if (amount > balance) {
+            cout << "Insufficient funds! Current balance: R" << balance << endl;
+        } else {
+            balance -= amount;
+            cout << "Withdrew R" << amount << ". New balance: R" << balance << endl;
+        }
+    }
+
+    void display() const {
+        cout << "----------------------------" << endl;
+        cout << "Account Holder: " << accountHolder << endl;
+        cout << "Account Number: " << accountNumber << endl;
+        cout << "Balance: R" << balance << endl;
+        cout << "----------------------------" << endl;
+    }
+};
+
+int main() {
+    BankAccount acc1;
+    acc1.display();
+
+    BankAccount acc2("Sipho Dlamini", 123456, 5000.0);
+    acc2.display();
+
+    acc2.deposit(1500.0);
+    acc2.withdraw(2000.0);
+    acc2.withdraw(10000.0);
+
+    acc2.display();
+
+    return 0;
+}`;
+
+        const originalCode2 = `#include <iostream>
+#include <string>
+using namespace std;
+
+class Playlist {
+private:
+    string* songs;
+    int count;
+    int capacity;
+
+public:
+    Playlist(int cap) : count(0), capacity(cap) {
+        songs = new string[capacity];
+        cout << "Playlist created with capacity " << capacity << endl;
+    }
+
+    // Copy constructor - DEEP COPY
+    Playlist(const Playlist& other) : count(other.count), capacity(other.capacity) {
+        songs = new string[capacity];
+        for (int i = 0; i < count; i++) {
+            songs[i] = other.songs[i];
+        }
+        cout << "Playlist deep copied (" << count << " songs)" << endl;
+    }
+
+    ~Playlist() {
+        delete[] songs;
+        cout << "Playlist destroyed (" << count << " songs freed)" << endl;
+    }
+
+    void addSong(string title) {
+        if (count < capacity) {
+            songs[count] = title;
+            count++;
+            cout << "Added: " << title << endl;
+        } else {
+            cout << "Playlist full!" << endl;
+        }
+    }
+
+    void display() const {
+        cout << "Playlist (" << count << " songs):" << endl;
+        for (int i = 0; i < count; i++) {
+            cout << "  " << (i + 1) << ". " << songs[i] << endl;
+        }
+    }
+};
+
+int main() {
+    Playlist myPlaylist(5);
+    myPlaylist.addSong("Chaise Électrique - Fally Ipupa");
+    myPlaylist.addSong("Bella - Gims");
+    myPlaylist.addSong("Reine - Dadju");
+
+    cout << "\\nOriginal playlist:" << endl;
+    myPlaylist.display();
+
+    Playlist copiedPlaylist = myPlaylist;
+
+    cout << "\\nCopied playlist:" << endl;
+    copiedPlaylist.display();
+
+    copiedPlaylist.addSong("Djadja - Aya Nakamura");
+
+    cout << "\\nAfter adding to copied playlist:" << endl;
+    cout << "Original:" << endl;
+    myPlaylist.display();
+    cout << "\\nCopied:" << endl;
+    copiedPlaylist.display();
+
+    return 0;
+}`;
+
+        const originalCode3 = `#include <iostream>
+#include <string>
+using namespace std;
+
+class Student {
+private:
+    static int totalStudents;
+    static int nextID;
+
+    string name;
+    int studentID;
+    double gpa;
+
+public:
+    Student(string n, double g) : name(n), gpa(g) {
+        studentID = nextID;
+        nextID++;
+        totalStudents++;
+        cout << "Student " << name << " registered with ID " << studentID << endl;
+    }
+
+    ~Student() {
+        totalStudents--;
+        cout << "Student " << name << " (ID " << studentID << ") removed" << endl;
+    }
+
+    void display() const {
+        cout << "ID: " << studentID << " | Name: " << name << " | GPA: " << gpa << endl;
+    }
+
+    static int getTotalStudents() {
+        return totalStudents;
+    }
+
+    static int getNextID() {
+        return nextID;
+    }
+};
+
+// Initialize static members
+int Student::totalStudents = 0;
+int Student::nextID = 100001;
+
+int main() {
+    cout << "Initial student count: " << Student::getTotalStudents() << endl;
+    cout << "Next ID to assign: " << Student::getNextID() << endl;
+    cout << endl;
+
+    Student s1("Zanele Mkhize", 3.8);
+    Student s2("Johan van der Merwe", 3.5);
+    Student s3("Amahle Ndlovu", 3.9);
+
+    cout << "\\nCurrent students:" << endl;
+    s1.display();
+    s2.display();
+    s3.display();
+
+    cout << "\\nTotal registered: " << Student::getTotalStudents() << endl;
+
+    {
+        Student s4("Pieter Botha", 3.2);
+        cout << "Inside scope - Total: " << Student::getTotalStudents() << endl;
+    }
+
+    cout << "\\nAfter scope - Total: " << Student::getTotalStudents() << endl;
+    cout << "Next ID available: " << Student::getNextID() << endl;
+
+    return 0;
+}`;
+
+        const originalCode4 = `#include <iostream>
+using namespace std;
+
+class Rectangle {
+private:
+    double width;
+    double height;
+    int callCount;
+
+public:
+    Rectangle(double w, double h) : width(w), height(h), callCount(0) {}
+
+    double getArea() const {
+        callCount++;
+        return width * height;
+    }
+
+    void setWidth(double w) {
+        width = w;
+    }
+
+    double getWidth() {
+        return width;
+    }
+
+    void display() const {
+        cout << "Width: " << width << ", Height: " << height << endl;
+        cout << "Area: " << getArea() << endl;
+    }
+
+    void printInfo(const Rectangle& other) const {
+        cout << "Comparing with rectangle of width " << other.getWidth() << endl;
+    }
+};
+
+void analyzeRectangle(const Rectangle& rect) {
+    rect.display();
+    rect.setWidth(10.0);
+}
+
+int main() {
+    Rectangle r1(5.0, 3.0);
+    r1.display();
+
+    const Rectangle r2(7.0, 4.0);
+    analyzeRectangle(r2);
+
+    return 0;
+}`;
+
+        // Initialize CodeMirror editors
+        const editors = {};
+
+        function initializeEditor(id, code) {
+            const textarea = document.getElementById(id);
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+            editors[id] = editor;
+            return editor;
+        }
+
+        // Initialize all editors
+        initializeEditor('editor1', originalCode1);
+        initializeEditor('editor2', originalCode2);
+        initializeEditor('editor3', originalCode3);
+        initializeEditor('editor4', originalCode4);
+
+        // Run code using Piston API
+        async function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = playgroundId.replace('playground', 'output');
+            const loadingId = playgroundId.replace('playground', 'loading');
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = event.target;
+
+            // Show loading
+            loadingEl.classList.add('active');
+            outputEl.textContent = '';
+            runBtn.disabled = true;
+            runBtn.textContent = '⏳ Running...';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += '=== PROGRAM OUTPUT ===\n';
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                if (!output) {
+                    output = 'No output generated.';
+                    outputEl.className = 'output-text output-placeholder';
+                }
+
+                outputEl.textContent = output;
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Failed to execute code. Please try again.';
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                runBtn.disabled = false;
+                runBtn.textContent = '▶ Run Code';
+            }
+        }
+
+        // Reset code to original
+        function resetCode(editorId, originalCode) {
+            editors[editorId].setValue(originalCode);
+        }
+
+        // Toggle answer sections
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Explanation';
+            } else {
+                button.textContent = 'Show Explanation';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

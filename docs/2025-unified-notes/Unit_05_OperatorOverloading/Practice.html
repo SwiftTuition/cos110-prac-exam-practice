@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 5: Operator Overloading - Practice | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #10b981;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        .problem-box {
+            background: #0c1222;
+            border: 2px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .problem-box h4 {
+            color: #0ea5e9;
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 5: Operator Overloading</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html" class="active">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Practice Problems</h2>
+
+            <p>
+                These problems let you apply what you've learned about operator overloading. Try solving each problem yourself before revealing the solution. The problems get progressively harder.
+            </p>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Try to solve each problem on your own first! Only reveal the solution after you've made a genuine attempt. You learn by struggling, not by reading answers.
+            </div>
+
+            <div class="info-box">
+                <strong>Testing Your Solutions:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Each problem has a playground where you can write and test your code</li>
+                    <li>Solutions are also in interactive playgrounds - you can modify and run them!</li>
+                    <li>Test cases are provided to verify your implementation</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Problem 1: Time Class -->
+        <section class="content-card">
+            <h2>Problem 1: Time Class with Comparison Operators (Easy)</h2>
+
+            <div class="problem-box">
+                <h4>Your Task</h4>
+                <p>
+                    Create a <code>Time</code> class that represents time in hours and minutes (24-hour format). Implement the following operators as friend functions:
+                </p>
+                <ul>
+                    <li><code>operator<</code> - Returns true if left time is earlier than right time</li>
+                    <li><code>operator></code> - Returns true if left time is later than right time</li>
+                    <li><code>operator==</code> - Returns true if both times are equal</li>
+                </ul>
+
+                <p><strong>Hints:</strong></p>
+                <ul>
+                    <li>Convert time to total minutes for easier comparison</li>
+                    <li>hours * 60 + minutes gives total minutes since midnight</li>
+                    <li>You can implement > using < (reverse the operands)</li>
+                </ul>
+            </div>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Your Solution for Problem 1</div>
+                </div>
+
+                <textarea id="editor1">#include <iostream>
+using namespace std;
+
+class Time {
+public:
+    Time(int h, int m) : hours(h), minutes(m) {}
+
+    // TODO: Add your friend operator declarations here
+
+
+    void print() const {
+        cout << (hours < 10 ? "0" : "") << hours << ":"
+             << (minutes < 10 ? "0" : "") << minutes;
+    }
+
+private:
+    int hours;
+    int minutes;
+};
+
+// TODO: Implement your operators here
+
+
+
+
+int main() {
+    Time t1(9, 30);
+    Time t2(10, 15);
+    Time t3(9, 30);
+
+    cout << "Test 1: "; t1.print();
+    cout << " < "; t2.print();
+    cout << " = " << (t1 < t2 ? "true" : "false") << endl;
+
+    cout << "Test 2: "; t2.print();
+    cout << " > "; t1.print();
+    cout << " = " << (t2 > t1 ? "true" : "false") << endl;
+
+    cout << "Test 3: "; t1.print();
+    cout << " == "; t3.print();
+    cout << " = " << (t1 == t3 ? "true" : "false") << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading1" class="loading-indicator">Running...</div>
+                        <div id="output1" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Solution</button>
+            <div class="answer-section" id="answer1">
+                <h4>Solution Playground:</h4>
+                <p style="color: #cbd5e1; margin-bottom: 1rem;">Here's the complete solution. Run it to see the output, then try modifying it!</p>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Solution for Problem 1</div>
+                    </div>
+
+                    <textarea id="solution1">#include <iostream>
+using namespace std;
+
+class Time {
+public:
+    Time(int h, int m) : hours(h), minutes(m) {}
+
+    friend bool operator<(const Time& t1, const Time& t2);
+    friend bool operator>(const Time& t1, const Time& t2);
+    friend bool operator==(const Time& t1, const Time& t2);
+
+    void print() const {
+        cout << (hours < 10 ? "0" : "") << hours << ":"
+             << (minutes < 10 ? "0" : "") << minutes;
+    }
+
+private:
+    int hours;
+    int minutes;
+};
+
+bool operator<(const Time& t1, const Time& t2) {
+    int total1 = t1.hours * 60 + t1.minutes;
+    int total2 = t2.hours * 60 + t2.minutes;
+    return total1 < total2;
+}
+
+bool operator>(const Time& t1, const Time& t2) {
+    return t2 < t1;
+}
+
+bool operator==(const Time& t1, const Time& t2) {
+    return (t1.hours == t2.hours && t1.minutes == t2.minutes);
+}
+
+int main() {
+    Time t1(9, 30);
+    Time t2(10, 15);
+    Time t3(9, 30);
+
+    cout << "Test 1: "; t1.print();
+    cout << " < "; t2.print();
+    cout << " = " << (t1 < t2 ? "true" : "false") << endl;
+
+    cout << "Test 2: "; t2.print();
+    cout << " > "; t1.print();
+    cout << " = " << (t2 > t1 ? "true" : "false") << endl;
+
+    cout << "Test 3: "; t1.print();
+    cout << " == "; t3.print();
+    cout << " = " << (t1 == t3 ? "true" : "false") << endl;
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playgroundSol1')">▶ Run Solution</button>
+                        <button class="reset-btn" onclick="resetCode('solution1')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loadingSol1" class="loading-indicator">Running...</div>
+                            <div id="outputSol1" class="output-text output-placeholder">Click "Run Solution" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4>Explanation:</h4>
+                <ol>
+                    <li><strong>Total Minutes Approach:</strong> Convert each time to total minutes since midnight for easy comparison</li>
+                    <li><strong>operator<:</strong> Compare total minutes directly</li>
+                    <li><strong>operator>:</strong> Implemented as <code>t2 < t1</code> - if t2 is less than t1, then t1 is greater than t2</li>
+                    <li><strong>operator==:</strong> Both hours and minutes must match</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Problem 2: Distance Class -->
+        <section class="content-card">
+            <h2>Problem 2: Distance Class with Arithmetic Operators (Intermediate)</h2>
+
+            <div class="problem-box">
+                <h4>Your Task</h4>
+                <p>
+                    Create a <code>Distance</code> class for representing distances in kilometers and meters. Implement both <code>operator+</code> and <code>operator+=</code> with proper return types.
+                </p>
+
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li><code>operator+</code> should be a friend function that returns a new <code>Distance</code> object</li>
+                    <li><code>operator+=</code> should be a member function that modifies the calling object and returns a reference</li>
+                    <li>Handle meter overflow (1000m = 1km)</li>
+                </ul>
+            </div>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Your Solution for Problem 2</div>
+                </div>
+
+                <textarea id="editor2">#include <iostream>
+using namespace std;
+
+class Distance {
+public:
+    Distance(int km = 0, int m = 0) : kilometers(km), meters(m) {
+        normalize();
+    }
+
+    // TODO: Add your operator declarations here
+
+
+    void print() const {
+        cout << kilometers << "km " << meters << "m";
+    }
+
+private:
+    int kilometers;
+    int meters;
+
+    void normalize() {
+        kilometers += meters / 1000;
+        meters = meters % 1000;
+    }
+};
+
+// TODO: Implement your operators here
+
+
+
+
+int main() {
+    Distance d1(5, 800);
+    Distance d2(3, 400);
+
+    cout << "d1 = "; d1.print(); cout << endl;
+    cout << "d2 = "; d2.print(); cout << endl;
+
+    Distance d3 = d1 + d2;
+    cout << "d1 + d2 = "; d3.print(); cout << endl;
+
+    d1 += d2;
+    cout << "After d1 += d2, d1 = "; d1.print(); cout << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading2" class="loading-indicator">Running...</div>
+                        <div id="output2" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Solution</button>
+            <div class="answer-section" id="answer2">
+                <h4>Solution Playground:</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Solution for Problem 2</div>
+                    </div>
+
+                    <textarea id="solution2">#include <iostream>
+using namespace std;
+
+class Distance {
+public:
+    Distance(int km = 0, int m = 0) : kilometers(km), meters(m) {
+        normalize();
+    }
+
+    friend Distance operator+(const Distance& d1, const Distance& d2);
+
+    Distance& operator+=(const Distance& other) {
+        kilometers += other.kilometers;
+        meters += other.meters;
+        normalize();
+        return *this;
+    }
+
+    void print() const {
+        cout << kilometers << "km " << meters << "m";
+    }
+
+private:
+    int kilometers;
+    int meters;
+
+    void normalize() {
+        kilometers += meters / 1000;
+        meters = meters % 1000;
+    }
+};
+
+Distance operator+(const Distance& d1, const Distance& d2) {
+    Distance result(d1.kilometers + d2.kilometers,
+                    d1.meters + d2.meters);
+    return result;
+}
+
+int main() {
+    Distance d1(5, 800);
+    Distance d2(3, 400);
+
+    cout << "d1 = "; d1.print(); cout << endl;
+    cout << "d2 = "; d2.print(); cout << endl;
+
+    Distance d3 = d1 + d2;
+    cout << "d1 + d2 = "; d3.print(); cout << endl;
+
+    d1 += d2;
+    cout << "After d1 += d2, d1 = "; d1.print(); cout << endl;
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playgroundSol2')">▶ Run Solution</button>
+                        <button class="reset-btn" onclick="resetCode('solution2')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loadingSol2" class="loading-indicator">Running...</div>
+                            <div id="outputSol2" class="output-text output-placeholder">Click "Run Solution" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4>Explanation:</h4>
+                <ol>
+                    <li><strong>normalize():</strong> Converts excess meters to kilometers (1500m → 1km 500m)</li>
+                    <li><strong>operator+:</strong> Friend function, creates new object, returns by value</li>
+                    <li><strong>operator+=:</strong> Member function, modifies calling object, returns <code>*this</code> by reference</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Problem 3: Counter Debugging -->
+        <section class="content-card">
+            <h2>Problem 3: What's Wrong with This Code?</h2>
+
+            <div class="problem-box">
+                <h4>Your Task</h4>
+                <p>
+                    The following <code>Counter</code> class has several operator overloading bugs. Run it, observe the errors, then identify and fix ALL the bugs.
+                </p>
+            </div>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Buggy Counter Class - Fix the Bugs!</div>
+                </div>
+
+                <textarea id="editor3">#include <iostream>
+using namespace std;
+
+class Counter {
+public:
+    Counter(int v = 0) : value(v) {}
+
+    void operator++() {
+        value++;
+    }
+
+    Counter operator++(int) {
+        value++;
+        return *this;
+    }
+
+    friend void operator<<(ostream& os, const Counter& c) {
+        os << "Count: " << c.value;
+    }
+
+    bool operator==(Counter& other) const {
+        other.value = this->value;
+        return true;
+    }
+
+    int getValue() const { return value; }
+
+private:
+    int value;
+};
+
+int main() {
+    Counter c1(5), c2(5);
+
+    cout << "c1: " << c1 << endl;
+
+    ++c1;
+    cout << "After ++c1: " << c1 << endl;
+
+    Counter c3 = c2++;
+    cout << "c2 after c2++: " << c2 << ", c3: " << c3 << endl;
+
+    if (c1 == c2) {
+        cout << "c1 and c2 are equal" << endl;
+    }
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground3')">▶ Run Buggy Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading3" class="loading-indicator">Running...</div>
+                        <div id="output3" class="output-text output-placeholder">Click "Run Buggy Code" to see errors...</div>
+                    </div>
+                </div>
+            </section>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Fixed Code</button>
+            <div class="answer-section" id="answer3">
+                <h4>Bugs Found:</h4>
+                <ol>
+                    <li><strong>operator++() prefix:</strong> Returns void, should return <code>Counter&</code></li>
+                    <li><strong>operator++(int) postfix:</strong> Returns modified value, should return old value</li>
+                    <li><strong>operator<<:</strong> Returns void, should return <code>ostream&</code></li>
+                    <li><strong>operator==:</strong> Modifies parameter and always returns true!</li>
+                </ol>
+
+                <h4>Fixed Solution Playground:</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Fixed Counter Class</div>
+                    </div>
+
+                    <textarea id="solution3">#include <iostream>
+using namespace std;
+
+class Counter {
+public:
+    Counter(int v = 0) : value(v) {}
+
+    Counter& operator++() {
+        value++;
+        return *this;
+    }
+
+    const Counter operator++(int) {
+        Counter old = *this;
+        value++;
+        return old;
+    }
+
+    friend ostream& operator<<(ostream& os, const Counter& c) {
+        os << "Count: " << c.value;
+        return os;
+    }
+
+    bool operator==(const Counter& other) const {
+        return (value == other.value);
+    }
+
+    int getValue() const { return value; }
+
+private:
+    int value;
+};
+
+int main() {
+    Counter c1(5), c2(5);
+
+    cout << "c1: " << c1 << endl;
+
+    ++c1;
+    cout << "After ++c1: " << c1 << endl;
+
+    Counter c3 = c2++;
+    cout << "c2 after c2++: " << c2 << ", c3: " << c3 << endl;
+
+    if (c1 == c2) {
+        cout << "c1 and c2 are equal" << endl;
+    } else {
+        cout << "c1 and c2 are NOT equal" << endl;
+    }
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playgroundSol3')">▶ Run Fixed Code</button>
+                        <button class="reset-btn" onclick="resetCode('solution3')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loadingSol3" class="loading-indicator">Running...</div>
+                            <div id="outputSol3" class="output-text output-placeholder">Click "Run Fixed Code" to see correct output...</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- Problem 4: Song Class Challenge -->
+        <section class="content-card">
+            <h2>Problem 4: Playlist Manager with Multiple Operators (Challenge)</h2>
+
+            <div class="problem-box">
+                <h4>Your Task</h4>
+                <p>
+                    Create a <code>Song</code> class implementing multiple operators:
+                </p>
+                <ol>
+                    <li><code>operator<<</code> - Output format: "Title by Artist (Duration mins)"</li>
+                    <li><code>operator<</code> - Compare by duration (shortest first)</li>
+                    <li><code>operator==</code> - Equal if same title and artist (ignore duration)</li>
+                    <li><code>operator+</code> - Combine songs into mashup with total duration</li>
+                </ol>
+            </div>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Your Solution for Problem 4</div>
+                </div>
+
+                <textarea id="editor4">#include <iostream>
+#include <string>
+using namespace std;
+
+class Song {
+public:
+    Song(string t, string a, int d) : title(t), artist(a), duration(d) {}
+
+    // TODO: Add all your operator declarations here
+
+
+
+    string getTitle() const { return title; }
+
+private:
+    string title;
+    string artist;
+    int duration;
+};
+
+// TODO: Implement all operators here
+
+
+
+
+
+
+int main() {
+    Song s1("Bella", "Gims", 3);
+    Song s2("Djadja", "Aya Nakamura", 4);
+    Song s3("Bella", "Gims", 5);
+
+    cout << "Song 1: " << s1 << endl;
+    cout << "Song 2: " << s2 << endl;
+
+    if (s1 < s2) {
+        cout << s1.getTitle() << " is shorter than " << s2.getTitle() << endl;
+    }
+
+    if (s1 == s3) {
+        cout << s1.getTitle() << " and Song 3 are the same song!" << endl;
+    }
+
+    Song combo = s1 + s2;
+    cout << "Combined: " << combo << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading4" class="loading-indicator">Running...</div>
+                        <div id="output4" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Solution</button>
+            <div class="answer-section" id="answer4">
+                <h4>Complete Solution Playground:</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Solution for Problem 4</div>
+                    </div>
+
+                    <textarea id="solution4">#include <iostream>
+#include <string>
+using namespace std;
+
+class Song {
+public:
+    Song(string t, string a, int d) : title(t), artist(a), duration(d) {}
+
+    friend ostream& operator<<(ostream& os, const Song& s);
+    friend bool operator<(const Song& s1, const Song& s2);
+    friend bool operator==(const Song& s1, const Song& s2);
+    friend Song operator+(const Song& s1, const Song& s2);
+
+    string getTitle() const { return title; }
+
+private:
+    string title;
+    string artist;
+    int duration;
+};
+
+ostream& operator<<(ostream& os, const Song& s) {
+    os << s.title << " by " << s.artist << " (" << s.duration << " mins)";
+    return os;
+}
+
+bool operator<(const Song& s1, const Song& s2) {
+    return s1.duration < s2.duration;
+}
+
+bool operator==(const Song& s1, const Song& s2) {
+    return (s1.title == s2.title && s1.artist == s2.artist);
+}
+
+Song operator+(const Song& s1, const Song& s2) {
+    string newTitle = s1.title + " + " + s2.title;
+    string newArtist = s1.artist + " & " + s2.artist;
+    int totalDuration = s1.duration + s2.duration;
+    return Song(newTitle, newArtist, totalDuration);
+}
+
+int main() {
+    Song s1("Bella", "Gims", 3);
+    Song s2("Djadja", "Aya Nakamura", 4);
+    Song s3("Bella", "Gims", 5);
+
+    cout << "Song 1: " << s1 << endl;
+    cout << "Song 2: " << s2 << endl;
+
+    if (s1 < s2) {
+        cout << s1.getTitle() << " is shorter than " << s2.getTitle() << endl;
+    }
+
+    if (s1 == s3) {
+        cout << s1.getTitle() << " and Song 3 are the same song!" << endl;
+    }
+
+    Song combo = s1 + s2;
+    cout << "Combined: " << combo << endl;
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playgroundSol4')">▶ Run Solution</button>
+                        <button class="reset-btn" onclick="resetCode('solution4')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loadingSol4" class="loading-indicator">Running...</div>
+                            <div id="outputSol4" class="output-text output-placeholder">Click "Run Solution" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4>Explanation:</h4>
+                <ul>
+                    <li><strong>operator<<:</strong> Formats output, returns <code>ostream&</code> for chaining</li>
+                    <li><strong>operator<:</strong> Compares by duration only</li>
+                    <li><strong>operator==:</strong> Ignores duration (same song can have different length recordings)</li>
+                    <li><strong>operator+:</strong> Creates creative mashup with combined artists and total duration</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script>
+        const editors = {};
+        const originalCode = {};
+        window.codeEditors = editors;
+
+        function initEditor(id) {
+            const textarea = document.getElementById(id);
+            if (!textarea) return;
+            originalCode[id] = textarea.value;
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initEditor('editor1');
+            initEditor('editor2');
+            initEditor('editor3');
+            initEditor('editor4');
+            initEditor('solution1');
+            initEditor('solution2');
+            initEditor('solution3');
+            initEditor('solution4');
+            Prism.highlightAll();
+        });
+
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible') && window.codeEditors) {
+                setTimeout(() => {
+                    Object.values(window.codeEditors).forEach(editor => {
+                        editor.refresh();
+                    });
+                }, 50);
+            }
+
+            const button = event.target;
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Solution';
+            } else {
+                button.textContent = 'Show Solution';
+            }
+        }
+
+        async function runCode(playgroundId) {
+            let editorId, outputId, loadingId;
+
+            if (playgroundId.startsWith('playgroundSol')) {
+                const num = playgroundId.replace('playgroundSol', '');
+                editorId = 'solution' + num;
+                outputId = 'outputSol' + num;
+                loadingId = 'loadingSol' + num;
+            } else {
+                const num = playgroundId.replace('playground', '');
+                editorId = 'editor' + num;
+                outputId = 'output' + num;
+                loadingId = 'loading' + num;
+            }
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = event.target;
+
+            loadingEl.classList.add('active');
+            if (runBtn) runBtn.disabled = true;
+            outputEl.textContent = '';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                if (runBtn) runBtn.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            editors[editorId].setValue(originalCode[editorId]);
+
+            let outputId;
+            if (editorId.startsWith('solution')) {
+                const num = editorId.replace('solution', '');
+                outputId = 'outputSol' + num;
+            } else {
+                const num = editorId.replace('editor', '');
+                outputId = 'output' + num;
+            }
+
+            const outputEl = document.getElementById(outputId);
+            if (outputEl) {
+                outputEl.textContent = 'Click "Run Code" to see the output...';
+                outputEl.className = 'output-text output-placeholder';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

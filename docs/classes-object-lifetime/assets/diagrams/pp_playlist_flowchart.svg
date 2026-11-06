@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="760" viewBox="0 0 900 760" role="img"><rect width="100%" height="100%" fill="#ffffff"/>
+<rect x="10.0" y="40" width="640" height="34" rx="17.0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="330" y="62.0" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">anonymousConstructor(std::string n, const std::string* source, int count)</text>
+<path d="M330 74 L330 96" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M330 96 L326.1 86.8 L333.9 86.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<path d="M330 96 L480.0 141.0 L330 186 L180.0 141.0 Z" stroke="#1f2933" stroke-width="1.6" fill="#ffffff"/>
+<text x="330" y="136.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">is source valid and</text>
+<text x="330" y="155.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">count positive?</text>
+<path d="M330 186 L330 212" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M330 212 L326.1 202.8 L333.9 202.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<text x="340" y="204" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Yes</text>
+<rect x="140.0" y="212" width="380" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="330" y="233" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">set title to n</text>
+<path d="M330 245 L330 267" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M330 267 L326.1 257.8 L333.9 257.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="140.0" y="267" width="380" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="330" y="288" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">set songCount to count</text>
+<path d="M330 300 L330 322" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M330 322 L326.1 312.8 L333.9 312.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="140.0" y="322" width="380" height="52" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="330" y="343" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">allocate memory for songs that is</text>
+<text x="330" y="362" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">the same size as songCount</text>
+<path d="M330 374 L330 396" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M330 396 L326.1 386.8 L333.9 386.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="140.0" y="396" width="380" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="330" y="417" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">initialise k to one less than songCount</text>
+<path d="M330 429 L330 451" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M330 451 L326.1 441.8 L333.9 441.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<path d="M330 451 L440.0 491.0 L330 531 L220.0 491.0 Z" stroke="#1f2933" stroke-width="1.6" fill="#ffffff"/>
+<text x="330" y="486.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">is k more</text>
+<text x="330" y="505.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">than 0?</text>
+<path d="M330 531 L330 555" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M330 555 L326.1 545.8 L333.9 545.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<text x="340" y="547" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Yes</text>
+<rect x="140.0" y="555" width="380" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="330" y="576" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">set songs at k to whatever source at k is</text>
+<path d="M330 588 L330 610" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M330 610 L326.1 600.8 L333.9 600.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="230.0" y="610" width="200" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="330" y="631" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">decrement k</text>
+<path d="M230 626.5 L60 626.5 L60 491 L220 491" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M220 491 L210.8 494.9 L210.8 487.1 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="720.0" y="640" width="120" height="34" rx="17.0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="780" y="662.0" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">END</text>
+<path d="M480 141 L780 141 L780 640" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M780 640 L776.1 630.8 L783.9 630.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<text x="490" y="133" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">No</text>
+<path d="M440 491 L780 491" stroke="#1f2933" stroke-width="2" fill="none"/>
+<text x="450" y="483" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">No</text>
+<text x="20" y="24" text-anchor="start" font-size="16" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Figure 3 (redrawn)</text>
+</svg>

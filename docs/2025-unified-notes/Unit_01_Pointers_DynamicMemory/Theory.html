@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1: Pointers & Dynamic Memory - Theory | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- CodeMirror for interactive playground -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <style>
+        /* DEEP OCEAN THEME */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0ea5e9;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        /* Hamburger menu button (hidden on desktop) */
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: #f1f5f9;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-hamburger:hover {
+            color: #0ea5e9;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #10b981;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Swift Quiz */
+        .swift-quiz {
+            background: #1f2415;
+            border-left: 5px solid #eab308;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 10px rgba(234, 179, 8, 0.15);
+        }
+
+        .swift-quiz-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #eab308;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .swift-quiz-question {
+            color: #cbd5e1;
+            margin-bottom: 0.75rem;
+        }
+
+        .swift-quiz-toggle {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 0.8rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .swift-quiz-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .swift-quiz-answer {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eab308;
+        }
+
+        .swift-quiz-answer.visible {
+            display: block;
+        }
+
+        .swift-quiz-answer strong {
+            color: #eab308;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0c1222;
+            border: 2px solid #1e3a5f;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-block pre {
+            color: #f1f5f9;
+            margin: 0;
+        }
+
+        .code-block code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* Custom Prism syntax highlighting for Deep Ocean theme */
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+            color: #64748b;
+        }
+
+        .token.punctuation {
+            color: #94a3b8;
+        }
+
+        .token.property,
+        .token.tag,
+        .token.boolean,
+        .token.number,
+        .token.constant,
+        .token.symbol {
+            color: #0ea5e9;
+        }
+
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin {
+            color: #10b981;
+        }
+
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .token.variable {
+            color: #f1f5f9;
+        }
+
+        .token.atrule,
+        .token.attr-value,
+        .token.keyword,
+        .token.class-name {
+            color: #8b5cf6;
+        }
+
+        .token.function {
+            color: #0ea5e9;
+        }
+
+        .token.regex,
+        .token.important {
+            color: #f59e0b;
+        }
+
+        /* ASCII Diagram */
+        .ascii-diagram {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #10b981;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        /* Important callout */
+        .callout-warning {
+            background: #2d1414;
+            border-left: 5px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-warning strong {
+            color: #ef4444;
+        }
+
+        /* Success/Info callout (green) */
+        .callout-success {
+            background: #142d1f;
+            border-left: 5px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-success strong {
+            color: #10b981;
+        }
+
+        /* Swift Note callout (blue) */
+        .callout-note {
+            background: #0c1e2d;
+            border-left: 5px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-note strong {
+            color: #0ea5e9;
+        }
+
+        /* ============================================
+           CUSTOM CODE PLAYGROUND COMPONENT
+           ============================================ */
+
+        .code-playground {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .playground-header {
+            background: #0f172a;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .playground-title::before {
+            content: "⚡";
+            font-size: 1.2rem;
+        }
+
+        .playground-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .run-btn::before {
+            content: "▶";
+            font-size: 1rem;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .loading-indicator {
+            color: #eab308;
+            font-size: 0.85rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading-indicator.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #475569;
+            border-top-color: #eab308;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .playground-editor {
+            background: #1e293b;
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 300px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            background: #1e293b !important;
+        }
+
+        .CodeMirror-gutters {
+            background: #0f172a !important;
+            border-right: 1px solid #334155;
+        }
+
+        .playground-output {
+            background: #0f172a;
+            border-top: 1px solid #334155;
+        }
+
+        .output-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .output-header::before {
+            content: "▶";
+            color: #10b981;
+        }
+
+        .output-content {
+            padding: 1.5rem;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .output-text {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .output-success {
+            color: #10b981;
+        }
+
+        .output-error {
+            color: #ef4444;
+        }
+
+        .output-info {
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        /* Compact version */
+        .code-playground.compact .CodeMirror {
+            min-height: 200px;
+        }
+
+        .code-playground.compact .output-content {
+            min-height: 100px;
+            max-height: 250px;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-wrap: wrap;
+            }
+
+            .nav-brand {
+                gap: 0.75rem;
+            }
+
+            .nav-logo {
+                height: 38px;
+                width: 38px;
+            }
+
+            .nav-brand-company {
+                font-size: 0.6rem;
+            }
+
+            .nav-brand-title {
+                font-size: 0.9rem;
+            }
+
+            .nav-brand-subtitle {
+                font-size: 0.6rem;
+            }
+
+            .nav-hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0;
+                margin-top: 1rem;
+                background: #1e293b;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu li {
+                width: 100%;
+                border-bottom: 1px solid #334155;
+            }
+
+            .nav-menu li:last-child {
+                border-bottom: none;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: 1rem;
+                border-bottom: none !important;
+            }
+
+            .nav-menu a:hover,
+            .nav-menu a.active {
+                background: #0f172a;
+            }
+
+            /* Playground mobile styles */
+            .playground-header {
+                padding: 0.875rem 1rem;
+            }
+
+            .playground-title {
+                font-size: 0.875rem;
+            }
+
+            .run-btn, .reset-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .CodeMirror {
+                font-size: 13px;
+            }
+
+            .output-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 1: Pointers & Dynamic Memory</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+            ☰
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="Theory.html" class="active">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Opening Greeting -->
+        <p style="font-size: 1.2rem; color: #0ea5e9; font-weight: 600; margin-bottom: 1.5rem;">
+            Good day, good people!
+        </p>
+
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Welcome to Pointers & Dynamic Memory</h2>
+            <p>
+                This unit covers one of the most important concepts in C++: pointers and dynamic memory management. Pointers give you direct control over your computer's memory, allowing you to write efficient programs and build complex data structures.
+            </p>
+            <p>
+                By the end of this unit, you'll understand how to work with memory addresses, create variables at runtime, and manage memory properly to avoid leaks and crashes.
+            </p>
+
+            <div class="callout-note">
+                <strong>Swift Note:</strong> Pointers can feel abstract at first, but we'll break everything down step-by-step with plenty of interactive examples you can run and modify. Take your time and experiment with the code!
+            </div>
+        </section>
+
+        <!-- Quick COS 132 Refresher: Arrays -->
+        <section class="content-card">
+            <h2>COS 132 Refresher: Arrays Basics</h2>
+            <p>
+                Before we dive into pointers, let's refresh one important concept from COS 132: arrays. Understanding arrays will make pointers much easier to grasp.
+            </p>
+
+            <h3>What is an Array?</h3>
+            <p>
+                An array is a collection of elements of the same type, stored in contiguous (adjacent) memory locations. You declare an array by specifying the type and size.
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">// Declare an array of 5 integers
+int scores[5];
+
+// Initialize an array
+int numbers[4] = {10, 20, 30, 40};
+
+// Access elements using indices (0-based)
+cout << numbers[0];  // Prints: 10
+cout << numbers[3];  // Prints: 40
+
+// Modify elements
+numbers[1] = 99;
+cout << numbers[1];  // Prints: 99</code></pre>
+            </div>
+
+            <h3>Arrays in Memory</h3>
+            <p>
+                Here's how an array looks in memory. Each element occupies a specific memory location with its own address.
+            </p>
+
+            <div class="ascii-diagram">
+Array: int numbers[4] = {10, 20, 30, 40};
+
+Memory Layout:
+       numbers[0]  numbers[1]  numbers[2]  numbers[3]
+         ┌────┐      ┌────┐      ┌────┐      ┌────┐
+Memory:  │ 10 │      │ 20 │      │ 30 │      │ 40 │
+         └────┘      └────┘      └────┘      └────┘
+Address: 0x1000     0x1004     0x1008     0x100C
+         └───────────────────────────────────────┘
+              Contiguous block in memory
+            </div>
+
+            <div class="callout-warning">
+                <strong>⚠️ Array Limitation:</strong> In C++, the size of an array must be a constant known at compile time. You can't write <code>int arr[n];</code> where <code>n</code> comes from user input. This is a major limitation that dynamic memory solves!
+            </div>
+        </section>
+
+        <!-- Interactive Playground: Arrays Refresher -->
+        <div class="code-playground" id="playground1">
+            <div class="playground-header">
+                <div class="playground-title">Experiment: Array Basics</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground1')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground1')">Reset</button>
+                    <div class="loading-indicator" id="loading1">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor1">#include <iostream>
+using namespace std;
+
+int main() {
+    // Create an array of test scores
+    int scores[5] = {85, 92, 78, 95, 88};
+
+    cout << "Test Scores:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Score " << i+1 << ": " << scores[i] << endl;
+    }
+
+    // Calculate average
+    int sum = 0;
+    for (int i = 0; i < 5; i++) {
+        sum += scores[i];
+    }
+    double average = sum / 5.0;
+
+    cout << "\nAverage score: " << average << endl;
+
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout-success">
+            <strong>Try this:</strong> Change the array size to 3 and update the values. Notice how you have to change the size in two places (the declaration and the loop). This is one reason we need dynamic memory!
+        </div>
+
+        <!-- Content Section 1: What Are Pointers? -->
+        <section class="content-card">
+            <h2>What Are Pointers?</h2>
+            <p>
+                A <strong>pointer</strong> is a variable that stores a memory address. Instead of holding a value like <code>42</code> or <code>3.14</code>, a pointer holds the location in memory where that value is stored.
+            </p>
+
+            <h3>The Memory Address Analogy</h3>
+            <p>
+                Think of your computer's memory as a long street of houses. Each house has a unique address (like "123 Main Street"), and each house contains something inside (furniture, belongings, etc.).
+            </p>
+            <ul>
+                <li>A <strong>regular variable</strong> is like the furniture inside the house.</li>
+                <li>A <strong>pointer</strong> is like writing down the house's address on a piece of paper.</li>
+            </ul>
+            <p>
+                The address lets you find the house (and its contents) even if you're not currently there.
+            </p>
+
+            <div class="ascii-diagram">
+Memory as a Street:
+
+House at 123 Main St:          House at 456 Oak Ave:
+┌──────────────────┐          ┌──────────────────┐
+│  int x = 100     │          │  int y = 200     │
+│  Address: 0x1000 │          │  Address: 0x2000 │
+└──────────────────┘          └──────────────────┘
+
+Pointer (like a piece of paper with an address):
+┌──────────────────┐
+│  int *ptr        │
+│  Value: 0x1000   │  ──────→  Points to x
+│  Address: 0x3000 │
+└──────────────────┘
+            </div>
+
+            <h3>Why Do We Need Pointers?</h3>
+            <p>Pointers unlock three important capabilities:</p>
+            <ul>
+                <li><strong>Efficient function arguments:</strong> Passing a pointer (just an address) is much faster than copying a large object.</li>
+                <li><strong>Dynamic memory:</strong> Pointers are the only way to create variables and arrays whose size isn't known until the program runs.</li>
+                <li><strong>Advanced data structures:</strong> Linked lists, trees, and graphs connect pieces of data using pointers.</li>
+            </ul>
+
+            <div class="callout-note">
+                <strong>Swift Note:</strong> You've actually used pointers already! When you use call-by-reference (<code>void func(int &x)</code>), C++ is passing a pointer to <code>x</code> behind the scenes. Now we're learning to use them directly.
+            </div>
+        </section>
+
+        <!-- Content Section 2: Pointer Syntax and Operations -->
+        <section class="content-card">
+            <h2>Pointer Syntax and Operations</h2>
+            <p>
+                Working with pointers requires three key concepts. The confusing part? Two of them use symbols you already know (<code>&</code> and <code>*</code>), but in new contexts.
+            </p>
+
+            <h3>1. The Address-of Operator (<code>&</code>)</h3>
+            <p>
+                The <code>&</code> operator gives you the memory address of a variable. It answers the question: "Where does this variable live in memory?"
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">int score = 100;
+
+// Get the address of score
+cout << &score;  // Prints something like: 0x7ffee4b5e0a4
+                 // This is the memory address where score is stored</code></pre>
+            </div>
+
+            <h3>2. Pointer Declaration (<code>*</code>)</h3>
+            <p>
+                When declaring a variable, the <code>*</code> symbol makes it a pointer. This tells the compiler: "This variable will hold an address, not a regular value."
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">// Declare a pointer to an integer
+int *ptr;
+
+// Declare a pointer to a double
+double *dPtr;
+
+// The * attaches to the variable name, not the type
+int *p1, *p2;   // Both are pointers
+int* p3, p4;    // p3 is a pointer, p4 is a regular int (confusing!)</code></pre>
+            </div>
+
+            <h3>3. The Dereferencing Operator (<code>*</code>)</h3>
+            <p>
+                When <code>*</code> is used with an existing pointer variable, it "goes to" the address and accesses the value stored there. This is called <strong>dereferencing</strong>.
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">int score = 100;
+int *ptr = &score;  // ptr holds the address of score
+
+// Dereference: access the value AT the address
+cout << *ptr;       // Prints: 100 (the value of score)
+
+// Modify the value through the pointer
+*ptr = 200;
+cout << score;      // Prints: 200 (score was changed!)</code></pre>
+            </div>
+
+            <div class="callout-warning">
+                <strong>⚠️ Important:</strong> The <code>*</code> symbol has two different meanings:
+                <ul>
+                    <li><code>int *ptr;</code> → Declaration (ptr is a pointer)</li>
+                    <li><code>*ptr = 50;</code> → Dereferencing (access value at ptr's address)</li>
+                </ul>
+                The context tells you which one it is.
+            </div>
+
+            <h3>Putting It All Together</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">// 1. Create a regular variable
+int num = 42;
+
+// 2. Declare a pointer
+int *p;
+
+// 3. Store the address of num in p
+p = &num;
+
+// 4. Access the value through the pointer
+cout << *p;  // Prints: 42
+
+// 5. Modify through the pointer
+*p = 99;
+cout << num;  // Prints: 99 (num changed!)
+cout << *p;   // Prints: 99</code></pre>
+            </div>
+        </section>
+
+        <!-- Interactive Playground 2: Pointer Basics -->
+        <div class="code-playground" id="playground2">
+            <div class="playground-header">
+                <div class="playground-title">Experiment: Your First Pointer</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground2')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground2')">Reset</button>
+                    <div class="loading-indicator" id="loading2">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor2">#include <iostream>
+using namespace std;
+
+int main() {
+    int age = 21;
+    int *agePtr;
+
+    cout << "Value of age: " << age << endl;
+    cout << "Address of age (&age): " << &age << endl;
+
+    // Make the pointer point to age
+    agePtr = &age;
+
+    cout << "\nPointer agePtr now points to age:" << endl;
+    cout << "Value stored in agePtr: " << agePtr << endl;
+    cout << "Value pointed to (*agePtr): " << *agePtr << endl;
+
+    // Change age through the pointer
+    *agePtr = 22;
+
+    cout << "\nAfter changing through pointer:" << endl;
+    cout << "age is now: " << age << endl;
+    cout << "*agePtr is now: " << *agePtr << endl;
+
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout-success">
+            <strong>Try this:</strong> Change <code>*agePtr = 22;</code> to <code>*agePtr = 100;</code>. Notice how both <code>age</code> and <code>*agePtr</code> show the same value because they refer to the same memory location!
+        </div>
+
+        <!-- Swift Quiz 1 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-title">
+                💡 Swift Quiz: Address vs Value
+            </div>
+            <div class="swift-quiz-question">
+                <strong>Question:</strong> If <code>int x = 50;</code> and <code>int *ptr = &x;</code>, what do these expressions give you?
+                <ul>
+                    <li><code>&x</code></li>
+                    <li><code>ptr</code></li>
+                    <li><code>*ptr</code></li>
+                </ul>
+            </div>
+            <button class="swift-quiz-toggle" onclick="toggleAnswer(this)">
+                Show Answer ▼
+            </button>
+            <div class="swift-quiz-answer">
+                <p><strong>Answer:</strong></p>
+                <ul>
+                    <li><code>&x</code> → The <strong>address</strong> of x (e.g., 0x7fff5fbff5ac)</li>
+                    <li><code>ptr</code> → The <strong>address</strong> stored in ptr (same as <code>&x</code>)</li>
+                    <li><code>*ptr</code> → The <strong>value</strong> at the address ptr holds (50)</li>
+                </ul>
+                <p>
+                    <code>&x</code> and <code>ptr</code> both give addresses. <code>*ptr</code> dereferences to get the actual value.
+                </p>
+            </div>
+        </div>
+
+        <!-- Content Section 3: Pointers and Functions -->
+        <section class="content-card">
+            <h2>Pointers and Functions: Call-by-Reference Explained</h2>
+            <p>
+                One of the most important uses of pointers is passing variables to functions by reference. This lets functions modify the original variable, not just a copy.
+            </p>
+
+            <h3>Call-by-Value (The Default)</h3>
+            <p>
+                When you pass a variable to a function normally, C++ makes a copy. Changes to the parameter don't affect the original variable.
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">void tryToDouble(int num) {
+    num = num * 2;  // Only changes the COPY
+}
+
+int main() {
+    int x = 10;
+    tryToDouble(x);
+    cout << x;  // Still prints: 10 (unchanged!)
+    return 0;
+}</code></pre>
+            </div>
+
+            <h3>Call-by-Reference with Pointers</h3>
+            <p>
+                By passing a pointer (the address), the function can access and modify the original variable.
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">void actuallyDouble(int *numPtr) {
+    *numPtr = *numPtr * 2;  // Changes the ORIGINAL
+}
+
+int main() {
+    int x = 10;
+    actuallyDouble(&x);  // Pass the address of x
+    cout << x;  // Prints: 20 (changed!)
+    return 0;
+}</code></pre>
+            </div>
+
+            <div class="callout-note">
+                <strong>Swift Note:</strong> This is exactly what the <code>&</code> reference parameter does (<code>void func(int &x)</code>). It's just a cleaner syntax for the same concept!
+            </div>
+        </section>
+
+        <!-- Interactive Playground 3: Pointers in Functions -->
+        <div class="code-playground" id="playground3">
+            <div class="playground-header">
+                <div class="playground-title">Experiment: Swap Function with Pointers</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground3')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground3')">Reset</button>
+                    <div class="loading-indicator" id="loading3">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor3">#include <iostream>
+using namespace std;
+
+// Function to swap two integers using pointers
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int main() {
+    int first = 10;
+    int second = 20;
+
+    cout << "Before swap:" << endl;
+    cout << "first = " << first << ", second = " << second << endl;
+
+    // Pass addresses to the swap function
+    swap(&first, &second);
+
+    cout << "\nAfter swap:" << endl;
+    cout << "first = " << first << ", second = " << second << endl;
+
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Swift Quiz 2 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-title">
+                💡 Swift Quiz: Why Does Swap Work?
+            </div>
+            <div class="swift-quiz-question">
+                <strong>Question:</strong> Why does the swap function successfully swap the values of <code>first</code> and <code>second</code> in <code>main()</code>?
+            </div>
+            <button class="swift-quiz-toggle" onclick="toggleAnswer(this)">
+                Show Answer ▼
+            </button>
+            <div class="swift-quiz-answer">
+                <p><strong>Answer:</strong></p>
+                <p>
+                    The swap function receives <strong>pointers</strong> (addresses) to <code>first</code> and <code>second</code>, not copies of their values. When the function dereferences these pointers (<code>*a</code> and <code>*b</code>), it's directly accessing and modifying the original variables in <code>main()</code>.
+                </p>
+                <p>
+                    If we had used call-by-value (<code>void swap(int a, int b)</code>), the function would only swap copies, leaving the originals unchanged.
+                </p>
+            </div>
+        </div>
+
+        <!-- Content Section 4: NULL and Pointer Safety -->
+        <section class="content-card">
+            <h2>Pointer Safety: NULL and Initialization</h2>
+            <p>
+                The most dangerous thing about pointers is using them before they're initialized. An uninitialized pointer contains a random memory address, and dereferencing it causes undefined behavior (usually a crash).
+            </p>
+
+            <h3>Always Initialize Pointers</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">// WRONG: Uninitialized pointer
+int *ptr;
+*ptr = 10;  // CRASH! ptr points to random memory
+
+// CORRECT: Initialize to NULL
+int *ptr = NULL;
+
+// Check before using
+if (ptr != NULL) {
+    *ptr = 10;  // This won't execute (ptr is null)
+}
+
+// Or initialize to a valid address
+int x;
+int *ptr2 = &x;
+*ptr2 = 10;  // Safe!</code></pre>
+            </div>
+
+            <h3>What is <code>NULL</code>?</h3>
+            <p>
+                <code>NULL</code> is a special value that represents a "null pointer" - a pointer that points to nothing. It's a safe default value that you can check before using the pointer.
+            </p>
+
+            <div class="callout-warning">
+                <strong>⚠️ Important Rule:</strong> Never dereference a pointer that is <code>NULL</code> or uninitialized. Always initialize pointers and check them before use.
+            </div>
+        </section>
+
+        <!-- Content Section 5: Dynamic Memory - new and delete -->
+        <section class="content-card">
+            <h2>Dynamic Memory: Creating Variables at Runtime</h2>
+            <p>
+                So far, all our variables have been created automatically when we declare them. They live on the <strong>stack</strong> and are destroyed automatically when they go out of scope. But what if you need a variable that:
+            </p>
+            <ul>
+                <li>Outlives the function that created it?</li>
+                <li>Has a size that isn't known until the program runs?</li>
+            </ul>
+            <p>
+                That's where <strong>dynamic memory</strong> comes in. Dynamic variables live on the <strong>heap</strong> (also called the <strong>freestore</strong>), and their lifetime is controlled manually.
+            </p>
+
+            <h3>The <code>new</code> Operator</h3>
+            <p>
+                The <code>new</code> operator allocates memory on the heap and returns a pointer to that memory.
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">// Allocate an integer on the heap
+int *ptr = new int;
+
+// You can also initialize it
+int *ptr2 = new int(42);
+
+// Use the dynamic variable through the pointer
+*ptr = 100;
+cout << *ptr;  // Prints: 100</code></pre>
+            </div>
+
+            <h3>The <code>delete</code> Operator</h3>
+            <p>
+                When you're done with a dynamic variable, you <strong>must</strong> return its memory to the system using <code>delete</code>. If you forget, you have a <strong>memory leak</strong>.
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">int *ptr = new int(50);
+
+// ... use ptr ...
+
+delete ptr;        // Free the memory
+ptr = NULL;        // Set to null (good practice)</code></pre>
+            </div>
+
+            <div class="ascii-diagram">
+Stack vs Heap:
+
+STACK (Automatic variables):
+┌──────────────┐
+│ int x = 10;  │ ← Created when declared
+└──────────────┘ ← Destroyed when out of scope
+
+HEAP (Dynamic variables):
+┌──────────────────────┐
+│ int *p = new int(20);│ ← Created with 'new'
+└──────────────────────┘ ← Destroyed with 'delete'
+                          (YOU control lifetime)
+            </div>
+
+            <div class="callout-warning">
+                <strong>⚠️ Essential Rule:</strong> Every <code>new</code> must have exactly one matching <code>delete</code>. Forgetting to <code>delete</code> causes memory leaks. Using a pointer after <code>delete</code> causes crashes.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 4: Dynamic Memory -->
+        <div class="code-playground" id="playground4">
+            <div class="playground-header">
+                <div class="playground-title">Experiment: Dynamic Memory Lifecycle</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground4')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground4')">Reset</button>
+                    <div class="loading-indicator" id="loading4">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor4">#include <iostream>
+using namespace std;
+
+int main() {
+    // Jabulani needs to store his exam score dynamically
+
+    int *examScore = NULL;
+
+    cout << "Before allocation: " << examScore << endl;
+
+    // Allocate memory on the heap
+    examScore = new int;
+
+    cout << "After allocation: " << examScore << endl;
+
+    // Store Jabulani's score
+    *examScore = 87;
+
+    cout << "Jabulani's exam score: " << *examScore << endl;
+
+    // Calculate bonus points
+    *examScore = *examScore + 5;
+
+    cout << "After bonus: " << *examScore << endl;
+
+    // Clean up - very important!
+    delete examScore;
+    examScore = NULL;
+
+    cout << "After cleanup: " << examScore << endl;
+
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section 6: Memory Leaks and Dangling Pointers -->
+        <section class="content-card">
+            <h2>Common Memory Errors</h2>
+
+            <h3>1. Memory Leaks</h3>
+            <p>
+                A <strong>memory leak</strong> occurs when you allocate memory with <code>new</code> but never release it with <code>delete</code>. The memory becomes "lost" - your program can't access it, but the system still considers it in use.
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">void leakyFunction() {
+    int *p = new int(10);
+    // ... use p ...
+    // Function ends WITHOUT calling delete
+}  // LEAK! Memory is lost forever
+
+// If called in a loop:
+for (int i = 0; i < 1000; i++) {
+    leakyFunction();  // Leaks more memory each time!
+}
+// Eventually the program runs out of memory and crashes</code></pre>
+            </div>
+
+            <p><strong>Fix:</strong> Always call <code>delete</code> before losing the pointer.</p>
+            <div class="code-block">
+<pre><code class="language-cpp">void goodFunction() {
+    int *p = new int(10);
+    // ... use p ...
+    delete p;  // Clean up before function ends
+}</code></pre>
+            </div>
+
+            <h3>2. Dangling Pointers</h3>
+            <p>
+                A <strong>dangling pointer</strong> points to memory that has been freed. Using it causes undefined behavior (crashes, corrupted data, etc.).
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">int *p = new int(100);
+delete p;      // Memory is freed
+
+cout << *p;    // DANGER! Dangling pointer
+*p = 200;      // DANGER! Writing to freed memory</code></pre>
+            </div>
+
+            <p><strong>Fix:</strong> Set pointers to <code>NULL</code> after deleting.</p>
+            <div class="code-block">
+<pre><code class="language-cpp">int *p = new int(100);
+delete p;
+p = NULL;      // Now it's safe
+
+// Any attempt to use it can be checked:
+if (p != NULL) {
+    cout << *p;  // Won't execute
+}</code></pre>
+            </div>
+
+            <h3>3. Double Deletion</h3>
+            <p>
+                Calling <code>delete</code> twice on the same pointer causes undefined behavior.
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">int *p = new int(50);
+delete p;
+delete p;  // CRASH! Double deletion
+
+// Fix: Set to NULL after first delete
+int *p = new int(50);
+delete p;
+p = NULL;
+
+delete p;  // Safe - deleting NULL does nothing</code></pre>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 3 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-title">
+                💡 Swift Quiz: Spot the Memory Leak
+            </div>
+            <div class="swift-quiz-question">
+                <strong>Question:</strong> Does this code have a memory leak?
+                <div class="code-block">
+<pre><code class="language-cpp">int *p = new int(5);
+p = new int(10);</code></pre>
+                </div>
+            </div>
+            <button class="swift-quiz-toggle" onclick="toggleAnswer(this)">
+                Show Answer ▼
+            </button>
+            <div class="swift-quiz-answer">
+                <p><strong>Answer:</strong> YES, this has a memory leak!</p>
+                <p>
+                    The first <code>new int(5)</code> allocates memory and <code>p</code> points to it. The second <code>new int(10)</code> allocates different memory and <code>p</code> now points to this new location. The original memory (containing 5) is still allocated but we've lost the pointer to it - it's leaked.
+                </p>
+                <p><strong>Correct approach:</strong></p>
+                <div class="code-block">
+<pre><code class="language-cpp">int *p = new int(5);
+delete p;        // Free the first allocation
+p = new int(10); // Now allocate new memory</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section 7: Dynamic Arrays -->
+        <section class="content-card">
+            <h2>Dynamic Arrays: Arrays with Runtime Size</h2>
+            <p>
+                Remember the limitation of regular arrays? Their size must be a constant known at compile time. Dynamic arrays solve this by letting you specify the size at runtime.
+            </p>
+
+            <h3>Creating Dynamic Arrays</h3>
+            <p>
+                Use <code>new type[size]</code> where <code>size</code> can be a variable. This returns a pointer to the first element.
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">int size;
+cout << "How many elements? ";
+cin >> size;
+
+// Create a dynamic array
+int *arr = new int[size];
+
+// Use it like a normal array
+for (int i = 0; i < size; i++) {
+    arr[i] = i * 10;
+    cout << arr[i] << " ";
+}</code></pre>
+            </div>
+
+            <h3>Deleting Dynamic Arrays</h3>
+            <p>
+                This is important: when you delete a dynamic array, you <strong>must</strong> use <code>delete []</code>, not <code>delete</code>. The empty brackets tell C++ to free the entire array.
+            </p>
+            <div class="code-block">
+<pre><code class="language-cpp">int *arr = new int[100];
+
+// ... use arr ...
+
+delete [] arr;    // CORRECT: frees the entire array
+arr = NULL;
+
+// delete arr;    // WRONG! Only frees first element, leaks the rest</code></pre>
+            </div>
+
+            <div class="callout-warning">
+                <strong>⚠️ Important:</strong> Mixing <code>new</code>/<code>delete</code> and <code>new[]</code>/<code>delete[]</code> causes undefined behavior. This corrupts memory and causes hard-to-debug crashes.
+                <ul>
+                    <li><code>new type</code> → <code>delete ptr</code></li>
+                    <li><code>new type[size]</code> → <code>delete [] ptr</code></li>
+                </ul>
+            </div>
+
+            <div class="ascii-diagram">
+Dynamic Array in Memory:
+
+int *playlist = new int[5];
+
+         playlist
+           │
+           ▼
+Stack:  ┌─────────┐
+        │ pointer │──────┐
+        └─────────┘      │
+                         │
+Heap:                    ▼
+        ┌───┬───┬───┬───┬───┐
+        │ 0 │ 1 │ 2 │ 3 │ 4 │  ← Contiguous block
+        └───┴───┴───┴───┴───┘
+        playlist[0] through playlist[4]
+
+Cleanup: delete [] playlist;
+         playlist = NULL;
+            </div>
+        </section>
+
+        <!-- Interactive Playground 5: Dynamic Arrays -->
+        <div class="code-playground" id="playground5">
+            <div class="playground-header">
+                <div class="playground-title">Experiment: Dynamic Music Playlist</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground5')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground5')">Reset</button>
+                    <div class="loading-indicator" id="loading5">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor5">#include <iostream>
+using namespace std;
+
+int main() {
+    // Swift is creating a playlist of song durations
+    // Classic French Celine Dion songs
+
+    int numSongs = 3;
+
+    // Create dynamic array for song durations (in seconds)
+    int *durations = new int[numSongs];
+
+    durations[0] = 255;  // "Pour que tu m'aimes encore" - 4:15
+    durations[1] = 228;  // "S'il suffisait d'aimer" - 3:48
+    durations[2] = 244;  // "Sous le vent" - 4:04
+
+    cout << "Celine Dion - Chansons Francaises" << endl;
+    cout << "Song Durations:" << endl;
+
+    int totalSeconds = 0;
+    for (int i = 0; i < numSongs; i++) {
+        int minutes = durations[i] / 60;
+        int seconds = durations[i] % 60;
+        cout << "  Song " << (i+1) << ": "
+             << minutes << ":"
+             << (seconds < 10 ? "0" : "") << seconds
+             << " (" << durations[i] << "s)" << endl;
+        totalSeconds += durations[i];
+    }
+
+    cout << "\nTotal playlist time: "
+         << totalSeconds/60 << " minutes" << endl;
+
+    // Clean up - important!
+    delete [] durations;
+    durations = NULL;
+
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout-success">
+            <strong>Try this:</strong> Change <code>numSongs</code> to 5 and add two more song durations. Notice how easy it is to resize—just change the variable and add more data!
+        </div>
+
+        <!-- Swift Quiz 4 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-title">
+                💡 Swift Quiz: What's Wrong Here?
+            </div>
+            <div class="swift-quiz-question">
+                <strong>Question:</strong> What's wrong with this code?
+                <div class="code-block">
+<pre><code class="language-cpp">double *scores = new double[50];
+// ... use scores ...
+delete scores;</code></pre>
+                </div>
+            </div>
+            <button class="swift-quiz-toggle" onclick="toggleAnswer(this)">
+                Show Answer ▼
+            </button>
+            <div class="swift-quiz-answer">
+                <p><strong>Answer:</strong> The <code>delete</code> statement is wrong!</p>
+                <p>
+                    We allocated an array with <code>new double[50]</code>, so we must delete it with <code>delete [] scores;</code>. Using <code>delete scores;</code> without the brackets only frees the first element and leaks the remaining 49 elements.
+                </p>
+                <p><strong>Correct version:</strong></p>
+                <div class="code-block">
+<pre><code class="language-cpp">double *scores = new double[50];
+// ... use scores ...
+delete [] scores;  // The [] is essential!
+scores = NULL;</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section 8: Pointers and Arrays -->
+        <section class="content-card">
+            <h2>The Relationship Between Pointers and Arrays</h2>
+            <p>
+                In C++, array names and pointers are closely related. When you declare an array, the array name acts like a pointer to the first element.
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">int arr[5] = {10, 20, 30, 40, 50};
+
+// Array name is like a pointer to the first element
+cout << arr;     // Prints the address of arr[0]
+cout << &arr[0]; // Same address
+
+// You can use pointer syntax with arrays
+cout << *arr;       // Prints 10 (first element)
+cout << *(arr + 1); // Prints 20 (second element)
+
+// And array syntax with pointers
+int *ptr = arr;
+cout << ptr[0];  // Prints 10
+cout << ptr[2];  // Prints 30</code></pre>
+            </div>
+
+            <div class="callout-note">
+                <strong>Swift Note:</strong> While arrays and pointers are related, they're not identical. You can't reassign an array name (<code>arr = something</code> doesn't work), but you can reassign a pointer.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 6: Arrays and Pointers -->
+        <div class="code-playground compact" id="playground6">
+            <div class="playground-header">
+                <div class="playground-title">Experiment: Arrays and Pointers</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground6')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground6')">Reset</button>
+                    <div class="loading-indicator" id="loading6">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor6">#include <iostream>
+using namespace std;
+
+int main() {
+    int numbers[4] = {100, 200, 300, 400};
+
+    cout << "Array name as pointer:" << endl;
+    cout << "Address of array: " << numbers << endl;
+    cout << "Address of first element: " << &numbers[0] << endl;
+
+    cout << "\nAccessing elements:" << endl;
+    cout << "numbers[0] = " << numbers[0] << endl;
+    cout << "*numbers = " << *numbers << endl;
+
+    cout << "numbers[2] = " << numbers[2] << endl;
+    cout << "*(numbers + 2) = " << *(numbers + 2) << endl;
+
+    // Use a pointer to traverse the array
+    int *ptr = numbers;
+    cout << "\nUsing pointer to access array:" << endl;
+    for (int i = 0; i < 4; i++) {
+        cout << "ptr[" << i << "] = " << ptr[i] << endl;
+    }
+
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Swift Quiz 5 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-title">
+                💡 Swift Quiz: Array vs Pointer
+            </div>
+            <div class="swift-quiz-question">
+                <strong>Question:</strong> What's the key difference between an array name and a pointer variable?
+                <div class="code-block">
+<pre><code class="language-cpp">int arr[5];
+int *ptr;</code></pre>
+                </div>
+            </div>
+            <button class="swift-quiz-toggle" onclick="toggleAnswer(this)">
+                Show Answer ▼
+            </button>
+            <div class="swift-quiz-answer">
+                <p><strong>Answer:</strong></p>
+                <ul>
+                    <li><strong>Array name (<code>arr</code>):</strong> Is a constant pointer to the first element. You CANNOT reassign it (<code>arr = something;</code> is illegal).</li>
+                    <li><strong>Pointer variable (<code>ptr</code>):</strong> Is a variable that stores an address. You CAN reassign it to point to different things.</li>
+                </ul>
+                <div class="code-block">
+<pre><code class="language-cpp">int arr[5];
+int x;
+
+arr = &x;  // ERROR! Can't reassign an array name
+
+int *ptr;
+ptr = arr;  // OK! Pointer can be assigned
+ptr = &x;   // OK! Pointer can be reassigned</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section 9: What's Next? -->
+        <section class="content-card">
+            <h2>Looking Ahead: Where Do Pointers Go From Here?</h2>
+            <p>
+                You now understand the fundamentals of pointers and dynamic memory. But where do these concepts go?
+            </p>
+
+            <h3>Classes and Dynamic Memory (Unit 6)</h3>
+            <p>
+                Later in the course, you'll learn about classes that manage dynamic memory. When a class contains a pointer to dynamic memory (like a dynamic array), you'll need to implement three special member functions to handle copying and cleanup properly. This is called "The Big Three":
+            </p>
+            <ul>
+                <li><strong>Destructor:</strong> Cleans up dynamic memory when an object is destroyed</li>
+                <li><strong>Copy Constructor:</strong> Makes a deep copy when creating a new object from an existing one</li>
+                <li><strong>Assignment Operator:</strong> Makes a deep copy when assigning one object to another</li>
+            </ul>
+            <p>
+                Don't worry about these yet—another unit will cover them in detail. Just know that everything you've learned here about <code>new</code>, <code>delete</code>, and memory management will be essential!
+            </p>
+
+            <h3>Data Structures (Later Units)</h3>
+            <p>
+                Pointers are the building blocks for advanced data structures like:
+            </p>
+            <ul>
+                <li><strong>Linked Lists:</strong> Nodes connected by pointers</li>
+                <li><strong>Trees:</strong> Hierarchical structures with pointer connections</li>
+                <li><strong>Graphs:</strong> Networks of nodes and edges</li>
+            </ul>
+            <p>
+                These structures only work because pointers let you connect pieces of data together dynamically.
+            </p>
+        </section>
+
+        <!-- Summary Section -->
+        <section class="content-card">
+            <h2>Summary: What You've Learned</h2>
+
+            <h3>Key Concepts</h3>
+            <ul>
+                <li><strong>Pointers:</strong> Variables that store memory addresses. Use <code>&</code> to get an address, <code>*</code> to dereference.</li>
+                <li><strong>Dynamic Memory:</strong> Memory allocated at runtime with <code>new</code>, freed with <code>delete</code>.</li>
+                <li><strong>Dynamic Arrays:</strong> Arrays created with <code>new[]</code>, deleted with <code>delete[]</code>, with size determined at runtime.</li>
+                <li><strong>Memory Safety:</strong> Always initialize pointers, always delete what you allocate, set pointers to <code>NULL</code> after deleting.</li>
+            </ul>
+
+            <h3>Essential Rules to Memorize</h3>
+            <ul>
+                <li>Every <code>new</code> needs exactly one <code>delete</code></li>
+                <li>Every <code>new[]</code> needs exactly one <code>delete[]</code></li>
+                <li>Always initialize pointers before dereferencing</li>
+                <li>Set pointers to <code>NULL</code> after deleting</li>
+                <li>Never use a pointer after it's been deleted</li>
+            </ul>
+
+            <h3>Syntax Quick Reference</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">// Pointer basics
+int var = 42;
+int *ptr = &var;    // ptr holds address of var
+*ptr = 50;          // Change value through pointer
+
+// Dynamic variable
+int *p = new int(10);
+delete p;
+p = NULL;
+
+// Dynamic array
+int size = 5;
+double *arr = new double[size];
+delete [] arr;
+arr = NULL;</code></pre>
+            </div>
+
+            <h3>Next Steps</h3>
+            <p>
+                Now that you understand the theory, move on to <strong>Examples</strong> to see pointers and dynamic memory in real-world scenarios. Then test yourself with <strong>Practice</strong> problems and the <strong>Quiz</strong>!
+            </p>
+        </section>
+
+    </div>
+
+    <script>
+        // Toggle Swift Quiz answers
+        function toggleAnswer(button) {
+            const quiz = button.closest('.swift-quiz');
+            const answer = quiz.querySelector('.swift-quiz-answer');
+
+            if (answer.classList.contains('visible')) {
+                answer.classList.remove('visible');
+                button.textContent = 'Show Answer ▼';
+            } else {
+                answer.classList.add('visible');
+                button.textContent = 'Hide Answer ▲';
+            }
+        }
+
+        // Toggle mobile navigation menu
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                const menu = document.getElementById('navMenu');
+                menu.classList.remove('active');
+            });
+        });
+
+        // ============================================
+        // CUSTOM CODE PLAYGROUND FUNCTIONS
+        // ============================================
+
+        // Store CodeMirror instances and original code
+        const editors = {};
+        const originalCode = {};
+
+        // Initialize CodeMirror editors
+        function initEditor(id, textareaId) {
+            const textarea = document.getElementById(textareaId);
+            if (!textarea) return null;
+
+            originalCode[id] = textarea.value;
+
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+
+            editors[id] = editor;
+            return editor;
+        }
+
+        // Initialize all editors on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            initEditor('playground1', 'editor1');
+            initEditor('playground2', 'editor2');
+            initEditor('playground3', 'editor3');
+            initEditor('playground4', 'editor4');
+            initEditor('playground5', 'editor5');
+            initEditor('playground6', 'editor6');
+        });
+
+        // Run code via Piston API
+        async function runCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const code = editor.getValue();
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+            const runBtn = document.querySelector(`#${playgroundId} .run-btn`);
+            const loadingIndicator = document.getElementById(`loading${playgroundId.replace('playground', '')}`);
+
+            // Show loading state
+            runBtn.disabled = true;
+            loadingIndicator.classList.add('active');
+            outputDiv.className = 'output-text output-info';
+            outputDiv.textContent = 'Compiling and executing your code...';
+
+            try {
+                // Call Piston API
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        stdin: '',
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                // Display results
+                if (result.compile && result.compile.code !== 0) {
+                    // Compilation error
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.innerHTML = `<div class="output-info">❌ Compilation Error:</div>${escapeHtml(result.compile.stderr || result.compile.output)}`;
+                } else if (result.run) {
+                    // Execution output
+                    if (result.run.code === 0) {
+                        // Success
+                        outputDiv.className = 'output-text output-success';
+                        const output = result.run.stdout || result.run.output || '(no output)';
+                        outputDiv.innerHTML = `<div class="output-info">✅ Executed successfully:</div>${escapeHtml(output)}`;
+                    } else {
+                        // Runtime error
+                        outputDiv.className = 'output-text output-error';
+                        const error = result.run.stderr || result.run.output || 'Runtime error';
+                        outputDiv.innerHTML = `<div class="output-info">❌ Runtime Error (exit code ${result.run.code}):</div>${escapeHtml(error)}`;
+                    }
+                } else {
+                    // Unknown error
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.textContent = 'Error: Unable to execute code. Please try again.';
+                }
+
+            } catch (error) {
+                // Network or API error
+                outputDiv.className = 'output-text output-error';
+                outputDiv.innerHTML = `<div class="output-info">❌ Error:</div>Failed to connect to compilation service. Please check your internet connection and try again.`;
+                console.error('Piston API error:', error);
+            } finally {
+                // Hide loading state
+                runBtn.disabled = false;
+                loadingIndicator.classList.remove('active');
+            }
+        }
+
+        // Reset code to original
+        function resetCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+
+            editor.setValue(originalCode[playgroundId]);
+            outputDiv.className = 'output-text output-placeholder';
+            outputDiv.textContent = 'Click "Run Code" to compile and execute...';
+        }
+
+        // Escape HTML for safe display
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

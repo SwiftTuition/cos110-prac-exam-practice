@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Theory | Classes and Object Lifetime | COS 110</title>
+  <link rel="stylesheet" href="assets/css/house.css">
+  <link rel="stylesheet" href="assets/css/computing.css">
+  <link rel="stylesheet" href="assets/css/pipeline-contracts.css">
+  <script defer src="assets/vendor/cpp98-grammar.js"></script>
+  <script defer src="assets/js/learning-components.js"></script>
+</head>
+<body data-current-page="theory" data-template-id="cos110-template-v2.0.0">
+  <header class="site-header">
+    <div class="site-header__inner">
+      <div class="brand"><span class="brand__name">Swift Tuition</span><span class="brand__chapter">COS 110</span></div>
+      <span class="site-header__tag">Program Design: Introduction</span>
+    </div>
+  </header>
+  <header class="page-head">
+    <p class="eyebrow">Theory · Pack 2</p>
+    <h1 class="page-title">Classes, const, static and the special functions</h1>
+    <p class="page-subtitle">Lectures 4, 5, 7 and 8; Tutorials 3 to 5</p>
+  </header>
+  <nav class="page-tabs" aria-label="Page navigation"><div class="page-tabs__inner"><a href="index.html">Home</a><a href="theory.html" aria-current="page">Theory</a><a href="examples.html">Examples</a><a href="practice.html">Practice</a><a href="quiz.html">Quiz</a></div></nav>
+  <main class="chapter-page">
+<p><strong><a href="index.html#mock-test">Mock test</a></strong>: the question paper (PDF) and its solutions.</p><section id="theory-start"><h2>How this page works</h2><p>This page covers Lectures 4, 5, 7 and 8 and Tutorials 3 to 5: classes, <code>const</code>, <code>static</code>, constructors, the copy constructor, the destructor and the assignment operator. Try each problem before you open the answer.</p><p>The topics, in order: <a href="#classes">Classes and objects</a>, <a href="#members">Accessors and mutators</a>, <a href="#files">Header and implementation files</a>, <a href="#this-pointer">The this pointer</a>, <a href="#const">const</a>, <a href="#static">static members</a>, <a href="#constructors">Constructors</a>, <a href="#init-list">The initialisation list</a>, <a href="#conversion">Automatic type conversion</a>, <a href="#copy">The copy constructor</a>, <a href="#destructor">The destructor</a>, <a href="#assignment">The assignment operator</a> and <a href="#lifetime">Object lifetime</a>.</p><p>Each section explains the UML it needs (class boxes, object diagrams, flowcharts) where it uses it. For more UML practice, the packs <em>3. UML Class Diagrams: Reading, Drawing and Coding</em> and <em>4. Flowcharts, Object Diagrams and Memory Diagrams</em> are optional extras.</p><section class="block block--note"><p class="block__label">About the messages</p><p>Messages on these pages come from g++ 13 on Linux with <code>-std=c++98 -Wall -Werror</code>. The g++ on the lab computers words them in a similar way, but line numbers and quote marks can differ (Assumed).</p></section></section><section class="route" data-route-id="classes" data-route-type="concept"><h2 id="classes">Classes and objects</h2><div id="classes-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>In COS 132 a bank account was a <code>struct</code> with data (owner, PIN, balance), and separate functions such as <code>deposit(BankAccount&amp; ba, double amnt)</code> worked on it. Nothing stopped other code from changing the balance directly. COS 110 puts the data and the functions that work on it into one unit, called a <strong>class</strong> (Lecture 4).</p></div><div id="classes-plain-identity" class="route-stage" data-stage="plain-identity"><table class="attribute-table"><thead><tr><th scope="col">Word</th><th scope="col">Meaning (Lecture 4 and Tutorial 3)</th></tr></thead><tbody><tr><td>class</td><td>A data type that combines <strong>properties</strong> (data) and <strong>behaviour</strong> (functions). Think of a building plan for a house.</td></tr><tr><td>object</td><td>One <strong>instance</strong> of a class: the house built from the plan. Creating an object is called <strong>instantiating</strong> the class.</td></tr><tr><td>member</td><td>Anything declared inside the class: a member variable (property) or a member function (behaviour).</td></tr><tr><td>data hiding</td><td>Restricting access to some members of an object, so code outside cannot change them directly.</td></tr><tr><td>public interface</td><td>The members that code outside the object may use.</td></tr><tr><td>access specifier</td><td>The words <code>public:</code> and <code>private:</code>. A <code>public</code> member can be used inside and outside the class; a <code>private</code> member only inside the class (that is, in its own member functions).</td></tr></tbody></table><section class="block block--definition"><p class="block__label">From Lecture 4, slide 17</p><p>For a class the default access specifier is <code>private</code>; for a <code>struct</code> it is <code>public</code>. Members declared before any specifier get the default.</p></section><p>Here is the bank account as a class, split over three files (the next sections explain the files). The data members are private; the functions are the public interface:</p><pre data-component="cpp-highlight" id="classes-header"><code>#ifndef BANKACCOUNT_H
+#define BANKACCOUNT_H
+
+#include &lt;string&gt;
+
+class BankAccount {
+ public:
+  BankAccount(std::string owner, std::string pin);
+  bool isPinCorrect(std::string pin) const;
+  void deposit(double amount);
+  double withdraw(double amount);
+  double getBalance() const;
+
+ private:
+  std::string owner;
+  std::string pin;
+  double balance;
+};
+
+#endif</code></pre><p><a href="assets/code/notes_cl_bank_account_BankAccount.h" download="BankAccount.h">Download this file (it saves as BankAccount.h)</a></p><p>In a UML class diagram the same class is a box with three parts: the name, the attributes (<code>-</code> means private) and the operations (<code>+</code> means public). An object is drawn as a box headed <u><code>name:Class</code></u> (underlined), with one line <code>attribute = value</code> for each attribute.</p><figure class="teaching-figure" id="classes-figure"><p class="code-caption"><a href="assets/diagrams/d01_class_object.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d01_class_object.svg" alt="UML class box BankAccount with private attributes owner: string, pin: string, balance: double and public operations BankAccount(owner: string, pin: string), isPinCorrect(pin: string): bool, deposit(amount: double): void, withdraw(amount: double): double, getBalance(): double. Below it an object box account:BankAccount with owner = &quot;Thandi&quot;, pin = &quot;4321&quot;, balance = 300."><figcaption>The class is the plan; <code>account</code> is one object made from it. Its values are the ones at the end of <code>main</code> below.</figcaption></figure></div><div id="classes-micro-example" class="route-stage" data-stage="micro-example"><p><code>main</code> may use only the public members:</p><pre data-component="cpp-highlight" id="classes-main"><code>#include &lt;iostream&gt;
+#include &quot;BankAccount.h&quot;
+
+int main() {
+  BankAccount account(&quot;Thandi&quot;, &quot;4321&quot;);
+  account.deposit(500);
+  std::cout &lt;&lt; account.withdraw(200) &lt;&lt; std::endl;
+  std::cout &lt;&lt; account.withdraw(900) &lt;&lt; std::endl;
+  std::cout &lt;&lt; account.getBalance() &lt;&lt; std::endl;
+  std::cout &lt;&lt; account.isPinCorrect(&quot;1234&quot;) &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p><a href="assets/code/notes_cl_bank_account_main.cpp" download="main.cpp">Download this file (it saves as main.cpp)</a></p><p>It prints:</p><pre>200
+0
+300
+0</pre><p><code>withdraw(900)</code> returns 0 because 900 is more than the balance of 300, so the balance stays 300. <code>isPinCorrect("1234")</code> returns <code>false</code>, which <code>cout</code> prints as 0.</p><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>amount &gt; balance</code></td><td>not enough money: return 0 and change nothing</td><td>take the money off the balance and return the amount</td></tr></tbody></table></div><div id="classes-contrast" class="route-stage" data-stage="contrast"><p>The default access is the one difference between <code>struct</code> and <code>class</code> that a test asks about (Tutorial 3):</p><pre data-component="cpp-highlight" id="classes-default"><code>#include &lt;iostream&gt;
+
+struct Record {
+  int value;
+};
+
+class Counter {
+  int count;
+};
+
+int main() {
+  Record record;
+  Counter counter;
+  record.value = 5;
+  counter.count = 5;
+  std::cout &lt;&lt; record.value &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p><code>record.value = 5;</code> compiles, because a <code>struct</code> member is public by default. <code>counter.count = 5;</code> does not:</p><pre>main.cpp:15:11: error: ‘int Counter::count’ is private within this context</pre></div><div id="classes-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>Tutorial 3 asks for the errors in this program:</p><pre data-component="cpp-highlight" id="classes-student"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class Student {
+  std::string name;
+  int studentNum;
+
+ public:
+  void setDetails(std::string n, int id) {
+    name = n;
+    studentNum = id;
+  }
+}
+
+int main() {
+  Student s1;
+  s1.setDetails(&quot;Alice&quot;, 24012345);
+  s1.studentNum = 24012345;
+  std::cout &lt;&lt; s1.name &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p><strong>Write the errors you can find before you open the answer.</strong></p><section class="reveal" data-component="practice-reveal" id="classes-student-errors-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="classes-student-errors-solution" class="reveal__body" data-practice-solution hidden><p>g++ reports three errors:</p><pre>main.cpp:13:2: error: expected ‘;’ after class definition
+main.cpp:18:6: error: ‘int Student::studentNum’ is private within this context
+main.cpp:19:19: error: ‘std::string Student::name’ is private within this context</pre><table class="attribute-table"><thead><tr><th scope="col">Line</th><th scope="col">Problem</th><th scope="col">Fix</th></tr></thead><tbody><tr><td>13 (the closing brace of the class)</td><td>A class definition must end with <code>};</code>. The semicolon is missing.</td><td>Add the <code>;</code>.</td></tr><tr><td>18</td><td><code>studentNum</code> is private by default.</td><td>Change it through a public member function (a mutator), here <code>setDetails</code>.</td></tr><tr><td>19</td><td><code>name</code> is private too.</td><td>Read it through a public function that returns it (an accessor), for example <code>getName()</code>.</td></tr></tbody></table></div></section></div><div id="classes-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>Lecture 4 asks: why is a public interface useful? Think of drawing money at an ATM. Write two sentences.</p><p><em>Hint: who needs to know how the balance is stored?</em></p><section class="reveal" data-component="practice-reveal" id="classes-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="classes-q1-solution" class="reveal__body" data-practice-solution hidden><p>You can use the account (deposit, withdraw, check the PIN) without knowing how the bank does it. The public interface separates <em>how the object works</em> from <em>how someone uses it</em>, so the inside can change without changing the code that uses it. Lecture 4 links this to separation of concerns from COS 132.</p></div></section></section></div><div id="classes-checked-solution" class="route-stage" data-stage="checked-solution"><p>The fixed <code>Student</code> program adds the semicolon, removes the direct access and uses a public accessor:</p><pre data-component="cpp-highlight"><code>int main() {
+  Student s1;
+  s1.setDetails(&quot;Alice&quot;, 24012345);
+  std::cout &lt;&lt; s1.getName() &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p>It prints <code>Alice</code>.</p></div></section><section class="route" data-route-id="members" data-route-type="concept"><h2 id="members">Accessors and mutators</h2><div id="members-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>If the data is private, code outside the class needs public functions to read it and to change it. Lecture 4 names two kinds.</p></div><div id="members-plain-identity" class="route-stage" data-stage="plain-identity"><table class="attribute-table"><thead><tr><th scope="col">Kind</th><th scope="col">What it does</th><th scope="col">Usual sign</th></tr></thead><tbody><tr><td>accessor (getter)</td><td>Retrieves a private property without changing the object.</td><td>Often <code>const</code> behind the brackets, and often a name like <code>getHealth()</code>.</td></tr><tr><td>mutator (setter)</td><td>Changes a private property in some way.</td><td>Not <code>const</code>; it assigns to a member.</td></tr></tbody></table><p>Decide from what the function body does, not from its name. A function that only prints the members is an accessor too, because it reads the object and changes nothing (Tutorial 3).</p></div><div id="members-micro-example" class="route-stage" data-stage="micro-example"><p>Tutorial 3 gives this class, with function bodies added here so it can run:</p><pre data-component="cpp-highlight" id="members-character"><code>#include &lt;iostream&gt;
+
+class Character {
+ private:
+  int health;
+  int mana;
+
+ public:
+  Character() : health(100), mana(50) {}
+  int getHealth() const;
+  void takeDamage(int amount);
+  void printStatus() const;
+  void setMana(int m);
+};
+
+int Character::getHealth() const {
+  return health;
+}
+
+void Character::takeDamage(int amount) {
+  health -= amount;
+}
+
+void Character::printStatus() const {
+  std::cout &lt;&lt; &quot;health &quot; &lt;&lt; health &lt;&lt; &quot;, mana &quot; &lt;&lt; mana &lt;&lt; std::endl;
+}
+
+void Character::setMana(int m) {
+  mana = m;
+}
+
+int main() {
+  Character hero;
+  hero.takeDamage(30);
+  hero.setMana(20);
+  hero.printStatus();
+  std::cout &lt;&lt; hero.getHealth() &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p><a href="assets/code/notes_am_character_main.cpp" download="main.cpp">Download this file (it saves as main.cpp)</a></p><p>It prints:</p><pre>health 70, mana 20
+70</pre><table class="attribute-table"><thead><tr><th scope="col">Function</th><th scope="col">Kind</th><th scope="col">Reason</th></tr></thead><tbody><tr><td><code>getHealth() const</code></td><td>accessor</td><td>returns <code>health</code>, changes nothing</td></tr><tr><td><code>takeDamage(int amount)</code></td><td>mutator</td><td>changes <code>health</code> (100 becomes 70)</td></tr><tr><td><code>printStatus() const</code></td><td>accessor</td><td>reads both members to print them, changes nothing</td></tr><tr><td><code>setMana(int m)</code></td><td>mutator</td><td>changes <code>mana</code> (50 becomes 20)</td></tr></tbody></table></div><div id="members-contrast" class="route-stage" data-stage="contrast"><p>A name can mislead. <code>takeDamage</code> has no <em>set</em> in its name but it is a mutator. <code>printStatus</code> has no <em>get</em> but it is an accessor. The trailing <code>const</code> is a sign: g++ will not let a <code>const</code> function change a member (see <a href="#const">const in three places</a>).</p></div><div id="members-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>Tutorial 3 turns this <code>struct</code> and its functions into a class:</p><pre>struct SmartDevice {
+  std::string deviceID;
+  bool isOn;
+  double powerConsumption; // in Watts
+};
+void turnOn(SmartDevice&amp; dev);
+void turnOff(SmartDevice&amp; dev);
+void updatePower(SmartDevice&amp; dev, double watts);
+bool getStatus(const SmartDevice&amp; dev);</pre><p>Each function loses its <code>SmartDevice&amp;</code> parameter: a member function already works on the object it is called on. <code>getStatus</code> took a <code>const SmartDevice&amp;</code>, so as a member it becomes <code>getStatus() const</code>. The full answer, with a constructor and a test, is <a href="examples.html#ex-smartdevice">Example 1</a> on the Examples page.</p></div><div id="members-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>Tutorial 3: write the class declaration (no bodies) for a <code>LibraryBook</code> with hidden properties <code>title</code> (string), <code>isbn</code> (string) and <code>isCheckedOut</code> (bool), mutators <code>checkOut()</code> and <code>returnBook()</code>, and accessors <code>getIsCheckedOut()</code> and <code>getTitle()</code>.</p><p><em>Hint: the two accessors promise not to change the book.</em></p><section class="reveal" data-component="practice-reveal" id="members-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="members-q1-solution" class="reveal__body" data-practice-solution hidden><pre data-component="cpp-highlight"><code>class LibraryBook {
+ public:
+  LibraryBook(std::string title, std::string isbn);
+  void checkOut();
+  void returnBook();
+  bool getIsCheckedOut() const;
+  std::string getTitle() const;
+
+ private:
+  std::string title;
+  std::string isbn;
+  bool isCheckedOut;
+};</code></pre><p>A constructor was added so the test can create a book. The accessors are <code>const</code>; the mutators are not. The full program is Practice task 1.</p></div></section></section></div><div id="members-checked-solution" class="route-stage" data-stage="checked-solution"><p>Check your answer: data under <code>private:</code>, the four functions under <code>public:</code>, <code>const</code> on the two accessors only, and <code>};</code> at the end. Lecture 4 suggests public members first, so a reader sees the public interface first.</p></div></section><section class="route" data-route-id="files" data-route-type="concept"><h2 id="files">Header and implementation files</h2><div id="files-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>Lecture 4 ends with separation of concerns: the class is <strong>defined</strong> in a header file (<code>.h</code>), and its functions are <strong>implemented</strong> in an implementation file (<code>.cpp</code>). A test answer must use this split: Class Test 2A asked for a complete header, and for a member function written outside the class ("no inline coding").</p></div><div id="files-plain-identity" class="route-stage" data-stage="plain-identity"><figure class="teaching-figure" id="files-figure"><p class="code-caption"><a href="assets/diagrams/d02_three_files.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d02_three_files.svg" alt="Three boxes: BankAccount.h holds the class definition; BankAccount.cpp holds BankAccount::deposit and the other bodies; main.cpp creates BankAccount account. Arrows labelled #include go from BankAccount.cpp and from main.cpp to BankAccount.h. Both .cpp files go to the command g++ -std=c++98 -Wall -Werror *.cpp -o main."><figcaption>Both .cpp files include the header. Only the .cpp files are given to g++.</figcaption></figure><table class="attribute-table"><thead><tr><th scope="col">Part</th><th scope="col">Where</th><th scope="col">Example</th></tr></thead><tbody><tr><td>include guard</td><td>first and last lines of the .h file</td><td><code>#ifndef BANKACCOUNT_H</code>, <code>#define BANKACCOUNT_H</code> ... <code>#endif</code></td></tr><tr><td>class definition</td><td>.h file</td><td>members only; parameter names may be left out (Lecture 5)</td></tr><tr><td>scope resolution <code>::</code></td><td>.cpp file</td><td><code>void BankAccount::deposit(double amount)</code> says that <code>deposit</code> belongs to <code>BankAccount</code></td></tr><tr><td>static member definition</td><td>.cpp file</td><td><code>int Counter::maxLimit = 100;</code> (see <a href="#static">static</a>)</td></tr></tbody></table><section class="block block--definition"><p class="block__label">From Class Test 2A Q3 and the 2026 Logistics class mock, Q8</p><p>Header files need include guards, and an include that is not needed loses marks. The header is named after the class.</p></section></div><div id="files-micro-example" class="route-stage" data-stage="micro-example"><p>Tutorial 3 gives the header of a <code>Counter</code> and asks for the .cpp file. Here are all three files:</p><pre data-component="cpp-highlight" id="files-counter-h"><code>#ifndef COUNTER_H
+#define COUNTER_H
+
+class Counter {
+ private:
+  int count;
+  static int maxLimit;
+
+ public:
+  Counter();
+  void increment(int value);
+  int getCount() const;
+  static void setMaxLimit(int limit);
+};
+
+#endif</code></pre><p><a href="assets/code/notes_fs_counter_split_Counter.h" download="Counter.h">Download this file (it saves as Counter.h)</a></p><pre data-component="cpp-highlight" id="files-counter-cpp"><code>#include &quot;Counter.h&quot;
+
+int Counter::maxLimit = 100;
+
+Counter::Counter() : count(0) {}
+
+void Counter::increment(int value) {
+  if (this-&gt;count + value &lt;= Counter::maxLimit) {
+    this-&gt;count += value;
+  }
+}
+
+int Counter::getCount() const {
+  return this-&gt;count;
+}
+
+void Counter::setMaxLimit(int limit) {
+  Counter::maxLimit = limit;
+}</code></pre><p><a href="assets/code/notes_fs_counter_split_Counter.cpp" download="Counter.cpp">Download this file (it saves as Counter.cpp)</a></p><pre data-component="cpp-highlight" id="files-counter-main"><code>#include &lt;iostream&gt;
+#include &quot;Counter.h&quot;
+
+int main() {
+  Counter c;
+  c.increment(60);
+  c.increment(50);
+  std::cout &lt;&lt; c.getCount() &lt;&lt; std::endl;
+  Counter::setMaxLimit(200);
+  c.increment(50);
+  std::cout &lt;&lt; c.getCount() &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p><a href="assets/code/notes_fs_counter_split_main.cpp" download="main.cpp">Download this file (it saves as main.cpp)</a></p><p>It prints:</p><pre>60
+110</pre><p>The run that printed this table shows the condition in <code>increment</code> on each call (a copy of the function with extra <code>cout</code> lines that print each step):</p><pre>0 + 60 &lt;= 100 is true, count is now 60
+60 + 50 &lt;= 100 is false, count is now 60
+60 + 50 &lt;= 200 is true, count is now 110</pre><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>this-&gt;count + value &lt;= Counter::maxLimit</code></td><td>the new total fits: add <code>value</code></td><td>the total would pass the limit: <code>count</code> stays the same</td></tr></tbody></table></div><div id="files-contrast" class="route-stage" data-stage="contrast"><p>Three slips that stop the build:</p><h3>1. A member default inside the class (C++11 only)</h3><p>The Tutorial 3 slide declares <code>int count = 0;</code> inside <code>Counter</code>. That is C++11. With <code>-std=c++98 -Wall -Werror</code> it fails:</p><pre>main.cpp:5:13: error: non-static data member initializers only available with ‘-std=c++11’ or ‘-std=gnu++11’ [-Werror=c++11-extensions]</pre><p>In C++98, give the value in a constructor, for example <code>Counter() : count(0) {}</code>, as in the files above.</p><h3>2. Forgetting <code>Bank::</code></h3><p><code>double getPrimeRate() { ... }</code> defines a new, separate function, not the member. It cannot read the private <code>primeRate</code>:</p><pre>main.cpp:14:16: error: ‘double Bank::primeRate’ is private within this context</pre><h3>3. No include guard</h3><p><code>main.cpp</code> includes <code>Point.h</code>, and <code>Line.h</code> includes it again. Without a guard the class is defined twice:</p><pre>Point.h:1:7: error: redefinition of ‘class Point’</pre></div><div id="files-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>Two points from Tutorial 3 about writing the .cpp file:</p><ul><li>The word <code>static</code> appears only in the class. The definition <code>void Counter::setMaxLimit(int limit)</code> does not repeat it.</li><li>A trailing <code>const</code> <em>is</em> repeated: <code>int Counter::getCount() const</code>. Without it, the definition does not match the declaration.</li></ul><p><strong>Inline functions</strong> (Lecture 5): a function whose body is written inside the class is inline. The idea is that each call is replaced by the body. Lecture 5 says to keep inline functions short. In tests, write member functions outside the class unless the question shows them inside.</p></div><div id="files-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>Without looking above, write the first two lines and the last line of <code>Sensor.h</code>, the header for a class <code>Sensor</code>.</p><p><em>Hint: look at the first and last lines of Counter.h.</em></p><section class="reveal" data-component="practice-reveal" id="files-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="files-q1-solution" class="reveal__body" data-practice-solution hidden><pre>#ifndef SENSOR_H
+#define SENSOR_H
+...
+#endif</pre><p>Any unique name works, but the class name in capitals with <code>_H</code> is the usual choice.</p></div></section></section></div><div id="files-checked-solution" class="route-stage" data-stage="checked-solution"><p>Check: <code>#ifndef</code> and <code>#define</code> use the same name, and <code>#endif</code> closes the file after <code>};</code>.</p></div></section><section class="route" data-route-id="this-pointer" data-route-type="concept"><h2 id="this-pointer">The this pointer</h2><div id="this-pointer-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>A parameter often has the same name as a member: <code>setStats(int health, int score)</code> in a class that has members <code>health</code> and <code>score</code>. Inside the function, which <code>health</code> does a line mean?</p></div><div id="this-pointer-plain-identity" class="route-stage" data-stage="plain-identity"><section class="block block--definition"><p class="block__label">From Lecture 5, slide 16</p><p>The <code>this</code> pointer points to the memory location of the current object, the object the member function was called on.</p></section><p>Inside a member function a name means the <em>nearest</em> declaration. A parameter is nearer than a member, so the parameter <strong>shadows</strong> (hides) the member. <code>this-&gt;health</code> always means the member of the current object.</p></div><div id="this-pointer-micro-example" class="route-stage" data-stage="micro-example"><p>Tutorial 3: the values do not update.</p><pre data-component="cpp-highlight"><code>void Player::setStats(int health, int score) {
+  health = health;
+  score = score;
+}</code></pre><p>After <code>p.setStats(100, 5);</code> the program prints <code>health 0, score 0</code>. <code>health = health;</code> copies the parameter into itself. The member keeps the 0 it got in the constructor.</p><figure class="teaching-figure" id="this-figure"><p class="code-caption"><a href="assets/diagrams/d03_this.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d03_this.svg" alt="Two panels for the call p.setStats(100, 5). In both, the parameters are health = 100 and score = 5, and a pointer this points to the object p:Player. Top panel, line health = health: p keeps health = 0 and score = 0. Bottom panel, line this-&gt;health = health: p has health = 100 and score = 5."><figcaption><code>this</code> points at <code>p</code>. Only <code>this-&gt;</code> reaches the members.</figcaption></figure></div><div id="this-pointer-contrast" class="route-stage" data-stage="contrast"><pre data-component="cpp-highlight"><code>void Player::setStats(int health, int score) {
+  this-&gt;health = health;
+  this-&gt;score = score;
+}</code></pre><p>Now it prints <code>health 100, score 5</code>. g++ gave no warning for the first version: it is legal code that does the wrong thing. Only a test run shows it.</p></div><div id="this-pointer-worked-transfer" class="route-stage" data-stage="worked-transfer"><p><code>this</code> is a pointer, so <code>this == &amp;other</code> asks “is <code>other</code> the same object as me?”. The assignment operator uses this test (see <a href="#assignment">The assignment operator</a>).</p><pre data-component="cpp-highlight"><code>  bool isSameObject(const Box&amp; other) const {
+    return this == &amp;other;
+  }</code></pre><p><code>a.isSameObject(a)</code> and <code>a.isSameObject(b)</code> print <code>1 0</code>.</p></div><div id="this-pointer-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>Lecture 5 shows <code>void BankAccount::deposit(double balance) { balance += balance; }</code>. What happens to the account’s balance, and how do you fix the line?</p><p><em>Hint: which balance is nearer?</em></p><section class="reveal" data-component="practice-reveal" id="this-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="this-q1-solution" class="reveal__body" data-practice-solution hidden><p>Nothing happens to the account. <code>balance += balance;</code> doubles the <em>parameter</em>, which disappears when the function ends. The fix is <code>this-&gt;balance += balance;</code>.</p></div></section></section></div><div id="this-pointer-checked-solution" class="route-stage" data-stage="checked-solution"><p>A second fix is to rename the parameter (for example <code>amount</code>); then no <code>this-&gt;</code> is needed.</p></div></section><section class="route" data-route-id="const" data-route-type="concept"><h2 id="const">const in three places</h2><div id="const-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>Semester Test 1 Q14 (3 marks) gave <code>const Server&amp; operator()(const Server&amp;) const</code> and asked for an example that breaks each <code>const</code>. Each position means something different.</p></div><div id="const-plain-identity" class="route-stage" data-stage="plain-identity"><section class="block block--definition"><p class="block__label">From Lecture 5, slide 11</p><p><code>const</code> on a parameter: the parameter will not change. On the return type: what is returned cannot be changed. Behind the function: the function will not modify the object.</p></section><figure class="teaching-figure" id="const-figure"><p class="code-caption"><a href="assets/diagrams/d04_const_places.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d04_const_places.svg" alt="The declaration const Book&amp; getFirst() const; with the first const labelled 1 return and the last const labelled 3 behind. Below it void add(const Book&amp; book); with const labelled 2 parameter. Notes: 1, the caller cannot change the Book it gets back; 3, getFirst cannot change the Shelf it is called on; 2, add cannot change the Book passed in."><figcaption>The three positions, on the <code>Shelf</code> class below.</figcaption></figure><p>The trailing <code>const</code> marks an accessor. Inside it, <code>this</code> points to a <em>const</em> object, so the function may only call other <code>const</code> member functions.</p></div><div id="const-micro-example" class="route-stage" data-stage="micro-example"><p>The <code>Shelf</code> class uses all three:</p><pre data-component="cpp-highlight" id="const-shelf"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class Book {
+ private:
+  std::string title;
+
+ public:
+  Book(std::string title) : title(title) {}
+  std::string getTitle() const {
+    return title;
+  }
+  void setTitle(std::string title) {
+    this-&gt;title = title;
+  }
+};
+
+class Shelf {
+ private:
+  Book first;
+  int count;
+
+ public:
+  Shelf() : first(&quot;none&quot;), count(0) {}
+  void add(const Book&amp; book);
+  const Book&amp; getFirst() const;
+  int getCount() const;
+};
+
+void Shelf::add(const Book&amp; book) {
+  if (count == 0) {
+    first = book;
+  }
+  count++;
+}
+
+const Book&amp; Shelf::getFirst() const {
+  return first;
+}
+
+int Shelf::getCount() const {
+  return count;
+}
+
+int main() {
+  Shelf shelf;
+  Book dune(&quot;Dune&quot;);
+  shelf.add(dune);
+  shelf.add(Book(&quot;Emma&quot;));
+  std::cout &lt;&lt; shelf.getFirst().getTitle() &lt;&lt; &quot; &quot; &lt;&lt; shelf.getCount() &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p><a href="assets/code/notes_co_three_const_main.cpp" download="main.cpp">Download this file (it saves as main.cpp)</a></p><p>It prints <code>Dune 2</code>.</p></div><div id="const-contrast" class="route-stage" data-stage="contrast"><p>Each <code>const</code> stops one kind of statement. Each row below is a separate program that differs in one line; each fails:</p><table class="attribute-table"><thead><tr><th scope="col">const</th><th scope="col">The statement that breaks it</th><th scope="col">g++ says</th></tr></thead><tbody><tr><td>parameter (<code>const Book&amp; book</code> in <code>add</code>)</td><td><code>book.setTitle("Changed");</code> inside <code>add</code></td><td><code>passing ‘const Book’ as ‘this’ argument discards qualifiers [-fpermissive]</code></td></tr><tr><td>return (<code>const Book&amp;</code> from <code>getFirst</code>)</td><td><code>shelf.getFirst().setTitle("Changed");</code> in <code>main</code></td><td><code>passing ‘const Book’ as ‘this’ argument discards qualifiers [-fpermissive]</code></td></tr><tr><td>behind (<code>getCount() const</code>)</td><td><code>count = 0;</code> inside <code>getCount</code></td><td><code>assignment of member ‘Shelf::count’ in read-only object</code></td></tr></tbody></table><p>“Discards qualifiers” means: the object is <code>const</code>, but the function called on it (<code>setTitle</code>) is not.</p></div><div id="const-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>A <code>const</code> object (or <code>const</code> reference) can call only <code>const</code> member functions. Here <code>isOn()</code> only reads, but it was not marked <code>const</code>:</p><pre data-component="cpp-highlight"><code>class Lamp {
+ private:
+  bool on;
+
+ public:
+  Lamp() : on(false) {}
+  bool isOn() {
+    return on;
+  }
+};
+
+void show(const Lamp&amp; lamp) {
+  std::cout &lt;&lt; lamp.isOn() &lt;&lt; std::endl;
+}
+
+int main() {
+  Lamp lamp;
+  show(lamp);
+  return 0;
+}</code></pre><pre>main.cpp:15:25: error: passing ‘const Lamp’ as ‘this’ argument discards qualifiers [-fpermissive]</pre><p>Adding <code>const</code> behind <code>isOn()</code> fixes it. Mark every accessor <code>const</code>.</p></div><div id="const-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>For <code>const Plot&amp; larger(const Plot&amp; other) const;</code> in a class <code>Plot</code> with an <code>int area</code> and a mutator <code>grow(int)</code>, write one statement that each <code>const</code> forbids.</p><p><em>Hint: for each const, ask: which object can no longer change, and where is the code that would change it?</em></p><section class="reveal" data-component="practice-reveal" id="const-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="const-q1-solution" class="reveal__body" data-practice-solution hidden><table class="attribute-table"><thead><tr><th scope="col">const</th><th scope="col">Forbidden statement</th></tr></thead><tbody><tr><td>return</td><td><code>p.larger(q).grow(5);</code> in the calling code</td></tr><tr><td>parameter</td><td><code>other.grow(5);</code> inside <code>larger</code></td></tr><tr><td>behind</td><td><code>area = 0;</code> inside <code>larger</code></td></tr></tbody></table><p>Each of these was compiled, and each fails to build.</p></div></section></section></div><div id="const-checked-solution" class="route-stage" data-stage="checked-solution"><p>Check that your three statements change three different things: the returned Plot, the parameter, and the object itself.</p></div></section><section class="route" data-route-id="static" data-route-type="concept"><h2 id="static">static members</h2><div id="static-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>All banks use the same prime lending rate, set by the Reserve Bank. If each <code>Bank</code> object stored its own copy, the copies could disagree. A global variable would work, but it breaks data hiding. Lecture 5 uses a <strong>static member</strong>.</p></div><div id="static-plain-identity" class="route-stage" data-stage="plain-identity"><section class="block block--definition"><p class="block__label">From Lecture 5, slide 9</p><p>A static member is shared across all objects of a class, and it does not need an object of the class to exist to be used.</p></section><table class="attribute-table"><thead><tr><th scope="col">Rule</th><th scope="col">Example</th></tr></thead><tbody><tr><td>Declare it in the class with <code>static</code>.</td><td><code>static double primeRate;</code></td></tr><tr><td>Define it once in the .cpp file, outside the class, with the class name and no <code>static</code>.</td><td><code>double Bank::primeRate = 0.105;</code></td></tr><tr><td>Call a static function on the class name.</td><td><code>Bank::getPrimeRate()</code></td></tr><tr><td>A static function has no <code>this</code>, so it cannot use non-static members directly and cannot be <code>const</code>.</td><td>(Tutorial 3, Semester Test 1 Q13)</td></tr></tbody></table><p>In UML, a static member is <u>underlined</u>. Its C++ definition goes outside the class: the type, then <code>Class::name</code>, then the starting value. For example, a class <code>GPS</code> with the underlined attribute <code>- addresses: Address**</code> needs <code>Address** GPS::addresses = NULL;</code> (Class Test 2A, 2026, Q1(c)).</p></div><div id="static-micro-example" class="route-stage" data-stage="micro-example"><pre data-component="cpp-highlight" id="static-bank"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class Bank {
+ public:
+  Bank(std::string name) : bankName(name) {}
+  static double getPrimeRate();
+  static void setPrimeRate(double rate);
+
+ private:
+  std::string bankName;
+  static double primeRate;
+};
+
+double Bank::primeRate = 0.105;
+
+double Bank::getPrimeRate() {
+  return primeRate;
+}
+
+void Bank::setPrimeRate(double rate) {
+  primeRate = rate;
+}
+
+int main() {
+  std::cout &lt;&lt; Bank::getPrimeRate() &lt;&lt; std::endl;
+  Bank absa(&quot;Absa&quot;);
+  Bank fnb(&quot;FNB&quot;);
+  Bank::setPrimeRate(0.11);
+  std::cout &lt;&lt; Bank::getPrimeRate() &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p><a href="assets/code/notes_st_bank_prime_main.cpp" download="main.cpp">Download this file (it saves as main.cpp)</a></p><p>It prints:</p><pre>0.105
+0.11</pre><p>The first line runs before any <code>Bank</code> object exists. <code>setPrimeRate(0.11)</code> changes the one shared value, for <code>absa</code> and <code>fnb</code> alike.</p><p>Tutorial 4 counts objects with a static member. The constructor adds 1, the destructor takes 1 off:</p><pre data-component="cpp-highlight" id="static-library"><code>#include &lt;iostream&gt;
+
+class Library {
+  static int libraryCount;
+
+ public:
+  Library() {
+    libraryCount++;
+  }
+  ~Library() {
+    libraryCount--;
+  }
+  static int howMany() {
+    return libraryCount;
+  }
+};
+
+int Library::libraryCount = 0;
+
+int main() {
+  std::cout &lt;&lt; &quot;A &quot; &lt;&lt; Library::howMany() &lt;&lt; std::endl;
+  Library a;
+  Library b;
+  std::cout &lt;&lt; &quot;B &quot; &lt;&lt; Library::howMany() &lt;&lt; std::endl;
+  {
+    Library c;
+    std::cout &lt;&lt; &quot;C &quot; &lt;&lt; Library::howMany() &lt;&lt; std::endl;
+  }
+  std::cout &lt;&lt; &quot;D &quot; &lt;&lt; Library::howMany() &lt;&lt; std::endl;
+  Library* d = new Library;
+  std::cout &lt;&lt; &quot;E &quot; &lt;&lt; Library::howMany() &lt;&lt; std::endl;
+  delete d;
+  std::cout &lt;&lt; &quot;F &quot; &lt;&lt; Library::howMany() &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p><a href="assets/code/notes_st_library_count_main.cpp" download="main.cpp">Download this file (it saves as main.cpp)</a></p><p><code>new</code> makes an object on the <strong>heap</strong>: it stays until <code>delete</code> removes it. A local object lives on the <strong>stack</strong> and is removed at the end of its block.</p><p>Output, with the count after each line of <code>main</code>:</p><table class="attribute-table"><thead><tr><th scope="col">Printed</th><th scope="col">What changed since the last line</th></tr></thead><tbody><tr><td>A 0</td><td>no Library yet</td></tr><tr><td>B 2</td><td>a and b constructed</td></tr><tr><td>C 3</td><td>c constructed inside the block</td></tr><tr><td>D 2</td><td>the block ended: c destroyed</td></tr><tr><td>E 3</td><td>new Library: a heap object</td></tr><tr><td>F 2</td><td>delete d: its destructor ran</td></tr></tbody></table><figure class="teaching-figure" id="static-figure"><p class="code-caption"><a href="assets/diagrams/d05_static_shared.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d05_static_shared.svg" alt="Objects a:Library and b:Library each have no data of their own. Dashed arrows from both lead to one box Library::libraryCount holding 2."><figcaption>After line B there are two objects and one counter.</figcaption></figure></div><div id="static-contrast" class="route-stage" data-stage="contrast"><p>Semester Test 1 Q13 and Tutorial 3 test these errors. Each row is a separate program that differs in one line:</p><table class="attribute-table"><thead><tr><th scope="col">Mistake</th><th scope="col">g++ says</th></tr></thead><tbody><tr><td><code>static double getPrimeRate() const;</code></td><td><code>static member function ‘static double Bank::getPrimeRate()’ cannot have cv-qualifier</code></td></tr><tr><td><code>this-&gt;activeConnections = 0;</code> in a static function</td><td><code>‘this’ is unavailable for static member functions</code></td></tr><tr><td><code>static void Counter::setMaxLimit(int limit) {</code> in the .cpp file</td><td><code>cannot declare member function ‘static void Counter::setMaxLimit(int)’ to have static linkage [-fpermissive]</code></td></tr><tr><td><code>static int totalStudents = 0;</code> inside the class</td><td><code>ISO C++ forbids in-class initialization of non-const static member ‘Student::totalStudents’</code></td></tr><tr><td>declared, but <code>int Student::totalStudents = 0;</code> never written</td><td>the link step (which joins the compiled files into one program) fails: <code>undefined reference to `Student::totalStudents'</code></td></tr><tr><td><code>return vaultBalance * primeRate;</code> in a static function (<code>vaultBalance</code> is not static)</td><td><code>invalid use of member ‘Bank::vaultBalance’ in static member function</code></td></tr><tr><td><code>Bank::print();</code> where <code>print</code> is not static</td><td><code>cannot call member function ‘void Bank::print() const’ without object</code></td></tr></tbody></table><p>The first and second rows have the same cause: <code>const</code> behind a function is a promise about <code>this</code>, and a static function has no <code>this</code>.</p></div><div id="static-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>Semester Test 1 Q11 gave a class <code>Tracker</code> with a static count and a <code>display() const</code>, and asked for the output. Work in a table: after each line write the count and what is printed. <a href="examples.html#ex-tracker">Example 5</a> traces a program of that kind.</p></div><div id="static-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>In Class Test 2A, a <code>GPS</code> class has an underlined attribute <code>addresses: Address**</code>. Write the C++ statement that defines it and sets it to NULL.</p><p><em>Hint: what four parts does the Bank::primeRate definition have?</em></p><section class="reveal" data-component="practice-reveal" id="static-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="static-q1-solution" class="reveal__body" data-practice-solution hidden><pre>Address** GPS::addresses = NULL;</pre><p>Type, then class name with <code>::</code>, then the name, then the value. No <code>static</code> here; it is already in the class.</p></div></section></section></div><div id="static-checked-solution" class="route-stage" data-stage="checked-solution"><p>Check the four parts: <code>Address**</code>, <code>GPS::</code>, <code>addresses</code>, <code>= NULL;</code>. It goes in <code>GPS.cpp</code>, not in the header.</p></div></section><section class="route" data-route-id="constructors" data-route-type="concept"><h2 id="constructors">Constructors</h2><div id="constructors-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>The data members of a <code>Bank</code> are private, so <code>main</code> cannot give them their first values. Lecture 7 asks: how are the members set when the object is created? The answer is a <strong>constructor</strong>.</p></div><div id="constructors-plain-identity" class="route-stage" data-stage="plain-identity"><section class="block block--definition"><p class="block__label">From Lecture 7, slides 7 and 8</p><p>A constructor is a specialised function that, at object construction, is used to populate all the member variables. It has the same name as the class, has no return type, can be overloaded (several constructors with different parameter lists), and default arguments reduce the number of constructors.</p></section><table class="attribute-table"><thead><tr><th scope="col">Kind (Lecture 7)</th><th scope="col">What it does</th><th scope="col">UML</th></tr></thead><tbody><tr><td>default constructor</td><td>takes no parameters; gives every member a default value</td><td><code>+ Bank()</code></td></tr><tr><td>parameterised constructor</td><td>takes parameters and uses them to set the members</td><td><code>+ Bank(bankName: string, balance: double)</code></td></tr><tr><td>copy constructor</td><td>takes an object of the same class and makes a copy of it (see <a href="#copy">The copy constructor</a>)</td><td><code>+ Bank(otherBank: const Bank&amp;)</code></td></tr></tbody></table><p><strong>Default arguments</strong> let one constructor act as both the default and the parameterised constructor. They are written in the declaration (the .h file or UML), not again in the .cpp file, and they must be given from right to left (Lecture 7).</p></div><div id="constructors-micro-example" class="route-stage" data-stage="micro-example"><p>This is the Lecture 7 <code>Bank</code> with one constructor that has two default arguments:</p><pre data-component="cpp-highlight" id="constructors-bank"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class Bank {
+ public:
+  Bank(std::string bankName = &quot;myBank&quot;, double balance = 0.0);
+  void print() const;
+
+ private:
+  std::string bankName;
+  double vaultBalance;
+};
+
+Bank::Bank(std::string bankName, double balance) {
+  this-&gt;bankName = bankName;
+  vaultBalance = balance;
+}
+
+void Bank::print() const {
+  std::cout &lt;&lt; bankName &lt;&lt; &quot; &quot; &lt;&lt; vaultBalance &lt;&lt; std::endl;
+}
+
+int main() {
+  Bank b1;
+  Bank b2(&quot;Absa&quot;);
+  Bank* bptr = new Bank(&quot;Capitec&quot;, 1000);
+  b1.print();
+  b2.print();
+  bptr-&gt;print();
+  delete bptr;
+  return 0;
+}</code></pre><p><a href="assets/code/notes_ct_bank_main.cpp" download="main.cpp">Download this file (it saves as main.cpp)</a></p><p>It prints:</p><pre>myBank 0
+Absa 0
+Capitec 1000</pre><table class="attribute-table"><thead><tr><th scope="col">Line in main</th><th scope="col">Arguments used</th></tr></thead><tbody><tr><td><code>Bank b1;</code></td><td>both defaults: "myBank", 0.0</td></tr><tr><td><code>Bank b2("Absa");</code></td><td>"Absa" and the default 0.0</td></tr><tr><td><code>new Bank("Capitec", 1000)</code></td><td>both given; this object is on the heap and needs <code>delete</code></td></tr></tbody></table><p>The <strong>stack</strong> holds local variables; they are removed at the end of their block. The <strong>heap</strong> holds objects made with <code>new</code>; they stay until <code>delete</code>.</p><p>Tutorial 4 shows when each constructor runs. This program prints a line from each constructor and from the destructor:</p><pre data-component="cpp-highlight" id="constructors-overload"><code>#include &lt;iostream&gt;
+
+class Circle {
+ private:
+  double radius;
+
+ public:
+  Circle() {
+    radius = 0;
+    std::cout &lt;&lt; &quot;default&quot; &lt;&lt; std::endl;
+  }
+  Circle(double r) {
+    radius = r;
+    std::cout &lt;&lt; &quot;parameterised &quot; &lt;&lt; radius &lt;&lt; std::endl;
+  }
+  Circle(const Circle&amp; other) {
+    radius = other.radius;
+    std::cout &lt;&lt; &quot;copy &quot; &lt;&lt; radius &lt;&lt; std::endl;
+  }
+};
+
+int main() {
+  Circle c1;
+  Circle c2(5.5);
+  Circle c3(c2);
+  Circle* c4 = new Circle(2);
+  delete c4;
+  return 0;
+}</code></pre><p><a href="assets/code/notes_ct_overload_main.cpp" download="main.cpp">Download this file (it saves as main.cpp)</a></p><pre>default
+parameterised 5.5
+copy 5.5
+parameterised 2</pre></div><div id="constructors-contrast" class="route-stage" data-stage="contrast"><h3>1. Writing any constructor removes the free default constructor</h3><section class="block block--definition"><p class="block__label">From Tutorial 4, slides 12 and 15</p><p>Even if you write nothing, C++ gives a class a default constructor, a copy constructor, a destructor and a copy assignment operator. The moment you declare any constructor, the free default constructor is no longer given, so <code>Author a;</code> fails.</p></section><pre data-component="cpp-highlight"><code>class Author {
+ public:
+  Author(std::string n, int b);
+
+ private:
+  std::string name;
+  int bookCount;
+};
+
+Author::Author(std::string n, int b) : name(n), bookCount(b) {}
+
+int main() {
+  Author a;
+  return 0;
+}</code></pre><pre>main.cpp:15:10: error: no matching function for call to ‘Author::Author()’</pre><p>Fix: write <code>Author();</code>, or give every parameter a default: <code>Author(std::string n = "Unknown", int b = 0);</code>.</p><h3>2. The free default constructor leaves numbers unset</h3><p>With no constructor written, <code>Author a;</code> compiles. A <code>string</code> member starts empty, but an <code>int</code>, <code>double</code> or pointer member is left holding whatever was in memory (Tutorial 4). This program compiles and runs, but valgrind reports the <code>if</code> on <code>bookCount</code>. valgrind is a tool that reports memory mistakes while a program runs; it is not on the lab PCs, so these pages show its reports for you:</p><pre data-component="cpp-highlight"><code>int main() {
+  Author* a = new Author;
+  std::cout &lt;&lt; &quot;[&quot; &lt;&lt; a-&gt;name &lt;&lt; &quot;]&quot; &lt;&lt; std::endl;
+  if (a-&gt;bookCount &gt; 0) {
+    std::cout &lt;&lt; &quot;has books&quot; &lt;&lt; std::endl;
+  }
+  delete a;
+  return 0;
+}</code></pre><pre>Conditional jump or move depends on uninitialised value(s)
+ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)</pre><h3>3. Empty brackets declare a function</h3><p>Tutorial 4 asks what <code>Author a3();</code> does. It declares a <em>function</em> named <code>a3</code> that returns an <code>Author</code>; no object is made. Write <code>Author a3;</code>.</p><pre>main.cpp:17:12: error: empty parentheses were disambiguated as a function declaration [-Werror=vexing-parse]
+main.cpp:18:19: error: request for member ‘getName’ in ‘a3’, which is of non-class type ‘Author()’</pre><h3>4. Defaults from the right</h3><p><code>float add(float a = 1, float b);</code> gives a default to <code>a</code> but not to <code>b</code>, which comes after it:</p><pre>main.cpp:3:30: error: default argument missing for parameter 2 of ‘float add(float, float)’</pre><p>A call like <code>add(5)</code> would have to skip <code>a</code> and fill <code>b</code>; C++ fills arguments from the left, so defaults must come from the right.</p></div><div id="constructors-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>Tutorial 4 gives <code>Author(std::string n = "Unknown", int b = 0)</code> and asks which constructor each line calls. A version that prints from the constructor and the destructor shows the order:</p><pre data-component="cpp-highlight"><code>int main() {
+  Author a1;
+  Author a2(&quot;Poe&quot;);
+  Author a3(&quot;Tolkien&quot;, 12);
+  Author* a4 = new Author(&quot;King&quot;, 60);
+  delete a4;
+  return 0;
+}</code></pre><pre>Author(Unknown, 0)
+Author(Poe, 0)
+Author(Tolkien, 12)
+Author(King, 60)
+~Author King
+~Author Tolkien
+~Author Poe
+~Author Unknown</pre><p>The heap Author (King) is destroyed at <code>delete a4;</code>. The three stack Authors are destroyed when <code>main</code> ends, in the reverse order of creation: Tolkien, Poe, then Unknown.</p></div><div id="constructors-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>Lecture 7, Activity 2: write one UML constructor for <code>Bank</code> that acts as both the default and the parameterised constructor. The defaults are "myBank" and 0.0.</p><p><em>Hint: how does UML write one parameter with its type?</em></p><section class="reveal" data-component="practice-reveal" id="constructors-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="constructors-q1-solution" class="reveal__body" data-practice-solution hidden><pre>+ Bank(bankName: string = &quot;myBank&quot;, balance: double = 0.0)</pre><p>This is the line from Lecture 7, slide 16. In the .cpp file the defaults are not repeated: <code>Bank::Bank(string bankName, double balance)</code>.</p></div></section></section></div><div id="constructors-checked-solution" class="route-stage" data-stage="checked-solution"><p>Check: no return type, the name is the class name, and each parameter is written <code>name: type = value</code> in UML. The full form is <code>visibility name(parameter: type, ...): returnType</code>; a constructor has no return type.</p></div></section><section class="route" data-route-id="init-list" data-route-type="concept"><h2 id="init-list">The initialisation list</h2><div id="init-list-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>Lecture 7 shows two ways to set members in a constructor: assignments in the body, or the <strong>initialisation section</strong> (also called the initialisation list or member initialiser list). Test questions that say “use an initialiser list” lose marks for assignments in the body.</p></div><div id="init-list-plain-identity" class="route-stage" data-stage="plain-identity"><section class="block block--definition"><p class="block__label">From Lecture 7, slide 17</p><p><code>&lt;ClassName&gt;::&lt;ClassName&gt;(&lt;parameters&gt;) : &lt;property&gt;(&lt;parameter/value&gt;) { &lt;additional code, like loops and selection statements&gt; }</code></p></section><p>The list comes after a colon, before the body. Each entry is a member name with its first value in brackets. Entries are separated by commas.</p></div><div id="init-list-micro-example" class="route-stage" data-stage="micro-example"><p>Semester Test 1 asked for a constructor of this kind:</p><pre data-component="cpp-highlight"><code>Astronomer::Astronomer(std::string name) : observerName(name), sightings(0) {}
+
+int main() {
+  Astronomer a(&quot;Hubble&quot;);
+  a.print();
+  return 0;
+}</code></pre><p><code>Astronomer a("Hubble");</code> then <code>a.print();</code> prints <code>Hubble 0</code>. The empty body <code>{}</code> is still required.</p></div><div id="init-list-contrast" class="route-stage" data-stage="contrast"><p>In many classes the list and the body give the same result. Three cases need the list:</p><h3>1. A const member</h3><p>A <code>const</code> member can get a value only once, when it is made. Assigning in the body is too late:</p><pre data-component="cpp-highlight"><code>Ticket::Ticket(int n) {
+  number = n;
+}</code></pre><pre>main.cpp:11:1: error: uninitialized const member in ‘const int’ [-fpermissive]
+main.cpp:12:10: error: assignment of read-only member ‘Ticket::number’</pre><p>With the list it works: <code>Ticket::Ticket(int n) : number(n) {}</code>, and <code>t.getNumber()</code> returns 7.</p><h3>2. A member object with no default constructor</h3><p>A <code>Car</code> holds an <code>Engine</code> object, and <code>Engine</code> has only <code>Engine(int hp)</code>. Before the body of <code>Car(int hp)</code> starts, the engine must already exist:</p><pre data-component="cpp-highlight"><code>  Car(int hp) {
+    engine = Engine(hp);
+  }
+};
+
+int main() {
+  Car car(150);
+  return 0;
+}</code></pre><pre>main.cpp:16:15: error: no matching function for call to ‘Engine::Engine()’</pre><p>The list builds the engine with the right value: <code>Car(int hp) : engine(hp) { ... }</code>. Printing from each constructor and destructor gives this order:</p><figure class="teaching-figure" id="init-list-figure"><p class="code-caption"><a href="assets/diagrams/d06_member_order.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d06_member_order.svg" alt="Five printed lines in order: Engine 150 (member made first, from the list), Car body (then the body of Car(int hp)), 150 HP (car.printSpecs()), ~Car (destructor body of Car first), ~Engine (then the member is destroyed)."><figcaption>Members are made before the body runs, and destroyed after the destructor body.</figcaption></figure><h3>3. The order is the order of declaration</h3><p>Members are set in the order they are declared in the class, not the order of the list. Here <code>first</code> is declared first, so <code>first(second + 1)</code> runs while <code>second</code> is still unset. With <code>-Wall -Werror</code> this does not build:</p><pre data-component="cpp-highlight"><code>  Pair(int value) : second(value), first(second + 1) {}
+  void print() const {
+    std::cout &lt;&lt; first &lt;&lt; &quot; &quot; &lt;&lt; second &lt;&lt; std::endl;
+  }
+};
+
+int main() {
+  Pair p(4);
+  p.print();
+  return 0;
+}</code></pre><pre>main.cpp:6:7: error: ‘Pair::second’ will be initialized after [-Werror=reorder]
+main.cpp:5:7: error:   ‘int Pair::first’ [-Werror=reorder]
+main.cpp:9:3: error:   when initialized here [-Werror=reorder]
+main.cpp:9:42: error: member ‘Pair::second’ is used uninitialized [-Werror=uninitialized]</pre><p>Write the list in the same order as the declarations, and do not use one member to set an earlier one.</p></div><div id="init-list-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>Lecture 7 rewrites the Bank constructor with the list. A pointer member can be set in the list or in the body (the slide sets <code>bankAccounts = NULL;</code> in the body and notes it could be in the list). Code that must run after the members exist, like a <code>throw</code> check or a loop that fills an array, goes in the body.</p><p>Practice task 4 asks you to rewrite the body version as a list.</p></div><div id="init-list-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>Write the constructor <code>Sensor::Sensor(double reading)</code> with an initialisation list that sets <code>reading</code>, and a body that adds 1 to the static <code>sensorCount</code> and then sets <code>id</code> to it.</p><p><em>Hint: which of the three members belongs to this object only?</em></p><section class="reveal" data-component="practice-reveal" id="init-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="init-q1-solution" class="reveal__body" data-practice-solution hidden><pre>Sensor::Sensor(double reading) : reading(reading) {
+  sensorCount++;
+  id = sensorCount;
+}</pre><p><code>reading(reading)</code> is correct: inside the brackets the name means the parameter; outside it names the member. The mock test uses this constructor in its Greenhouse scenario.</p></div></section></section></div><div id="init-list-checked-solution" class="route-stage" data-stage="checked-solution"><p>Check the colon, the brackets, and that the static member is not in the list. A static member is defined once in the .cpp file (see <a href="#static">static</a>).</p></div></section><section class="route" data-route-id="conversion" data-route-type="concept"><h2 id="conversion">Automatic type conversion</h2><div id="conversion-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>A function takes a <code>const Rating&amp;</code>, but the call is <code>review(5)</code>. 5 is an <code>int</code>, not a <code>Rating</code>. Does it compile?</p></div><div id="conversion-plain-identity" class="route-stage" data-stage="plain-identity"><section class="block block--definition"><p class="block__label">From Tutorial 4, slides 18 and 19</p><p>A constructor that can be called with a single argument tells C++ how to convert that argument into your class, and it then does so automatically. Automatic conversion works only when a suitable one-argument constructor exists.</p></section><p>“Can be called with one argument” includes a constructor whose other parameters all have defaults.</p></div><div id="conversion-micro-example" class="route-stage" data-stage="micro-example"><pre data-component="cpp-highlight" id="conversion-rating"><code>#include &lt;iostream&gt;
+
+class Rating {
+ private:
+  int stars;
+
+ public:
+  Rating(int stars) : stars(stars) {
+    std::cout &lt;&lt; &quot;Rating(&quot; &lt;&lt; stars &lt;&lt; &quot;)&quot; &lt;&lt; std::endl;
+  }
+  int getStars() const {
+    return stars;
+  }
+};
+
+void review(const Rating&amp; r) {
+  std::cout &lt;&lt; &quot;review &quot; &lt;&lt; r.getStars() &lt;&lt; std::endl;
+}
+
+int main() {
+  review(5);
+  return 0;
+}</code></pre><p><a href="assets/code/notes_cv_rating_main.cpp" download="main.cpp">Download this file (it saves as main.cpp)</a></p><p>It prints:</p><pre>Rating(5)
+review 5</pre><p>The first line shows that a temporary <code>Rating(5)</code> was made before <code>review</code> ran.</p></div><div id="conversion-contrast" class="route-stage" data-stage="contrast"><p>If <code>Rating</code> has only <code>Rating(int stars, std::string comment)</code>, there is no one-argument constructor, so <code>review(5)</code> fails:</p><pre>main.cpp:18:10: error: invalid initialization of reference of type ‘const Rating&amp;’ from expression of type ‘int’</pre></div><div id="conversion-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>Semester Test 1 asked about a constructor with defaults for every parameter. This one is a default constructor and a conversion constructor at the same time:</p><pre data-component="cpp-highlight"><code>  Item(float value = 0.0f, int size = 0, std::string text = &quot;&quot;)
+      : value(value), size(size), text(text) {}</code></pre><pre data-component="cpp-highlight"><code>int main() {
+  Item a;
+  a.print();
+  show(2.5f);
+  return 0;
+}</code></pre><pre>0 0 []
+2.5 0 []</pre><p><code>Item a;</code> uses all three defaults. <code>show(2.5f)</code> turns 2.5 into <code>Item(2.5f, 0, "")</code>.</p></div><div id="conversion-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>A class <code>Meter</code> has only <code>Meter(int reading, int limit = 100)</code>. A function is <code>void log(const Meter&amp; m)</code>. Does <code>log(40);</code> compile? Explain in one sentence.</p><p><em>Hint: count the parameters without a default.</em></p><section class="reveal" data-component="practice-reveal" id="conversion-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="conversion-q1-solution" class="reveal__body" data-practice-solution hidden><p>Yes. The constructor can be called with one argument because <code>limit</code> has a default, so 40 becomes <code>Meter(40, 100)</code>.</p></div></section></section></div><div id="conversion-checked-solution" class="route-stage" data-stage="checked-solution"><p>The test is the number of parameters <em>without</em> defaults: exactly one means automatic conversion is possible.</p></div></section><section class="route" data-route-id="copy" data-route-type="concept"><h2 id="copy">The copy constructor</h2><div id="copy-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>Lecture 8 models a <code>BankBackUp</code> that keeps a snapshot of a <code>Bank</code>. If the backup only stored the address of the bank, every change to the bank would show in the backup, so it would not be a snapshot.</p></div><div id="copy-plain-identity" class="route-stage" data-stage="plain-identity"><section class="block block--definition"><p class="block__label">From Lecture 8, slides 6 and 7</p><p>Shallow copy: the address in one variable is copied into another, so both point to the same memory and a change through one shows through the other. Deep copy: a new variable is created and filled with the same data, so the two are independent.</p></section><section class="block block--definition"><p class="block__label">From Tutorial 4, slide 20</p><p>C++ gives a class a copy constructor if none is written. It copies each member as it is: for a pointer it copies the address. For plain members that is fine.</p></section><table class="attribute-table"><thead><tr><th scope="col">Where</th><th scope="col">Form</th></tr></thead><tbody><tr><td>UML</td><td><code>+ Bank(otherBank: const Bank&amp;)</code></td></tr><tr><td>class definition</td><td><code>Bank(const Bank&amp;);</code> (the parameter name is not needed)</td></tr><tr><td>.cpp file</td><td><code>Bank::Bank(const Bank&amp; otherBank) { ... }</code></td></tr></tbody></table></div><div id="copy-micro-example" class="route-stage" data-stage="micro-example"><figure class="teaching-figure" id="copy-figure"><p class="code-caption"><a href="assets/diagrams/d07_shallow_deep.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d07_shallow_deep.svg" alt="Top panel, Shallow (no copy constructor written): a.value and b.value both point to one int holding 99. Bottom panel, Deep (copy constructor makes a new int): a.value points to 10 and b.value points to its own 99."><figcaption><code>Score b(a);</code> then <code>b.set(99);</code>, with and without a copy constructor.</figcaption></figure><p>A <code>Score</code> holds an <code>int*</code>. Without a copy constructor:</p><pre data-component="cpp-highlight"><code>int main() {
+  Score a(10);
+  Score b(a);
+  b.set(99);
+  std::cout &lt;&lt; a.get() &lt;&lt; &quot; &quot; &lt;&lt; b.get() &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p>It prints <code>99 99</code>: changing <code>b</code> changed <code>a</code>. When <code>main</code> ends, both destructors delete the same int. valgrind reports:</p><pre>Invalid free() / delete / delete[] / realloc()
+ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)</pre><p>The deep copy constructor makes a new int with the same value:</p><pre data-component="cpp-highlight"><code>  Score(const Score&amp; other) : value(new int(*other.value)) {}
+};
+
+int main() {
+  Score a(10);
+  Score b(a);
+  b.set(99);
+  std::cout &lt;&lt; a.get() &lt;&lt; &quot; &quot; &lt;&lt; b.get() &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p>Now the program prints <code>10 99</code> and valgrind reports 0 errors.</p></div><div id="copy-contrast" class="route-stage" data-stage="contrast"><p>Why <code>const Score&amp;</code> and not <code>Score</code>?</p><section class="block block--definition"><p class="block__label">From Lecture 8, slide 11 and Tutorial 4, slide 23</p><p>If the copy constructor took its parameter by value, passing the argument would itself need a copy, which calls the copy constructor again: an infinite chain of calls. <code>const</code> promises not to change the source, and lets a const object be copied.</p></section><pre>main.cpp:9:3: error: invalid constructor; you probably meant ‘Score (const Score&amp;)’</pre><p>When does the copy constructor run? This class prints from each special function. The copy adds 10 to the id, so each copy shows a new id:</p><pre data-component="cpp-highlight"><code>int main() {
+  std::cout &lt;&lt; &quot;line 1: Box b1(1);&quot; &lt;&lt; std::endl;
+  Box b1(1);
+  std::cout &lt;&lt; &quot;line 2: Box b2(b1);&quot; &lt;&lt; std::endl;
+  Box b2(b1);
+  std::cout &lt;&lt; &quot;line 3: Box b3 = b1;&quot; &lt;&lt; std::endl;
+  Box b3 = b1;
+  std::cout &lt;&lt; &quot;line 4: byValue(b1);&quot; &lt;&lt; std::endl;
+  byValue(b1);
+  std::cout &lt;&lt; &quot;line 5: byReference(b1);&quot; &lt;&lt; std::endl;
+  byReference(b1);
+  std::cout &lt;&lt; &quot;line 6: b3 = b2;&quot; &lt;&lt; std::endl;
+  b3 = b2;
+  std::cout &lt;&lt; &quot;end of main&quot; &lt;&lt; std::endl;
+  return 0;
+}</code></pre><pre>line 1: Box b1(1);
+  Box(1)
+line 2: Box b2(b1);
+  copy of 1 -&gt; 11
+line 3: Box b3 = b1;
+  copy of 1 -&gt; 11
+line 4: byValue(b1);
+  copy of 1 -&gt; 11
+  inside byValue
+  ~Box 11
+line 5: byReference(b1);
+  inside byReference
+line 6: b3 = b2;
+  operator= 11 gets 11
+end of main
+  ~Box 11
+  ~Box 11
+  ~Box 1</pre><table class="attribute-table"><thead><tr><th scope="col">Line</th><th scope="col">Function that runs</th><th scope="col">Why</th></tr></thead><tbody><tr><td><code>Box b2(b1);</code></td><td>copy constructor</td><td>a new object made from an existing one</td></tr><tr><td><code>Box b3 = b1;</code></td><td>copy constructor</td><td><code>b3</code> is being created, so this is not assignment</td></tr><tr><td><code>byValue(b1);</code></td><td>copy constructor, then the destructor of the copy</td><td>pass by value makes a copy; it ends with the function</td></tr><tr><td><code>byReference(b1);</code></td><td>none</td><td>a reference is another name for <code>b1</code></td></tr><tr><td><code>b3 = b2;</code></td><td><code>operator=</code></td><td>both objects already exist (see <a href="#assignment">The assignment operator</a>)</td></tr></tbody></table></div><div id="copy-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>Tutorial 4, Activity 2: write the deep copy constructor for a <code>Book</code> that holds <code>Chapter** chapters</code> (a dynamic array of pointers, each to a dynamic <code>Chapter</code>).</p><figure class="teaching-figure" id="copy-book-figure"><p class="code-caption"><a href="assets/diagrams/d08_book_copy.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d08_book_copy.svg" alt="Two Book objects, each with numberOfChapters = 2 and its own Chapter* array with slots [0] and [1]. Each slot points to its own :Chapter object, four Chapters in all."><figcaption>After <code>Book copy(dune);</code>: two arrays and four Chapters; nothing is shared.</figcaption></figure><pre data-component="cpp-highlight"><code>Book::Book(const Book&amp; other)
+    : title(other.title), numberOfChapters(other.numberOfChapters) {
+  chapters = new Chapter*[numberOfChapters];
+  for (int i = 0; i &lt; numberOfChapters; ++i) {
+    chapters[i] = new Chapter(*(other.chapters[i]));
+  }
+}</code></pre><p>The loop, from an instrumented run with two chapters:</p><pre>i = 0: copied Arrakis
+i = 1: copied Muad&#x27;Dib
+loop stops: i = 2 is not &lt; 2</pre><table class="attribute-table"><thead><tr><th scope="col">Pass</th><th scope="col">i</th><th scope="col"><code>i &lt; numberOfChapters</code></th><th scope="col">Body</th></tr></thead><tbody><tr><td>1</td><td>0</td><td>true (0 &lt; 2)</td><td><code>chapters[0]</code> = a new copy of “Arrakis”</td></tr><tr><td>2</td><td>1</td><td>true (1 &lt; 2)</td><td><code>chapters[1]</code> = a new copy of “Muad'Dib”</td></tr><tr><td>-</td><td>2</td><td>false (2 &lt; 2)</td><td>loop ends</td></tr></tbody></table><p>The test program changes the copy’s first chapter and prints both books:</p><pre>Arrakis | Changed
+2 2</pre><p><code>new Chapter(*(other.chapters[i]))</code>: <code>other.chapters[i]</code> is a pointer, <code>*</code> gives the Chapter it points to, and that Chapter is passed to <code>Chapter</code>’s copy constructor. The slide assumes <code>other.chapters</code> and every <code>other.chapters[i]</code> are not NULL.</p></div><div id="copy-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>Lecture 8 asks: when a parameter is passed by value, which constructor runs? And can the copy constructor take its parameter by value?</p><p><em>Hint: look at line 4 of the Box output.</em></p><section class="reveal" data-component="practice-reveal" id="copy-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="copy-q1-solution" class="reveal__body" data-practice-solution hidden><p>The copy constructor runs (see <code>byValue(b1)</code> above). It cannot take its parameter by value: that would need a copy to make the copy, an endless chain. g++ rejects it with “invalid constructor”.</p></div></section></section></div><div id="copy-checked-solution" class="route-stage" data-stage="checked-solution"><p>The same steps can be drawn as a flowchart with the rules in <a href="#destructor-flowchart-rules">Flowchart rules</a> (in The destructor section).</p></div></section><section class="route" data-route-id="destructor" data-route-type="concept"><h2 id="destructor">The destructor</h2><div id="destructor-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>Lecture 8 asks whether all memory is released when a <code>Bank</code> that holds dynamic accounts is deleted. The free destructor destroys each member, but it does not delete heap memory that the object made with <code>new</code> (Tutorial 4).</p></div><div id="destructor-plain-identity" class="route-stage" data-stage="plain-identity"><section class="block block--definition"><p class="block__label">From Lecture 8, slides 15 and 16</p><p>A destructor is a special function that takes no parameters and has no return type, with the special purpose of deallocating any dynamic memory allocated by the object. It is invoked when the object goes out of scope, and when <code>delete</code> is used.</p></section><table class="attribute-table"><thead><tr><th scope="col">Where</th><th scope="col">Form</th></tr></thead><tbody><tr><td>class definition</td><td><code>~Bank();</code></td></tr><tr><td>.cpp file</td><td><code>Bank::~Bank() { ... }</code></td></tr><tr><td>UML (C++ notation, Lecture 8)</td><td><code>+ ~Bank()</code></td></tr></tbody></table><p>Lecture 8 asks two more questions. Can a destructor be overloaded? No: it has no parameters, so there is only one form. Can it be <code>const</code>? No. g++ says:</p><pre>main.cpp:3:3: error: destructors may not have parameters
+main.cpp:3:11: error: destructors may not be cv-qualified</pre></div><div id="destructor-micro-example" class="route-stage" data-stage="micro-example"><p>Objects are destroyed in the reverse order they were made in their block. A heap object is destroyed at <code>delete</code>:</p><pre data-component="cpp-highlight"><code>int main() {
+  Tag a(&quot;a&quot;);
+  Tag* h = new Tag(&quot;h&quot;);
+  {
+    Tag b(&quot;b&quot;);
+    Tag c(&quot;c&quot;);
+    std::cout &lt;&lt; &quot;end of block&quot; &lt;&lt; std::endl;
+  }
+  delete h;
+  std::cout &lt;&lt; &quot;end of main&quot; &lt;&lt; std::endl;
+  return 0;
+}</code></pre><pre>construct a
+construct h
+construct b
+construct c
+end of block
+destroy c
+destroy b
+destroy h
+end of main
+destroy a</pre><p>Lecture 8’s own example (with class bodies added so it runs) shows the copy made by <code>addAccount</code>:</p><pre data-component="cpp-highlight"><code>int main() {
+  Bank* bank = new Bank();
+  BankAccount bc;
+  bank-&gt;addAccount(bc);
+  delete bank;
+  std::cout &lt;&lt; &quot;end of main&quot; &lt;&lt; std::endl;
+  return 0;
+}</code></pre><pre>Bank()
+BankAccount()
+BankAccount(copy)
+~Bank()
+~BankAccount()
+end of main
+~BankAccount()</pre><p><code>addAccount</code> stores a <code>new BankAccount(bc)</code> (a copy). <code>delete bank</code> runs <code>~Bank</code>, which deletes that copy. <code>bc</code> itself is destroyed at the end of <code>main</code>.</p></div><div id="destructor-contrast" class="route-stage" data-stage="contrast"><p>What a destructor deletes depends on <strong>ownership</strong>, which the UML relationship shows. In a <strong>composition</strong> (filled diamond) the whole owns its parts: the parts are made and deleted by the whole. In an <strong>aggregation</strong> (hollow diamond) the whole only points at parts that exist on their own.</p><figure class="teaching-figure" id="destructor-figure"><p class="code-caption"><a href="assets/diagrams/d09_ownership_destructor.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d09_ownership_destructor.svg" alt="Top: Book with - chapters: Chapter** and - numberOfChapters: int, joined to Chapter by a filled diamond at Book (composition, 1 to 0..*). Note: Book owns the Chapters; ~Book deletes every Chapter, then the array. Bottom: Library with - books: Novel** and - count: int, joined to Novel by a hollow diamond (aggregation, * to *). Note: Library only points at Novels that live on; ~Library deletes only the array."><figcaption>Filled diamond: delete the parts. Hollow diamond: delete only the array of pointers.</figcaption></figure><h3>Composition: an empty destructor leaks</h3><p>A <strong>leak</strong> is memory taken with <code>new</code> that is never given back with <code>delete</code>.</p><p><code>Book::~Book() {}</code> deletes nothing. After <code>delete book;</code> valgrind reports:</p><pre>definitely lost: 16 bytes in 1 blocks
+indirectly lost: 80 bytes in 2 blocks
+ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)</pre><p>16 bytes is the array of 2 pointers (8 bytes each); the 80 bytes are the 2 Chapters it pointed to. The Tutorial 4 destructor fixes it:</p><pre data-component="cpp-highlight"><code>Book::~Book() {
+  if (chapters != NULL) {
+    for (int i = 0; i &lt; numberOfChapters; i++) {
+      delete chapters[i];
+    }
+    delete[] chapters;
+    chapters = NULL;
+  }
+}</code></pre><h3>Aggregation: deleting the parts is wrong</h3><p><code>Library</code> only points at Novels that <code>main</code> made. Its destructor must delete the array only:</p><pre data-component="cpp-highlight"><code>Library::~Library() {
+  delete[] books;
+}</code></pre><p>If <code>~Library</code> also deletes each Novel, <code>main</code> later reads and deletes Novels that are gone. The program still prints <code>Emma still exists</code>, but valgrind reports:</p><pre>Invalid read of size 8
+Invalid read of size 2
+Invalid free() / delete / delete[] / realloc()
+ERROR SUMMARY: 8 errors from 7 contexts (suppressed: 0 from 0)</pre><p>A wrong program can print the expected output. Only valgrind (or a crash) shows the problem.</p></div><div id="destructor-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>Class Test 2A Q2 and the Logistics UML mock (Q3, Q4) asked for a destructor flowchart; Semester Test 1 Q23 asked for one of <code>operator=</code>. Here is the Book destructor drawn with steps in words.</p><section class="block block--note"><p class="block__label">Flowchart rules</p><ul id="destructor-flowchart-rules"><li>An oval (terminator) for Start and End; Start names the function.</li><li>A rectangle (process) for each step, written in words: “Delete chapter i”, not <code>delete chapters[i];</code>.</li><li>A diamond (decision) holds one yes/no question; its two arrows are labelled Yes and No.</li><li>A loop is a decision with an arrow back to it; every arrow has a direction.</li></ul></section><figure class="teaching-figure" id="destructor-flowchart"><p class="code-caption"><a href="assets/diagrams/d13_book_destructor_flowchart.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d13_book_destructor_flowchart.svg" alt="Flowchart: Start ~Book. Decision: Is the chapters array NULL? Yes goes to End. No: Set i to 0. Decision: Is i less than numberOfChapters? Yes: Delete chapter i, Add 1 to i, back to the decision. No: Delete the chapters array, Set chapters to NULL, End."><figcaption>Each node says what happens in words; nodes that only hold code lose marks (Class Test 2A and Semester Test 1 marking).</figcaption></figure><p>An instrumented run shows the loop in the destructor of each Book in the copy program above (the copy is destroyed first):</p><pre>~Book Dune, i = 0: delete Changed
+~Book Dune, i = 1: delete Muad&#x27;Dib
+~Book Dune, i = 0: delete Arrakis
+~Book Dune, i = 1: delete Muad&#x27;Dib</pre><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>chapters != NULL</code></td><td>there is an array: delete its Chapters, then the array</td><td>nothing to delete; skip to the end</td></tr></tbody></table><table class="attribute-table"><thead><tr><th scope="col">Pass (copy, destroyed first)</th><th scope="col">i</th><th scope="col"><code>i &lt; numberOfChapters</code></th><th scope="col">Body</th></tr></thead><tbody><tr><td>1</td><td>0</td><td>true (0 &lt; 2)</td><td>delete the Chapter “Changed”</td></tr><tr><td>2</td><td>1</td><td>true (1 &lt; 2)</td><td>delete the Chapter “Muad&#39;Dib”</td></tr><tr><td>-</td><td>2</td><td>false (2 &lt; 2)</td><td>loop ends; delete the array, set <code>chapters</code> to NULL</td></tr></tbody></table><p>The original <code>dune</code> repeats the same two passes for its own Chapters (“Arrakis”, “Muad&#39;Dib”).</p><p>A Book with no chapters keeps <code>chapters</code> as NULL, so its destructor skips the loop. Copying an empty Book makes <code>new Chapter*[0]</code>, which is not NULL:</p><pre>~Book: chapters != NULL is true
+~Book: chapters != NULL is false</pre><p>The first line is the copy (its array has 0 slots, but it exists and is deleted); the second is the original.</p></div><div id="destructor-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>A <code>Garden</code> holds <code>Plant** plants</code> (composition, <code>numPlants</code> of them) and <code>Gardener** helpers</code> (aggregation). Write <code>Garden::~Garden()</code>.</p><p><em>Hint: which relationship means the Garden owns the part?</em></p><section class="reveal" data-component="practice-reveal" id="destructor-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="destructor-q1-solution" class="reveal__body" data-practice-solution hidden><pre>Garden::~Garden() {
+  for (int i = 0; i &lt; numPlants; i++) {
+    delete plants[i];
+  }
+  delete[] plants;
+  delete[] helpers;
+}</pre><p>Delete each owned Plant, then the plants array. For the helpers delete only the array; the Gardeners belong to someone else.</p></div></section></section></div><div id="destructor-checked-solution" class="route-stage" data-stage="checked-solution"><p>Check: <code>delete</code> for one object, <code>delete[]</code> for an array made with <code>new ...[n]</code>.</p></div></section><section class="route" data-route-id="assignment" data-route-type="concept"><h2 id="assignment">The assignment operator</h2><div id="assignment-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p><code>b = a;</code> where both objects already exist. The free assignment operator copies each member as it is, so it has the same shallow-copy problem as the free copy constructor, plus one more: the memory <code>b</code> held before is lost.</p></div><div id="assignment-plain-identity" class="route-stage" data-stage="plain-identity"><section class="block block--definition"><p class="block__label">From Tutorial 5, Assignment Operator slides</p><p>Copy constructor: creates a new object from an already existing object of the same class. Assignment operator: an already existing object’s members are assigned the same values as the other object. Format: <code>&lt;ClassName&gt;&amp; operator=(const &lt;ClassName&gt;&amp;)</code></p></section><p>UML: <code>+ operator=(other: const Score&amp;): Score&amp;</code>. The four steps:</p><figure class="teaching-figure" id="assignment-figure"><p class="code-caption"><a href="assets/diagrams/d10_assign_steps.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d10_assign_steps.svg" alt="b = a; where a holds 10 and b holds 20. Before: a.value points to 10, b.value points to 20. Steps: 1 check this != &amp;other; 2 delete value (the 20 is deleted); 3 value = new int(*other.value) (a new 10); 4 return *this. After: a.value points to 10 and b.value points to its own new 10."><figcaption>Check, delete the old memory, deep copy, return the object.</figcaption></figure></div><div id="assignment-micro-example" class="route-stage" data-stage="micro-example"><pre data-component="cpp-highlight"><code>Score&amp; Score::operator=(const Score&amp; other) {
+  if (this != &amp;other) {
+    delete value;
+    value = new int(*other.value);
+  }
+  return *this;
+}</code></pre><pre data-component="cpp-highlight"><code>int main() {
+  Score a(10);
+  Score b(20);
+  Score c(30);
+  b = a;
+  b.set(99);
+  std::cout &lt;&lt; a.get() &lt;&lt; &quot; &quot; &lt;&lt; b.get() &lt;&lt; std::endl;
+  a = a;
+  std::cout &lt;&lt; a.get() &lt;&lt; std::endl;
+  a = b = c;
+  std::cout &lt;&lt; a.get() &lt;&lt; &quot; &quot; &lt;&lt; b.get() &lt;&lt; &quot; &quot; &lt;&lt; c.get() &lt;&lt; std::endl;
+  return 0;
+}</code></pre><pre>10 99
+10
+30 30 30</pre><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>this != &amp;other</code></td><td>different objects: delete the old int and copy</td><td>self-assignment (<code>a = a</code>): change nothing</td></tr></tbody></table><p><code>a = b = c;</code> works because <code>b = c</code> returns <code>b</code> (by reference), which is then assigned to <code>a</code>.</p></div><div id="assignment-contrast" class="route-stage" data-stage="contrast"><p>Each step has a reason. Each program below leaves one out:</p><table class="attribute-table"><thead><tr><th scope="col">Left out</th><th scope="col">What happens</th></tr></thead><tbody><tr><td>the whole operator (free one used)</td><td><code>b = a; b.set(99);</code> prints <code>99 99</code>. valgrind: <code>Invalid free() / delete / delete[] / realloc()</code>, <code>definitely lost: 4 bytes in 1 blocks</code>, <code>indirectly lost: 0 bytes in 0 blocks</code>, <code>ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)</code>. The 20 is leaked; the 10 is deleted twice.</td></tr><tr><td>the self check</td><td><code>a = a;</code> deletes the int, then copies from the deleted int. It printed <code>10</code>, but valgrind reports <code>Invalid read of size 4</code>.</td></tr><tr><td><code>return *this;</code> on every path</td><td><code>control reaches end of non-void function [-Werror=return-type]</code></td></tr></tbody></table><p>Tutorial 5’s model answer for a <code>String</code> class allocates <code>new char[strlen(other.data)]</code>. That is one byte short: <code>strcpy</code> also copies the closing <code>'\0'</code>. The run printed <code>hello</code>, but valgrind reports:</p><pre>Invalid write of size 1
+Invalid read of size 1
+ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)</pre><p>The fix is <code>new char[strlen(other.data) + 1]</code>, after which valgrind reports 0 errors. (The slide also writes <code>return this;</code> where <code>return *this;</code> is needed; that text may be a slide typo.)</p></div><div id="assignment-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>With a composition and an aggregation in one class, <code>operator=</code> deep-copies the owned parts and shares the others. A <code>Garden</code> owns its Plants and points at helper Gardeners:</p><pre data-component="cpp-highlight"><code>Garden&amp; Garden::operator=(const Garden&amp; other) {
+  if (this == &amp;other) {
+    return *this;
+  }
+  for (int i = 0; i &lt; numPlants; i++) {
+    delete plants[i];
+  }
+  delete[] plants;
+  delete[] helpers;
+  numPlants = other.numPlants;
+  plants = new Plant*[numPlants];
+  for (int i = 0; i &lt; numPlants; i++) {
+    plants[i] = new Plant(*other.plants[i]);
+  }
+  numHelpers = other.numHelpers;
+  helpers = NULL;
+  if (numHelpers &gt; 0) {
+    helpers = new Gardener*[numHelpers];
+    for (int i = 0; i &lt; numHelpers; i++) {
+      helpers[i] = other.helpers[i];
+    }
+  }
+  return *this;
+}</code></pre><figure class="teaching-figure" id="assignment-garden-figure"><p class="code-caption"><a href="assets/diagrams/d11_garden_assign.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d11_garden_assign.svg" alt="After b = a: a.plants and b.plants are separate arrays; a.plants[0] points to :Plant rose and b.plants[0] to its own :Plant (later aloe); [1] slots point to separate fern Plants. a.helpers[0] and b.helpers[0] both point to the same sipho:Gardener. Plants: deep copy (owned). Helper: same object (shared)."><figcaption>After <code>b = a;</code> and <code>b.setPlant(0, "aloe");</code>.</figcaption></figure><pre>rose fern | Sipho 
+aloe fern | Sipho </pre><p>Lerato, <code>b</code>’s old helper, is not deleted: only <code>b</code>’s array of helper pointers was. <a href="examples.html#ex-garden">Example 7</a> traces this operator line by line.</p></div><div id="assignment-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>C++ gives every class four special functions for free (Tutorial 4). Name them, and say which three a class with a dynamic member must write itself.</p><p><em>Hint: Tutorial 4, slide 12.</em></p><section class="reveal" data-component="practice-reveal" id="assignment-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="assignment-q1-solution" class="reveal__body" data-practice-solution hidden><p>Free: default constructor, copy constructor, destructor, copy assignment operator. A class that owns dynamic memory writes the copy constructor, the destructor and the assignment operator (it usually writes its own constructors too).</p><section class="block block--caution"><p class="block__label">Assumed</p><p>The name “rule of three” for this group is common in C++ books but does not appear in the COS 110 slides.</p></section></div></section></section></div><div id="assignment-checked-solution" class="route-stage" data-stage="checked-solution"><p>The three functions go together: if one is needed because of a pointer member, the other two are needed for the same reason.</p></div></section><section class="route" data-route-id="lifetime" data-route-type="concept"><h2 id="lifetime">Object lifetime</h2><div id="lifetime-ordinary-problem" class="route-stage" data-stage="ordinary-problem"><p>Semester Test 1 ended with an object diagram: draw the objects that exist at a marked line. That needs the lifetime of each object: when it is made and when it is gone.</p></div><div id="lifetime-plain-identity" class="route-stage" data-stage="plain-identity"><table class="attribute-table"><thead><tr><th scope="col">Object</th><th scope="col">Made</th><th scope="col">Gone</th></tr></thead><tbody><tr><td>local (stack) object</td><td>at its line</td><td>at the end of its block <code>}</code>, in reverse order</td></tr><tr><td>heap object</td><td>at <code>new</code></td><td>at <code>delete</code>, or never (a leak)</td></tr><tr><td>member object</td><td>before the constructor body of its owner</td><td>after the destructor body of its owner</td></tr><tr><td>parameter passed by value</td><td>at the call (copy constructor)</td><td>when the function ends</td></tr><tr><td>static member</td><td>before <code>main</code>, once for the class</td><td>after <code>main</code></td></tr></tbody></table></div><div id="lifetime-micro-example" class="route-stage" data-stage="micro-example"><p>A <code>Bus</code> owns its <code>Seat</code>s; <code>Seat</code> counts live seats in a static member:</p><pre data-component="cpp-highlight" id="lifetime-bus"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class Seat {
+ private:
+  int number;
+  static int seatCount;
+
+ public:
+  Seat(int number = 0) : number(number) {
+    seatCount++;
+    std::cout &lt;&lt; &quot;  Seat &quot; &lt;&lt; number &lt;&lt; &quot; made, seatCount &quot; &lt;&lt; seatCount &lt;&lt; std::endl;
+  }
+  ~Seat() {
+    seatCount--;
+    std::cout &lt;&lt; &quot;  Seat &quot; &lt;&lt; number &lt;&lt; &quot; gone, seatCount &quot; &lt;&lt; seatCount &lt;&lt; std::endl;
+  }
+  static int getSeatCount() {
+    return seatCount;
+  }
+};
+
+int Seat::seatCount = 0;
+
+class Bus {
+ private:
+  std::string route;
+  Seat** seats;
+  int numSeats;
+
+ public:
+  Bus(std::string route, int numSeats) : route(route), numSeats(numSeats) {
+    std::cout &lt;&lt; &quot;  Bus &quot; &lt;&lt; route &lt;&lt; &quot; body starts&quot; &lt;&lt; std::endl;
+    seats = new Seat*[numSeats];
+    for (int i = 0; i &lt; numSeats; i++) {
+      seats[i] = new Seat(i + 1);
+    }
+  }
+  ~Bus() {
+    std::cout &lt;&lt; &quot;  ~Bus &quot; &lt;&lt; route &lt;&lt; &quot; starts&quot; &lt;&lt; std::endl;
+    for (int i = 0; i &lt; numSeats; i++) {
+      delete seats[i];
+    }
+    delete[] seats;
+  }
+};
+
+int main() {
+  std::cout &lt;&lt; &quot;line 1: Seat spare(9);&quot; &lt;&lt; std::endl;
+  Seat spare(9);
+  std::cout &lt;&lt; &quot;line 2: Bus* b = new Bus(\&quot;R5\&quot;, 2);&quot; &lt;&lt; std::endl;
+  Bus* b = new Bus(&quot;R5&quot;, 2);
+  std::cout &lt;&lt; &quot;line 3: count is &quot; &lt;&lt; Seat::getSeatCount() &lt;&lt; std::endl;
+  std::cout &lt;&lt; &quot;line 4: { Bus local(\&quot;R7\&quot;, 1); }&quot; &lt;&lt; std::endl;
+  {
+    Bus local(&quot;R7&quot;, 1);
+  }
+  std::cout &lt;&lt; &quot;line 5: delete b;&quot; &lt;&lt; std::endl;
+  delete b;
+  std::cout &lt;&lt; &quot;line 6: count is &quot; &lt;&lt; Seat::getSeatCount() &lt;&lt; std::endl;
+  return 0;
+}</code></pre><p><a href="assets/code/notes_lt_full_trace_main.cpp" download="main.cpp">Download this file (it saves as main.cpp)</a></p><pre>line 1: Seat spare(9);
+  Seat 9 made, seatCount 1
+line 2: Bus* b = new Bus(&quot;R5&quot;, 2);
+  Bus R5 body starts
+  Seat 1 made, seatCount 2
+  Seat 2 made, seatCount 3
+line 3: count is 3
+line 4: { Bus local(&quot;R7&quot;, 1); }
+  Bus R7 body starts
+  Seat 1 made, seatCount 4
+  ~Bus R7 starts
+  Seat 1 gone, seatCount 3
+line 5: delete b;
+  ~Bus R5 starts
+  Seat 1 gone, seatCount 2
+  Seat 2 gone, seatCount 1
+line 6: count is 1
+  Seat 9 gone, seatCount 0</pre><p>The seat loop in <code>new Bus("R5", 2)</code>:</p><table class="attribute-table"><thead><tr><th scope="col">Pass</th><th scope="col">i</th><th scope="col"><code>i &lt; numSeats</code></th><th scope="col">Body</th></tr></thead><tbody><tr><td>1</td><td>0</td><td>0 &lt; 2 true</td><td>new Seat(1); seatCount 2</td></tr><tr><td>2</td><td>1</td><td>1 &lt; 2 true</td><td>new Seat(2); seatCount 3</td></tr><tr><td>-</td><td>2</td><td>2 &lt; 2 false</td><td>loop ends</td></tr></tbody></table></div><div id="lifetime-contrast" class="route-stage" data-stage="contrast"><p>The object diagram at line 3 (after <code>new Bus("R5", 2)</code>):</p><figure class="teaching-figure" id="lifetime-figure"><p class="code-caption"><a href="assets/diagrams/d12_object_diagram.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d12_object_diagram.svg" alt="Object diagram: spare:Seat with number = 9; b:Bus with route = &quot;R5&quot;, numSeats = 2; links from b:Bus to seats[0]:Seat (number = 1) and seats[1]:Seat (number = 2). A note: Seat::seatCount = 3 (static: one value for the class, not a slot of any object). Text: b:Bus is the heap Bus that b points to (Assumed name)."><figcaption>At line 3: three Seats and one Bus exist; <code>local</code> does not exist yet.</figcaption></figure><p>At line 6 the diagram has only <code>spare:Seat</code>: the R7 Bus ended with its block, and the R5 Bus was deleted. The count lines agree: 3, then 1.</p><section class="block block--caution"><p class="block__label">Assumed</p><p>How to name a heap object that only a pointer reaches is not fixed by the slides. This page names it after the pointer (<code>b:Bus</code>).</p></section><section class="block block--note"><p class="block__label">Object diagram rules</p><ul><li>One box per object that exists at the marked line, headed <u><code>name:Class</code></u>.</li><li>One line <code>attribute = value</code> for each data member; static members are not drawn in the box.</li><li>An array element is named after its slot, for example <code>seats[0]:Seat</code>.</li><li>A line (link) joins an object to each object one of its pointers reaches.</li></ul></section></div><div id="lifetime-worked-transfer" class="route-stage" data-stage="worked-transfer"><p>Use a table: one row per line of <code>main</code>, with what is made and what is gone. For line 4:</p><table class="attribute-table"><thead><tr><th scope="col">Line</th><th scope="col">Made</th><th scope="col">Gone</th><th scope="col">seatCount after</th></tr></thead><tbody><tr><td>1</td><td>spare (Seat 9)</td><td>-</td><td>1</td></tr><tr><td>2</td><td>heap Bus R5, Seats 1 and 2</td><td>-</td><td>3</td></tr><tr><td>4</td><td>Bus R7 (local), its Seat 1</td><td>at <code>}</code>: Bus R7 and its Seat 1</td><td>3</td></tr><tr><td>5</td><td>-</td><td>Bus R5 and its two Seats</td><td>1</td></tr><tr><td>end</td><td>-</td><td>spare</td><td>0</td></tr></tbody></table></div><div id="lifetime-independent-attempt" class="route-stage" data-stage="independent-attempt"><section class="block block--check"><p class="block__label">Try this</p><p>In the Bus program, what would <code>seatCount</code> be after line 5 if <code>~Bus</code> were empty?</p><p><em>Hint: which Seats are made with new, and who deletes them?</em></p><section class="reveal" data-component="practice-reveal" id="lifetime-q1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the answer</button><div id="lifetime-q1-solution" class="reveal__body" data-practice-solution hidden><p>4. With an empty <code>~Bus</code>, no Seat made with <code>new</code> is ever destroyed. After line 4 the count is 4 (the R7 Seat stays alive), and line 5 subtracts nothing. A run with an empty <code>~Bus</code> prints:</p><pre>line 1: Seat spare(9);
+  Seat 9 made, seatCount 1
+line 2: Bus* b = new Bus(&quot;R5&quot;, 2);
+  Bus R5 body starts
+  Seat 1 made, seatCount 2
+  Seat 2 made, seatCount 3
+line 3: count is 3
+line 4: { Bus local(&quot;R7&quot;, 1); }
+  Bus R7 body starts
+  Seat 1 made, seatCount 4
+  ~Bus R7 starts
+line 5: delete b;
+  ~Bus R5 starts
+line 6: count is 4
+  Seat 9 gone, seatCount 3</pre><p>valgrind then reports:</p><pre>definitely lost: 24 bytes in 2 blocks
+indirectly lost: 12 bytes in 3 blocks
+ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)</pre></div></section></section></div><div id="lifetime-checked-solution" class="route-stage" data-stage="checked-solution"><p>Count the Seats alive after line 5 with an empty destructor: spare, the two R5 Seats and the R7 Seat, which gives 4.</p></div></section>
+  </main>
+  <footer class="site-footer"><div class="site-footer__inner">Swift Tuition | COS 110</div></footer>
+</body>
+</html>

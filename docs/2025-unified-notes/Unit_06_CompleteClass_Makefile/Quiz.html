@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 6 Quiz - Complete Class Example with Makefile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #e9d5ff;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            display: block;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons a {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 25px;
+            background: #1e293b;
+            color: #0ea5e9;
+            text-decoration: none;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #334155;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .nav-buttons a:hover {
+            background: #334155;
+            border-color: #0ea5e9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .quiz-intro {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #8b5cf6;
+        }
+
+        .quiz-intro h2 {
+            color: #8b5cf6;
+            margin-bottom: 15px;
+        }
+
+        .quiz-intro ul {
+            margin-left: 20px;
+            color: #cbd5e1;
+        }
+
+        .quiz-intro li {
+            margin: 10px 0;
+        }
+
+        .question-card {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #334155;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            border-color: #8b5cf6;
+            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.2);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            color: #f1f5f9;
+            flex: 1;
+        }
+
+        .options {
+            margin: 20px 0;
+        }
+
+        .option {
+            background: #0f172a;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 2px solid #334155;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #8b5cf6;
+            background: #1e293b;
+        }
+
+        .option-label {
+            font-weight: bold;
+            color: #8b5cf6;
+            margin-right: 10px;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .explanation {
+            display: none;
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation h4 {
+            color: #8b5cf6;
+            margin-bottom: 10px;
+        }
+
+        .correct-answer {
+            color: #10b981;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .explanation-text {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .code-block {
+            background: #0a0f1a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow-x: auto;
+            border: 1px solid #334155;
+            font-family: 'Courier New', monospace;
+        }
+
+        .code-block code {
+            color: #0ea5e9;
+            font-size: 0.95em;
+        }
+
+        .why-wrong {
+            color: #f87171;
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+            color: white;
+        }
+
+        .score-card h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            background: #1e293b;
+            border-radius: 15px;
+            color: #94a3b8;
+        }
+
+        .footer a {
+            color: #8b5cf6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            color: #a78bfa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition Logo" class="logo">
+            <h1>Unit 6 Quiz</h1>
+            <p>Complete Class Example with Makefile</p>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="Theory.html">📚 Theory</a>
+            <a href="Examples.html">💡 Examples</a>
+            <a href="Practice.html">✏️ Practice</a>
+            <a href="Quiz.html">🎯 Quiz (Current)</a>
+        </div>
+
+        <div class="quiz-intro">
+            <h2>Quiz Instructions</h2>
+            <ul>
+                <li>This quiz has 28 questions covering complete class examples, makefiles, and namespaces</li>
+                <li>Read each question carefully before selecting your answer</li>
+                <li>Click "Reveal Answer" to see the correct answer and explanation</li>
+                <li>Try to answer all questions before checking answers</li>
+                <li>Use this quiz to check your understanding before EO3</li>
+            </ul>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">1</div>
+                <div class="question-text">What is the main purpose of an include guard in a header file?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> To make the code run faster</div>
+                <div class="option"><span class="option-label">B)</span> To prevent the header file from being included more than once</div>
+                <div class="option"><span class="option-label">C)</span> To hide private members from other files</div>
+                <div class="option"><span class="option-label">D)</span> To create a namespace for the class</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q1')">Reveal Answer</button>
+            <div id="q1" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) To prevent the header file from being included more than once</p>
+                <div class="explanation-text">
+                    <p>Include guards stop a header file from being included multiple times in the same file. Without them, you'd get errors about classes being defined twice.</p>
+                    <div class="code-block"><code>#ifndef RECTANGLE_H
+#define RECTANGLE_H
+// Class definition
+#endif</code></div>
+                    <p class="why-wrong">• A is wrong - include guards don't affect speed, just prevent duplicate definitions</p>
+                    <p class="why-wrong">• C is wrong - private members are hidden by the 'private' keyword, not include guards</p>
+                    <p class="why-wrong">• D is wrong - namespaces are created with the 'namespace' keyword, not include guards</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">2</div>
+                <div class="question-text">In a three-file structure (header, implementation, application), where should you write the actual code for member functions?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> In the header file (.h)</div>
+                <div class="option"><span class="option-label">B)</span> In the implementation file (.cpp)</div>
+                <div class="option"><span class="option-label">C)</span> In the application file (main.cpp)</div>
+                <div class="option"><span class="option-label">D)</span> In a separate .txt file</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q2')">Reveal Answer</button>
+            <div id="q2" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) In the implementation file (.cpp)</p>
+                <div class="explanation-text">
+                    <p>The implementation file is where you write the actual code that makes your member functions work. The header just has the declarations (what functions exist), but the .cpp file has the definitions (what they actually do).</p>
+                    <div class="code-block"><code>// Rectangle.cpp (implementation file)
+void Rectangle::setWidth(int w) {
+    width = w;  // Actual code here
+}</code></div>
+                    <p class="why-wrong">• A is wrong - headers only have declarations, not the full function code</p>
+                    <p class="why-wrong">• C is wrong - main.cpp is where you use the class, not where you write its member functions</p>
+                    <p class="why-wrong">• D is wrong - C++ code goes in .cpp files, not .txt files</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">3</div>
+                <div class="question-text">What does the scope resolution operator (::) do in C++?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> It creates a pointer to a class</div>
+                <div class="option"><span class="option-label">B)</span> It tells the compiler which class a member function belongs to</div>
+                <div class="option"><span class="option-label">C)</span> It makes a variable global</div>
+                <div class="option"><span class="option-label">D)</span> It ends a line of code</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q3')">Reveal Answer</button>
+            <div id="q3" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) It tells the compiler which class a member function belongs to</p>
+                <div class="explanation-text">
+                    <p>The :: operator connects a function name to its class. When you write Rectangle::setWidth(), you're saying "this setWidth function belongs to the Rectangle class".</p>
+                    <div class="code-block"><code>void Rectangle::setWidth(int w) {
+    // Rectangle:: tells us this is Rectangle's setWidth
+    width = w;
+}</code></div>
+                    <p class="why-wrong">• A is wrong - pointers use * and &, not ::</p>
+                    <p class="why-wrong">• C is wrong - global variables don't need ::, they're just declared outside functions</p>
+                    <p class="why-wrong">• D is wrong - semicolons (;) end lines, not ::</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">4</div>
+                <div class="question-text">Which files do you need to compile to create a working program?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Only the header files (.h)</div>
+                <div class="option"><span class="option-label">B)</span> Only main.cpp</div>
+                <div class="option"><span class="option-label">C)</span> All .cpp files (implementation and application files)</div>
+                <div class="option"><span class="option-label">D)</span> Only the implementation files (.cpp)</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q4')">Reveal Answer</button>
+            <div id="q4" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: C) All .cpp files (implementation and application files)</p>
+                <div class="explanation-text">
+                    <p>You need to compile every .cpp file in your project. Header files (.h) get included automatically when you #include them, but all .cpp files must be compiled.</p>
+                    <div class="code-block"><code>g++ main.cpp Rectangle.cpp -o program
+// Both .cpp files get compiled</code></div>
+                    <p class="why-wrong">• A is wrong - header files don't get compiled directly, they get included into .cpp files</p>
+                    <p class="why-wrong">• B is wrong - main.cpp needs the other .cpp files to link with</p>
+                    <p class="why-wrong">• D is wrong - you also need to compile the application file (usually main.cpp)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">5</div>
+                <div class="question-text">What is the correct format for an include guard?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> #guard FILENAME_H</div>
+                <div class="option"><span class="option-label">B)</span> #ifndef FILENAME_H #define FILENAME_H ... #endif</div>
+                <div class="option"><span class="option-label">C)</span> #include FILENAME_H</div>
+                <div class="option"><span class="option-label">D)</span> namespace FILENAME_H</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q5')">Reveal Answer</button>
+            <div id="q5" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) #ifndef FILENAME_H #define FILENAME_H ... #endif</p>
+                <div class="explanation-text">
+                    <p>Include guards use three parts: #ifndef checks if the name isn't defined yet, #define defines it, and #endif closes the guard. Everything goes between #define and #endif.</p>
+                    <div class="code-block"><code>#ifndef RECTANGLE_H  // If not defined
+#define RECTANGLE_H  // Define it now
+// All class code here
+#endif  // End of guard</code></div>
+                    <p class="why-wrong">• A is wrong - there's no #guard command in C++</p>
+                    <p class="why-wrong">• C is wrong - #include is for bringing in other files, not for guards</p>
+                    <p class="why-wrong">• D is wrong - namespaces are different from include guards</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">6</div>
+                <div class="question-text">In a makefile, what does a target represent?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> A file that needs to be created or updated</div>
+                <div class="option"><span class="option-label">B)</span> A variable that stores a value</div>
+                <div class="option"><span class="option-label">C)</span> A comment in the makefile</div>
+                <div class="option"><span class="option-label">D)</span> An error message</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q6')">Reveal Answer</button>
+            <div id="q6" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: A) A file that needs to be created or updated</p>
+                <div class="explanation-text">
+                    <p>A target is what you want to build. It's usually a file like "program" or "Rectangle.o". The makefile checks if the target needs updating by looking at when its dependencies were last changed.</p>
+                    <div class="code-block"><code>program: main.o Rectangle.o
+    g++ main.o Rectangle.o -o program
+# "program" is the target here</code></div>
+                    <p class="why-wrong">• B is wrong - variables in makefiles use different syntax (like CC = g++)</p>
+                    <p class="why-wrong">• C is wrong - comments start with #</p>
+                    <p class="why-wrong">• D is wrong - makefiles don't have special error message syntax</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">7</div>
+                <div class="question-text">What happens during the compilation stage?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> .cpp files are turned into object files (.o)</div>
+                <div class="option"><span class="option-label">B)</span> Object files are combined into an executable</div>
+                <div class="option"><span class="option-label">C)</span> #include directives are processed</div>
+                <div class="option"><span class="option-label">D)</span> The program runs</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q7')">Reveal Answer</button>
+            <div id="q7" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: A) .cpp files are turned into object files (.o)</p>
+                <div class="explanation-text">
+                    <p>Compilation takes your C++ code and turns it into machine code stored in object files. Each .cpp file gets its own .o file. This happens after preprocessing but before linking.</p>
+                    <div class="code-block"><code>g++ -c Rectangle.cpp -o Rectangle.o
+// Creates object file from source code</code></div>
+                    <p class="why-wrong">• B is wrong - that's linking, not compilation</p>
+                    <p class="why-wrong">• C is wrong - that's preprocessing, which happens before compilation</p>
+                    <p class="why-wrong">• D is wrong - the program runs after everything is built, not during compilation</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">8</div>
+                <div class="question-text">What happens during the linking stage?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Header files are copied into .cpp files</div>
+                <div class="option"><span class="option-label">B)</span> Object files are combined into one executable program</div>
+                <div class="option"><span class="option-label">C)</span> Syntax errors are checked</div>
+                <div class="option"><span class="option-label">D)</span> Variables are initialized</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q8')">Reveal Answer</button>
+            <div id="q8" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) Object files are combined into one executable program</p>
+                <div class="explanation-text">
+                    <p>The linker takes all the .o object files and connects them together into one program. It makes sure all function calls find their actual function code.</p>
+                    <div class="code-block"><code>g++ main.o Rectangle.o -o program
+// Links object files into final program</code></div>
+                    <p class="why-wrong">• A is wrong - that's what the preprocessor does with #include</p>
+                    <p class="why-wrong">• C is wrong - syntax errors are caught during compilation, not linking</p>
+                    <p class="why-wrong">• D is wrong - variables are initialized when the program runs</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">9</div>
+                <div class="question-text">How do you create a namespace in C++?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> namespace MySpace { ... }</div>
+                <div class="option"><span class="option-label">B)</span> #namespace MySpace</div>
+                <div class="option"><span class="option-label">C)</span> class namespace MySpace</div>
+                <div class="option"><span class="option-label">D)</span> using MySpace;</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q9')">Reveal Answer</button>
+            <div id="q9" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: A) namespace MySpace { ... }</p>
+                <div class="explanation-text">
+                    <p>You create a namespace by writing the keyword 'namespace' followed by a name, then putting all your code inside curly braces.</p>
+                    <div class="code-block"><code>namespace Geometry {
+    class Rectangle {
+        // Class code
+    };
+}</code></div>
+                    <p class="why-wrong">• B is wrong - namespace isn't a preprocessor directive, so no # is needed</p>
+                    <p class="why-wrong">• C is wrong - classes and namespaces are separate things</p>
+                    <p class="why-wrong">• D is wrong - that's how you use a namespace, not how you create one</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">10</div>
+                <div class="question-text">What's the difference between "using namespace std;" and "using std::cout;"?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> They do exactly the same thing</div>
+                <div class="option"><span class="option-label">B)</span> The first brings in everything from std, the second only brings in cout</div>
+                <div class="option"><span class="option-label">C)</span> The first is faster than the second</div>
+                <div class="option"><span class="option-label">D)</span> The second creates a new namespace called cout</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q10')">Reveal Answer</button>
+            <div id="q10" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) The first brings in everything from std, the second only brings in cout</p>
+                <div class="explanation-text">
+                    <p>"using namespace std;" is like opening all the drawers in a desk - you get access to everything. "using std::cout;" opens just one drawer - you only get cout.</p>
+                    <div class="code-block"><code>using namespace std;  // Now can use cout, cin, string, etc
+using std::cout;      // Only cout, still need std::cin</code></div>
+                    <p class="why-wrong">• A is wrong - they give you access to different amounts of stuff</p>
+                    <p class="why-wrong">• C is wrong - they compile to the same speed, it's just about what names you can use</p>
+                    <p class="why-wrong">• D is wrong - it doesn't create a namespace, it just lets you use cout without std::</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">11</div>
+                <div class="question-text">If you have a class Rectangle in namespace Geometry, how do you create an object of that class without a using directive?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Rectangle myRect;</div>
+                <div class="option"><span class="option-label">B)</span> Geometry::Rectangle myRect;</div>
+                <div class="option"><span class="option-label">C)</span> Geometry.Rectangle myRect;</div>
+                <div class="option"><span class="option-label">D)</span> namespace Geometry Rectangle myRect;</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q11')">Reveal Answer</button>
+            <div id="q11" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) Geometry::Rectangle myRect;</p>
+                <div class="explanation-text">
+                    <p>You need to specify which namespace the class comes from using the scope resolution operator (::). It's like giving the full address: "Geometry namespace, Rectangle class".</p>
+                    <div class="code-block"><code>namespace Geometry {
+    class Rectangle { /* ... */ };
+}
+
+Geometry::Rectangle myRect;  // Full name needed</code></div>
+                    <p class="why-wrong">• A is wrong - compiler doesn't know where to find Rectangle without the namespace</p>
+                    <p class="why-wrong">• C is wrong - C++ uses :: not . for namespaces</p>
+                    <p class="why-wrong">• D is wrong - that's not valid C++ syntax</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">12</div>
+                <div class="question-text">In a makefile, what does the clean target usually do?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Compiles all source files</div>
+                <div class="option"><span class="option-label">B)</span> Removes object files and executables</div>
+                <div class="option"><span class="option-label">C)</span> Runs the program</div>
+                <div class="option"><span class="option-label">D)</span> Checks for syntax errors</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q12')">Reveal Answer</button>
+            <div id="q12" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) Removes object files and executables</p>
+                <div class="explanation-text">
+                    <p>The clean target deletes all the files that were created during building (like .o files and the program itself). It's like cleaning up your workspace so you can start fresh.</p>
+                    <div class="code-block"><code>clean:
+    rm -f *.o program
+# Removes all .o files and the program</code></div>
+                    <p class="why-wrong">• A is wrong - that's what the default target does</p>
+                    <p class="why-wrong">• C is wrong - you run the program by typing its name, not with make clean</p>
+                    <p class="why-wrong">• D is wrong - the compiler checks for syntax errors, not make clean</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 13 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">13</div>
+                <div class="question-text">What should you put in a header file?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Only the class declaration with function bodies</div>
+                <div class="option"><span class="option-label">B)</span> The class declaration without function bodies</div>
+                <div class="option"><span class="option-label">C)</span> The main() function</div>
+                <div class="option"><span class="option-label">D)</span> Only private members</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q13')">Reveal Answer</button>
+            <div id="q13" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) The class declaration without function bodies</p>
+                <div class="explanation-text">
+                    <p>Header files are like a menu - they list what's available but don't give all the details. You declare your class and list all member functions, but save the actual code for the .cpp file.</p>
+                    <div class="code-block"><code>// Rectangle.h
+class Rectangle {
+private:
+    int width, height;
+public:
+    void setWidth(int w);  // Declaration only
+};</code></div>
+                    <p class="why-wrong">• A is wrong - function bodies go in the .cpp file, not the header</p>
+                    <p class="why-wrong">• C is wrong - main() goes in your application file (like main.cpp)</p>
+                    <p class="why-wrong">• D is wrong - headers have both private and public members</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">14</div>
+                <div class="question-text">What error will you get if you forget to write Rectangle:: before a function name in the implementation file?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Syntax error</div>
+                <div class="option"><span class="option-label">B)</span> Linking error - function definition not found</div>
+                <div class="option"><span class="option-label">C)</span> Runtime error</div>
+                <div class="option"><span class="option-label">D)</span> No error, it will work fine</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q14')">Reveal Answer</button>
+            <div id="q14" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) Linking error - function definition not found</p>
+                <div class="explanation-text">
+                    <p>Without Rectangle::, the compiler thinks you're creating a regular function, not a member function of Rectangle. When it tries to link, it can't find the Rectangle member functions you promised in the header.</p>
+                    <div class="code-block"><code>// Wrong:
+void setWidth(int w) { ... }  // Regular function
+
+// Right:
+void Rectangle::setWidth(int w) { ... }  // Member function</code></div>
+                    <p class="why-wrong">• A is wrong - the syntax is valid, just not what you meant</p>
+                    <p class="why-wrong">• C is wrong - the program won't even build, so can't run</p>
+                    <p class="why-wrong">• D is wrong - you'll definitely get an error</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 15 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">15</div>
+                <div class="question-text">What's the purpose of splitting a program into multiple files?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> To make the program run faster</div>
+                <div class="option"><span class="option-label">B)</span> To organize code and allow reusing classes in different programs</div>
+                <div class="option"><span class="option-label">C)</span> To use less memory</div>
+                <div class="option"><span class="option-label">D)</span> To hide code from other programmers</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q15')">Reveal Answer</button>
+            <div id="q15" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) To organize code and allow reusing classes in different programs</p>
+                <div class="explanation-text">
+                    <p>When you put a class in its own files, you can use it in many different programs just by including the header. It also keeps your code organized - each class in its own set of files.</p>
+                    <div class="code-block"><code>// Program 1:
+#include "Rectangle.h"  // Use Rectangle
+
+// Program 2:
+#include "Rectangle.h"  // Same class, different program</code></div>
+                    <p class="why-wrong">• A is wrong - file organization doesn't affect speed</p>
+                    <p class="why-wrong">• C is wrong - memory usage is about what the program does, not how many files</p>
+                    <p class="why-wrong">• D is wrong - the code is still readable in separate files</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 16 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">16</div>
+                <div class="question-text">Which statement is true about dependencies in a makefile?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Dependencies are files that must exist before the target can be built</div>
+                <div class="option"><span class="option-label">B)</span> Dependencies are error messages</div>
+                <div class="option"><span class="option-label">C)</span> Dependencies are optional and can be ignored</div>
+                <div class="option"><span class="option-label">D)</span> Dependencies are comments</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q16')">Reveal Answer</button>
+            <div id="q16" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: A) Dependencies are files that must exist before the target can be built</p>
+                <div class="explanation-text">
+                    <p>Dependencies tell make what files are needed to build the target. If Rectangle.o needs Rectangle.cpp and Rectangle.h, those are its dependencies. Make checks if any dependencies changed to know if it needs to rebuild.</p>
+                    <div class="code-block"><code>Rectangle.o: Rectangle.cpp Rectangle.h
+# Rectangle.cpp and Rectangle.h are dependencies</code></div>
+                    <p class="why-wrong">• B is wrong - dependencies are input files, not errors</p>
+                    <p class="why-wrong">• C is wrong - dependencies are critical for make to work correctly</p>
+                    <p class="why-wrong">• D is wrong - comments use # in makefiles</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">17</div>
+                <div class="question-text">What will happen if you #include "Rectangle.cpp" instead of "Rectangle.h"?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Nothing, it works the same way</div>
+                <div class="option"><span class="option-label">B)</span> You'll get multiple definition errors when linking</div>
+                <div class="option"><span class="option-label">C)</span> The program will run slower</div>
+                <div class="option"><span class="option-label">D)</span> It won't compile at all</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q17')">Reveal Answer</button>
+            <div id="q17" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) You'll get multiple definition errors when linking</p>
+                <div class="explanation-text">
+                    <p>When you include a .cpp file, you're copying all its function definitions into your file. Then when you compile Rectangle.cpp separately, you get two copies of every function. The linker doesn't know which one to use.</p>
+                    <div class="code-block"><code>// Wrong:
+#include "Rectangle.cpp"  // Copies all function code
+
+// Right:
+#include "Rectangle.h"    // Only copies declarations</code></div>
+                    <p class="why-wrong">• A is wrong - you'll definitely get errors</p>
+                    <p class="why-wrong">• C is wrong - the program won't even build</p>
+                    <p class="why-wrong">• D is wrong - it might compile, but linking will fail</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 18 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">18</div>
+                <div class="question-text">When should you use a namespace?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Only when writing very large programs</div>
+                <div class="option"><span class="option-label">B)</span> When you want to group related code together or avoid name conflicts</div>
+                <div class="option"><span class="option-label">C)</span> Never, they're not useful</div>
+                <div class="option"><span class="option-label">D)</span> Only for classes, not functions</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q18')">Reveal Answer</button>
+            <div id="q18" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) When you want to group related code together or avoid name conflicts</p>
+                <div class="explanation-text">
+                    <p>Namespaces help you organize code (like putting all geometry classes together) and prevent problems when two things have the same name (like if you and another programmer both create a Rectangle class).</p>
+                    <div class="code-block"><code>namespace Geometry {
+    class Rectangle { /* ... */ };
+    class Circle { /* ... */ };
+}
+// All geometry stuff grouped together</code></div>
+                    <p class="why-wrong">• A is wrong - namespaces are useful in programs of any size</p>
+                    <p class="why-wrong">• C is wrong - namespaces are very useful for organization</p>
+                    <p class="why-wrong">• D is wrong - namespaces can contain classes, functions, variables, etc.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">19</div>
+                <div class="question-text">What does the -c flag do when compiling?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> It creates a complete executable program</div>
+                <div class="option"><span class="option-label">B)</span> It compiles to an object file without linking</div>
+                <div class="option"><span class="option-label">C)</span> It checks for errors only</div>
+                <div class="option"><span class="option-label">D)</span> It cleans up old files</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q19')">Reveal Answer</button>
+            <div id="q19" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) It compiles to an object file without linking</p>
+                <div class="explanation-text">
+                    <p>The -c flag tells g++ to stop after creating the .o file. Don't link yet - we'll do that later. This is useful when you want to compile files separately.</p>
+                    <div class="code-block"><code>g++ -c Rectangle.cpp -o Rectangle.o
+// Creates Rectangle.o, doesn't try to make a program yet</code></div>
+                    <p class="why-wrong">• A is wrong - that's what happens when you don't use -c</p>
+                    <p class="why-wrong">• C is wrong - it still creates the .o file, not just checking</p>
+                    <p class="why-wrong">• D is wrong - cleaning is done with make clean or rm commands</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">20</div>
+                <div class="question-text">Where should you include the header file in your class's implementation file?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> At the very end of the file</div>
+                <div class="option"><span class="option-label">B)</span> In the middle, between function definitions</div>
+                <div class="option"><span class="option-label">C)</span> At the top of the file, usually first thing</div>
+                <div class="option"><span class="option-label">D)</span> You don't need to include it</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q20')">Reveal Answer</button>
+            <div id="q20" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: C) At the top of the file, usually first thing</p>
+                <div class="explanation-text">
+                    <p>The implementation file needs the header file right at the start so the compiler knows about the class declaration before you start writing member functions.</p>
+                    <div class="code-block"><code>// Rectangle.cpp
+#include "Rectangle.h"  // First thing
+
+void Rectangle::setWidth(int w) {
+    // Now compiler knows about Rectangle class
+}</code></div>
+                    <p class="why-wrong">• A is wrong - you need the declarations before using them</p>
+                    <p class="why-wrong">• B is wrong - includes go at the top by convention and necessity</p>
+                    <p class="why-wrong">• D is wrong - without it, compiler doesn't know about your class</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 21 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">21</div>
+                <div class="question-text">What does "separate compilation" mean?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Compiling on different computers</div>
+                <div class="option"><span class="option-label">B)</span> Compiling each .cpp file independently, then linking them together</div>
+                <div class="option"><span class="option-label">C)</span> Compiling classes separately from functions</div>
+                <div class="option"><span class="option-label">D)</span> Using two different compilers</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q21')">Reveal Answer</button>
+            <div id="q21" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) Compiling each .cpp file independently, then linking them together</p>
+                <div class="explanation-text">
+                    <p>Separate compilation means each .cpp file gets compiled on its own to create a .o file. Then all the .o files get linked together at the end. This saves time - if you change one file, you only recompile that one.</p>
+                    <div class="code-block"><code>g++ -c main.cpp -o main.o       // Compile separately
+g++ -c Rectangle.cpp -o Rectangle.o
+g++ main.o Rectangle.o -o program  // Link together</code></div>
+                    <p class="why-wrong">• A is wrong - it's about compiling files separately, not using different computers</p>
+                    <p class="why-wrong">• C is wrong - classes and functions aren't compiled separately, files are</p>
+                    <p class="why-wrong">• D is wrong - you use the same compiler for all files</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 22 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">22</div>
+                <div class="question-text">What is the "std" namespace used for?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> For storing user-defined classes</div>
+                <div class="option"><span class="option-label">B)</span> For all the standard C++ library features like cout, cin, string, etc.</div>
+                <div class="option"><span class="option-label">C)</span> For storing integers only</div>
+                <div class="option"><span class="option-label">D)</span> For preventing errors</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q22')">Reveal Answer</button>
+            <div id="q22" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) For all the standard C++ library features like cout, cin, string, etc.</p>
+                <div class="explanation-text">
+                    <p>The std namespace contains everything from the C++ standard library. That's why we write std::cout or use "using namespace std;" - all those tools are stored in the std namespace.</p>
+                    <div class="code-block"><code>std::cout << "Hello";  // cout is in std namespace
+std::string name;       // string is in std namespace
+std::vector<int> nums;  // vector is in std namespace</code></div>
+                    <p class="why-wrong">• A is wrong - user classes usually go in custom namespaces or the global namespace</p>
+                    <p class="why-wrong">• C is wrong - std has many types, not just integers</p>
+                    <p class="why-wrong">• D is wrong - namespaces help organize code, not prevent errors directly</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 23 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">23</div>
+                <div class="question-text">In a makefile, what does the TAB character before commands indicate?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> It's optional for formatting</div>
+                <div class="option"><span class="option-label">B)</span> It's required - tells make this is a command to run</div>
+                <div class="option"><span class="option-label">C)</span> It's a comment</div>
+                <div class="option"><span class="option-label">D)</span> It means the line should be skipped</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q23')">Reveal Answer</button>
+            <div id="q23" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) It's required - tells make this is a command to run</p>
+                <div class="explanation-text">
+                    <p>The TAB character is critical in makefiles. It tells make "this line is a command to execute". If you use spaces instead of TAB, make will give you an error.</p>
+                    <div class="code-block"><code>program: main.o Rectangle.o
+<TAB>g++ main.o Rectangle.o -o program
+# Must use TAB, not spaces!</code></div>
+                    <p class="why-wrong">• A is wrong - TAB is absolutely required, not optional</p>
+                    <p class="why-wrong">• C is wrong - comments use # in makefiles</p>
+                    <p class="why-wrong">• D is wrong - TAB means "run this command"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 24 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">24</div>
+                <div class="question-text">What happens if you forget the #endif in an include guard?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Nothing, it's optional</div>
+                <div class="option"><span class="option-label">B)</span> Compiler error - unterminated conditional directive</div>
+                <div class="option"><span class="option-label">C)</span> The program runs slower</div>
+                <div class="option"><span class="option-label">D)</span> It only affects debug mode</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q24')">Reveal Answer</button>
+            <div id="q24" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) Compiler error - unterminated conditional directive</p>
+                <div class="explanation-text">
+                    <p>#ifndef starts a conditional block that must be closed with #endif. Without #endif, the compiler doesn't know where the conditional section ends and will give you an error.</p>
+                    <div class="code-block"><code>#ifndef RECTANGLE_H
+#define RECTANGLE_H
+// Class definition
+#endif  // Must have this!</code></div>
+                    <p class="why-wrong">• A is wrong - #endif is required to close the #ifndef</p>
+                    <p class="why-wrong">• C is wrong - it won't even compile</p>
+                    <p class="why-wrong">• D is wrong - preprocessor directives work the same in all modes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 25 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">25</div>
+                <div class="question-text">Why might you want to use "using std::cout;" instead of "using namespace std;"?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> It makes the program run faster</div>
+                <div class="option"><span class="option-label">B)</span> To avoid bringing in lots of names you don't need and might conflict with your code</div>
+                <div class="option"><span class="option-label">C)</span> It uses less memory</div>
+                <div class="option"><span class="option-label">D)</span> It's required by C++98</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q25')">Reveal Answer</button>
+            <div id="q25" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) To avoid bringing in lots of names you don't need and might conflict with your code</p>
+                <div class="explanation-text">
+                    <p>"using namespace std;" brings in hundreds of names. If you have a variable called "count", it might conflict with std::count. Only bringing in what you need (like just cout) is safer.</p>
+                    <div class="code-block"><code>using std::cout;  // Only cout
+using std::cin;   // Only cin
+// Safer than "using namespace std;"</code></div>
+                    <p class="why-wrong">• A is wrong - both compile to the same speed</p>
+                    <p class="why-wrong">• C is wrong - memory usage is the same</p>
+                    <p class="why-wrong">• D is wrong - both are allowed in C++98</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 26 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">26</div>
+                <div class="question-text">What's the relationship between a header file and its implementation file?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> They're completely unrelated</div>
+                <div class="option"><span class="option-label">B)</span> The header declares what exists, the implementation defines how it works</div>
+                <div class="option"><span class="option-label">C)</span> They both contain exactly the same code</div>
+                <div class="option"><span class="option-label">D)</span> The implementation file includes the header file, but not the other way around</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q26')">Reveal Answer</button>
+            <div id="q26" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) The header declares what exists, the implementation defines how it works</p>
+                <div class="explanation-text">
+                    <p>The header file is like a promise - "these functions exist". The implementation file is where you keep that promise - "here's what those functions actually do".</p>
+                    <div class="code-block"><code>// Rectangle.h - Declaration (the promise)
+void setWidth(int w);
+
+// Rectangle.cpp - Definition (keeping the promise)
+void Rectangle::setWidth(int w) {
+    width = w;
+}</code></div>
+                    <p class="why-wrong">• A is wrong - they work together as a pair</p>
+                    <p class="why-wrong">• C is wrong - they have different content (declarations vs definitions)</p>
+                    <p class="why-wrong">• D is wrong - that's true but doesn't explain their relationship</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 27 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">27</div>
+                <div class="question-text">When would you get a linking error?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> When you have a syntax error</div>
+                <div class="option"><span class="option-label">B)</span> When you declare a function but never define it</div>
+                <div class="option"><span class="option-label">C)</span> When you forget a semicolon</div>
+                <div class="option"><span class="option-label">D)</span> When you use the wrong variable type</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q27')">Reveal Answer</button>
+            <div id="q27" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) When you declare a function but never define it</p>
+                <div class="explanation-text">
+                    <p>Linking errors happen when the linker can't find something. If your header promises a function exists but you never write the actual code for it in the .cpp file, the linker will complain.</p>
+                    <div class="code-block"><code>// Rectangle.h
+void setWidth(int w);  // Promise made
+
+// Rectangle.cpp
+// Oops! Never wrote setWidth() - linking error!</code></div>
+                    <p class="why-wrong">• A is wrong - syntax errors are caught during compilation</p>
+                    <p class="why-wrong">• C is wrong - semicolon errors are syntax errors, caught at compile time</p>
+                    <p class="why-wrong">• D is wrong - type errors are caught during compilation</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 28 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">28</div>
+                <div class="question-text">What's the advantage of using a makefile instead of typing the compile command every time?</div>
+            </div>
+            <div class="options">
+                <div class="option"><span class="option-label">A)</span> Makefiles make the program run faster</div>
+                <div class="option"><span class="option-label">B)</span> Makefiles automatically recompile only the files that changed, saving time</div>
+                <div class="option"><span class="option-label">C)</span> Makefiles prevent all errors</div>
+                <div class="option"><span class="option-label">D)</span> Makefiles make the executable file smaller</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleExplanation('q28')">Reveal Answer</button>
+            <div id="q28" class="explanation">
+                <h4>Answer</h4>
+                <p class="correct-answer">✓ Correct Answer: B) Makefiles automatically recompile only the files that changed, saving time</p>
+                <div class="explanation-text">
+                    <p>Make is smart - it checks when files were last changed. If Rectangle.cpp hasn't changed since you last compiled it, make skips it and only recompiles what actually needs updating. This saves tons of time in big projects.</p>
+                    <div class="code-block"><code>make
+# make: 'Rectangle.o' is up to date.
+# Only recompiles what changed!</code></div>
+                    <p class="why-wrong">• A is wrong - makefiles are about building, not runtime speed</p>
+                    <p class="why-wrong">• C is wrong - makefiles help with building but don't prevent errors in your code</p>
+                    <p class="why-wrong">• D is wrong - the final executable size is the same</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="score-card">
+            <h2>Quiz Complete!</h2>
+            <p>Take some time to review any questions you got wrong</p>
+            <p>Make sure you understand why each answer is correct</p>
+        </div>
+
+        <div class="footer">
+            <p>Unit 6: Complete Class Example with Makefile</p>
+            <p>Part of COS 110 EO3 Preparation Materials</p>
+            <p style="margin-top: 15px;">
+                <a href="Theory.html">Theory</a> |
+                <a href="Examples.html">Examples</a> |
+                <a href="Practice.html">Practice</a> |
+                <a href="Quiz.html">Quiz</a>
+            </p>
+            <p style="margin-top: 20px; color: #64748b;">
+                Created by Swift Tuition • Good luck with EO3! 🚀
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function toggleExplanation(id) {
+            const explanation = document.getElementById(id);
+            explanation.classList.toggle('show');
+
+            // Change button text
+            const button = explanation.previousElementSibling;
+            if (explanation.classList.contains('show')) {
+                button.textContent = 'Hide Answer';
+            } else {
+                button.textContent = 'Reveal Answer';
+            }
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.classList.contains('reveal-btn')) {
+                e.target.click();
+            }
+        });
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

@@ -1,0 +1,3005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 14: Recursion - Quiz | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #0c1222;
+            --bg-card: #1e293b;
+            --accent-blue: #0ea5e9;
+            --accent-green: #10b981;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border-color: rgba(14, 165, 233, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: var(--bg-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 3px solid var(--accent-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent-blue);
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .nav-menu a.active {
+            color: var(--accent-blue);
+            background: rgba(14, 165, 233, 0.2);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem 4rem 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-blue);
+            text-align: center;
+            margin: 2rem 0 1rem 0;
+        }
+
+        .intro {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(14, 165, 233, 0.05) 100%);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem 1.5rem;
+            margin: 3rem 0 2rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.75rem;
+            color: var(--accent-blue);
+            margin: 0;
+        }
+
+        .section-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .question-card {
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #0284c7 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .question-marks {
+            background: linear-gradient(135deg, var(--accent-yellow) 0%, #ca8a04 100%);
+            color: var(--bg-primary);
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .options {
+            margin: 1rem 0;
+        }
+
+        .option {
+            background: rgba(15, 23, 42, 0.6);
+            border-left: 3px solid var(--accent-blue);
+            padding: 0.75rem 1rem;
+            margin: 0.75rem 0;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            background: rgba(14, 165, 233, 0.1);
+            transform: translateX(5px);
+        }
+
+        pre {
+            background: var(--bg-tertiary);
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            margin: 1rem 0;
+        }
+
+        code {
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #0284c7 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(14, 165, 233, 0.3);
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(14, 165, 233, 0.4);
+        }
+
+        .answer-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            margin-top: 1.5rem;
+        }
+
+        .answer-section.visible {
+            max-height: 5000px;
+        }
+
+        .answer-content {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .correct-answer {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-left: 4px solid var(--accent-green);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+
+        .correct-answer strong {
+            color: var(--accent-green);
+        }
+
+        .explanation {
+            margin-top: 1rem;
+        }
+
+        .explanation h4 {
+            color: var(--accent-blue);
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .explanation ul, .explanation ol {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .explanation li {
+            margin: 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        .ascii-diagram {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .ascii-diagram pre {
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+            color: var(--accent-green);
+            font-family: 'Cascadia Code', monospace;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--accent-red);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin: 1rem 0;
+        }
+
+        .warning-box strong {
+            color: var(--accent-red);
+        }
+
+        .info-box {
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin: 1rem 0;
+        }
+
+        .info-box strong {
+            color: var(--accent-blue);
+        }
+
+        /* Prism.js custom token colors */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 14: Recursion</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html" class="active">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>📝 Unit 14 Quiz: Recursion</h1>
+
+        <div class="intro">
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">This quiz contains <strong>28 questions</strong> worth <strong>70 marks</strong> total.</p>
+            <p style="color: var(--text-secondary);">Questions are modeled after EO3 exam patterns. Try each question before revealing the answer.</p>
+            <p style="color: var(--accent-yellow); margin-top: 0.5rem; font-size: 0.95rem;">⏱️ Estimated time: 90-120 minutes</p>
+        </div>
+
+        <!-- SECTION A: MULTIPLE CHOICE -->
+        <div class="section-header">
+            <h2>Section A: Multiple Choice</h2>
+            <div class="section-info">10 questions × 1 mark = 10 marks</div>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q1</span>
+                <span class="question-marks">[1 mark]</span>
+            </div>
+            <div class="question-text">
+                <p>What is a base case in a recursive function?</p>
+                <div class="options">
+                    <div class="option"><strong>A)</strong> The first function call in the recursion</div>
+                    <div class="option"><strong>B)</strong> The condition that stops the recursion</div>
+                    <div class="option"><strong>C)</strong> The main function that calls the recursive function</div>
+                    <div class="option"><strong>D)</strong> The return statement in the recursive function</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Answer</button>
+            <div class="answer-section" id="answer1">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Correct Answer: B) The condition that stops the recursion</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Explanation:</h4>
+                        <p>The base case is the terminating condition in a recursive function. Without a base case, the function would recurse infinitely, eventually causing a stack overflow.</p>
+
+                        <h4>Why B is correct:</h4>
+                        <p>The base case defines when recursion should stop. It's the condition where the function returns a value directly without making another recursive call.</p>
+
+                        <pre><code class="language-cpp">int factorial(int n) {
+    if (n &lt;= 1)  // BASE CASE - stops recursion
+        return 1;
+    return n * factorial(n - 1);  // Recursive case
+}</code></pre>
+
+                        <h4>Why other options are wrong:</h4>
+                        <ul>
+                            <li><strong>A:</strong> The first function call is just the initial invocation, not the base case. The base case is checked on every call.</li>
+                            <li><strong>C:</strong> The main function (or any calling function) is external to the recursion mechanism. The base case is inside the recursive function itself.</li>
+                            <li><strong>D:</strong> A return statement exists in both the base case AND recursive case. The base case specifically returns without recursing further.</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Key Point:</strong> Every recursive function must have at least one base case to prevent infinite recursion.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q2</span>
+                <span class="question-marks">[1 mark]</span>
+            </div>
+            <div class="question-text">
+                <p>What happens if a recursive function does not have a base case?</p>
+                <div class="options">
+                    <div class="option"><strong>A)</strong> The function will compile but never execute</div>
+                    <div class="option"><strong>B)</strong> The compiler will produce a syntax error</div>
+                    <div class="option"><strong>C)</strong> The function will cause a stack overflow</div>
+                    <div class="option"><strong>D)</strong> The function will automatically stop after 1000 calls</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Answer</button>
+            <div class="answer-section" id="answer2">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Correct Answer: C) The function will cause a stack overflow</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Explanation:</h4>
+                        <p>Without a base case, a recursive function will continue calling itself indefinitely. Each call adds a new frame to the call stack, eventually exhausting available stack memory and causing a stack overflow error.</p>
+
+                        <h4>What happens in detail:</h4>
+                        <ol>
+                            <li><strong>Function calls itself:</strong> Each recursive call creates a new stack frame</li>
+                            <li><strong>Stack grows:</strong> Memory is consumed with each frame (parameters, local variables, return address)</li>
+                            <li><strong>Stack limit reached:</strong> When stack memory is exhausted, the program crashes</li>
+                            <li><strong>Error message:</strong> "Stack overflow" or "Segmentation fault" depending on the system</li>
+                        </ol>
+
+                        <h4>Example of infinite recursion:</h4>
+                        <pre><code class="language-cpp">void infiniteRecursion(int n) {
+    cout &lt;&lt; n &lt;&lt; endl;
+    infiniteRecursion(n - 1);  // No base case - never stops!
+}</code></pre>
+
+                        <h4>Why other options are wrong:</h4>
+                        <ul>
+                            <li><strong>A:</strong> The function will execute - it will just never terminate properly.</li>
+                            <li><strong>B:</strong> This is not a syntax error. The code is syntactically valid, just logically flawed.</li>
+                            <li><strong>D:</strong> C++ has no automatic recursion limit. The function continues until stack memory is exhausted (typically thousands of calls, varying by system).</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>Warning:</strong> Always ensure your recursive function progresses toward the base case on every call!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q3</span>
+                <span class="question-marks">[1 mark]</span>
+            </div>
+            <div class="question-text">
+                <p>What is the time complexity of calculating <code>fibonacci(n)</code> using naive recursion?</p>
+                <div class="options">
+                    <div class="option"><strong>A)</strong> O(n)</div>
+                    <div class="option"><strong>B)</strong> O(n log n)</div>
+                    <div class="option"><strong>C)</strong> O(n²)</div>
+                    <div class="option"><strong>D)</strong> O(2ⁿ)</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Answer</button>
+            <div class="answer-section" id="answer3">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Correct Answer: D) O(2ⁿ)</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Explanation:</h4>
+                        <p>Naive recursive Fibonacci has exponential time complexity because each call spawns two more calls, leading to massive redundant computation.</p>
+
+                        <h4>The naive recursive implementation:</h4>
+                        <pre><code class="language-cpp">int fibonacci(int n) {
+    if (n &lt;= 1)
+        return n;
+    return fibonacci(n-1) + fibonacci(n-2);
+}</code></pre>
+
+                        <h4>Why it's O(2ⁿ):</h4>
+                        <p>Each function call makes 2 more calls (except base cases). This creates an exponential call tree:</p>
+
+                        <div class="ascii-diagram"><pre>
+                    fib(5)
+                   /      \
+              fib(4)      fib(3)
+              /    \       /    \
+         fib(3)  fib(2) fib(2) fib(1)
+         /   \    /  \    /  \
+      fib(2) fib(1) ...  ...
+       /  \
+    fib(1) fib(0)
+
+Total calls ≈ 2⁵ = 32 calls for fib(5)</pre></div>
+
+                        <p>The number of calls approximately doubles with each increment of n, giving O(2ⁿ) complexity. More precisely, it's O(φⁿ) where φ ≈ 1.618 (golden ratio), but we simplify to O(2ⁿ).</p>
+
+                        <h4>Why other options are wrong:</h4>
+                        <ul>
+                            <li><strong>A) O(n):</strong> This would be the complexity of iterative Fibonacci or memoized recursion, not naive recursion.</li>
+                            <li><strong>B) O(n log n):</strong> This complexity is typical for divide-and-conquer algorithms like merge sort, not Fibonacci.</li>
+                            <li><strong>C) O(n²):</strong> This would mean nested loops over n. Fibonacci's tree structure is much worse.</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>Important:</strong> For n=40, naive Fibonacci makes over 2 billion calls! Use memoization or iteration for practical applications.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q4</span>
+                <span class="question-marks">[1 mark]</span>
+            </div>
+            <div class="question-text">
+                <p>What is tail recursion?</p>
+                <div class="options">
+                    <div class="option"><strong>A)</strong> Recursion that operates on the tail of a linked list</div>
+                    <div class="option"><strong>B)</strong> Recursion where the recursive call is the last operation in the function</div>
+                    <div class="option"><strong>C)</strong> Recursion that returns the last element of an array</div>
+                    <div class="option"><strong>D)</strong> Recursion that has multiple base cases at the end</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Answer</button>
+            <div class="answer-section" id="answer4">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Correct Answer: B) Recursion where the recursive call is the last operation in the function</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Explanation:</h4>
+                        <p>Tail recursion occurs when the recursive call is the very last thing the function does. No computation happens after the recursive call returns.</p>
+
+                        <h4>Tail Recursive Example:</h4>
+                        <pre><code class="language-cpp">// Tail recursive - recursive call is last operation
+int factorial(int n, int accumulator = 1) {
+    if (n &lt;= 1)
+        return accumulator;
+    return factorial(n - 1, n * accumulator);  // Last operation
+}</code></pre>
+
+                        <h4>NOT Tail Recursive Example:</h4>
+                        <pre><code class="language-cpp">// NOT tail recursive - multiplication happens AFTER recursive call
+int factorial(int n) {
+    if (n &lt;= 1)
+        return 1;
+    return n * factorial(n - 1);  // Multiplication after return
+}</code></pre>
+
+                        <h4>Why tail recursion matters:</h4>
+                        <p>Compilers can optimize tail recursion into a loop (tail call optimization), using constant stack space instead of growing the stack with each call. This makes it as efficient as iteration.</p>
+
+                        <h4>Why other options are wrong:</h4>
+                        <ul>
+                            <li><strong>A:</strong> "Tail" refers to the position of the recursive call in the code, not data structure tails.</li>
+                            <li><strong>C:</strong> Returning the last element has nothing to do with tail recursion structure.</li>
+                            <li><strong>D:</strong> The number/position of base cases doesn't define tail recursion - it's about where the recursive call occurs.</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Key Point:</strong> In tail recursion, the function's return value is directly the result of the recursive call, with no pending operations.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q5</span>
+                <span class="question-marks">[1 mark]</span>
+            </div>
+            <div class="question-text">
+                <p>How much space on the call stack does a recursive function use?</p>
+                <div class="options">
+                    <div class="option"><strong>A)</strong> O(1) - constant space</div>
+                    <div class="option"><strong>B)</strong> O(n) - proportional to recursion depth</div>
+                    <div class="option"><strong>C)</strong> O(n²) - squared with input size</div>
+                    <div class="option"><strong>D)</strong> O(log n) - logarithmic space</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer5')">Show Answer</button>
+            <div class="answer-section" id="answer5">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Correct Answer: B) O(n) - proportional to recursion depth</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Explanation:</h4>
+                        <p>Each recursive call adds a new frame to the call stack. The maximum stack space used equals the maximum recursion depth.</p>
+
+                        <h4>Example - factorial(5):</h4>
+                        <pre><code class="language-cpp">int factorial(int n) {
+    if (n &lt;= 1) return 1;
+    return n * factorial(n - 1);
+}</code></pre>
+
+                        <p>Call stack progression:</p>
+                        <div class="ascii-diagram"><pre>
+Call 1: factorial(5)   |  Stack: [factorial(5)]
+Call 2: factorial(4)   |  Stack: [factorial(5), factorial(4)]
+Call 3: factorial(3)   |  Stack: [factorial(5), factorial(4), factorial(3)]
+Call 4: factorial(2)   |  Stack: [factorial(5), factorial(4), factorial(3), factorial(2)]
+Call 5: factorial(1)   |  Stack: [factorial(5), factorial(4), factorial(3), factorial(2), factorial(1)]
+                       |  Max depth = 5 frames = O(n)</pre></div>
+
+                        <p>For input n, the recursion goes n levels deep, so space complexity is O(n).</p>
+
+                        <h4>Why other options are wrong:</h4>
+                        <ul>
+                            <li><strong>A) O(1):</strong> This would mean constant space regardless of input. Recursion grows the stack linearly with depth.</li>
+                            <li><strong>C) O(n²):</strong> This would require nested recursion or storing n elements at each of n levels. Linear recursion is O(n).</li>
+                            <li><strong>D) O(log n):</strong> This applies to divide-and-conquer algorithms that halve the problem each time (like binary search tree operations). Linear recursion like factorial is O(n).</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Special Cases:</strong>
+                            <ul>
+                                <li><strong>Tail recursion (optimized):</strong> O(1) - compiler converts to loop</li>
+                                <li><strong>Binary tree traversal:</strong> O(height) - could be O(log n) for balanced, O(n) for skewed</li>
+                                <li><strong>Divide-and-conquer (binary search):</strong> O(log n)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q6</span>
+                <span class="question-marks">[1 mark]</span>
+            </div>
+            <div class="question-text">
+                <p>Which of the following problems is BEST solved using recursion?</p>
+                <div class="options">
+                    <div class="option"><strong>A)</strong> Finding the sum of elements in an array</div>
+                    <div class="option"><strong>B)</strong> Traversing a binary tree</div>
+                    <div class="option"><strong>C)</strong> Calculating the average of a list of numbers</div>
+                    <div class="option"><strong>D)</strong> Finding the largest element in an array</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer6')">Show Answer</button>
+            <div class="answer-section" id="answer6">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Correct Answer: B) Traversing a binary tree</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Explanation:</h4>
+                        <p>Tree traversal is inherently recursive because trees are recursive data structures - each subtree is itself a tree. Recursion naturally mirrors this structure.</p>
+
+                        <h4>Why recursion fits trees perfectly:</h4>
+                        <pre><code class="language-cpp">void inorderTraversal(Node* root) {
+    if (root == NULL)  // Base case
+        return;
+
+    inorderTraversal(root-&gt;left);    // Traverse left subtree
+    cout &lt;&lt; root-&gt;data &lt;&lt; " ";       // Process node
+    inorderTraversal(root-&gt;right);   // Traverse right subtree
+}</code></pre>
+
+                        <p>Each node's subtrees are processed the same way, making recursion elegant and natural. The iterative version requires explicit stack management and is much more complex.</p>
+
+                        <h4>Why other options are wrong:</h4>
+                        <ul>
+                            <li><strong>A) Sum of array elements:</strong> Simple loop is clearer and more efficient. Recursion adds unnecessary overhead.
+                            <pre><code class="language-cpp">// Iteration is better
+int sum = 0;
+for (int i = 0; i &lt; size; i++)
+    sum += arr[i];</code></pre>
+                            </li>
+                            <li><strong>C) Average of numbers:</strong> Straightforward calculation, no recursive structure. Iteration is natural.</li>
+                            <li><strong>D) Finding maximum:</strong> Single pass with a loop is simpler and more efficient than recursion.</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>When recursion shines:</strong> Tree/graph traversal, divide-and-conquer (merge sort, quick sort), backtracking (N-queens, sudoku), dynamic programming (when memoized).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q7</span>
+                <span class="question-marks">[1 mark]</span>
+            </div>
+            <div class="question-text">
+                <p>What is "tree recursion"?</p>
+                <div class="options">
+                    <div class="option"><strong>A)</strong> Recursion used only for tree data structures</div>
+                    <div class="option"><strong>B)</strong> Recursion that makes multiple recursive calls in one function call</div>
+                    <div class="option"><strong>C)</strong> Recursion with more than one base case</div>
+                    <div class="option"><strong>D)</strong> Recursion that uses a tree to store intermediate results</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer7')">Show Answer</button>
+            <div class="answer-section" id="answer7">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Correct Answer: B) Recursion that makes multiple recursive calls in one function call</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Explanation:</h4>
+                        <p>Tree recursion occurs when a function makes more than one recursive call. This creates a tree-shaped call structure rather than a linear chain.</p>
+
+                        <h4>Classic Example - Fibonacci:</h4>
+                        <pre><code class="language-cpp">int fibonacci(int n) {
+    if (n &lt;= 1) return n;
+
+    // TWO recursive calls - creates tree structure
+    return fibonacci(n-1) + fibonacci(n-2);
+}</code></pre>
+
+                        <p>Call tree for fibonacci(4):</p>
+                        <div class="ascii-diagram"><pre>
+                    fib(4)
+                   /      \
+              fib(3)      fib(2)
+              /    \       /    \
+         fib(2) fib(1) fib(1) fib(0)
+         /   \
+    fib(1) fib(0)
+
+This branching creates a TREE structure</pre></div>
+
+                        <h4>Compare to Linear Recursion (factorial):</h4>
+                        <pre><code class="language-cpp">int factorial(int n) {
+    if (n &lt;= 1) return 1;
+
+    // ONE recursive call - creates linear chain
+    return n * factorial(n-1);
+}</code></pre>
+
+                        <p>Call chain for factorial(4): <code>fact(4) → fact(3) → fact(2) → fact(1)</code> (linear, not tree)</p>
+
+                        <h4>Why other options are wrong:</h4>
+                        <ul>
+                            <li><strong>A:</strong> Tree recursion can be used for problems that don't involve tree data structures (like Fibonacci, which works on integers).</li>
+                            <li><strong>C:</strong> Number of base cases doesn't define tree recursion - it's about multiple recursive calls.</li>
+                            <li><strong>D:</strong> Tree recursion describes the call structure, not data storage. (Though memoization might use a tree/map for caching.)</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>Performance Warning:</strong> Tree recursion often has exponential time complexity due to redundant calculations. Consider memoization!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q8</span>
+                <span class="question-marks">[1 mark]</span>
+            </div>
+            <div class="question-text">
+                <p>Which statement about recursion vs iteration is TRUE?</p>
+                <div class="options">
+                    <div class="option"><strong>A)</strong> Recursive solutions always run faster than iterative solutions</div>
+                    <div class="option"><strong>B)</strong> Every recursive function can be converted to an iterative function</div>
+                    <div class="option"><strong>C)</strong> Iteration uses more memory than recursion</div>
+                    <div class="option"><strong>D)</strong> Recursion cannot solve problems that iteration can solve</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer8')">Show Answer</button>
+            <div class="answer-section" id="answer8">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Correct Answer: B) Every recursive function can be converted to an iterative function</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Explanation:</h4>
+                        <p>This is a fundamental truth in computer science. Any problem solvable with recursion can also be solved iteratively using an explicit stack to manage state. They are computationally equivalent.</p>
+
+                        <h4>Example - Factorial Both Ways:</h4>
+                        <pre><code class="language-cpp">// Recursive version
+int factorialRecursive(int n) {
+    if (n &lt;= 1) return 1;
+    return n * factorialRecursive(n-1);
+}
+
+// Iterative version
+int factorialIterative(int n) {
+    int result = 1;
+    for (int i = 2; i &lt;= n; i++) {
+        result *= i;
+    }
+    return result;
+}</code></pre>
+
+                        <p>Even complex tree recursion can be converted using an explicit stack:</p>
+                        <pre><code class="language-cpp">// Tree traversal iteratively using stack
+void inorderIterative(Node* root) {
+    stack&lt;Node*&gt; s;
+    Node* current = root;
+
+    while (current != NULL || !s.empty()) {
+        while (current != NULL) {
+            s.push(current);
+            current = current-&gt;left;
+        }
+        current = s.top();
+        s.pop();
+        cout &lt;&lt; current-&gt;data;
+        current = current-&gt;right;
+    }
+}</code></pre>
+
+                        <h4>Why other options are wrong:</h4>
+                        <ul>
+                            <li><strong>A:</strong> FALSE - Recursion often has overhead from function calls. Iteration is typically faster or equal.</li>
+                            <li><strong>C:</strong> FALSE - Recursion uses MORE memory (call stack grows with depth). Iteration typically uses constant space.</li>
+                            <li><strong>D:</strong> FALSE - They're equivalent in power. Anything iteration can solve, recursion can too (and vice versa).</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Choosing Between Them:</strong>
+                            <ul>
+                                <li><strong>Use recursion when:</strong> Problem is naturally recursive (trees, divide-and-conquer), code clarity matters</li>
+                                <li><strong>Use iteration when:</strong> Performance critical, stack depth might be large, simpler logic</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q9</span>
+                <span class="question-marks">[1 mark]</span>
+            </div>
+            <div class="question-text">
+                <p>What is the purpose of a helper function in recursion?</p>
+                <div class="options">
+                    <div class="option"><strong>A)</strong> To provide a user-friendly interface while maintaining additional parameters for recursion</div>
+                    <div class="option"><strong>B)</strong> To make the recursive function run faster</div>
+                    <div class="option"><strong>C)</strong> To prevent stack overflow</div>
+                    <div class="option"><strong>D)</strong> To convert recursion into iteration</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer9')">Show Answer</button>
+            <div class="answer-section" id="answer9">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Correct Answer: A) To provide a user-friendly interface while maintaining additional parameters for recursion</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Explanation:</h4>
+                        <p>Helper functions allow clean public interfaces while the private recursive implementation uses extra parameters (like accumulators, indices, or partial results) that users shouldn't need to provide.</p>
+
+                        <h4>Example - Summing a linked list:</h4>
+                        <pre><code class="language-cpp">// Public interface - user just calls this
+int sumList(Node* head) {
+    return sumListHelper(head, 0);  // Initialize accumulator to 0
+}
+
+// Private helper - does the recursion with accumulator
+int sumListHelper(Node* current, int accumulator) {
+    if (current == NULL)
+        return accumulator;  // Base case - return total
+
+    return sumListHelper(current-&gt;next,
+                         accumulator + current-&gt;data);
+}</code></pre>
+
+                        <p>User calls: <code>int total = sumList(myList);</code> - simple!<br>
+                        Without helper: <code>int total = sumList(myList, 0);</code> - user must know to pass 0</p>
+
+                        <h4>Example - Checking if array is sorted:</h4>
+                        <pre><code class="language-cpp">// Public - clean interface
+bool isSorted(int arr[], int size) {
+    return isSortedHelper(arr, size, 0);  // Start at index 0
+}
+
+// Helper - needs index parameter
+bool isSortedHelper(int arr[], int size, int index) {
+    if (index &gt;= size - 1)  // Base case
+        return true;
+
+    if (arr[index] &gt; arr[index + 1])
+        return false;
+
+    return isSortedHelper(arr, size, index + 1);
+}</code></pre>
+
+                        <h4>Why other options are wrong:</h4>
+                        <ul>
+                            <li><strong>B:</strong> Helper functions don't improve performance - same recursive calls happen. They improve API design.</li>
+                            <li><strong>C:</strong> Helpers don't prevent stack overflow. The recursion depth is the same.</li>
+                            <li><strong>D:</strong> Helpers are still recursive. Converting to iteration requires different approach (explicit stack or loops).</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Common Helper Parameters:</strong> Index (for arrays), accumulator (for tail recursion), previous value, partial results
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q10</span>
+                <span class="question-marks">[1 mark]</span>
+            </div>
+            <div class="question-text">
+                <p>What are mutually recursive functions?</p>
+                <div class="options">
+                    <div class="option"><strong>A)</strong> Functions that call each other recursively</div>
+                    <div class="option"><strong>B)</strong> Functions that share the same base case</div>
+                    <div class="option"><strong>C)</strong> Functions that recursively process mutual data</div>
+                    <div class="option"><strong>D)</strong> Functions that must be called together</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer10')">Show Answer</button>
+            <div class="answer-section" id="answer10">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Correct Answer: A) Functions that call each other recursively</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Explanation:</h4>
+                        <p>Mutually recursive functions are two or more functions where function A calls function B, and function B calls function A (directly or indirectly). They define each other recursively.</p>
+
+                        <h4>Classic Example - Even/Odd Check:</h4>
+                        <pre><code class="language-cpp">bool isEven(int n);  // Forward declaration needed
+bool isOdd(int n);
+
+bool isEven(int n) {
+    if (n == 0)
+        return true;
+    else
+        return isOdd(n - 1);  // Calls isOdd
+}
+
+bool isOdd(int n) {
+                if (n == 0)
+        return false;
+    else
+        return isEven(n - 1);  // Calls isEven
+}</code></pre>
+
+                        <h4>Call chain for isEven(4):</h4>
+                        <div class="ascii-diagram"><pre>
+isEven(4) → isOdd(3) → isEven(2) → isOdd(1) → isEven(0) → true
+                                                           ↑
+                                                      Base case</pre></div>
+
+                        <h4>Example - Hofstadter Female/Male Sequences:</h4>
+                        <p><strong>Source:</strong> Adapted from EO3 2018, Question 3.2</p>
+                        <pre><code class="language-cpp">int F(int n) {  // Female sequence
+    if (n == 0) return 1;
+    return n - M(F(n - 1));  // Calls M
+}
+
+int M(int n) {  // Male sequence
+    if (n == 0) return 0;
+    return n - F(M(n - 1));  // Calls F
+}</code></pre>
+
+                        <h4>Why other options are wrong:</h4>
+                        <ul>
+                            <li><strong>B:</strong> Sharing a base case isn't the defining feature. Many separate recursive functions can have similar base cases (e.g., <code>if (n == 0)</code>).</li>
+                            <li><strong>C:</strong> "Mutual data" is vague. The key is mutual CALLING, not shared data structures.</li>
+                            <li><strong>D:</strong> They don't need to be called together by the user. One function starts, which then calls the other as needed.</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Important:</strong> Forward declarations are required when functions mutually call each other, since each needs to know about the other before definition.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION B: TRUE/FALSE -->
+        <div class="section-header">
+            <h2>Section B: True or False</h2>
+            <div class="section-info">5 questions × 2 marks = 10 marks | Provide justification for your answer</div>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q11</span>
+                <span class="question-marks">[2 marks]</span>
+            </div>
+            <div class="question-text">
+                <p><strong>True or False:</strong> Every recursive function must have exactly one base case.</p>
+                <p style="font-style: italic; color: var(--text-secondary);">Justify your answer with an example.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer11')">Show Answer</button>
+            <div class="answer-section" id="answer11">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Answer: FALSE</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Justification:</h4>
+                        <p>A recursive function can have multiple base cases. Each base case handles a different terminating condition. Having multiple base cases is common and often necessary.</p>
+
+                        <h4>Example 1 - Fibonacci (2 base cases):</h4>
+                        <pre><code class="language-cpp">int fibonacci(int n) {
+    if (n == 0)  // Base case 1
+        return 0;
+    if (n == 1)  // Base case 2
+        return 1;
+
+    return fibonacci(n-1) + fibonacci(n-2);
+}</code></pre>
+
+                        <p>Both <code>n == 0</code> and <code>n == 1</code> are base cases. Without both, you'd get incorrect results or infinite recursion for n=0.</p>
+
+                        <h4>Example 2 - Recursive GCD (Greatest Common Divisor):</h4>
+                        <pre><code class="language-cpp">int gcd(int a, int b) {
+    if (b == 0)  // Base case 1
+        return a;
+    if (a == 0)  // Base case 2
+        return b;
+
+    return gcd(b, a % b);
+}</code></pre>
+
+                        <p>Two base cases handle the cases where either number becomes 0.</p>
+
+                        <h4>Example 3 - Ackermann function (3 base cases):</h4>
+                        <pre><code class="language-cpp">int ackermann(int m, int n) {
+    if (m == 0)  // Base case 1
+        return n + 1;
+    if (n == 0)  // Base case 2
+        return ackermann(m - 1, 1);
+    // Base case 3 is the general recursive case
+    return ackermann(m - 1, ackermann(m, n - 1));
+}</code></pre>
+
+                        <h4>Key Points:</h4>
+                        <ul>
+                            <li>A function needs <strong>at least one</strong> base case to terminate</li>
+                            <li>Multiple base cases are fine and often necessary</li>
+                            <li>Each base case handles different terminating conditions</li>
+                            <li>All base cases must eventually be reached to avoid infinite recursion</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Rule of Thumb:</strong> You need enough base cases to cover all possible terminating conditions in your problem.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q12</span>
+                <span class="question-marks">[2 marks]</span>
+            </div>
+            <div class="question-text">
+                <p><strong>True or False:</strong> With tail call optimization, tail recursive functions use O(1) space complexity instead of O(n).</p>
+                <p style="font-style: italic; color: var(--text-secondary);">Justify your answer and explain why.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer12')">Show Answer</button>
+            <div class="answer-section" id="answer12">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Answer: TRUE</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Justification:</h4>
+                        <p>When a compiler implements tail call optimization (TCO), it can reuse the same stack frame for each recursive call instead of creating new ones. This converts the recursion into iteration "behind the scenes," using constant O(1) space.</p>
+
+                        <h4>How Tail Call Optimization Works:</h4>
+                        <p>In tail recursion, the recursive call is the LAST operation. The function doesn't need to remember anything after the call returns - no pending operations. The compiler can:</p>
+                        <ol>
+                            <li>Replace the current stack frame's parameters with new values</li>
+                            <li>Jump back to the beginning of the function</li>
+                            <li>Effectively convert recursion into a loop</li>
+                        </ol>
+
+                        <h4>Example - Tail Recursive Factorial:</h4>
+                        <pre><code class="language-cpp">// With TCO: O(1) space
+int factorial(int n, int acc = 1) {
+    if (n &lt;= 1)
+        return acc;
+    return factorial(n - 1, n * acc);  // Tail call - last operation
+}
+
+// Compiler optimizes to equivalent loop:
+int factorial_optimized(int n, int acc = 1) {
+    while (n &gt; 1) {
+        acc = n * acc;
+        n = n - 1;
+    }
+    return acc;
+}</code></pre>
+
+                        <h4>Without TCO (normal recursion): O(n) space</h4>
+                        <pre><code class="language-cpp">// NOT tail recursive - O(n) space
+int factorial(int n) {
+    if (n &lt;= 1) return 1;
+    return n * factorial(n - 1);  // Multiplication AFTER call
+}
+
+// Stack grows:
+// factorial(5) waits for factorial(4)
+// factorial(4) waits for factorial(3)
+// ... all frames stay on stack until base case
+// Space used: 5 frames = O(n)</code></pre>
+
+                        <h4>Important Caveats:</h4>
+                        <ul>
+                            <li><strong>C++:</strong> TCO is <strong>not guaranteed</strong> by the standard. Some compilers do it with optimization flags (-O2, -O3), some don't.</li>
+                            <li><strong>Functional languages:</strong> Scheme, Haskell guarantee TCO</li>
+                            <li><strong>Without TCO:</strong> Even tail recursive functions use O(n) space</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Key Point:</strong> "With tail call optimization" is the key phrase. If the compiler performs TCO, space is O(1). Without it, space is still O(n) even for tail recursive code.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 13 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q13</span>
+                <span class="question-marks">[2 marks]</span>
+            </div>
+            <div class="question-text">
+                <p><strong>True or False:</strong> Recursive solutions are always slower than iterative solutions for the same problem.</p>
+                <p style="font-style: italic; color: var(--text-secondary);">Justify your answer with reasoning.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer13')">Show Answer</button>
+            <div class="answer-section" id="answer13">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Answer: FALSE</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Justification:</h4>
+                        <p>While recursion often has overhead from function calls, this is not ALWAYS the case. Performance depends on optimization, problem structure, and implementation.</p>
+
+                        <h4>Cases Where Performance is Equal or Better:</h4>
+
+                        <h4>1. Tail Call Optimization:</h4>
+                        <p>With TCO enabled, tail recursive functions are transformed into loops by the compiler, giving identical performance to iteration.</p>
+                        <pre><code class="language-cpp">// With TCO, this is AS FAST as iteration
+int factorial(int n, int acc = 1) {
+    if (n &lt;= 1) return acc;
+    return factorial(n - 1, n * acc);
+}</code></pre>
+
+                        <h4>2. Compiler Inline Optimization:</h4>
+                        <p>For small recursive functions, modern compilers can inline them, eliminating call overhead entirely.</p>
+
+                        <h4>3. Problem-Dependent Complexity:</h4>
+                        <p>For divide-and-conquer algorithms, both recursion and iteration have the same asymptotic complexity. The constant factors may be negligible.</p>
+
+                        <pre><code class="language-cpp">// Binary search: O(log n) both ways
+// Iterative version
+int binarySearchIterative(int arr[], int target, int size) {
+    int left = 0, right = size - 1;
+    while (left &lt;= right) {
+        int mid = (left + right) / 2;
+        if (arr[mid] == target) return mid;
+        if (arr[mid] &lt; target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}
+
+// Recursive version - with good compiler, similar performance
+int binarySearchRecursive(int arr[], int target, int left, int right) {
+    if (left &gt; right) return -1;
+    int mid = (left + right) / 2;
+    if (arr[mid] == target) return mid;
+    if (arr[mid] &lt; target)
+        return binarySearchRecursive(arr, target, mid + 1, right);
+    return binarySearchRecursive(arr, target, left, mid - 1);
+}</code></pre>
+
+                        <h4>4. Cache Behavior:</h4>
+                        <p>Sometimes recursion has better cache locality than complex iterative solutions with explicit stacks.</p>
+
+                        <h4>When Recursion IS Slower:</h4>
+                        <ul>
+                            <li>Deep recursion without TCO (stack overflow risk)</li>
+                            <li>Tree recursion without memoization (exponential redundancy)</li>
+                            <li>Simple problems where iteration is straightforward (factorial, sum)</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Bottom Line:</strong> With optimization and appropriate problems, recursion CAN match iteration's speed. The "always" in the statement makes it FALSE.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q14</span>
+                <span class="question-marks">[2 marks]</span>
+            </div>
+            <div class="question-text">
+                <p><strong>True or False:</strong> Any iterative algorithm can be converted to a recursive algorithm.</p>
+                <p style="font-style: italic; color: var(--text-secondary);">Justify your answer.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer14')">Show Answer</button>
+            <div class="answer-section" id="answer14">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Answer: TRUE</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Justification:</h4>
+                        <p>Iteration and recursion are computationally equivalent - any problem solvable by iteration can also be solved by recursion, and vice versa. This is a fundamental principle in computer science.</p>
+
+                        <h4>How to Convert Iteration to Recursion:</h4>
+                        <p>The general pattern:</p>
+                        <ol>
+                            <li>Loop variable(s) become function parameter(s)</li>
+                            <li>Loop condition becomes base case (inverted)</li>
+                            <li>Loop body becomes recursive call with updated parameters</li>
+                        </ol>
+
+                        <h4>Example 1 - Simple Sum:</h4>
+                        <pre><code class="language-cpp">// Iterative
+int sumIterative(int n) {
+    int total = 0;
+    for (int i = 1; i &lt;= n; i++) {
+        total += i;
+    }
+    return total;
+}
+
+// Converted to Recursive
+int sumRecursive(int n, int total = 0) {
+    if (n == 0)  // Loop condition inverted
+        return total;
+    return sumRecursive(n - 1, total + n);  // i-- becomes n-1, total+=i becomes total+n
+}</code></pre>
+
+                        <h4>Example 2 - Array Processing:</h4>
+                        <pre><code class="language-cpp">// Iterative
+int findMax(int arr[], int size) {
+    int max = arr[0];
+    for (int i = 1; i &lt; size; i++) {
+        if (arr[i] &gt; max)
+            max = arr[i];
+    }
+    return max;
+}
+
+// Converted to Recursive
+int findMaxRecursive(int arr[], int size, int index = 0, int currentMax = INT_MIN) {
+    if (index == size)  // Loop end condition
+        return currentMax;
+
+    int newMax = (arr[index] &gt; currentMax) ? arr[index] : currentMax;
+    return findMaxRecursive(arr, size, index + 1, newMax);
+}</code></pre>
+
+                        <h4>Example 3 - Even Complex Loops:</h4>
+                        <pre><code class="language-cpp">// Nested loops iteratively
+void printPairs(int n) {
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; n; j++) {
+            cout &lt;&lt; "(" &lt;&lt; i &lt;&lt; "," &lt;&lt; j &lt;&lt; ") ";
+        }
+    }
+}
+
+// Recursive version
+void printPairsHelper(int n, int i, int j) {
+    if (i == n) return;  // Done with all rows
+
+    cout &lt;&lt; "(" &lt;&lt; i &lt;&lt; "," &lt;&lt; j &lt;&lt; ") ";
+
+    if (j == n - 1)  // End of row, move to next
+        printPairsHelper(n, i + 1, 0);
+    else
+        printPairsHelper(n, i, j + 1);
+}
+
+void printPairs(int n) {
+    printPairsHelper(n, 0, 0);
+}</code></pre>
+
+                        <h4>Key Points:</h4>
+                        <ul>
+                            <li>Loop variables → function parameters</li>
+                            <li>Loop updates → parameter changes in recursive call</li>
+                            <li>Loop termination → base case</li>
+                            <li>May need helper function for accumulator/index parameters</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Theoretical Basis:</strong> Turing completeness - both iteration (Turing machine) and recursion (lambda calculus) can compute the same set of functions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 15 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q15</span>
+                <span class="question-marks">[2 marks]</span>
+            </div>
+            <div class="question-text">
+                <p><strong>True or False:</strong> For searching in a sorted array, a recursive binary search is more efficient than an iterative linear search.</p>
+                <p style="font-style: italic; color: var(--text-secondary);">Justify your answer with complexity analysis.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer15')">Show Answer</button>
+            <div class="answer-section" id="answer15">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Answer: TRUE</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Justification:</h4>
+                        <p>Recursive binary search has O(log n) time complexity, while iterative linear search has O(n). For large arrays, O(log n) is significantly more efficient than O(n).</p>
+
+                        <h4>Recursive Binary Search - O(log n):</h4>
+                        <pre><code class="language-cpp">int binarySearchRecursive(int arr[], int target, int left, int right) {
+    if (left &gt; right)  // Base case - not found
+        return -1;
+
+    int mid = (left + right) / 2;
+
+    if (arr[mid] == target)  // Found
+        return mid;
+
+    if (arr[mid] &lt; target)  // Search right half
+        return binarySearchRecursive(arr, target, mid + 1, right);
+    else  // Search left half
+        return binarySearchRecursive(arr, target, left, mid - 1);
+}
+
+// Time: O(log n) - halves search space each call
+// Space: O(log n) - recursion depth</code></pre>
+
+                        <h4>Iterative Linear Search - O(n):</h4>
+                        <pre><code class="language-cpp">int linearSearch(int arr[], int size, int target) {
+    for (int i = 0; i &lt; size; i++) {
+        if (arr[i] == target)
+            return i;
+    }
+    return -1;  // Not found
+}
+
+// Time: O(n) - may check every element
+// Space: O(1)</code></pre>
+
+                        <h4>Complexity Comparison:</h4>
+                        <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                            <tr style="background: rgba(14, 165, 233, 0.2);">
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Array Size</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Linear Search (worst case)</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Binary Search (worst case)</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">10</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">10 comparisons</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">4 comparisons</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">100</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">100 comparisons</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">7 comparisons</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">1,000,000</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">1,000,000 comparisons</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">20 comparisons</td>
+                            </tr>
+                        </table>
+
+                        <h4>Why Binary Search is More Efficient:</h4>
+                        <ul>
+                            <li><strong>Divide and Conquer:</strong> Binary search halves the search space each iteration</li>
+                            <li><strong>Logarithmic Growth:</strong> log₂(1,000,000) = 20 vs linear 1,000,000</li>
+                            <li><strong>Sorted Array Required:</strong> Binary search ONLY works on sorted data (key assumption in question)</li>
+                        </ul>
+
+                        <h4>Important Note:</h4>
+                        <p>The question compares <strong>recursive binary search</strong> vs <strong>iterative linear search</strong>. The recursion vs iteration part is irrelevant - the algorithm choice (binary vs linear) is what matters. Binary search (recursive OR iterative) beats linear search for sorted arrays.</p>
+
+                        <div class="info-box">
+                            <strong>Key Takeaway:</strong> O(log n) &lt;&lt; O(n) for large n. Binary search (recursive or not) is vastly superior for sorted arrays.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION C: CODE TRACING -->
+        <div class="section-header">
+            <h2>Section C: Code Tracing</h2>
+            <div class="section-info">5 questions × 3-4 marks = 18 marks | Show complete execution trace</div>
+        </div>
+
+        <!-- Question 16 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q16</span>
+                <span class="question-marks">[3 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>Trace the following code and show the output. Show the call stack at each step.</p>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int mystery(int n) {
+    if (n &lt;= 0)
+        return 0;
+    cout &lt;&lt; n &lt;&lt; " ";
+    return mystery(n - 2);
+}
+
+int main() {
+    mystery(7);
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer16')">Show Answer</button>
+            <div class="answer-section" id="answer16">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Output:</strong> <code>7 5 3 1 </code>
+                    </div>
+                    <div class="explanation">
+                        <h4>Step-by-Step Trace:</h4>
+
+                        <p><strong>Call 1:</strong> <code>mystery(7)</code></p>
+                        <ul>
+                            <li>n = 7, check: 7 &lt;= 0? NO</li>
+                            <li>Print: <code>7 </code></li>
+                            <li>Call: <code>mystery(7 - 2) = mystery(5)</code></li>
+                            <li><strong>Stack:</strong> [mystery(7)]</li>
+                        </ul>
+
+                        <p><strong>Call 2:</strong> <code>mystery(5)</code></p>
+                        <ul>
+                            <li>n = 5, check: 5 &lt;= 0? NO</li>
+                            <li>Print: <code>5 </code></li>
+                            <li>Call: <code>mystery(5 - 2) = mystery(3)</code></li>
+                            <li><strong>Stack:</strong> [mystery(7), mystery(5)]</li>
+                        </ul>
+
+                        <p><strong>Call 3:</strong> <code>mystery(3)</code></p>
+                        <ul>
+                            <li>n = 3, check: 3 &lt;= 0? NO</li>
+                            <li>Print: <code>3 </code></li>
+                            <li>Call: <code>mystery(3 - 2) = mystery(1)</code></li>
+                            <li><strong>Stack:</strong> [mystery(7), mystery(5), mystery(3)]</li>
+                        </ul>
+
+                        <p><strong>Call 4:</strong> <code>mystery(1)</code></p>
+                        <ul>
+                            <li>n = 1, check: 1 &lt;= 0? NO</li>
+                            <li>Print: <code>1 </code></li>
+                            <li>Call: <code>mystery(1 - 2) = mystery(-1)</code></li>
+                            <li><strong>Stack:</strong> [mystery(7), mystery(5), mystery(3), mystery(1)]</li>
+                        </ul>
+
+                        <p><strong>Call 5:</strong> <code>mystery(-1)</code></p>
+                        <ul>
+                            <li>n = -1, check: -1 &lt;= 0? YES</li>
+                            <li>Return: 0 (base case - no print)</li>
+                            <li><strong>Stack:</strong> [mystery(7), mystery(5), mystery(3), mystery(1), mystery(-1)]</li>
+                        </ul>
+
+                        <h4>Unwinding Phase:</h4>
+                        <div class="ascii-diagram"><pre>
+mystery(-1) returns 0 → Stack: [mystery(7), mystery(5), mystery(3), mystery(1)]
+mystery(1) returns 0  → Stack: [mystery(7), mystery(5), mystery(3)]
+mystery(3) returns 0  → Stack: [mystery(7), mystery(5)]
+mystery(5) returns 0  → Stack: [mystery(7)]
+mystery(7) returns 0  → Stack: []</pre></div>
+
+                        <h4>Complete Output:</h4>
+                        <p>All printing happens during the "going down" phase, not unwinding.</p>
+                        <p><strong>Final output:</strong> <code>7 5 3 1 </code></p>
+
+                        <div class="info-box">
+                            <strong>Key Pattern:</strong> Prints before recursive call (n - 2), so odd numbers from 7 down to 1 are printed in descending order.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q17</span>
+                <span class="question-marks">[4 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>Trace the following recursive function and show the call tree. What is the final output?</p>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+void printPattern(int n) {
+    if (n &lt;= 0)
+        return;
+    cout &lt;&lt; n &lt;&lt; " ";
+    printPattern(n - 1);
+    cout &lt;&lt; n &lt;&lt; " ";
+}
+
+int main() {
+    printPattern(3);
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer17')">Show Answer</button>
+            <div class="answer-section" id="answer17">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Output:</strong> <code>3 2 1 1 2 3 </code>
+                    </div>
+                    <div class="explanation">
+                        <h4>Key Observation:</h4>
+                        <p>This function prints n BEFORE the recursive call AND AFTER. This creates a "mirror" effect.</p>
+
+                        <h4>Step-by-Step Trace:</h4>
+
+                        <p><strong>Call 1:</strong> <code>printPattern(3)</code></p>
+                        <ol>
+                            <li>Check: 3 &lt;= 0? NO</li>
+                            <li>Print: <code>3 </code> (BEFORE recursion)</li>
+                            <li>Call: <code>printPattern(2)</code></li>
+                            <li><em>...wait for recursive call to return...</em></li>
+                            <li>Print: <code>3 </code> (AFTER recursion) ← will happen later</li>
+                        </ol>
+
+                        <p><strong>Call 2:</strong> <code>printPattern(2)</code></p>
+                        <ol>
+                            <li>Check: 2 &lt;= 0? NO</li>
+                            <li>Print: <code>2 </code> (BEFORE recursion)</li>
+                            <li>Call: <code>printPattern(1)</code></li>
+                            <li><em>...wait...</em></li>
+                            <li>Print: <code>2 </code> (AFTER recursion) ← will happen later</li>
+                        </ol>
+
+                        <p><strong>Call 3:</strong> <code>printPattern(1)</code></p>
+                        <ol>
+                            <li>Check: 1 &lt;= 0? NO</li>
+                            <li>Print: <code>1 </code> (BEFORE recursion)</li>
+                            <li>Call: <code>printPattern(0)</code></li>
+                            <li><em>...wait...</em></li>
+                            <li>Print: <code>1 </code> (AFTER recursion) ← will happen later</li>
+                        </ol>
+
+                        <p><strong>Call 4:</strong> <code>printPattern(0)</code></p>
+                        <ol>
+                            <li>Check: 0 &lt;= 0? YES</li>
+                            <li>Return immediately (base case)</li>
+                        </ol>
+
+                        <h4>Unwinding Phase (executes "after recursion" prints):</h4>
+                        <div class="ascii-diagram"><pre>
+Call 4 returns → Call 3 continues → Print: 1
+Call 3 returns → Call 2 continues → Print: 2
+Call 2 returns → Call 1 continues → Print: 3</pre></div>
+
+                        <h4>Complete Execution Order:</h4>
+                        <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                            <tr style="background: rgba(14, 165, 233, 0.2);">
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Step</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Action</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Output So Far</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">1</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">printPattern(3) - print before</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);"><code>3 </code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">2</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">printPattern(2) - print before</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);"><code>3 2 </code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">3</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">printPattern(1) - print before</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);"><code>3 2 1 </code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">4</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">printPattern(0) - return</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);"><code>3 2 1 </code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">5</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">printPattern(1) - print after</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);"><code>3 2 1 1 </code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">6</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">printPattern(2) - print after</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);"><code>3 2 1 1 2 </code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">7</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">printPattern(3) - print after</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);"><code>3 2 1 1 2 3 </code></td>
+                            </tr>
+                        </table>
+
+                        <h4>Call Tree Diagram:</h4>
+                        <div class="ascii-diagram"><pre>
+printPattern(3)
+    ↓ print "3 " (before)
+    printPattern(2)
+        ↓ print "2 " (before)
+        printPattern(1)
+            ↓ print "1 " (before)
+            printPattern(0) → return
+            ↑ print "1 " (after)
+        ↑ print "2 " (after)
+    ↑ print "3 " (after)
+
+Final Output: 3 2 1 1 2 3</pre></div>
+
+                        <div class="info-box">
+                            <strong>Pattern:</strong> Descending order (before recursion), then ascending order (after unwinding). Creates palindrome-like output.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 18 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q18</span>
+                <span class="question-marks">[4 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>What is the output of the following program? Trace the execution step by step.</p>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int calculate(int a, int b) {
+    if (b == 0)
+        return 0;
+    if (b == 1)
+        return a;
+    return a + calculate(a, b - 1);
+}
+
+int main() {
+    cout &lt;&lt; calculate(5, 4) &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer18')">Show Answer</button>
+            <div class="answer-section" id="answer18">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Output:</strong> <code>20</code>
+                    </div>
+                    <div class="explanation">
+                        <h4>What This Function Does:</h4>
+                        <p>This function performs <strong>multiplication</strong> using repeated addition. <code>calculate(a, b)</code> computes <code>a × b</code>.</p>
+
+                        <h4>Step-by-Step Trace for calculate(5, 4):</h4>
+
+                        <p><strong>Call 1:</strong> <code>calculate(5, 4)</code></p>
+                        <ul>
+                            <li>a = 5, b = 4</li>
+                            <li>Check b == 0? NO</li>
+                            <li>Check b == 1? NO</li>
+                            <li>Return: <code>5 + calculate(5, 3)</code></li>
+                            <li><strong>Stack:</strong> [calculate(5,4) waiting]</li>
+                        </ul>
+
+                        <p><strong>Call 2:</strong> <code>calculate(5, 3)</code></p>
+                        <ul>
+                            <li>a = 5, b = 3</li>
+                            <li>Check b == 0? NO</li>
+                            <li>Check b == 1? NO</li>
+                            <li>Return: <code>5 + calculate(5, 2)</code></li>
+                            <li><strong>Stack:</strong> [calculate(5,4) waiting, calculate(5,3) waiting]</li>
+                        </ul>
+
+                        <p><strong>Call 3:</strong> <code>calculate(5, 2)</code></p>
+                        <ul>
+                            <li>a = 5, b = 2</li>
+                            <li>Check b == 0? NO</li>
+                            <li>Check b == 1? NO</li>
+                            <li>Return: <code>5 + calculate(5, 1)</code></li>
+                            <li><strong>Stack:</strong> [calculate(5,4), calculate(5,3), calculate(5,2) waiting]</li>
+                        </ul>
+
+                        <p><strong>Call 4:</strong> <code>calculate(5, 1)</code></p>
+                        <ul>
+                            <li>a = 5, b = 1</li>
+                            <li>Check b == 0? NO</li>
+                            <li>Check b == 1? YES ✓</li>
+                            <li>Return: <code>5</code> (base case)</li>
+                            <li><strong>Stack:</strong> [calculate(5,4), calculate(5,3), calculate(5,2), calculate(5,1)]</li>
+                        </ul>
+
+                        <h4>Unwinding Phase (Substitution):</h4>
+                        <div class="ascii-diagram"><pre>
+calculate(5, 1) returns 5
+
+calculate(5, 2) returns 5 + 5 = 10
+
+calculate(5, 3) returns 5 + 10 = 15
+
+calculate(5, 4) returns 5 + 15 = 20</pre></div>
+
+                        <h4>Detailed Unwinding:</h4>
+                        <ol>
+                            <li><code>calculate(5, 1)</code> = 5</li>
+                            <li><code>calculate(5, 2)</code> = 5 + <code>calculate(5, 1)</code> = 5 + 5 = 10</li>
+                            <li><code>calculate(5, 3)</code> = 5 + <code>calculate(5, 2)</code> = 5 + 10 = 15</li>
+                            <li><code>calculate(5, 4)</code> = 5 + <code>calculate(5, 3)</code> = 5 + 15 = 20</li>
+                        </ol>
+
+                        <h4>Mathematical Interpretation:</h4>
+                        <p><code>calculate(5, 4)</code> = 5 + 5 + 5 + 5 = 5 × 4 = 20</p>
+
+                        <div class="ascii-diagram"><pre>
+calculate(5, 4)
+= 5 + calculate(5, 3)
+= 5 + (5 + calculate(5, 2))
+= 5 + (5 + (5 + calculate(5, 1)))
+= 5 + (5 + (5 + 5))
+= 5 + (5 + 10)
+= 5 + 15
+= 20</pre></div>
+
+                        <h4>Algorithm Analysis:</h4>
+                        <ul>
+                            <li><strong>Purpose:</strong> Multiply a × b using repeated addition</li>
+                            <li><strong>Base cases:</strong> b == 0 (returns 0), b == 1 (returns a)</li>
+                            <li><strong>Recursive case:</strong> a + calculate(a, b-1)</li>
+                            <li><strong>Time complexity:</strong> O(b) - b recursive calls</li>
+                            <li><strong>Space complexity:</strong> O(b) - call stack depth</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Key Insight:</strong> This is a classic example of implementing multiplication recursively. Each call adds 'a' one more time, b times total.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q19</span>
+                <span class="question-marks">[3 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>What does the following recursive function return for <code>func(16)</code>? Trace the execution.</p>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int func(int n) {
+    if (n == 1)
+        return 0;
+    return 1 + func(n / 2);
+}
+
+int main() {
+    cout &lt;&lt; func(16) &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer19')">Show Answer</button>
+            <div class="answer-section" id="answer19">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Output:</strong> <code>4</code>
+                    </div>
+                    <div class="explanation">
+                        <h4>What This Function Does:</h4>
+                        <p>This function calculates <strong>log₂(n)</strong> - how many times you can divide n by 2 until reaching 1.</p>
+
+                        <h4>Step-by-Step Trace for func(16):</h4>
+
+                        <p><strong>Call 1:</strong> <code>func(16)</code></p>
+                        <ul>
+                            <li>n = 16</li>
+                            <li>Check n == 1? NO</li>
+                            <li>Return: <code>1 + func(16 / 2) = 1 + func(8)</code></li>
+                        </ul>
+
+                        <p><strong>Call 2:</strong> <code>func(8)</code></p>
+                        <ul>
+                            <li>n = 8</li>
+                            <li>Check n == 1? NO</li>
+                            <li>Return: <code>1 + func(8 / 2) = 1 + func(4)</code></li>
+                        </ul>
+
+                        <p><strong>Call 3:</strong> <code>func(4)</code></p>
+                        <ul>
+                            <li>n = 4</li>
+                            <li>Check n == 1? NO</li>
+                            <li>Return: <code>1 + func(4 / 2) = 1 + func(2)</code></li>
+                        </ul>
+
+                        <p><strong>Call 4:</strong> <code>func(2)</code></p>
+                        <ul>
+                            <li>n = 2</li>
+                            <li>Check n == 1? NO</li>
+                            <li>Return: <code>1 + func(2 / 2) = 1 + func(1)</code></li>
+                        </ul>
+
+                        <p><strong>Call 5:</strong> <code>func(1)</code></p>
+                        <ul>
+                            <li>n = 1</li>
+                            <li>Check n == 1? YES ✓</li>
+                            <li>Return: <code>0</code> (base case)</li>
+                        </ul>
+
+                        <h4>Unwinding Phase:</h4>
+                        <div class="ascii-diagram"><pre>
+func(1) returns 0
+
+func(2) returns 1 + 0 = 1
+
+func(4) returns 1 + 1 = 2
+
+func(8) returns 1 + 2 = 3
+
+func(16) returns 1 + 3 = 4</pre></div>
+
+                        <h4>Complete Substitution:</h4>
+                        <div class="ascii-diagram"><pre>
+func(16)
+= 1 + func(8)
+= 1 + (1 + func(4))
+= 1 + (1 + (1 + func(2)))
+= 1 + (1 + (1 + (1 + func(1))))
+= 1 + (1 + (1 + (1 + 0)))
+= 1 + (1 + (1 + 1))
+= 1 + (1 + 2)
+= 1 + 3
+= 4</pre></div>
+
+                        <h4>Analysis:</h4>
+                        <ul>
+                            <li><strong>Purpose:</strong> Count divisions by 2 until reaching 1 = log₂(n)</li>
+                            <li><strong>For n=16:</strong> 16 → 8 → 4 → 2 → 1 (4 divisions)</li>
+                            <li><strong>Verification:</strong> log₂(16) = log₂(2⁴) = 4 ✓</li>
+                            <li><strong>Time complexity:</strong> O(log n)</li>
+                            <li><strong>Space complexity:</strong> O(log n) - call stack depth</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Pattern:</strong> This is a classic logarithmic recursion. Each call halves the problem size, counting divisions needed to reach 1.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q20</span>
+                <span class="question-marks">[4 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>Consider the following linked list function. Trace it for a list with 3 nodes containing values 10, 20, 30. Show what gets printed.</p>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+void mystery(Node* head) {
+    if (head == NULL)
+        return;
+    mystery(head-&gt;next);
+    cout &lt;&lt; head-&gt;data &lt;&lt; " ";
+}
+
+int main() {
+    // List: 10 -&gt; 20 -&gt; 30 -&gt; NULL
+    Node* n1 = new Node{10, NULL};
+    Node* n2 = new Node{20, NULL};
+    Node* n3 = new Node{30, NULL};
+    n1-&gt;next = n2;
+    n2-&gt;next = n3;
+
+    mystery(n1);
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer20')">Show Answer</button>
+            <div class="answer-section" id="answer20">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Output:</strong> <code>30 20 10 </code>
+                    </div>
+                    <div class="explanation">
+                        <h4>What This Function Does:</h4>
+                        <p>This function prints a linked list <strong>in reverse order</strong>. It recurses to the end first, then prints while unwinding.</p>
+
+                        <h4>List Structure:</h4>
+                        <div class="ascii-diagram"><pre>
+head
+ |
+ v
+[10|*]--->[20|*]--->[30|NULL]
+ n1        n2        n3</pre></div>
+
+                        <h4>Step-by-Step Trace:</h4>
+
+                        <p><strong>Call 1:</strong> <code>mystery(n1)</code> // head points to node with 10</p>
+                        <ul>
+                            <li>Check: head == NULL? NO</li>
+                            <li>Call: <code>mystery(n1->next)</code> = <code>mystery(n2)</code></li>
+                            <li><em>...wait for recursive call...</em></li>
+                            <li>Print: <code>10 </code> ← happens AFTER recursion</li>
+                        </ul>
+
+                        <p><strong>Call 2:</strong> <code>mystery(n2)</code> // head points to node with 20</p>
+                        <ul>
+                            <li>Check: head == NULL? NO</li>
+                            <li>Call: <code>mystery(n2->next)</code> = <code>mystery(n3)</code></li>
+                            <li><em>...wait...</em></li>
+                            <li>Print: <code>20 </code> ← happens AFTER recursion</li>
+                        </ul>
+
+                        <p><strong>Call 3:</strong> <code>mystery(n3)</code> // head points to node with 30</p>
+                        <ul>
+                            <li>Check: head == NULL? NO</li>
+                            <li>Call: <code>mystery(n3->next)</code> = <code>mystery(NULL)</code></li>
+                            <li><em>...wait...</em></li>
+                            <li>Print: <code>30 </code> ← happens AFTER recursion</li>
+                        </ul>
+
+                        <p><strong>Call 4:</strong> <code>mystery(NULL)</code></p>
+                        <ul>
+                            <li>Check: head == NULL? YES ✓</li>
+                            <li>Return immediately (base case - no print)</li>
+                        </ul>
+
+                        <h4>Unwinding Phase (Printing Happens):</h4>
+                        <div class="ascii-diagram"><pre>
+Call Stack During Execution:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Going Down (no printing yet):
+   mystery(n1) → mystery(n2) → mystery(n3) → mystery(NULL)
+                                                    ↓
+                                                  returns
+
+Unwinding (printing happens):
+   mystery(NULL) returns
+   mystery(n3) prints: 30
+   mystery(n2) prints: 20
+   mystery(n1) prints: 10
+
+Output order: 30 20 10</pre></div>
+
+                        <h4>Execution Timeline:</h4>
+                        <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                            <tr style="background: rgba(14, 165, 233, 0.2);">
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Phase</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Call</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Action</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Output</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);" rowspan="4">Going Down</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">mystery(n1)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Recurse to next</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">mystery(n2)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Recurse to next</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">mystery(n3)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Recurse to next</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">mystery(NULL)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Base case - return</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);" rowspan="3">Unwinding</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">mystery(n3)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Print head->data</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);"><code>30 </code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">mystery(n2)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Print head->data</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);"><code>20 </code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">mystery(n1)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Print head->data</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);"><code>10 </code></td>
+                            </tr>
+                        </table>
+
+                        <h4>Key Insight:</h4>
+                        <p>Because printing happens <strong>after</strong> the recursive call (<code>mystery(head->next)</code>), we reach the end of the list before any printing occurs. Then as the recursion unwinds, we print in reverse order: last node first, first node last.</p>
+
+                        <div class="info-box">
+                            <strong>Pattern:</strong> Print-after-recursion creates reverse order. If we printed BEFORE the recursive call, output would be: <code>10 20 30</code> (forward order).
+                        </div>
+
+                        <p style="color: var(--text-secondary); font-style: italic; margin-top: 1rem;"><strong>Source:</strong> Adapted from EO3 past paper patterns on recursive linked list traversal</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION D: FIND THE BUG -->
+        <div class="section-header">
+            <h2>Section D: Find the Bug</h2>
+            <div class="section-info">2 questions × 5 marks = 10 marks | Identify bug location, explain problem, and provide fix</div>
+        </div>
+
+        <!-- Question 21 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q21</span>
+                <span class="question-marks">[5 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>The following recursive function is intended to calculate the sum of integers from 1 to n. However, it has a bug. Identify the bug, explain what's wrong, and provide the corrected code.</p>
+                <p style="color: var(--text-secondary); font-style: italic;"><strong>Source:</strong> Adapted from EO3 2018, Question 3.1</p>
+                <pre><code class="language-cpp">int sum(int n) {
+    if (n == 0)
+        return 0;
+    return sum(n) + n;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer21')">Show Answer</button>
+            <div class="answer-section" id="answer21">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Bug Location:</strong> Line 4 - <code>return sum(n) + n;</code>
+                    </div>
+                    <div class="explanation">
+                        <h4>What's Wrong:</h4>
+                        <p>The recursive call is <code>sum(n)</code> instead of <code>sum(n - 1)</code>. This causes <strong>infinite recursion</strong> because the function keeps calling itself with the same value of n, never progressing toward the base case.</p>
+
+                        <h4>Why It's Wrong:</h4>
+                        <ol>
+                            <li><strong>No progression to base case:</strong> For recursion to terminate, each call must move closer to the base case. Here, n never decreases.</li>
+                            <li><strong>Infinite loop:</strong> <code>sum(5)</code> calls <code>sum(5)</code>, which calls <code>sum(5)</code>, forever.</li>
+                            <li><strong>Stack overflow:</strong> Each call adds a frame to the stack. Eventually, stack memory is exhausted, causing a crash.</li>
+                        </ol>
+
+                        <h4>Execution if we tried sum(3):</h4>
+                        <div class="ascii-diagram"><pre>
+sum(3) → calls sum(3) → calls sum(3) → calls sum(3) → ...
+   ↓        ↓              ↓              ↓
+Never reaches base case (n == 0)
+Stack grows infinitely until crash</pre></div>
+
+                        <h4>Corrected Code:</h4>
+                        <pre><code class="language-cpp">int sum(int n) {
+    if (n == 0)
+        return 0;
+    return sum(n - 1) + n;  // FIX: n-1 instead of n
+}</code></pre>
+
+                        <h4>Why the Fix Works:</h4>
+                        <p>Now each recursive call decrements n by 1, progressing toward the base case (n == 0):</p>
+                        <div class="ascii-diagram"><pre>
+sum(3) calls sum(2) calls sum(1) calls sum(0)
+                                         ↓
+                                    returns 0
+
+Unwinding:
+sum(0) = 0
+sum(1) = sum(0) + 1 = 0 + 1 = 1
+sum(2) = sum(1) + 2 = 1 + 2 = 3
+sum(3) = sum(2) + 3 = 3 + 3 = 6  ✓</pre></div>
+
+                        <h4>Verification:</h4>
+                        <p><code>sum(3)</code> = 3 + 2 + 1 = 6 ✓</p>
+                        <p><code>sum(5)</code> = 5 + 4 + 3 + 2 + 1 = 15 ✓</p>
+
+                        <div class="warning-box">
+                            <strong>Common Mistake Pattern:</strong> Forgetting to modify the recursive parameter is a classic error. Always ensure recursion progresses toward the base case by changing parameters (decrement, halve, move pointer, etc.).
+                        </div>
+
+                        <h4>Key Takeaway:</h4>
+                        <p><strong>The recursive call MUST make the problem smaller.</strong> In this case, that means calling <code>sum(n-1)</code>, not <code>sum(n)</code>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 22 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q22</span>
+                <span class="question-marks">[5 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>The following function is supposed to find the maximum value in an array recursively. It contains a bug. Find it, explain the problem, and fix it.</p>
+                <pre><code class="language-cpp">int findMax(int arr[], int size) {
+    if (size == 1)
+        return arr[0];
+
+    int maxRest = findMax(arr, size - 1);
+
+    if (arr[size] &gt; maxRest)
+        return arr[size];
+    else
+        return maxRest;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer22')">Show Answer</button>
+            <div class="answer-section" id="answer22">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Bug Location:</strong> Line 7 - <code>if (arr[size] > maxRest)</code> and Line 8 - <code>return arr[size];</code>
+                    </div>
+                    <div class="explanation">
+                        <h4>What's Wrong:</h4>
+                        <p>The function accesses <code>arr[size]</code>, which is <strong>out of bounds</strong>. Array indices go from 0 to size-1. Index `size` doesn't exist.</p>
+
+                        <h4>Why It's Wrong:</h4>
+                        <ol>
+                            <li><strong>Index out of bounds:</strong> For an array of size n, valid indices are 0 to n-1. <code>arr[size]</code> accesses memory beyond the array.</li>
+                            <li><strong>Undefined behavior:</strong> Reading <code>arr[size]</code> could return garbage data, crash the program, or appear to work by chance.</li>
+                            <li><strong>Wrong comparison:</strong> We want to compare the last element (<code>arr[size-1]</code>) with the max of the rest.</li>
+                        </ol>
+
+                        <h4>Example - Why It Fails:</h4>
+                        <pre><code class="language-cpp">int arr[] = {5, 2, 8, 1};  // Size = 4, indices: 0, 1, 2, 3
+findMax(arr, 4);
+
+// Base case: size == 1 returns arr[0] = 5
+// Recursive case checks arr[size] = arr[4] ← OUT OF BOUNDS!</code></pre>
+
+                        <div class="ascii-diagram"><pre>
+Array:  [5, 2, 8, 1]
+Index:   0  1  2  3   4 ← DOESN'T EXIST!
+                      ↑
+                 Bug tries to access this</pre></div>
+
+                        <h4>Corrected Code:</h4>
+                        <pre><code class="language-cpp">int findMax(int arr[], int size) {
+    if (size == 1)
+        return arr[0];
+
+    int maxRest = findMax(arr, size - 1);
+
+    if (arr[size - 1] &gt; maxRest)  // FIX: size-1 instead of size
+        return arr[size - 1];      // FIX: size-1 instead of size
+    else
+        return maxRest;
+}</code></pre>
+
+                        <h4>Why the Fix Works:</h4>
+                        <p>Now we correctly compare <code>arr[size-1]</code> (the last element) with the maximum of the first size-1 elements.</p>
+
+                        <h4>Execution Trace for {5, 2, 8, 1}:</h4>
+                        <div class="ascii-diagram"><pre>
+findMax({5,2,8,1}, 4)
+   ↓ maxRest = findMax({5,2,8,1}, 3)
+      ↓ maxRest = findMax({5,2,8,1}, 2)
+         ↓ maxRest = findMax({5,2,8,1}, 1)
+            ↓ returns arr[0] = 5
+
+         Compare arr[1] (2) vs 5 → max = 5
+      Compare arr[2] (8) vs 5 → max = 8
+   Compare arr[3] (1) vs 8 → max = 8
+
+Final result: 8  ✓</pre></div>
+
+                        <h4>Alternative Correct Approaches:</h4>
+
+                        <p><strong>Approach 2 - Pass index parameter:</strong></p>
+                        <pre><code class="language-cpp">int findMaxHelper(int arr[], int size, int index) {
+    if (index == size - 1)
+        return arr[index];
+
+    int maxRest = findMaxHelper(arr, size, index + 1);
+
+    if (arr[index] &gt; maxRest)
+        return arr[index];
+    return maxRest;
+}
+
+int findMax(int arr[], int size) {
+    return findMaxHelper(arr, size, 0);
+}</code></pre>
+
+                        <div class="warning-box">
+                            <strong>Critical Reminder:</strong> When working with arrays, always remember:
+                            <ul>
+                                <li>Array of size n has indices 0 to n-1</li>
+                                <li>Index n is OUT OF BOUNDS</li>
+                                <li>Last valid element is at index size-1</li>
+                            </ul>
+                        </div>
+
+                        <h4>Key Takeaway:</h4>
+                        <p><strong>Off-by-one errors</strong> are common in recursion with arrays. Always double-check array indices, especially when using `size` as a parameter.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION E: IMPLEMENTATION -->
+        <div class="section-header">
+            <h2>Section E: Implementation & Short Answer</h2>
+            <div class="section-info">6 questions × 3-4 marks = 22 marks | Write complete recursive functions</div>
+        </div>
+
+        <!-- Question 23 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q23</span>
+                <span class="question-marks">[3 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>Write a recursive function <code>power(int base, int exp)</code> that calculates base<sup>exp</sup> (base raised to the power exp). Assume exp ≥ 0.</p>
+                <p><strong>Example:</strong> <code>power(2, 3)</code> returns 8 (2³ = 8)</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer23')">Show Answer</button>
+            <div class="answer-section" id="answer23">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Solution:</strong>
+                    </div>
+                    <div class="explanation">
+                        <pre><code class="language-cpp">int power(int base, int exp) {
+    // Base case: any number to power 0 is 1
+    if (exp == 0)
+        return 1;
+
+    // Recursive case: base^exp = base × base^(exp-1)
+    return base * power(base, exp - 1);
+}</code></pre>
+
+                        <h4>How It Works:</h4>
+                        <p>The function uses the mathematical property: base<sup>exp</sup> = base × base<sup>exp-1</sup></p>
+
+                        <h4>Example Execution - power(2, 3):</h4>
+                        <div class="ascii-diagram"><pre>
+power(2, 3)
+= 2 × power(2, 2)
+= 2 × (2 × power(2, 1))
+= 2 × (2 × (2 × power(2, 0)))
+= 2 × (2 × (2 × 1))
+= 2 × (2 × 2)
+= 2 × 4
+= 8  ✓</pre></div>
+
+                        <h4>Call Stack Trace:</h4>
+                        <ol>
+                            <li><code>power(2, 3)</code> → calls <code>power(2, 2)</code></li>
+                            <li><code>power(2, 2)</code> → calls <code>power(2, 1)</code></li>
+                            <li><code>power(2, 1)</code> → calls <code>power(2, 0)</code></li>
+                            <li><code>power(2, 0)</code> → returns 1 (base case)</li>
+                            <li><code>power(2, 1)</code> → returns 2 × 1 = 2</li>
+                            <li><code>power(2, 2)</code> → returns 2 × 2 = 4</li>
+                            <li><code>power(2, 3)</code> → returns 2 × 4 = 8</li>
+                        </ol>
+
+                        <h4>Complexity Analysis:</h4>
+                        <ul>
+                            <li><strong>Time Complexity:</strong> O(exp) - makes exp recursive calls</li>
+                            <li><strong>Space Complexity:</strong> O(exp) - call stack depth</li>
+                        </ul>
+
+                        <h4>Alternative - Optimized Version (O(log exp)):</h4>
+                        <pre><code class="language-cpp">int powerFast(int base, int exp) {
+    if (exp == 0) return 1;
+    if (exp == 1) return base;
+
+    // If exp is even: base^exp = (base^(exp/2))^2
+    if (exp % 2 == 0) {
+        int half = powerFast(base, exp / 2);
+        return half * half;
+    }
+    // If exp is odd: base^exp = base × base^(exp-1)
+    return base * powerFast(base, exp - 1);
+}</code></pre>
+
+                        <div class="info-box">
+                            <strong>Key Pattern:</strong> Exponentiation by repeated multiplication. Each recursive call decreases the exponent by 1 until reaching 0.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 24 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q24</span>
+                <span class="question-marks">[4 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>Write a recursive function <code>bool isSorted(int arr[], int size)</code> that returns true if the array is sorted in ascending order, false otherwise. Use a helper function if needed.</p>
+                <p><strong>Test cases:</strong></p>
+                <ul>
+                    <li><code>{1, 2, 3, 4}</code> → true</li>
+                    <li><code>{1, 3, 2, 4}</code> → false</li>
+                    <li><code>{5}</code> → true (single element)</li>
+                </ul>
+                <p style="color: var(--text-secondary); font-style: italic;"><strong>Source:</strong> Similar to EO3 2016, Question 3 patterns</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer24')">Show Answer</button>
+            <div class="answer-section" id="answer24">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Solution:</strong>
+                    </div>
+                    <div class="explanation">
+                        <pre><code class="language-cpp">// Helper function with index parameter
+bool isSortedHelper(int arr[], int size, int index) {
+    // Base case: reached second-to-last element
+    // (or array has 1 element)
+    if (index &gt;= size - 1)
+        return true;
+
+    // Check if current element &lt;= next element
+    if (arr[index] &gt; arr[index + 1])
+        return false;  // Found out-of-order pair
+
+    // Recurse to check rest of array
+    return isSortedHelper(arr, size, index + 1);
+}
+
+// Public interface
+bool isSorted(int arr[], int size) {
+    return isSortedHelper(arr, size, 0);
+}</code></pre>
+
+                        <h4>How It Works:</h4>
+                        <ol>
+                            <li>Start at index 0</li>
+                            <li>Compare arr[index] with arr[index+1]</li>
+                            <li>If arr[index] &gt; arr[index+1], not sorted → return false</li>
+                            <li>If all pairs in order, continue to next index</li>
+                            <li>Base case: reached end of comparisons → return true</li>
+                        </ol>
+
+                        <h4>Example Trace - {1, 2, 3, 4}:</h4>
+                        <div class="ascii-diagram"><pre>
+isSortedHelper({1,2,3,4}, 4, 0)
+   → Check: arr[0] (1) &lt;= arr[1] (2)? YES ✓
+   → Call: isSortedHelper({1,2,3,4}, 4, 1)
+      → Check: arr[1] (2) &lt;= arr[2] (3)? YES ✓
+      → Call: isSortedHelper({1,2,3,4}, 4, 2)
+         → Check: arr[2] (3) &lt;= arr[3] (4)? YES ✓
+         → Call: isSortedHelper({1,2,3,4}, 4, 3)
+            → Base case: index (3) &gt;= size-1 (3)
+            → Return: true
+
+Final result: true  ✓</pre></div>
+
+                        <h4>Example Trace - {1, 3, 2, 4}:</h4>
+                        <div class="ascii-diagram"><pre>
+isSortedHelper({1,3,2,4}, 4, 0)
+   → Check: arr[0] (1) &lt;= arr[1] (3)? YES ✓
+   → Call: isSortedHelper({1,3,2,4}, 4, 1)
+      → Check: arr[1] (3) &lt;= arr[2] (2)? NO ✗
+      → Return: false
+
+Final result: false  ✓</pre></div>
+
+                        <h4>Alternative Solution (Without Helper):</h4>
+                        <pre><code class="language-cpp">bool isSorted(int arr[], int size) {
+    // Base case: array with 0 or 1 element is sorted
+    if (size &lt;= 1)
+        return true;
+
+    // Check first two elements
+    if (arr[0] &gt; arr[1])
+        return false;
+
+    // Recursively check rest of array
+    return isSorted(arr + 1, size - 1);
+}</code></pre>
+
+                        <p><strong>Note:</strong> <code>arr + 1</code> creates a pointer to the second element, effectively "shifting" the array left.</p>
+
+                        <h4>Complexity Analysis:</h4>
+                        <ul>
+                            <li><strong>Time Complexity:</strong> O(n) - checks each adjacent pair once</li>
+                            <li><strong>Space Complexity:</strong> O(n) - recursion depth equals array size in worst case</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Key Insight:</strong> Array is sorted if every adjacent pair is in order. Recursion checks pairs one by one, short-circuiting on first failure.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 25 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q25</span>
+                <span class="question-marks">[4 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>Write a recursive function to count the number of nodes in a singly linked list.</p>
+                <p><strong>Function signature:</strong> <code>int countNodes(Node* head)</code></p>
+                <p>Assume the Node struct is defined as:</p>
+                <pre><code class="language-cpp">struct Node {
+    int data;
+    Node* next;
+};</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer25')">Show Answer</button>
+            <div class="answer-section" id="answer25">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Solution:</strong>
+                    </div>
+                    <div class="explanation">
+                        <pre><code class="language-cpp">int countNodes(Node* head) {
+    // Base case: empty list
+    if (head == NULL)
+        return 0;
+
+    // Recursive case: 1 (current node) + count of rest
+    return 1 + countNodes(head-&gt;next);
+}</code></pre>
+
+                        <h4>How It Works:</h4>
+                        <ol>
+                            <li>If list is empty (head == NULL), count is 0</li>
+                            <li>Otherwise, count is 1 (for current node) + count of remaining list</li>
+                            <li>Recurse with head->next until reaching NULL</li>
+                        </ol>
+
+                        <h4>Example - List: 10 → 20 → 30 → NULL:</h4>
+                        <div class="ascii-diagram"><pre>
+List structure:
+[10|*]--->[20|*]--->[30|NULL]
+ head
+
+Recursion tree:
+countNodes(head)  // Points to node with 10
+= 1 + countNodes(head-&gt;next)  // Points to node with 20
+= 1 + (1 + countNodes(head-&gt;next))  // Points to node with 30
+= 1 + (1 + (1 + countNodes(NULL)))
+= 1 + (1 + (1 + 0))
+= 1 + (1 + 1)
+= 1 + 2
+= 3  ✓</pre></div>
+
+                        <h4>Step-by-Step Trace:</h4>
+                        <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                            <tr style="background: rgba(14, 165, 233, 0.2);">
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Call</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">head points to</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Action</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Returns</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">1</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Node(10)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">1 + countNodes(next)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">1 + 2 = 3</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">2</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Node(20)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">1 + countNodes(next)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">1 + 1 = 2</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">3</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Node(30)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">1 + countNodes(next)</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">1 + 0 = 1</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">4</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">NULL</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Base case</td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">0</td>
+                            </tr>
+                        </table>
+
+                        <h4>Edge Cases:</h4>
+                        <ul>
+                            <li><strong>Empty list (NULL):</strong> Returns 0 ✓</li>
+                            <li><strong>Single node:</strong> Returns 1 + countNodes(NULL) = 1 + 0 = 1 ✓</li>
+                            <li><strong>Two nodes:</strong> Returns 1 + 1 + 0 = 2 ✓</li>
+                        </ul>
+
+                        <h4>Complexity Analysis:</h4>
+                        <ul>
+                            <li><strong>Time Complexity:</strong> O(n) - visits each node once</li>
+                            <li><strong>Space Complexity:</strong> O(n) - recursion depth equals list length</li>
+                        </ul>
+
+                        <h4>Iterative Comparison:</h4>
+                        <pre><code class="language-cpp">// Iterative version (for reference)
+int countNodesIterative(Node* head) {
+    int count = 0;
+    while (head != NULL) {
+        count++;
+        head = head-&gt;next;
+    }
+    return count;
+}
+// Space: O(1) - better than recursive O(n)</code></pre>
+
+                        <div class="info-box">
+                            <strong>Pattern:</strong> Classic linked list recursion. Base case: NULL → 0. Recursive case: 1 + count(rest).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 26 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q26</span>
+                <span class="question-marks">[4 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>Convert the following iterative function to a recursive function. It calculates the sum of all elements in an array.</p>
+                <pre><code class="language-cpp">int sumArray(int arr[], int size) {
+    int total = 0;
+    for (int i = 0; i &lt; size; i++) {
+        total += arr[i];
+    }
+    return total;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer26')">Show Answer</button>
+            <div class="answer-section" id="answer26">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Solution:</strong>
+                    </div>
+                    <div class="explanation">
+                        <h4>Approach 1 - Using Helper Function:</h4>
+                        <pre><code class="language-cpp">int sumArrayHelper(int arr[], int size, int index) {
+    // Base case: reached end of array
+    if (index == size)
+        return 0;
+
+    // Recursive case: current element + sum of rest
+    return arr[index] + sumArrayHelper(arr, size, index + 1);
+}
+
+int sumArray(int arr[], int size) {
+    return sumArrayHelper(arr, size, 0);
+}</code></pre>
+
+                        <h4>Approach 2 - Without Helper (decrementing size):</h4>
+                        <pre><code class="language-cpp">int sumArray(int arr[], int size) {
+    // Base case: empty array
+    if (size == 0)
+        return 0;
+
+    // Recursive case: last element + sum of first (size-1) elements
+    return arr[size - 1] + sumArray(arr, size - 1);
+}</code></pre>
+
+                        <h4>Approach 3 - Pointer Arithmetic:</h4>
+                        <pre><code class="language-cpp">int sumArray(int arr[], int size) {
+    // Base case: no elements left
+    if (size == 0)
+        return 0;
+
+    // Recursive case: first element + sum of rest
+    // arr+1 shifts pointer to second element
+    return arr[0] + sumArray(arr + 1, size - 1);
+}</code></pre>
+
+                        <h4>Example Trace - sumArray({5, 3, 8, 2}, 4) using Approach 2:</h4>
+                        <div class="ascii-diagram"><pre>
+sumArray({5,3,8,2}, 4)
+= arr[3] + sumArray({5,3,8,2}, 3)
+= 2 + sumArray({5,3,8,2}, 3)
+= 2 + (arr[2] + sumArray({5,3,8,2}, 2))
+= 2 + (8 + sumArray({5,3,8,2}, 2))
+= 2 + (8 + (arr[1] + sumArray({5,3,8,2}, 1)))
+= 2 + (8 + (3 + sumArray({5,3,8,2}, 1)))
+= 2 + (8 + (3 + (arr[0] + sumArray({5,3,8,2}, 0))))
+= 2 + (8 + (3 + (5 + 0)))
+= 2 + (8 + (3 + 5))
+= 2 + (8 + 8)
+= 2 + 16
+= 18  ✓</pre></div>
+
+                        <h4>Conversion Pattern (Iteration → Recursion):</h4>
+                        <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                            <tr style="background: rgba(14, 165, 233, 0.2);">
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Iterative Element</th>
+                                <th style="padding:0.5rem; border: 1px solid var(--border-color);">Recursive Equivalent</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Loop variable <code>i</code></td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Function parameter <code>index</code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Loop condition <code>i &lt; size</code></td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Base case <code>if (index == size)</code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Accumulator <code>total</code></td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Return value accumulation</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Loop increment <code>i++</code></td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Recursive call with <code>index + 1</code></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Loop body <code>total += arr[i]</code></td>
+                                <td style="padding:0.5rem; border: 1px solid var(--border-color);">Return statement <code>return arr[index] + ...</code></td>
+                            </tr>
+                        </table>
+
+                        <h4>Complexity Comparison:</h4>
+                        <ul>
+                            <li><strong>Iterative:</strong> Time O(n), Space O(1)</li>
+                            <li><strong>Recursive:</strong> Time O(n), Space O(n) - due to call stack</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Key Steps for Conversion:</strong>
+                            <ol>
+                                <li>Loop variable becomes parameter (or track with size)</li>
+                                <li>Loop end condition becomes base case (inverted)</li>
+                                <li>Loop body becomes recursive call with updated parameter</li>
+                                <li>Accumulator (if needed) can be parameter or part of return</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 27 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q27</span>
+                <span class="question-marks">[4 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>Write a pair of mutually recursive functions <code>isEven(int n)</code> and <code>isOdd(int n)</code> that determine if a non-negative integer is even or odd. Assume n ≥ 0.</p>
+                <p><strong>Hint:</strong> 0 is even. A number is even if n-1 is odd. A number is odd if n-1 is even.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer27')">Show Answer</button>
+            <div class="answer-section" id="answer27">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Solution:</strong>
+                    </div>
+                    <div class="explanation">
+                        <pre><code class="language-cpp">// Forward declaration needed for mutual recursion
+bool isOdd(int n);
+
+bool isEven(int n) {
+    // Base case: 0 is even
+    if (n == 0)
+        return true;
+
+    // Recursive case: n is even if (n-1) is odd
+    return isOdd(n - 1);
+}
+
+bool isOdd(int n) {
+    // Base case: 0 is not odd
+    if (n == 0)
+        return false;
+
+    // Recursive case: n is odd if (n-1) is even
+    return isEven(n - 1);
+}</code></pre>
+
+                        <h4>How It Works:</h4>
+                        <p>The functions call each other alternately, decrementing n by 1 each time until reaching the base case (n = 0).</p>
+
+                        <h4>Example Trace - isEven(4):</h4>
+                        <div class="ascii-diagram"><pre>
+isEven(4)
+   → 4 != 0, so call isOdd(3)
+   isOdd(3)
+      → 3 != 0, so call isEven(2)
+      isEven(2)
+         → 2 != 0, so call isOdd(1)
+         isOdd(1)
+            → 1 != 0, so call isEven(0)
+            isEven(0)
+               → 0 == 0, return true  ← BASE CASE
+            → isOdd(1) returns true
+         → isEven(2) returns true
+      → isOdd(3) returns true
+   → isEven(4) returns true  ✓
+
+4 alternations until base case</pre></div>
+
+                        <h4>Example Trace - isOdd(5):</h4>
+                        <div class="ascii-diagram"><pre>
+isOdd(5)
+   → 5 != 0, so call isEven(4)
+   isEven(4)
+      → 4 != 0, so call isOdd(3)
+      isOdd(3)
+         → 3 != 0, so call isEven(2)
+         isEven(2)
+            → 2 != 0, so call isOdd(1)
+            isOdd(1)
+               → 1 != 0, so call isEven(0)
+               isEven(0)
+                  → 0 == 0, return true
+               → isOdd(1) returns true
+            → isEven(2) returns true
+         → isOdd(3) returns true
+      → isEven(4) returns true
+   → isOdd(5) returns true  ✓</pre></div>
+
+                        <h4>Call Pattern:</h4>
+                        <ul>
+                            <li><strong>isEven(4):</strong> even → odd → even → odd → even(0) = TRUE</li>
+                            <li><strong>isOdd(5):</strong> odd → even → odd → even → odd → even(0) = TRUE</li>
+                            <li><strong>isEven(3):</strong> even → odd → even → odd(0) = FALSE</li>
+                        </ul>
+
+                        <h4>Why Mutual Recursion Works Here:</h4>
+                        <p>Numbers alternate between even and odd as you count down. Each decrement flips the parity:</p>
+                        <ul>
+                            <li>If n is even, then n-1 is odd</li>
+                            <li>If n is odd, then n-1 is even</li>
+                            <li>Keep going until reaching 0 (which is even)</li>
+                        </ul>
+
+                        <h4>Complexity Analysis:</h4>
+                        <ul>
+                            <li><strong>Time Complexity:</strong> O(n) - makes n function calls total</li>
+                            <li><strong>Space Complexity:</strong> O(n) - call stack depth of n frames</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <strong>Not Practical!</strong> This is a teaching example. In reality, use <code>n % 2 == 0</code> (O(1)). Mutual recursion is useful for more complex problems like grammar parsing or state machines.
+                        </div>
+
+                        <h4>Forward Declaration Required:</h4>
+                        <p>Since <code>isEven</code> calls <code>isOdd</code>, and <code>isOdd</code> is defined after <code>isEven</code>, we need a forward declaration:</p>
+                        <pre><code class="language-cpp">bool isOdd(int n);  // Forward declaration
+
+// Now isEven can call isOdd
+bool isEven(int n) { ... }</code></pre>
+
+                        <div class="info-box">
+                            <strong>Pattern:</strong> Mutually recursive functions define each other. Function A calls B, and B calls A. Both progress toward shared base case(s).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 28 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">Q28</span>
+                <span class="question-marks">[4 marks]</span>
+            </div>
+            <div class="question-text">
+                <p>Write a recursive function to find and return a pointer to the last node in a singly linked list.</p>
+                <p><strong>Function signature:</strong> <code>Node* getTail(Node* head)</code></p>
+                <p>If the list is empty, return NULL. Assume the Node struct is defined as:</p>
+                <pre><code class="language-cpp">struct Node {
+    int data;
+    Node* next;
+};</code></pre>
+                <p style="color: var(--text-secondary); font-style: italic;"><strong>Source:</strong> Adapted from EO3 2018, Question 4.1</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer28')">Show Answer</button>
+            <div class="answer-section" id="answer28">
+                <div class="answer-content">
+                    <div class="correct-answer">
+                        <strong>Solution:</strong>
+                    </div>
+                    <div class="explanation">
+                        <pre><code class="language-cpp">Node* getTail(Node* head) {
+    // Base case 1: empty list
+    if (head == NULL)
+        return NULL;
+
+    // Base case 2: this is the last node (tail)
+    if (head-&gt;next == NULL)
+        return head;
+
+    // Recursive case: tail is in the rest of the list
+    return getTail(head-&gt;next);
+}</code></pre>
+
+                        <h4>How It Works:</h4>
+                        <ol>
+                            <li>If list is empty, no tail exists → return NULL</li>
+                            <li>If current node's next is NULL, this IS the tail → return it</li>
+                            <li>Otherwise, the tail must be further down the list → recurse with next</li>
+                        </ol>
+
+                        <h4>Example - List: 10 → 20 → 30 → NULL:</h4>
+                        <div class="ascii-diagram"><pre>
+List structure:
+[10|*]--->[20|*]--->[30|NULL]  ← tail
+ n1        n2        n3
+
+Execution trace:
+getTail(n1)
+   → n1 != NULL? YES
+   → n1->next == NULL? NO (points to n2)
+   → Call: getTail(n1->next) = getTail(n2)
+
+   getTail(n2)
+      → n2 != NULL? YES
+      → n2->next == NULL? NO (points to n3)
+      → Call: getTail(n2->next) = getTail(n3)
+
+      getTail(n3)
+         → n3 != NULL? YES
+         → n3->next == NULL? YES ✓ (BASE CASE)
+         → Return: n3  ← This is the tail!
+
+      → getTail(n2) returns n3
+   → getTail(n1) returns n3
+
+Final result: pointer to node with data=30  ✓</pre></div>
+
+                        <h4>Call Stack Visualization:</h4>
+                        <div class="ascii-diagram"><pre>
+Call Stack (going down):
+━━━━━━━━━━━━━━━━━━━━━━━
+getTail(n1) waits for getTail(n2)
+getTail(n2) waits for getTail(n3)
+getTail(n3) returns n3 (base case)
+━━━━━━━━━━━━━━━━━━━━━━━
+
+Unwinding:
+━━━━━━━━━━━━━━━━━━━━━━━
+getTail(n2) returns n3
+getTail(n1) returns n3
+━━━━━━━━━━━━━━━━━━━━━━━</pre></div>
+
+                        <h4>Edge Cases:</h4>
+
+                        <p><strong>Empty list:</strong></p>
+                        <pre><code class="language-cpp">getTail(NULL)
+   → head == NULL? YES
+   → Return: NULL  ✓</code></pre>
+
+                        <p><strong>Single node:</strong></p>
+                        <pre><code class="language-cpp">getTail(n1)  // n1->next = NULL
+   → head == NULL? NO
+   → head->next == NULL? YES
+   → Return: n1  ✓ (single node IS the tail)</code></pre>
+
+                        <h4>Using the Result:</h4>
+                        <pre><code class="language-cpp">Node* tail = getTail(head);
+if (tail != NULL) {
+    cout &lt;&lt; "Last value: " &lt;&lt; tail-&gt;data &lt;&lt; endl;
+    // Can now add nodes after tail:
+    tail-&gt;next = new Node{40, NULL};
+}</code></pre>
+
+                        <h4>Complexity Analysis:</h4>
+                        <ul>
+                            <li><strong>Time Complexity:</strong> O(n) - visits every node</li>
+                            <li><strong>Space Complexity:</strong> O(n) - recursion depth equals list length</li>
+                        </ul>
+
+                        <h4>Iterative Comparison:</h4>
+                        <pre><code class="language-cpp">Node* getTailIterative(Node* head) {
+    if (head == NULL) return NULL;
+
+    while (head-&gt;next != NULL) {
+        head = head-&gt;next;
+    }
+    return head;
+}
+// Space: O(1) - more efficient</code></pre>
+
+                        <div class="info-box">
+                            <strong>Key Pattern:</strong> Traverse to end of list. Base case checks for NULL (empty) or next == NULL (found tail). Recursion follows the chain.
+                        </div>
+
+                        <p style="color: var(--accent-green); font-weight: 600; margin-top: 1.5rem;">
+                            🎉 <strong>Congratulations!</strong> You've completed all 28 questions (70 marks). Review your answers and understand the patterns for EO3 success!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Prism.js - CRITICAL ORDER -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        function toggleAnswer(id) {
+            const answerSection = document.getElementById(id);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

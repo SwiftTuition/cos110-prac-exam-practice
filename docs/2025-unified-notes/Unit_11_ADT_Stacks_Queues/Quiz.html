@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 11 Quiz: ADT - Stacks & Queues | Swift Tuition</title>
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #0ea5e9;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #0ea5e9;
+            object-fit: cover;
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-brand-company {
+            font-size: 0.9rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-brand-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #f1f5f9;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .nav-menu a.active {
+            color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.15);
+            border-bottom: 2px solid #0ea5e9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 1rem;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            text-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        .quiz-intro {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #0ea5e9;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-intro h2 {
+            color: #0ea5e9;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-intro ul {
+            margin-left: 2rem;
+            color: #cbd5e1;
+        }
+
+        .quiz-intro li {
+            margin-bottom: 0.5rem;
+        }
+
+        .question-block {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .question-block:hover {
+            border-color: rgba(14, 165, 233, 0.4);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0ea5e9;
+        }
+
+        .question-marks {
+            background: rgba(14, 165, 233, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #e2e8f0;
+            line-height: 1.8;
+        }
+
+        .options {
+            margin: 1.5rem 0;
+        }
+
+        .option {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(15, 23, 42, 0.8);
+            border-color: #0ea5e9;
+            transform: translateX(5px);
+        }
+
+        .code-block {
+            background: #1e293b;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            background: transparent !important;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            border-left: 4px solid #10b981;
+        }
+
+        .answer-section.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .answer-section h3 {
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .correct-answer {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .explanation {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .explanation p {
+            margin-bottom: 1rem;
+        }
+
+        .explanation ul, .explanation ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .explanation li {
+            margin-bottom: 0.5rem;
+        }
+
+        .explanation strong {
+            color: #0ea5e9;
+        }
+
+        .citation {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.3rem;
+        }
+
+        .citation-label {
+            color: #f59e0b;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .note {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid #8b5cf6;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.3rem;
+        }
+
+        .note-label {
+            color: #8b5cf6;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .question-block {
+                padding: 1.5rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 11: ADT - Stacks & Queues</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html" class="active">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>📝 Unit 11 Assessment Quiz</h1>
+            <p>Test your understanding of Stacks and Queues</p>
+        </div>
+
+        <div class="quiz-intro">
+            <h2>Quiz Information</h2>
+            <ul>
+                <li><strong>Total Questions:</strong> 25 questions</li>
+                <li><strong>Question Types:</strong> Multiple choice, True/False, Code tracing, Implementation tasks</li>
+                <li><strong>Format:</strong> Modeled after COS 110 EO1 & EO2 examination papers</li>
+                <li><strong>Difficulty:</strong> Assessment-level (exam preparation)</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 1: CONCEPTUAL UNDERSTANDING -->
+
+        <!-- Question 1 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 1</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                Which of the following best describes the LIFO (Last In First Out) principle?
+            </div>
+            <div class="options">
+                <div class="option">a) The first element added is the first one removed</div>
+                <div class="option">b) The last element added is the first one removed</div>
+                <div class="option">c) Elements are removed in random order</div>
+                <div class="option">d) Elements can be removed from any position</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q1')">Show Answer</button>
+            <div class="answer-section" id="q1">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) The last element added is the first one removed</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>LIFO (Last In First Out) means that the most recently added element is the first one to be removed. This is the fundamental principle of a <strong>stack</strong>.</p>
+                    <p>Think of a stack of plates: the last plate you put on top is the first one you take off.</p>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> This describes FIFO (First In First Out), which is the principle for queues</li>
+                        <li><strong>c)</strong> Random order removal is not a standard ADT principle</li>
+                        <li><strong>d)</strong> Arbitrary position removal would be more like an array or list, not a stack</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 2</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                In a queue implementation, what happens when you try to enqueue an element into a full array-based queue?
+            </div>
+            <div class="options">
+                <div class="option">a) The oldest element is automatically removed</div>
+                <div class="option">b) An overflow error/exception should occur</div>
+                <div class="option">c) The new element replaces the front element</div>
+                <div class="option">d) The queue automatically resizes</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q2')">Show Answer</button>
+            <div class="answer-section" id="q2">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) An overflow error/exception should occur</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>When using a fixed-size array to implement a queue, attempting to enqueue when the queue is full should result in an <strong>overflow error</strong> or throw an exception.</p>
+                    <p>This is a safety mechanism to prevent writing beyond the array bounds, which would cause undefined behavior or memory corruption.</p>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> Automatically removing elements would violate queue semantics - the user should explicitly dequeue</li>
+                        <li><strong>c)</strong> Replacing elements would lose data without the user's knowledge</li>
+                        <li><strong>d)</strong> In a basic array implementation, automatic resizing is not standard behavior (though dynamic arrays could do this)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 3</span>
+                <span class="question-marks">1 mark</span>
+            </div>
+            <div class="question-text">
+                True or False: In a circular queue, when the rear pointer reaches the end of the array, it wraps around to the beginning.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q3')">Show Answer</button>
+            <div class="answer-section" id="q3">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>True</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This statement is <strong>true</strong>. A circular queue uses modulo arithmetic to wrap the rear (and front) pointers around to the beginning of the array when they reach the end.</p>
+                    <p>This is typically implemented using: <code>rear = (rear + 1) % capacity</code></p>
+                    <p>This wrapping behavior allows the queue to reuse empty spaces at the beginning of the array after elements have been dequeued.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 4</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                What is the time complexity of the <code>push()</code> operation for a linked-list-based stack implementation?
+            </div>
+            <div class="options">
+                <div class="option">a) O(n) - linear time</div>
+                <div class="option">b) O(log n) - logarithmic time</div>
+                <div class="option">c) O(1) - constant time</div>
+                <div class="option">d) O(n²) - quadratic time</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q4')">Show Answer</button>
+            <div class="answer-section" id="q4">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>c) O(1) - constant time</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Pushing onto a linked-list-based stack is an <strong>O(1)</strong> operation because:</p>
+                    <ol>
+                        <li>Create a new node (constant time)</li>
+                        <li>Set the new node's next pointer to the current top (constant time)</li>
+                        <li>Update the top pointer to the new node (constant time)</li>
+                    </ol>
+                    <p>The number of operations does not depend on the size of the stack - it's always the same 3 steps, regardless of whether the stack has 5 elements or 5 million elements.</p>
+                    <p>This is one of the advantages of linked-list implementations: both push and pop are O(1), and there's no overflow issue (only limited by available memory).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 5</span>
+                <span class="question-marks">1 mark</span>
+            </div>
+            <div class="question-text">
+                True or False: You can implement a stack using queues, and you can implement a queue using stacks.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q5')">Show Answer</button>
+            <div class="answer-section" id="q5">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>True</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This statement is <strong>true</strong>. You can build:</p>
+                    <ul>
+                        <li><strong>A stack using two queues:</strong> Move elements between queues to reverse the order for LIFO behavior</li>
+                        <li><strong>A queue using two stacks:</strong> Use one stack for adding elements, another for removing them</li>
+                    </ul>
+                    <p>But these aren't practical - some operations become O(n) instead of O(1). It's mainly a programming exercise to show these structures can simulate each other.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: CODE READING & TRACING -->
+
+        <!-- Question 6 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 6</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                Given the following stack operations, what is the final state of the stack? Show the stack from bottom to top.
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">Stack s;
+s.push(5);
+s.push(10);
+s.push(15);
+s.pop();
+s.push(20);
+s.push(25);
+s.pop();
+s.push(30);</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q6')">Show Answer</button>
+            <div class="answer-section" id="q6">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>Stack (bottom to top): 5, 10, 20, 30</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Step-by-step trace:</strong></p>
+                    <ol>
+                        <li><code>s.push(5)</code> → Stack: [5]</li>
+                        <li><code>s.push(10)</code> → Stack: [5, 10]</li>
+                        <li><code>s.push(15)</code> → Stack: [5, 10, 15]</li>
+                        <li><code>s.pop()</code> → Removes 15 → Stack: [5, 10]</li>
+                        <li><code>s.push(20)</code> → Stack: [5, 10, 20]</li>
+                        <li><code>s.push(25)</code> → Stack: [5, 10, 20, 25]</li>
+                        <li><code>s.pop()</code> → Removes 25 → Stack: [5, 10, 20]</li>
+                        <li><code>s.push(30)</code> → Stack: [5, 10, 20, 30]</li>
+                    </ol>
+                    <p><strong>Final stack (bottom to top):</strong> 5, 10, 20, 30</p>
+                    <p>Remember: <code>pop()</code> always removes the <em>top</em> element (the most recently pushed element).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 7</span>
+                <span class="question-marks">4 marks</span>
+            </div>
+            <div class="question-text">
+                Given the following queue operations (assume a circular queue with capacity 5), trace the values of <code>front</code>, <code>rear</code>, and <code>size</code> after each operation.
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">Queue q(5);  // capacity = 5, front = 0, rear = -1, size = 0
+q.enqueue(10);
+q.enqueue(20);
+q.dequeue();
+q.enqueue(30);
+q.enqueue(40);
+q.enqueue(50);</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q7')">Show Answer</button>
+            <div class="answer-section" id="q7">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>After all operations: front = 1, rear = 4, size = 4</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Step-by-step trace:</strong></p>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                        <tr style="background: rgba(14, 165, 233, 0.1); border-bottom: 2px solid #0ea5e9;">
+                            <th style="padding: 0.5rem; text-align: left;">Operation</th>
+                            <th style="padding: 0.5rem; text-align: center;">front</th>
+                            <th style="padding: 0.5rem; text-align: center;">rear</th>
+                            <th style="padding: 0.5rem; text-align: center;">size</th>
+                            <th style="padding: 0.5rem; text-align: left;">Queue contents</th>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">Initial</td>
+                            <td style="padding: 0.5rem; text-align: center;">0</td>
+                            <td style="padding: 0.5rem; text-align: center;">-1</td>
+                            <td style="padding: 0.5rem; text-align: center;">0</td>
+                            <td style="padding: 0.5rem;">[ _, _, _, _, _ ]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">enqueue(10)</td>
+                            <td style="padding: 0.5rem; text-align: center;">0</td>
+                            <td style="padding: 0.5rem; text-align: center;">0</td>
+                            <td style="padding: 0.5rem; text-align: center;">1</td>
+                            <td style="padding: 0.5rem;">[10, _, _, _, _ ]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">enqueue(20)</td>
+                            <td style="padding: 0.5rem; text-align: center;">0</td>
+                            <td style="padding: 0.5rem; text-align: center;">1</td>
+                            <td style="padding: 0.5rem; text-align: center;">2</td>
+                            <td style="padding: 0.5rem;">[10, 20, _, _, _ ]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">dequeue()</td>
+                            <td style="padding: 0.5rem; text-align: center;">1</td>
+                            <td style="padding: 0.5rem; text-align: center;">1</td>
+                            <td style="padding: 0.5rem; text-align: center;">1</td>
+                            <td style="padding: 0.5rem;">[ _, 20, _, _, _ ]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">enqueue(30)</td>
+                            <td style="padding: 0.5rem; text-align: center;">1</td>
+                            <td style="padding: 0.5rem; text-align: center;">2</td>
+                            <td style="padding: 0.5rem; text-align: center;">2</td>
+                            <td style="padding: 0.5rem;">[ _, 20, 30, _, _ ]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">enqueue(40)</td>
+                            <td style="padding: 0.5rem; text-align: center;">1</td>
+                            <td style="padding: 0.5rem; text-align: center;">3</td>
+                            <td style="padding: 0.5rem; text-align: center;">3</td>
+                            <td style="padding: 0.5rem;">[ _, 20, 30, 40, _ ]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">enqueue(50)</td>
+                            <td style="padding: 0.5rem; text-align: center;">1</td>
+                            <td style="padding: 0.5rem; text-align: center;">4</td>
+                            <td style="padding: 0.5rem; text-align: center;">4</td>
+                            <td style="padding: 0.5rem;">[ _, 20, 30, 40, 50 ]</td>
+                        </tr>
+                    </table>
+                    <p><strong>Key formulas for circular queue:</strong></p>
+                    <ul>
+                        <li><strong>Enqueue:</strong> <code>rear = (rear + 1) % capacity</code></li>
+                        <li><strong>Dequeue:</strong> <code>front = (front + 1) % capacity</code></li>
+                    </ul>
+                    <p>Notice how after dequeue, front moved from 0 to 1, leaving index 0 empty but potentially reusable if the queue wraps around.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 8 - PAST PAPER QUESTION -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 8</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="citation">
+                <div class="citation-label">📄 ADAPTED FROM: COS 110 EO3 2018</div>
+            </div>
+            <div class="question-text">
+                Consider the following array-based stack implementation:
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">class Stack {
+private:
+    int* arr;
+    int top;
+    int capacity;
+public:
+    Stack(int size) {
+        arr = new int[size];
+        capacity = size;
+        top = -1;
+    }
+};</code></pre>
+            </div>
+            <div class="question-text">
+                What is the purpose of initializing <code>top</code> to -1?
+            </div>
+            <div class="options">
+                <div class="option">a) To indicate the stack is empty</div>
+                <div class="option">b) To reserve the first array position</div>
+                <div class="option">c) To prevent negative indices</div>
+                <div class="option">d) To optimize memory usage</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q8')">Show Answer</button>
+            <div class="answer-section" id="q8">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>a) To indicate the stack is empty</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Initializing <code>top</code> to -1 serves as a <strong>sentinel value</strong> indicating that the stack is empty.</p>
+                    <p><strong>How it works:</strong></p>
+                    <ul>
+                        <li>When the stack is empty, <code>top = -1</code> (points to "before" the first element)</li>
+                        <li>When we push the first element, we increment: <code>top = 0</code>, then store at <code>arr[0]</code></li>
+                        <li>To check if empty: <code>return top == -1;</code></li>
+                        <li>To check if full: <code>return top == capacity - 1;</code></li>
+                    </ul>
+                    <p><strong>Alternative design:</strong> Some implementations start <code>top = 0</code> and use a separate <code>size</code> variable, but the -1 approach is simpler and more common.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 9</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                What is the output of the following code?
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">Stack s;
+s.push(1);
+s.push(2);
+s.push(3);
+cout << s.pop() << " ";
+cout << s.peek() << " ";
+s.push(4);
+cout << s.pop() << endl;</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q9')">Show Answer</button>
+            <div class="answer-section" id="q9">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>3 2 4</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Step-by-step execution:</strong></p>
+                    <ol>
+                        <li><code>s.push(1)</code> → Stack: [1]</li>
+                        <li><code>s.push(2)</code> → Stack: [1, 2]</li>
+                        <li><code>s.push(3)</code> → Stack: [1, 2, 3]</li>
+                        <li><code>s.pop()</code> → Returns 3, removes it. Stack: [1, 2]. Prints "3 "</li>
+                        <li><code>s.peek()</code> → Returns 2, does NOT remove it. Stack still: [1, 2]. Prints "2 "</li>
+                        <li><code>s.push(4)</code> → Stack: [1, 2, 4]</li>
+                        <li><code>s.pop()</code> → Returns 4, removes it. Stack: [1, 2]. Prints "4"</li>
+                    </ol>
+                    <p><strong>Key difference:</strong></p>
+                    <ul>
+                        <li><code>pop()</code> removes and returns the top element</li>
+                        <li><code>peek()</code> (also called <code>top()</code>) returns the top element WITHOUT removing it</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 10</span>
+                <span class="question-marks">4 marks</span>
+            </div>
+            <div class="question-text">
+                Trace through the following code and determine what gets printed:
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">Queue q;
+q.enqueue(5);
+q.enqueue(10);
+q.enqueue(15);
+cout << q.dequeue() << " ";
+q.enqueue(20);
+cout << q.dequeue() << " ";
+cout << q.dequeue() << " ";
+q.enqueue(25);
+cout << q.dequeue() << endl;</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q10')">Show Answer</button>
+            <div class="answer-section" id="q10">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>5 10 15 20</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Step-by-step trace:</strong></p>
+                    <ol>
+                        <li><code>q.enqueue(5)</code> → Queue: [5]</li>
+                        <li><code>q.enqueue(10)</code> → Queue: [5, 10]</li>
+                        <li><code>q.enqueue(15)</code> → Queue: [5, 10, 15]</li>
+                        <li><code>q.dequeue()</code> → Removes front element (5). Queue: [10, 15]. Prints "5 "</li>
+                        <li><code>q.enqueue(20)</code> → Queue: [10, 15, 20]</li>
+                        <li><code>q.dequeue()</code> → Removes front (10). Queue: [15, 20]. Prints "10 "</li>
+                        <li><code>q.dequeue()</code> → Removes front (15). Queue: [20]. Prints "15 "</li>
+                        <li><code>q.enqueue(25)</code> → Queue: [20, 25]</li>
+                        <li><code>q.dequeue()</code> → Removes front (20). Queue: [25]. Prints "20"</li>
+                    </ol>
+                    <p><strong>Output:</strong> 5 10 15 20</p>
+                    <p><strong>Remember:</strong> Queues follow FIFO - the first element enqueued (5) is the first one dequeued.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: IMPLEMENTATION & DEBUGGING -->
+
+        <!-- Question 11 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 11</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                Identify and fix the bug in this stack <code>push()</code> implementation:
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">void Stack::push(int value) {
+    if (top == capacity) {
+        cout << "Stack overflow!" << endl;
+        return;
+    }
+    arr[top] = value;
+    top++;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q11')">Show Answer</button>
+            <div class="answer-section" id="q11">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>Bug: Should check <code>top == capacity - 1</code>, not <code>top == capacity</code></strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>The Problem:</strong></p>
+                    <p>The overflow check is wrong. When <code>top == capacity</code>, we've already gone out of bounds! Array indices range from 0 to <code>capacity - 1</code>.</p>
+                    <p><strong>Why this is dangerous:</strong></p>
+                    <ul>
+                        <li>If <code>capacity = 5</code>, valid indices are 0, 1, 2, 3, 4</li>
+                        <li>When <code>top = 4</code> and we push, we should check if full BEFORE incrementing</li>
+                        <li>If we check <code>top == capacity</code> (i.e., <code>top == 5</code>), we've already written to <code>arr[4]</code> and incremented to 5</li>
+                        <li>Next push would write to <code>arr[5]</code>, which is out of bounds!</li>
+                    </ul>
+                    <p><strong>Corrected version:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">void Stack::push(int value) {
+    if (top == capacity - 1) {  // Fixed: check against capacity - 1
+        cout << "Stack overflow!" << endl;
+        return;
+    }
+    top++;           // Increment FIRST
+    arr[top] = value;  // Then store
+    // OR equivalently:
+    // arr[++top] = value;
+}</code></pre>
+                    </div>
+                    <p><strong>Note:</strong> There's also a second issue - the order. If <code>top</code> starts at -1, we should increment BEFORE storing, not after.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 12</span>
+                <span class="question-marks">4 marks</span>
+            </div>
+            <div class="question-text">
+                Complete the following <code>isEmpty()</code> and <code>isFull()</code> functions for a circular queue:
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">class Queue {
+private:
+    int* arr;
+    int front, rear, size, capacity;
+public:
+    bool isEmpty() {
+        // Your code here
+    }
+
+    bool isFull() {
+        // Your code here
+    }
+};</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q12')">Show Answer</button>
+            <div class="answer-section" id="q12">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <pre><code class="language-cpp">bool isEmpty() {
+    return size == 0;
+}
+
+bool isFull() {
+    return size == capacity;
+}</code></pre>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>When you have a <code>size</code> variable tracking the number of elements, checking empty/full is straightforward:</p>
+                    <ul>
+                        <li><strong>Empty:</strong> <code>size == 0</code> means no elements in the queue</li>
+                        <li><strong>Full:</strong> <code>size == capacity</code> means all spaces are occupied</li>
+                    </ul>
+                    <p><strong>Alternative without size variable:</strong></p>
+                    <p>If you don't track <code>size</code>, it's trickier:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">bool isEmpty() {
+    return front == -1;  // Convention: front = -1 when empty
+}
+
+bool isFull() {
+    return (rear + 1) % capacity == front;
+}</code></pre>
+                    </div>
+                    <p>However, this requires sacrificing one array slot to distinguish between full and empty states, or using an additional flag. The <code>size</code>-based approach is cleaner.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 13 - MEMORY MANAGEMENT -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 13</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                What is wrong with this linked-list stack destructor?
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">Stack::~Stack() {
+    delete top;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q13')">Show Answer</button>
+            <div class="answer-section" id="q13">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>Bug: Only deletes the top node, causing memory leak for all other nodes</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>The Problem:</strong></p>
+                    <p>This destructor only deletes the <code>top</code> node, leaving all other nodes in the linked list still allocated in memory. This causes a <strong>memory leak</strong>.</p>
+                    <p><strong>Why this happens:</strong></p>
+                    <p>In a linked list, each node points to the next. Deleting only the top node doesn't automatically delete the rest - you need to traverse and delete each node.</p>
+                    <p><strong>Corrected version:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">Stack::~Stack() {
+    while (top != NULL) {
+        Node* temp = top;
+        top = top->next;
+        delete temp;
+    }
+}
+
+// Alternative version:
+Stack::~Stack() {
+    while (!isEmpty()) {
+        pop();  // If pop() already handles deletion
+    }
+}</code></pre>
+                    </div>
+                    <p><strong>Key principle:</strong> In C++, you are responsible for deleting ALL dynamically allocated memory. If you allocated N nodes with <code>new</code>, you must <code>delete</code> each of those N nodes.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 14</span>
+                <span class="question-marks">5 marks</span>
+            </div>
+            <div class="question-text">
+                Implement the <code>pop()</code> function for a linked-list-based stack. The function should return the popped value and handle the empty stack case by throwing an exception.
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">class Stack {
+private:
+    struct Node {
+        int data;
+        Node* next;
+    };
+    Node* top;
+public:
+    int pop() {
+        // Your implementation here
+    }
+};</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q14')">Show Answer</button>
+            <div class="answer-section" id="q14">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <pre><code class="language-cpp">int pop() {
+    if (top == NULL) {
+        throw runtime_error("Stack underflow: cannot pop from empty stack");
+    }
+
+    Node* temp = top;
+    int value = top->data;
+    top = top->next;
+    delete temp;
+
+    return value;
+}</code></pre>
+                </div>
+                <div class="explanation">
+                    <p><strong>Step-by-step breakdown:</strong></p>
+                    <ol>
+                        <li><strong>Check if empty:</strong> <code>if (top == NULL)</code> - throw exception if trying to pop from empty stack</li>
+                        <li><strong>Save reference to current top:</strong> <code>Node* temp = top;</code> - we need this to delete it later</li>
+                        <li><strong>Save the value:</strong> <code>int value = top->data;</code> - store before we lose access</li>
+                        <li><strong>Move top pointer:</strong> <code>top = top->next;</code> - advance to next node (or NULL if this was last node)</li>
+                        <li><strong>Free memory:</strong> <code>delete temp;</code> - clean up the old top node</li>
+                        <li><strong>Return the value:</strong> <code>return value;</code></li>
+                    </ol>
+                    <p><strong>Common mistakes to avoid:</strong></p>
+                    <ul>
+                        <li>❌ Deleting before saving the value: <code>delete top; return top->data;</code> (accessing deleted memory!)</li>
+                        <li>❌ Not checking for empty stack (causes NULL pointer dereference)</li>
+                        <li>❌ Forgetting to <code>delete temp;</code> (memory leak)</li>
+                        <li>❌ Not updating <code>top</code> pointer (loses access to rest of stack)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: APPLICATION PROBLEMS -->
+
+        <!-- Question 15 - PERSONALIZED -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 15</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                Swift is playing Clash Royale and needs to track his elixir expenditure during a match. Elixir regenerates continuously, but Swift wants to know the order in which he spent elixir on cards to analyze his strategy. Which ADT is most appropriate?
+            </div>
+            <div class="options">
+                <div class="option">a) Stack - to review plays in reverse chronological order</div>
+                <div class="option">b) Queue - to review plays in chronological order</div>
+                <div class="option">c) Array - for random access to any play</div>
+                <div class="option">d) Linked list - for flexible insertion/deletion</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q15')">Show Answer</button>
+            <div class="answer-section" id="q15">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) Queue - to review plays in chronological order</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Since Swift wants to analyze plays <em>in the order they happened</em>, a <strong>queue</strong> (FIFO) is most appropriate. As he plays cards, they're enqueued. When reviewing, he dequeues them in the same order they were played.</p>
+                    <p><strong>Why this makes sense:</strong></p>
+                    <ul>
+                        <li>First card played → First one reviewed (FIFO)</li>
+                        <li>Preserves chronological order for strategy analysis</li>
+                        <li>Simple enqueue/dequeue operations</li>
+                    </ul>
+                    <p><strong>Why other options are less suitable:</strong></p>
+                    <ul>
+                        <li><strong>a) Stack:</strong> Would give reverse chronological order (last play first), which is less intuitive for strategy review</li>
+                        <li><strong>c) Array:</strong> Overkill - we don't need random access, just sequential review</li>
+                        <li><strong>d) Linked list:</strong> More complex than necessary when queue operations suffice</li>
+                    </ul>
+                    <p><strong>Clash Royale context:</strong> In the game, you have 10 elixir max, cards cost 1-9 elixir, and elixir regenerates at ~1 per second. Tracking card plays helps you see if you're wasting elixir by staying at max capacity too long (called "elixir leak").</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 16 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 16</span>
+                <span class="question-marks">4 marks</span>
+            </div>
+            <div class="question-text">
+                You're implementing a "browser back button" feature. When a user visits a new page, it's added to history. Clicking "back" should return to the previous page. Which ADT and which operation corresponds to "back"?
+            </div>
+            <div class="options">
+                <div class="option">a) Queue - dequeue</div>
+                <div class="option">b) Stack - pop</div>
+                <div class="option">c) Queue - enqueue</div>
+                <div class="option">d) Stack - push</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q16')">Show Answer</button>
+            <div class="answer-section" id="q16">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) Stack - pop</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Browser history is a classic stack application. The most recently visited page is the first one you return to when clicking "back" - this is LIFO behavior.</p>
+                    <p><strong>How it works:</strong></p>
+                    <ul>
+                        <li><strong>Visit new page:</strong> <code>push(page)</code> - add to history stack</li>
+                        <li><strong>Click "back":</strong> <code>pop()</code> - remove current page, return to previous</li>
+                        <li><strong>Current page:</strong> <code>peek()</code> - view without removing</li>
+                    </ul>
+                    <p><strong>Example trace:</strong></p>
+                    <ol>
+                        <li>Visit Google → Stack: [Google]</li>
+                        <li>Visit YouTube → Stack: [Google, YouTube]</li>
+                        <li>Visit Reddit → Stack: [Google, YouTube, Reddit]</li>
+                        <li>Click Back → Pop Reddit → Stack: [Google, YouTube] (now on YouTube)</li>
+                        <li>Click Back → Pop YouTube → Stack: [Google] (now on Google)</li>
+                    </ol>
+                    <p><strong>Real implementation note:</strong> Browsers often use TWO stacks - one for back history, one for forward history. When you go back, the current page is pushed onto the "forward" stack.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 17</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                A printer queue manages print jobs. Three jobs arrive in order: Job A (10 pages), Job B (2 pages), Job C (50 pages). If printed in FIFO order, which job prints second?
+            </div>
+            <div class="options">
+                <div class="option">a) Job A</div>
+                <div class="option">b) Job B</div>
+                <div class="option">c) Job C</div>
+                <div class="option">d) Depends on priority</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q17')">Show Answer</button>
+            <div class="answer-section" id="q17">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) Job B</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>In a FIFO (First In First Out) queue, jobs are processed in the order they arrive:</p>
+                    <ol>
+                        <li><strong>First:</strong> Job A arrives → enqueued first → prints first</li>
+                        <li><strong>Second:</strong> Job B arrives → enqueued second → prints second</li>
+                        <li><strong>Third:</strong> Job C arrives → enqueued third → prints third</li>
+                    </ol>
+                    <p>The number of pages is irrelevant in a basic FIFO queue - only the arrival order matters.</p>
+                    <p><strong>Why option (d) is wrong:</strong></p>
+                    <p>The question specifies "FIFO order", which means no priority consideration. A <strong>priority queue</strong> would be different - it might print Job B first (fewest pages) if that's the priority metric, but that's not what was asked.</p>
+                    <p><strong>Real-world note:</strong> Many modern printer systems DO use priority queues or allow job reordering, but the basic model is FIFO.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 18 - PAST PAPER INSPIRED -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 18</span>
+                <span class="question-marks">5 marks</span>
+            </div>
+            <div class="citation">
+                <div class="citation-label">📄 INSPIRED BY: COS 110 EO2 2023</div>
+            </div>
+            <div class="question-text">
+                Write a function that uses a stack to reverse a string. The function signature is:
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">string reverseString(string str);</code></pre>
+            </div>
+            <div class="question-text">
+                For example: <code>reverseString("hello")</code> should return <code>"olleh"</code>.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q18')">Show Answer</button>
+            <div class="answer-section" id="q18">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <pre><code class="language-cpp">string reverseString(string str) {
+    Stack s;
+
+    // Push all characters onto stack
+    for (int i = 0; i < str.length(); i++) {
+        s.push(str[i]);
+    }
+
+    // Pop all characters and build reversed string
+    string reversed = "";
+    while (!s.isEmpty()) {
+        reversed += s.pop();
+    }
+
+    return reversed;
+}</code></pre>
+                </div>
+                <div class="explanation">
+                    <p><strong>How it works:</strong></p>
+                    <p><strong>Step 1 - Push all characters:</strong></p>
+                    <p>For <code>"hello"</code>:</p>
+                    <ul>
+                        <li>Push 'h' → Stack: [h]</li>
+                        <li>Push 'e' → Stack: [h, e]</li>
+                        <li>Push 'l' → Stack: [h, e, l]</li>
+                        <li>Push 'l' → Stack: [h, e, l, l]</li>
+                        <li>Push 'o' → Stack: [h, e, l, l, o]</li>
+                    </ul>
+                    <p><strong>Step 2 - Pop all characters:</strong></p>
+                    <p>Because stacks are LIFO, popping gives us characters in reverse order:</p>
+                    <ul>
+                        <li>Pop → 'o' → reversed = "o"</li>
+                        <li>Pop → 'l' → reversed = "ol"</li>
+                        <li>Pop → 'l' → reversed = "oll"</li>
+                        <li>Pop → 'e' → reversed = "olle"</li>
+                        <li>Pop → 'h' → reversed = "olleh"</li>
+                    </ul>
+                    <p><strong>Why stacks are perfect for this:</strong></p>
+                    <p>The LIFO property automatically reverses the order - the last character pushed (end of string) becomes the first character popped (start of reversed string).</p>
+                    <p><strong>Time complexity:</strong> O(n) where n is string length - we process each character exactly twice (once to push, once to pop).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 19</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                Which of the following applications is LEAST suitable for a stack?
+            </div>
+            <div class="options">
+                <div class="option">a) Function call management (call stack)</div>
+                <div class="option">b) Undo/Redo operations in text editors</div>
+                <div class="option">c) First-come-first-served customer service</div>
+                <div class="option">d) Expression evaluation (postfix notation)</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q19')">Show Answer</button>
+            <div class="answer-section" id="q19">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>c) First-come-first-served customer service</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>First-come-first-served requires FIFO (First In First Out) behavior - exactly what a <strong>queue</strong> provides, not a stack.</p>
+                    <p><strong>Why the others ARE suitable for stacks:</strong></p>
+                    <ul>
+                        <li><strong>a) Function call management:</strong> When function A calls B calls C, C must finish first (return), then B, then A. This is LIFO - perfect for stacks. This is literally called the "call stack"!</li>
+                        <li><strong>b) Undo/Redo:</strong> The most recent action is the first one to undo. Perfect LIFO behavior.</li>
+                        <li><strong>d) Expression evaluation:</strong> Postfix evaluation uses a stack to track operands. E.g., <code>3 4 + 5 *</code> → push 3, push 4, pop both and push 7, push 5, pop both and push 35.</li>
+                    </ul>
+                    <p><strong>Why customer service needs a queue:</strong></p>
+                    <p>If you use a stack for customer service, the most recent customer would be served first - meaning early arrivals wait forever while new arrivals keep "cutting in line". That's unfair and not FCFS!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 20</span>
+                <span class="question-marks">4 marks</span>
+            </div>
+            <div class="question-text">
+                A function checks if an HTML string has balanced tags using a stack. Which opening tag should the stack contain when we encounter <code>&lt;/div&gt;</code> for the tags to be balanced?
+            </div>
+            <div class="code-block">
+                <pre><code class="language-markup">&lt;html&gt;
+  &lt;body&gt;
+    &lt;div&gt;
+      &lt;p&gt;Hello&lt;/p&gt;
+    &lt;/div&gt;  ← We're checking this closing tag
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+            <div class="options">
+                <div class="option">a) &lt;html&gt;</div>
+                <div class="option">b) &lt;body&gt;</div>
+                <div class="option">c) &lt;div&gt;</div>
+                <div class="option">d) &lt;p&gt;</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q20')">Show Answer</button>
+            <div class="answer-section" id="q20">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>c) &lt;div&gt;</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>How the algorithm works:</strong></p>
+                    <ol>
+                        <li>When you encounter an opening tag, <strong>push it onto the stack</strong></li>
+                        <li>When you encounter a closing tag, <strong>pop the stack</strong> and check if they match</li>
+                    </ol>
+                    <p><strong>Trace through the HTML:</strong></p>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                        <tr style="background: rgba(14, 165, 233, 0.1); border-bottom: 2px solid #0ea5e9;">
+                            <th style="padding: 0.5rem; text-align: left;">Tag encountered</th>
+                            <th style="padding: 0.5rem; text-align: left;">Action</th>
+                            <th style="padding: 0.5rem; text-align: left;">Stack state (top on right)</th>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">&lt;html&gt;</td>
+                            <td style="padding: 0.5rem;">Push</td>
+                            <td style="padding: 0.5rem;">[&lt;html&gt;]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">&lt;body&gt;</td>
+                            <td style="padding: 0.5rem;">Push</td>
+                            <td style="padding: 0.5rem;">[&lt;html&gt;, &lt;body&gt;]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">&lt;div&gt;</td>
+                            <td style="padding: 0.5rem;">Push</td>
+                            <td style="padding: 0.5rem;">[&lt;html&gt;, &lt;body&gt;, &lt;div&gt;]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">&lt;p&gt;</td>
+                            <td style="padding: 0.5rem;">Push</td>
+                            <td style="padding: 0.5rem;">[&lt;html&gt;, &lt;body&gt;, &lt;div&gt;, &lt;p&gt;]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">&lt;/p&gt;</td>
+                            <td style="padding: 0.5rem;">Pop &lt;p&gt;, matches ✓</td>
+                            <td style="padding: 0.5rem;">[&lt;html&gt;, &lt;body&gt;, &lt;div&gt;]</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3); background: rgba(16, 185, 129, 0.1);">
+                            <td style="padding: 0.5rem;"><strong>&lt;/div&gt;</strong></td>
+                            <td style="padding: 0.5rem;"><strong>Should pop &lt;div&gt;</strong></td>
+                            <td style="padding: 0.5rem;">[&lt;html&gt;, &lt;body&gt;, <strong>&lt;div&gt;</strong>]</td>
+                        </tr>
+                    </table>
+                    <p>When we encounter <code>&lt;/div&gt;</code>, the top of the stack should be <code>&lt;div&gt;</code>. If it matches, we pop it and continue. If it doesn't match (e.g., if the top was <code>&lt;p&gt;</code>), the tags are unbalanced.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: ADVANCED CONCEPTS -->
+
+        <!-- Question 21 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 21</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                In a circular queue with capacity 8, if <code>front = 6</code> and <code>rear = 2</code>, how many elements are in the queue?
+            </div>
+            <div class="options">
+                <div class="option">a) 4 elements</div>
+                <div class="option">b) 5 elements</div>
+                <div class="option">c) Impossible to determine without size variable</div>
+                <div class="option">d) The queue is empty</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q21')">Show Answer</button>
+            <div class="answer-section" id="q21">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>c) Impossible to determine without size variable</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This is a tricky question that highlights a fundamental challenge with circular queues!</p>
+                    <p><strong>The problem:</strong></p>
+                    <p>With only <code>front</code> and <code>rear</code> pointers, we can't distinguish between:</p>
+                    <ul>
+                        <li><strong>Empty queue:</strong> <code>front = 6, rear = 2</code> (never added any elements)</li>
+                        <li><strong>Wrapped queue:</strong> <code>front = 6, rear = 2</code> (elements at indices 6, 7, 0, 1, 2)</li>
+                    </ul>
+                    <p>Both scenarios produce the same pointer values!</p>
+                    <p><strong>Solutions to this problem:</strong></p>
+                    <ol>
+                        <li><strong>Track size separately</strong> (most common):
+                            <div class="code-block">
+                                <pre><code class="language-cpp">int size;  // Explicitly count elements
+bool isEmpty() { return size == 0; }
+bool isFull() { return size == capacity; }</code></pre>
+                            </div>
+                        </li>
+                        <li><strong>Sacrifice one slot</strong>: Keep one array position always empty. Full when <code>(rear + 1) % capacity == front</code></li>
+                        <li><strong>Use a flag</strong>: Add a boolean <code>isEmpty</code> flag</li>
+                    </ol>
+                    <p><strong>If we HAD a size variable:</strong> We could calculate: <code>size = (rear - front + 1 + capacity) % capacity</code>, but without it, we simply cannot know.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 22 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 22</span>
+                <span class="question-marks">4 marks</span>
+            </div>
+            <div class="question-text">
+                Compare array-based and linked-list-based stack implementations. Which statement is TRUE?
+            </div>
+            <div class="options">
+                <div class="option">a) Array-based has better memory efficiency for small stacks</div>
+                <div class="option">b) Linked-list-based has O(1) push/pop, array-based has O(n)</div>
+                <div class="option">c) Array-based can grow indefinitely, linked-list has fixed size</div>
+                <div class="option">d) Both have identical time and space complexity</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q22')">Show Answer</button>
+            <div class="answer-section" id="q22">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>a) Array-based has better memory efficiency for small stacks</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>For small stacks, array-based implementations use less memory because:</p>
+                    <ul>
+                        <li><strong>Array storage:</strong> Only stores the data values + a few integers (top, capacity)</li>
+                        <li><strong>Linked list storage:</strong> Stores data values + a pointer for each node (8 bytes on 64-bit systems) + potentially memory fragmentation overhead</li>
+                    </ul>
+                    <p><strong>Example:</strong> For a stack of 10 integers:</p>
+                    <ul>
+                        <li><strong>Array:</strong> 10 × 4 bytes (ints) + ~8 bytes (metadata) = ~48 bytes</li>
+                        <li><strong>Linked list:</strong> 10 × (4 bytes data + 8 bytes pointer + malloc overhead) ≈ 120+ bytes</li>
+                    </ul>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>b)</strong> BOTH have O(1) push/pop when not resizing</li>
+                        <li><strong>c)</strong> It's the OPPOSITE - linked lists can grow indefinitely (limited by RAM), arrays have fixed size (or need expensive resizing)</li>
+                        <li><strong>d)</strong> They have different tradeoffs as explained above</li>
+                    </ul>
+                    <p><strong>Complete comparison table:</strong></p>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                        <tr style="background: rgba(14, 165, 233, 0.1); border-bottom: 2px solid #0ea5e9;">
+                            <th style="padding: 0.5rem;">Aspect</th>
+                            <th style="padding: 0.5rem;">Array-based</th>
+                            <th style="padding: 0.5rem;">Linked-list-based</th>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">Push/Pop time</td>
+                            <td style="padding: 0.5rem;">O(1)</td>
+                            <td style="padding: 0.5rem;">O(1)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">Memory per element</td>
+                            <td style="padding: 0.5rem;">Lower (just data)</td>
+                            <td style="padding: 0.5rem;">Higher (data + pointer)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">Size limit</td>
+                            <td style="padding: 0.5rem;">Fixed (overflow possible)</td>
+                            <td style="padding: 0.5rem;">Dynamic (limited by RAM)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">Cache performance</td>
+                            <td style="padding: 0.5rem;">Better (contiguous)</td>
+                            <td style="padding: 0.5rem;">Worse (scattered)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 23 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 23</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                What happens when you try to dequeue from an empty linked-list-based queue?
+            </div>
+            <div class="options">
+                <div class="option">a) Returns NULL</div>
+                <div class="option">b) Returns 0</div>
+                <div class="option">c) Should throw an exception or return error</div>
+                <div class="option">d) Automatically adds a default element first</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q23')">Show Answer</button>
+            <div class="answer-section" id="q23">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>c) Should throw an exception or return error</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Trying to dequeue from an empty queue is an <strong>underflow error</strong>. The function should:</p>
+                    <ul>
+                        <li>Throw an exception (best practice in modern C++)</li>
+                        <li>OR return an error code/sentinel value and handle it elsewhere</li>
+                        <li>OR print an error message and return a default value (less ideal)</li>
+                    </ul>
+                    <p><strong>Why this matters:</strong></p>
+                    <p>If <code>head == NULL</code> and you try to access <code>head->data</code>, your program will crash (segmentation fault). You MUST check if the queue is empty before accessing <code>head</code>.</p>
+                    <p><strong>Example implementation:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">int dequeue() {
+    if (head == NULL) {
+        throw runtime_error("Queue underflow");
+        // OR: return -1; with documented error handling
+    }
+
+    int value = head->data;
+    Node* temp = head;
+    head = head->next;
+    if (head == NULL) tail = NULL;  // Queue is now empty
+    delete temp;
+    return value;
+}</code></pre>
+                    </div>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a) & b):</strong> Returning NULL or 0 doesn't tell the caller whether the queue actually contained NULL/0 or was empty</li>
+                        <li><strong>d):</strong> Automatically adding elements would change program behavior unexpectedly</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 24 - PERSONALIZED -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 24</span>
+                <span class="question-marks">4 marks</span>
+            </div>
+            <div class="question-text">
+                Swift wants to build a "Recently Played Songs" feature for his Fally Ipupa playlist. The feature should:
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>Track the last 5 songs played</li>
+                    <li>Display them in order from most recent to oldest</li>
+                    <li>Remove the oldest when a 6th song plays</li>
+                </ul>
+                Which data structure and operation pattern is most suitable?
+            </div>
+            <div class="options">
+                <div class="option">a) Queue - enqueue new songs, dequeue when size > 5</div>
+                <div class="option">b) Stack - push new songs, pop the bottom when size > 5</div>
+                <div class="option">c) Circular buffer/queue - overwrite oldest entry when full</div>
+                <div class="option">d) Linked list - insert at head, delete from tail</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q24')">Show Answer</button>
+            <div class="answer-section" id="q24">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>c) Circular buffer/queue - overwrite oldest entry when full</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>A <strong>circular buffer</strong> (fixed-size circular queue) is ideal for this "sliding window" of recent items because:</p>
+                    <ul>
+                        <li><strong>Fixed size:</strong> Always holds exactly 5 items (or fewer if fewer than 5 songs played)</li>
+                        <li><strong>Automatic oldest removal:</strong> When you add the 6th song, it overwrites position of the oldest (1st) song</li>
+                        <li><strong>Efficient:</strong> O(1) to add new song, no manual deletion needed</li>
+                    </ul>
+                    <p><strong>How it works (capacity = 5):</strong></p>
+                    <ol>
+                        <li>Play "Eloko Oyo" → [Eloko Oyo]</li>
+                        <li>Play "Amore" → [Eloko Oyo, Amore]</li>
+                        <li>Play "Humanisme" → [Eloko Oyo, Amore, Humanisme]</li>
+                        <li>Play "Esengo" → [Eloko Oyo, Amore, Humanisme, Esengo]</li>
+                        <li>Play "Original" → [Eloko Oyo, Amore, Humanisme, Esengo, Original]</li>
+                        <li>Play "Joli Bebe" → <strong>[Amore, Humanisme, Esengo, Original, Joli Bebe]</strong> (Eloko Oyo replaced)</li>
+                    </ol>
+                    <p><strong>Why other options are less suitable:</strong></p>
+                    <ul>
+                        <li><strong>a) Regular queue:</strong> Would work but requires manual size checking and dequeue - more complex than circular buffer</li>
+                        <li><strong>b) Stack:</strong> Can't easily remove from bottom (stacks only support top operations)</li>
+                        <li><strong>d) Linked list:</strong> Would work but is overkill - circular array is simpler</li>
+                    </ul>
+                    <p><strong>Display order:</strong> Iterate from rear backwards to front to show most recent first.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 25 - COMPREHENSIVE -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 25</span>
+                <span class="question-marks">6 marks</span>
+            </div>
+            <div class="question-text">
+                You're implementing a two-ended queue (deque) that supports insertions and deletions at both ends. Which of the following is the BEST implementation choice and why?
+            </div>
+            <div class="options">
+                <div class="option">a) Array-based with two pointers (front and rear)</div>
+                <div class="option">b) Singly linked list</div>
+                <div class="option">c) Doubly linked list</div>
+                <div class="option">d) Two stacks</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q25')">Show Answer</button>
+            <div class="answer-section" id="q25">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>c) Doubly linked list</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>A <strong>doubly linked list</strong> is the best choice for a deque (double-ended queue) because it provides O(1) operations at both ends.</p>
+                    <p><strong>Operations needed for deque:</strong></p>
+                    <ul>
+                        <li><code>pushFront()</code> - add to front</li>
+                        <li><code>pushBack()</code> - add to rear</li>
+                        <li><code>popFront()</code> - remove from front</li>
+                        <li><code>popBack()</code> - remove from rear</li>
+                    </ul>
+                    <p><strong>Why doubly linked list is best:</strong></p>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                        <tr style="background: rgba(14, 165, 233, 0.1); border-bottom: 2px solid #0ea5e9;">
+                            <th style="padding: 0.5rem;">Operation</th>
+                            <th style="padding: 0.5rem;">Time Complexity</th>
+                            <th style="padding: 0.5rem;">How</th>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">pushFront()</td>
+                            <td style="padding: 0.5rem;">O(1)</td>
+                            <td style="padding: 0.5rem;">Insert at head</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">pushBack()</td>
+                            <td style="padding: 0.5rem;">O(1)</td>
+                            <td style="padding: 0.5rem;">Insert at tail</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">popFront()</td>
+                            <td style="padding: 0.5rem;">O(1)</td>
+                            <td style="padding: 0.5rem;">Remove head, update head pointer</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(100, 116, 139, 0.3);">
+                            <td style="padding: 0.5rem;">popBack()</td>
+                            <td style="padding: 0.5rem;">O(1)</td>
+                            <td style="padding: 0.5rem;">Remove tail, use prev pointer to update tail</td>
+                        </tr>
+                    </table>
+                    <p><strong>Why other options don't work as well:</strong></p>
+                    <ul>
+                        <li><strong>a) Array with two pointers:</strong> Works well for regular deque, BUT if not circular, adding/removing at front requires shifting all elements (O(n)). Circular array works but is more complex.</li>
+                        <li><strong>b) Singly linked list:</strong> <code>popBack()</code> requires O(n) traversal to find second-to-last node to update tail pointer. No <code>prev</code> pointer!</li>
+                        <li><strong>d) Two stacks:</strong> Can simulate a deque but operations become O(n) in worst case when transferring between stacks</li>
+                    </ul>
+                    <p><strong>The important part:</strong> The <code>prev</code> pointer in doubly linked lists lets you delete from the rear in O(1) time - singly linked lists can't do this because you need to find the second-to-last node.</p>
+                    <p><strong>Structure:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">struct Node {
+    int data;
+    Node* next;
+    Node* prev;  // Key for O(1) popBack
+};
+
+class Deque {
+    Node* head;
+    Node* tail;
+};</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const answerSection = document.getElementById(id);
+            if (answerSection.classList.contains('show')) {
+                answerSection.classList.remove('show');
+            } else {
+                answerSection.classList.add('show');
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="400" viewBox="0 0 900 400" role="img"><rect width="100%" height="100%" fill="#ffffff"/>
+<rect x="440" y="50" width="450" height="264" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="665.0" y="69" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Universe</text>
+<line x1="440" y1="78" x2="890" y2="78" stroke="#1f2933" stroke-width="1.6"/>
+<text x="448" y="96" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- numGalaxies: int</text>
+<text x="448" y="116" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- numStars: int</text>
+<text x="448" y="136" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- galaxies: Galaxy**</text>
+<text x="448" y="156" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- stars: Star**</text>
+<line x1="440" y1="166" x2="890" y2="166" stroke="#1f2933" stroke-width="1.6"/>
+<text x="448" y="184" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ Universe()</text>
+<text x="448" y="204" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ ~Universe()</text>
+<text x="448" y="224" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ operator=(const Universe&amp;): Universe&amp;</text>
+<text x="448" y="244" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ operator+=(Galaxy*): Universe&amp;</text>
+<text x="448" y="264" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ operator[](int): Galaxy*</text>
+<text x="448" y="284" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ updateStarsArray(): void</text>
+<text x="448" y="304" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ operator&lt;&lt;(ostream&amp;, const Universe&amp;): ostream&amp;</text>
+<path d="M20 40 H308 L320 52 V71 H20 Z" stroke="#1f2933" stroke-width="1.6" fill="#fffbe6"/>
+<path d="M308 40 V52 H320" stroke="#1f2933" stroke-width="1.6" fill="none"/>
+<text x="28" y="58" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Sizes of the respective arrays</text>
+<path d="M20 110 H308 L320 122 V160 H20 Z" stroke="#1f2933" stroke-width="1.6" fill="#fffbe6"/>
+<path d="M308 110 V122 H320" stroke="#1f2933" stroke-width="1.6" fill="none"/>
+<text x="28" y="128" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">1D dynamic array of</text>
+<text x="28" y="147" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">dynamic objects</text>
+<path d="M20 210 H308 L320 222 V260 H20 Z" stroke="#1f2933" stroke-width="1.6" fill="#fffbe6"/>
+<path d="M308 210 V222 H320" stroke="#1f2933" stroke-width="1.6" fill="none"/>
+<text x="28" y="228" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Returns a pointer to a Galaxy</text>
+<text x="28" y="247" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">object at the passed in index</text>
+<path d="M20 300 H308 L320 312 V350 H20 Z" stroke="#1f2933" stroke-width="1.6" fill="#fffbe6"/>
+<path d="M308 300 V312 H320" stroke="#1f2933" stroke-width="1.6" fill="none"/>
+<text x="28" y="318" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Pulls stars from galaxies and</text>
+<text x="28" y="337" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">populates the stars array</text>
+<path d="M320 55.5 H370 V96 H440" stroke="#1f2933" stroke-width="1.2" fill="none" stroke-dasharray="5 4"/>
+<path d="M320 55.5 H370 V116 H440" stroke="#1f2933" stroke-width="1.2" fill="none" stroke-dasharray="5 4"/>
+<path d="M320 135.0 H410 V136 H440" stroke="#1f2933" stroke-width="1.2" fill="none" stroke-dasharray="5 4"/>
+<path d="M320 135.0 H410 V156 H440" stroke="#1f2933" stroke-width="1.2" fill="none" stroke-dasharray="5 4"/>
+<path d="M320 235.0 H370 V264 H440" stroke="#1f2933" stroke-width="1.2" fill="none" stroke-dasharray="5 4"/>
+<path d="M320 325.0 H410 V284 H440" stroke="#1f2933" stroke-width="1.2" fill="none" stroke-dasharray="5 4"/>
+<text x="20" y="24" text-anchor="start" font-size="16" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Figure 6 (redrawn)</text>
+</svg>

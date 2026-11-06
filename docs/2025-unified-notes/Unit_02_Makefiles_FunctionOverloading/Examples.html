@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2: Makefiles & Function Overloading - Examples | COS 110</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <style>
+        /* Deep Ocean Theme - COS 110 Standard */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Primary Colors */
+            --background-primary: #0f172a;
+            --background-secondary: #1e293b;
+            --background-tertiary: #0c1222;
+
+            /* Accent Colors */
+            --accent-blue: #0ea5e9;
+            --accent-green: #10b981;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+
+            /* Text Colors */
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-code: #10b981;
+        }
+
+        body {
+            background: var(--background-primary);
+            color: var(--text-primary);
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            line-height: 1.6;
+            padding-bottom: 3rem;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--background-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--accent-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.875rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .nav-brand-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--accent-blue);
+        }
+
+        .nav-menu a.active {
+            background: var(--accent-blue);
+            color: var(--background-primary);
+        }
+
+        /* Content Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: var(--background-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .content-card h2 {
+            color: var(--accent-blue);
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .content-card h3 {
+            color: var(--accent-green);
+            font-size: 1.375rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .content-card h4 {
+            color: var(--accent-yellow);
+            font-size: 1.125rem;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .content-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Inline Code */
+        code {
+            background: var(--background-tertiary);
+            color: var(--text-code);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--background-tertiary) !important;
+            border-radius: 8px;
+            padding: 1rem !important;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            line-height: 1.4;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        /* Prism.js Custom Token Colors */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        /* Step Boxes */
+        .step-box {
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .step-box h4 {
+            color: var(--accent-blue);
+            margin-top: 0;
+        }
+
+        /* Info Boxes */
+        .swift-note-box {
+            background: #1f1a2e;
+            border-left: 4px solid #a78bfa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+        .swift-note-box strong { color: #a78bfa; }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+        .info-box strong { color: var(--accent-blue); }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid var(--accent-red);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+        .warning-box strong { color: var(--accent-red); }
+
+        .success-box {
+            background: #1a2d1f;
+            border-left: 4px solid var(--accent-green);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+        .success-box strong { color: var(--accent-green); }
+
+        /* Reveal Buttons */
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        /* Code Playground */
+        .code-playground {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .playground-header {
+            background: #0f172a;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .playground-title::before {
+            content: "⚡";
+            font-size: 1.2rem;
+        }
+
+        .playground-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .run-btn::before {
+            content: "▶";
+            font-size: 1rem;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .loading-indicator {
+            color: #eab308;
+            font-size: 0.85rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading-indicator.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #475569;
+            border-top-color: #eab308;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .playground-editor {
+            background: #1e293b;
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 300px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            background: #1e293b !important;
+        }
+
+        .CodeMirror-gutters {
+            background: #0f172a !important;
+            border-right: 1px solid #334155;
+        }
+
+        .playground-output {
+            background: #0f172a;
+            border-top: 1px solid #334155;
+        }
+
+        .output-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .output-header::before {
+            content: "▶";
+            color: #10b981;
+        }
+
+        .output-content {
+            padding: 1.5rem;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .output-text {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .output-success {
+            color: #10b981;
+        }
+
+        .output-error {
+            color: #ef4444;
+        }
+
+        .output-info {
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        /* ASCII Diagrams */
+        .ascii-diagram {
+            background: var(--background-tertiary);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .ascii-diagram pre {
+            background: none !important;
+            border: none;
+            padding: 0 !important;
+            margin: 0;
+            color: var(--accent-green);
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        /* File Trees */
+        .file-tree {
+            background: var(--background-tertiary);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.875rem;
+            color: var(--accent-blue);
+        }
+
+        .file-tree pre {
+            background: none !important;
+            border: none;
+            padding: 0 !important;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 2: Makefiles & Function Overloading</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Content -->
+    <div class="container">
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Worked Examples</h2>
+            <p>
+                This section contains complete worked examples that show you how to apply makefiles and function overloading in real projects. Each example includes full code, step-by-step explanations, and expected output.
+            </p>
+            <p>
+                Try to understand each example before moving on. The experiments at the end of each example help you explore what happens when you modify the code.
+            </p>
+        </section>
+
+        <!-- Example 1: Complete Makefile Walkthrough -->
+        <section class="content-card">
+            <h2>Example 1: Multi-File Grade Tracking System with Makefile</h2>
+            <p>
+                We're building a grade tracking system with three files. We'll create a makefile that handles compilation efficiently, only rebuilding what changed.
+            </p>
+
+            <h3>Project Structure</h3>
+            <div class="file-tree"><pre>gradeTracker/
+├── main.cpp
+├── Grade.h
+├── Grade.cpp
+└── Makefile</pre></div>
+
+            <h3>File 1: Grade.h</h3>
+            <pre><code class="language-cpp">// Grade.h - Header file
+#ifndef GRADE_H
+#define GRADE_H
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Grade {
+private:
+    string studentName;
+    int score;
+public:
+    Grade();
+    Grade(string name, int s);
+    void setScore(int s);
+    void display();
+};
+
+#endif</code></pre>
+
+            <h3>File 2: Grade.cpp</h3>
+            <pre><code class="language-cpp">// Grade.cpp - Implementation file
+#include "Grade.h"
+
+Grade::Grade() {
+    studentName = "Unknown";
+    score = 0;
+}
+
+Grade::Grade(string name, int s) {
+    studentName = name;
+    score = s;
+}
+
+void Grade::setScore(int s) {
+    score = s;
+}
+
+void Grade::display() {
+    cout << studentName << ": " << score << "%" << endl;
+}</code></pre>
+
+            <h3>File 3: main.cpp</h3>
+            <pre><code class="language-cpp">// main.cpp - Main program
+#include "Grade.h"
+
+int main() {
+    Grade g1("Thabo Ndlovu", 85);
+    Grade g2("Amahle Zuma", 92);
+    Grade g3("Brandon Smith", 78);
+
+    cout << "Grade Report:" << endl;
+    g1.display();
+    g2.display();
+    g3.display();
+
+    return 0;
+}</code></pre>
+
+            <h3>File 4: Makefile</h3>
+            <pre><code class="language-makefile"># Grade Tracking System Makefile
+# Tab characters are used for indentation (not spaces!)
+
+# Variables for reusability
+ofiles = main.o Grade.o
+gpp_o = g++ -c -std=c++98
+gpp = g++ -std=c++98
+
+# Main target: link all object files
+gradeTracker: $(ofiles)
+	$(gpp) $(ofiles) -o gradeTracker
+
+# Compile main.cpp (depends on main.cpp and Grade.h)
+main.o: main.cpp Grade.h
+	$(gpp_o) main.cpp
+
+# Compile Grade.cpp (depends on Grade.cpp and Grade.h)
+Grade.o: Grade.cpp Grade.h
+	$(gpp_o) Grade.cpp
+
+# Run the program
+run: gradeTracker
+	./gradeTracker
+
+# Clean up compiled files
+clean:
+	rm -f *.o gradeTracker</code></pre>
+
+            <h3>Step-by-Step Walkthrough</h3>
+
+            <div class="step-box">
+                <h4>Step 1: Understanding the Dependencies</h4>
+                <p>Let's trace what depends on what:</p>
+                <ul>
+                    <li><code>gradeTracker</code> (executable) depends on <code>main.o</code> and <code>Grade.o</code></li>
+                    <li><code>main.o</code> depends on <code>main.cpp</code> and <code>Grade.h</code> (because main.cpp includes Grade.h)</li>
+                    <li><code>Grade.o</code> depends on <code>Grade.cpp</code> and <code>Grade.h</code></li>
+                </ul>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: First Build (make)</h4>
+                <p>When you run <code>make</code> for the first time:</p>
+                <ol>
+                    <li>Make sees the first target: <code>gradeTracker</code></li>
+                    <li>Checks if <code>main.o</code> exists → No, so it builds it:
+                        <ul>
+                            <li>Runs: <code>g++ -c -std=c++98 main.cpp</code></li>
+                            <li>Creates <code>main.o</code></li>
+                        </ul>
+                    </li>
+                    <li>Checks if <code>Grade.o</code> exists → No, so it builds it:
+                        <ul>
+                            <li>Runs: <code>g++ -c -std=c++98 Grade.cpp</code></li>
+                            <li>Creates <code>Grade.o</code></li>
+                        </ul>
+                    </li>
+                    <li>All dependencies ready, now links:
+                        <ul>
+                            <li>Runs: <code>g++ -std=c++98 main.o Grade.o -o gradeTracker</code></li>
+                            <li>Creates <code>gradeTracker</code> executable</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Scenario - Modify Grade.cpp</h4>
+                <p>Suppose you change the <code>display()</code> function in <code>Grade.cpp</code> to add more formatting.</p>
+                <p>When you run <code>make</code> again:</p>
+                <ol>
+                    <li>Make sees <code>Grade.cpp</code> has a newer timestamp than <code>Grade.o</code></li>
+                    <li>Recompiles only <code>Grade.cpp</code>: <code>g++ -c -std=c++98 Grade.cpp</code></li>
+                    <li><code>main.o</code> is still valid (nothing changed in main.cpp or Grade.h)</li>
+                    <li>Relinks: <code>g++ -std=c++98 main.o Grade.o -o gradeTracker</code></li>
+                </ol>
+                <p><strong>Result:</strong> Saved time by not recompiling main.cpp!</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 4: Scenario - Modify Grade.h</h4>
+                <p>Now suppose you add a new method to <code>Grade.h</code>.</p>
+                <p>When you run <code>make</code>:</p>
+                <ol>
+                    <li>Make sees <code>Grade.h</code> changed</li>
+                    <li>Both <code>main.o</code> and <code>Grade.o</code> depend on <code>Grade.h</code></li>
+                    <li>Recompiles both:
+                        <ul>
+                            <li><code>g++ -c -std=c++98 main.cpp</code></li>
+                            <li><code>g++ -c -std=c++98 Grade.cpp</code></li>
+                        </ul>
+                    </li>
+                    <li>Relinks everything</li>
+                </ol>
+                <p><strong>Result:</strong> Both files were recompiled because they both include the changed header.</p>
+            </div>
+
+            <h3>Expected Output</h3>
+            <p>When you run <code>make run</code>:</p>
+            <pre><code class="language-plaintext">Grade Report:
+Thabo Ndlovu: 85%
+Amahle Zuma: 92%
+Brandon Smith: 78%</code></pre>
+
+            <h3>Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 1:</strong> What happens if you forget to add <code>Grade.h</code> to the dependencies for <code>main.o</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_1')">Show Explanation</button>
+            <div class="answer-section" id="exp1_1">
+                <p><strong>What happens:</strong> If you change <code>Grade.h</code> (e.g., add a new method), <code>main.cpp</code> won't be recompiled automatically.</p>
+                <p><strong>Why this is dangerous:</strong> Your program might use outdated information. For example, if you add a method to <code>Grade.h</code> and call it in <code>main.cpp</code>, the compiler won't see the new method signature in the old <code>main.o</code> file.</p>
+                <p><strong>Fix:</strong> Always list all headers that a <code>.cpp</code> file includes as dependencies:
+                    <pre><code class="language-makefile">main.o: main.cpp Grade.h
+	$(gpp_o) main.cpp</code></pre>
+                </p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 2:</strong> What if you add a third class <code>Course</code> but forget to add <code>Course.o</code> to <code>ofiles</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_2')">Show Explanation</button>
+            <div class="answer-section" id="exp1_2">
+                <p><strong>What happens:</strong> The makefile will compile <code>Course.cpp</code> into <code>Course.o</code>, but the linker won't include it in the final executable.</p>
+                <p><strong>Error message:</strong> You'll get "undefined reference" errors when linking if <code>main.cpp</code> tries to use <code>Course</code> functions.</p>
+                <p><strong>Fix:</strong> Update the <code>ofiles</code> variable:
+                    <pre><code class="language-makefile">ofiles = main.o Grade.o Course.o</code></pre>
+                </p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 3:</strong> Try using spaces instead of tabs before the <code>g++</code> commands. What error do you get?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_3')">Show Explanation</button>
+            <div class="answer-section" id="exp1_3">
+                <p><strong>Error message:</strong> <code>Makefile:XX: *** missing separator. Stop.</code></p>
+                <p><strong>Why:</strong> Make requires TAB characters before commands. If you use spaces, make doesn't recognize them as command lines.</p>
+                <p><strong>Fix:</strong> Use TAB characters (not spaces) for indentation of all commands in the makefile. Most editors have a setting to insert tabs when you press Tab.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 4:</strong> What happens if you run <code>make</code> twice in a row without changing any files?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_4')">Show Explanation</button>
+            <div class="answer-section" id="exp1_4">
+                <p><strong>Output:</strong> <code>make: 'gradeTracker' is up to date.</code></p>
+                <p><strong>Why:</strong> Make compares file timestamps. All object files are newer than their source files, and the executable is newer than the object files, so nothing needs rebuilding.</p>
+                <p><strong>This is the power of makefiles:</strong> They only rebuild what changed, saving time on large projects.</p>
+            </div>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> The key to makefiles is getting the dependencies right. A good mental model: "If file X changes, which .o files need to be rebuilt?" List those .o files as targets with X as a dependency.
+            </div>
+        </section>
+
+        <!-- Example 2: Function Overloading with Different Types -->
+        <section class="content-card">
+            <h2>Example 2: Function Overloading for Calculating Averages</h2>
+            <p>
+                We'll create overloaded <code>calculateAverage</code> functions that work with different data types and parameter counts.
+            </p>
+
+            <h3>Complete Program</h3>
+
+            <div class="code-playground" id="playground1">
+                <div class="playground-header">
+                    <div class="playground-title">Interactive Playground: Overloaded Average Functions</div>
+                </div>
+                <p style="color: #cbd5e1; margin: 1rem 1.5rem;">
+                    This program demonstrates function overloading with different parameter types and counts. Run it to see how the compiler picks the right version.
+                </p>
+                <div class="playground-editor">
+                    <textarea id="editor1">#include <iostream>
+using namespace std;
+
+// Overload 1: Average of 2 integers
+double calculateAverage(int a, int b) {
+    cout << "Called: calculateAverage(int, int)" << endl;
+    return (a + b) / 2.0;
+}
+
+// Overload 2: Average of 3 integers
+double calculateAverage(int a, int b, int c) {
+    cout << "Called: calculateAverage(int, int, int)" << endl;
+    return (a + b + c) / 3.0;
+}
+
+// Overload 3: Average of 2 doubles
+double calculateAverage(double a, double b) {
+    cout << "Called: calculateAverage(double, double)" << endl;
+    return (a + b) / 2.0;
+}
+
+// Overload 4: Average of an array
+double calculateAverage(int arr[], int size) {
+    cout << "Called: calculateAverage(int[], int)" << endl;
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        sum += arr[i];
+    }
+    return sum / (double)size;
+}
+
+int main() {
+    // Test grades for COS 110 students
+    cout << "=== Grade Averaging System ===" << endl << endl;
+
+    // Two test scores (integers)
+    cout << "Test 1 & 2: " << calculateAverage(85, 90) << "%" << endl << endl;
+
+    // Three test scores (integers)
+    cout << "Tests 1-3: " << calculateAverage(85, 90, 78) << "%" << endl << endl;
+
+    // Two assignment scores (doubles for precision)
+    cout << "Assignments: " << calculateAverage(87.5, 92.3) << "%" << endl << endl;
+
+    // Array of quiz scores
+    int quizzes[] = {88, 92, 85, 90, 87};
+    cout << "All quizzes: " << calculateAverage(quizzes, 5) << "%" << endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-actions" style="padding: 1rem 1.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                    <button class="run-btn" onclick="runCode('playground1')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground1')">Reset</button>
+                    <div class="loading-indicator" id="loading1">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder" id="output1">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>How the Compiler Chooses</h3>
+
+            <div class="step-box">
+                <h4>Call 1: calculateAverage(85, 90)</h4>
+                <p>Both arguments are <code>int</code> literals.</p>
+                <p><strong>Matching process:</strong></p>
+                <ul>
+                    <li>✅ <code>calculateAverage(int, int)</code> - Exact match</li>
+                    <li>❌ <code>calculateAverage(int, int, int)</code> - Wrong number of parameters</li>
+                    <li>⚠️ <code>calculateAverage(double, double)</code> - Would require converting both ints to doubles</li>
+                    <li>❌ <code>calculateAverage(int[], int)</code> - Wrong types</li>
+                </ul>
+                <p><strong>Winner:</strong> Overload 1 (exact match beats conversion)</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Call 2: calculateAverage(87.5, 92.3)</h4>
+                <p>Both arguments are <code>double</code> literals.</p>
+                <p><strong>Matching process:</strong></p>
+                <ul>
+                    <li>⚠️ <code>calculateAverage(int, int)</code> - Would require converting doubles to ints (loses precision, not preferred)</li>
+                    <li>✅ <code>calculateAverage(double, double)</code> - Exact match</li>
+                </ul>
+                <p><strong>Winner:</strong> Overload 3 (exact match)</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Call 3: calculateAverage(quizzes, 5)</h4>
+                <p>First argument is <code>int[]</code> (array), second is <code>int</code>.</p>
+                <p><strong>Matching process:</strong></p>
+                <ul>
+                    <li>❌ All other overloads have wrong types</li>
+                    <li>✅ <code>calculateAverage(int[], int)</code> - Only match</li>
+                </ul>
+                <p><strong>Winner:</strong> Overload 4 (only possible match)</p>
+            </div>
+
+            <h3>Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 1:</strong> Add a call <code>calculateAverage(85, 90.0)</code>. Which overload gets called?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_1')">Show Explanation</button>
+            <div class="answer-section" id="exp2_1">
+                <p><strong>Result:</strong> Calls <code>calculateAverage(double, double)</code></p>
+                <p><strong>Why:</strong> The second argument <code>90.0</code> is a <code>double</code>. The compiler converts <code>85</code> (int) to <code>85.0</code> (double) to match the <code>(double, double)</code> signature. This is preferred over converting <code>90.0</code> to <code>90</code> (which would lose precision).</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 2:</strong> What if you remove the <code>calculateAverage(double, double)</code> overload and call <code>calculateAverage(87.5, 92.3)</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_2')">Show Explanation</button>
+            <div class="answer-section" id="exp2_2">
+                <p><strong>Result:</strong> Calls <code>calculateAverage(int, int)</code></p>
+                <p><strong>Why:</strong> Without the double overload, the compiler converts both <code>87.5</code> and <code>92.3</code> to integers (<code>87</code> and <code>92</code>) to match the <code>(int, int)</code> signature.</p>
+                <p><strong>Warning:</strong> This loses precision! The result would be based on 87 and 92, not the original values.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 3:</strong> Try adding another overload: <code>int calculateAverage(int a, int b)</code> (returns int instead of double). What happens?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_3')">Show Explanation</button>
+            <div class="answer-section" id="exp2_3">
+                <p><strong>Result:</strong> Compilation error!</p>
+                <p><strong>Error message:</strong> <code>error: ambiguous overload for 'calculateAverage'</code> or <code>redefinition of 'calculateAverage(int, int)'</code></p>
+                <p><strong>Why:</strong> The signature is determined by the function name and parameter types only. Return type is NOT part of the signature. You can't have two functions with the same name and parameters but different return types.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 4:</strong> Add an overload for four integers. Test it with <code>calculateAverage(80, 85, 90, 95)</code>.
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_4')">Show Explanation</button>
+            <div class="answer-section" id="exp2_4">
+                <p><strong>Code to add:</strong></p>
+                <pre><code class="language-cpp">double calculateAverage(int a, int b, int c, int d) {
+    cout << "Called: calculateAverage(int, int, int, int)" << endl;
+    return (a + b + c + d) / 4.0;
+}</code></pre>
+                <p><strong>Result:</strong> When you call <code>calculateAverage(80, 85, 90, 95)</code>, this new overload is called because it's the only one with 4 integer parameters.</p>
+                <p><strong>Pattern:</strong> You can create as many overloads as needed, as long as each has a unique signature (different number or types of parameters).</p>
+            </div>
+        </section>
+
+        <!-- Example 3: Default Parameters in Practice -->
+        <section class="content-card">
+            <h2>Example 3: Default Parameters for Flexible Function Calls</h2>
+            <p>
+                This example shows how default parameters make functions more flexible by allowing callers to omit trailing arguments.
+            </p>
+
+            <h3>Complete Program</h3>
+
+            <div class="code-playground" id="playground2">
+                <div class="playground-header">
+                    <div class="playground-title">Interactive Playground: Tutoring Session Scheduler</div>
+                </div>
+                <p style="color: #cbd5e1; margin: 1rem 1.5rem;">
+                    This program schedules tutoring sessions with default values for duration, rate, and location. Run it to see how different calls use different defaults.
+                </p>
+                <div class="playground-editor">
+                    <textarea id="editor2">#include <iostream>
+#include <string>
+using namespace std;
+
+// Schedule a tutoring session
+// Defaults: 1 hour, R150/hour, Room 101
+void scheduleSession(string student, string subject,
+                     int duration = 1, int rate = 150,
+                     string location = "Room 101") {
+    int cost = duration * rate;
+
+    cout << "Session scheduled:" << endl;
+    cout << "  Student: " << student << endl;
+    cout << "  Subject: " << subject << endl;
+    cout << "  Duration: " << duration << " hour(s)" << endl;
+    cout << "  Rate: R" << rate << "/hour" << endl;
+    cout << "  Location: " << location << endl;
+    cout << "  Total cost: R" << cost << endl;
+    cout << endl;
+}
+
+int main() {
+    cout << "=== Swift Tuition Scheduler ===" << endl << endl;
+
+    // Use all defaults (1 hour, R150, Room 101)
+    scheduleSession("Naledi Mokoena", "COS 110");
+
+    // Custom duration, default rate and location
+    scheduleSession("Pieter van der Merwe", "WTW 146", 2);
+
+    // Custom duration and rate, default location
+    scheduleSession("Sipho Khumalo", "OBS 124", 1, 200);
+
+    // All custom values
+    scheduleSession("Emma Johnson", "PHY 124", 2, 180, "Room 205");
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-actions" style="padding: 1rem 1.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                    <button class="run-btn" onclick="runCode('playground2')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground2')">Reset</button>
+                    <div class="loading-indicator" id="loading2">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder" id="output2">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>How Default Parameters Work</h3>
+
+            <div class="step-box">
+                <h4>Call 1: scheduleSession("Naledi Mokoena", "COS 110")</h4>
+                <p>Only 2 arguments provided (student and subject).</p>
+                <p><strong>Parameters used:</strong></p>
+                <ul>
+                    <li><code>student = "Naledi Mokoena"</code> (provided)</li>
+                    <li><code>subject = "COS 110"</code> (provided)</li>
+                    <li><code>duration = 1</code> (default)</li>
+                    <li><code>rate = 150</code> (default)</li>
+                    <li><code>location = "Room 101"</code> (default)</li>
+                </ul>
+            </div>
+
+            <div class="step-box">
+                <h4>Call 2: scheduleSession("Pieter van der Merwe", "WTW 146", 2)</h4>
+                <p>3 arguments provided.</p>
+                <p><strong>Parameters used:</strong></p>
+                <ul>
+                    <li><code>student = "Pieter van der Merwe"</code> (provided)</li>
+                    <li><code>subject = "WTW 146"</code> (provided)</li>
+                    <li><code>duration = 2</code> (provided)</li>
+                    <li><code>rate = 150</code> (default)</li>
+                    <li><code>location = "Room 101"</code> (default)</li>
+                </ul>
+            </div>
+
+            <div class="step-box">
+                <h4>Call 4: scheduleSession("Emma Johnson", "PHY 124", 2, 180, "Room 205")</h4>
+                <p>All 5 arguments provided - no defaults used.</p>
+                <p><strong>Parameters used:</strong> All provided values, no defaults.</p>
+            </div>
+
+            <h3>Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 1:</strong> What if you want to use the default rate (R150) but specify a custom location? Can you call <code>scheduleSession("Student", "Subject", 1, "Room 202")</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_1')">Show Explanation</button>
+            <div class="answer-section" id="exp3_1">
+                <p><strong>Result:</strong> No, this won't compile!</p>
+                <p><strong>Error:</strong> Type mismatch - the 4th parameter expects an <code>int</code> (rate) but you're passing a <code>string</code> (location).</p>
+                <p><strong>Why:</strong> You can only omit parameters from right to left. To provide <code>location</code>, you MUST also provide <code>duration</code> and <code>rate</code>:</p>
+                <pre><code class="language-cpp">scheduleSession("Student", "Subject", 1, 150, "Room 202");</code></pre>
+                <p><strong>Lesson:</strong> Default parameters are convenient, but you can't skip middle ones.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 2:</strong> What happens if you move the default parameters to the left: <code>void scheduleSession(string student, int duration = 1, string subject, int rate = 150)</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_2')">Show Explanation</button>
+            <div class="answer-section" id="exp3_2">
+                <p><strong>Result:</strong> Compilation error!</p>
+                <p><strong>Error message:</strong> <code>error: default argument missing for parameter 3 of 'void scheduleSession(...)'</code></p>
+                <p><strong>Why:</strong> Default parameters must be the RIGHTMOST (trailing) parameters. Once you have a default parameter, all parameters to its right must also have defaults.</p>
+                <p><strong>Valid:</strong> <code>void f(int a, int b, int c = 5, int d = 10);</code></p>
+                <p><strong>Invalid:</strong> <code>void f(int a, int b = 5, int c, int d = 10);</code></p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 3:</strong> What if you put the default values in both the function declaration AND the definition?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_3')">Show Explanation</button>
+            <div class="answer-section" id="exp3_3">
+                <p><strong>Result:</strong> Compilation error!</p>
+                <p><strong>Error message:</strong> <code>error: redefinition of default argument</code></p>
+                <p><strong>Why:</strong> Default values should only appear in the function DECLARATION (usually in the .h file), not in the definition (the .cpp file).</p>
+                <p><strong>Correct pattern:</strong></p>
+                <pre><code class="language-cpp">// session.h (declaration with defaults)
+void scheduleSession(string student, string subject,
+                     int duration = 1, int rate = 150);
+
+// session.cpp (definition WITHOUT defaults)
+void scheduleSession(string student, string subject,
+                     int duration, int rate) {
+    // Implementation
+}</code></pre>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 4:</strong> Add another default parameter at the beginning: <code>bool isPremium = false</code>. Does this work?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_4')">Show Explanation</button>
+            <div class="answer-section" id="exp3_4">
+                <p><strong>Result:</strong> No, won't compile!</p>
+                <p><strong>Why:</strong> Default parameters must be rightmost. <code>isPremium</code> would need to go AFTER <code>location</code>:</p>
+                <pre><code class="language-cpp">void scheduleSession(string student, string subject,
+                     int duration = 1, int rate = 150,
+                     string location = "Room 101", bool isPremium = false);</code></pre>
+                <p>Or you could reorder non-default parameters, but all defaults must still be at the end.</p>
+            </div>
+        </section>
+
+        <!-- Example 4: Combining Makefiles and Overloading -->
+        <section class="content-card">
+            <h2>Example 4: Student Management System (Makefiles + Overloading)</h2>
+            <p>
+                This example combines everything: a multi-file project with a makefile, plus overloaded functions for printing student information in different formats.
+            </p>
+
+            <h3>Project Structure</h3>
+            <div class="file-tree"><pre>studentManager/
+├── main.cpp
+├── Student.h
+├── Student.cpp
+└── Makefile</pre></div>
+
+            <h3>File 1: Student.h</h3>
+            <pre><code class="language-cpp">// Student.h
+#ifndef STUDENT_H
+#define STUDENT_H
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Student {
+private:
+    string name;
+    int studentID;
+    double gpa;
+public:
+    Student(string n, int id, double g);
+
+    // Overloaded print functions
+    void print();                    // Basic format
+    void print(bool showID);         // With or without ID
+    void print(string prefix);       // With custom prefix
+    void print(bool showID, bool showGPA);  // Detailed control
+};
+
+#endif</code></pre>
+
+            <h3>File 2: Student.cpp</h3>
+            <pre><code class="language-cpp">// Student.cpp
+#include "Student.h"
+
+Student::Student(string n, int id, double g) {
+    name = n;
+    studentID = id;
+    gpa = g;
+}
+
+// Overload 1: Basic format (name only)
+void Student::print() {
+    cout << name << endl;
+}
+
+// Overload 2: With optional ID
+void Student::print(bool showID) {
+    cout << name;
+    if (showID) {
+        cout << " (ID: " << studentID << ")";
+    }
+    cout << endl;
+}
+
+// Overload 3: With custom prefix
+void Student::print(string prefix) {
+    cout << prefix << name << " (GPA: " << gpa << ")" << endl;
+}
+
+// Overload 4: Full control
+void Student::print(bool showID, bool showGPA) {
+    cout << name;
+    if (showID) {
+        cout << " (ID: " << studentID << ")";
+    }
+    if (showGPA) {
+        cout << " [GPA: " << gpa << "]";
+    }
+    cout << endl;
+}</code></pre>
+
+            <h3>File 3: main.cpp</h3>
+            <pre><code class="language-cpp">// main.cpp
+#include "Student.h"
+
+int main() {
+    Student s1("Thandi Nkosi", 12345, 3.8);
+    Student s2("Johan Botha", 12346, 3.5);
+    Student s3("Lerato Dlamini", 12347, 3.9);
+
+    cout << "=== Student Directory ===" << endl << endl;
+
+    cout << "Basic format:" << endl;
+    s1.print();
+    s2.print();
+    s3.print();
+    cout << endl;
+
+    cout << "With student IDs:" << endl;
+    s1.print(true);
+    s2.print(true);
+    s3.print(true);
+    cout << endl;
+
+    cout << "With custom prefix:" << endl;
+    s1.print("Honor Roll: ");
+    s2.print("Regular: ");
+    s3.print("Honor Roll: ");
+    cout << endl;
+
+    cout << "Full details:" << endl;
+    s1.print(true, true);
+    s2.print(true, true);
+    s3.print(true, true);
+
+    return 0;
+}</code></pre>
+
+            <h3>File 4: Makefile</h3>
+            <pre><code class="language-makefile"># Student Management System Makefile
+
+# Variables
+ofiles = main.o Student.o
+gpp_o = g++ -c -std=c++98 -Wall
+gpp = g++ -std=c++98 -Wall
+
+# Main executable
+studentManager: $(ofiles)
+	$(gpp) $(ofiles) -o studentManager
+
+# Compile main.cpp
+main.o: main.cpp Student.h
+	$(gpp_o) main.cpp
+
+# Compile Student.cpp
+Student.o: Student.cpp Student.h
+	$(gpp_o) Student.cpp
+
+# Run the program
+run: studentManager
+	./studentManager
+
+# Clean compiled files
+clean:
+	rm -f *.o studentManager
+
+# Rebuild from scratch
+rebuild: clean studentManager</code></pre>
+
+            <h3>Expected Output</h3>
+            <pre><code class="language-plaintext">=== Student Directory ===
+
+Basic format:
+Thandi Nkosi
+Johan Botha
+Lerato Dlamini
+
+With student IDs:
+Thandi Nkosi (ID: 12345)
+Johan Botha (ID: 12346)
+Lerato Dlamini (ID: 12347)
+
+With custom prefix:
+Honor Roll: Thandi Nkosi (GPA: 3.8)
+Regular: Johan Botha (GPA: 3.5)
+Honor Roll: Lerato Dlamini (GPA: 3.9)
+
+Full details:
+Thandi Nkosi (ID: 12345) [GPA: 3.8]
+Johan Botha (ID: 12346) [GPA: 3.5]
+Lerato Dlamini (ID: 12347) [GPA: 3.9]</code></pre>
+
+            <h3>How Overloading Works Here</h3>
+
+            <div class="step-box">
+                <h4>s1.print() - No Arguments</h4>
+                <p>Calls: <code>void Student::print()</code></p>
+                <p>Prints just the name with no additional information.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>s1.print(true) - One bool Argument</h4>
+                <p>Calls: <code>void Student::print(bool showID)</code></p>
+                <p>Prints name with ID because <code>showID = true</code>.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>s1.print("Honor Roll: ") - String Argument</h4>
+                <p>Calls: <code>void Student::print(string prefix)</code></p>
+                <p>Different type (string vs bool) means different overload.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>s1.print(true, true) - Two bool Arguments</h4>
+                <p>Calls: <code>void Student::print(bool showID, bool showGPA)</code></p>
+                <p>Different number of parameters (2 vs 1) means different overload.</p>
+            </div>
+
+            <h3>Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 1:</strong> What if you add <code>s1.print(false)</code>? Which overload is called and what's printed?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_1')">Show Explanation</button>
+            <div class="answer-section" id="exp4_1">
+                <p><strong>Overload called:</strong> <code>void Student::print(bool showID)</code></p>
+                <p><strong>Output:</strong> <code>Thandi Nkosi</code> (no ID because showID = false)</p>
+                <p><strong>Why:</strong> One bool argument matches the <code>print(bool)</code> signature. The value false means "don't show ID".</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 2:</strong> Add another overload: <code>void print(int format)</code> where format codes control output. Does this create ambiguity with <code>print(bool)</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_2')">Show Explanation</button>
+            <div class="answer-section" id="exp4_2">
+                <p><strong>Result:</strong> Yes, creates ambiguity!</p>
+                <p><strong>Problem:</strong> <code>s1.print(0)</code> or <code>s1.print(1)</code> is ambiguous:</p>
+                <ul>
+                    <li><code>0</code> and <code>1</code> can be treated as <code>bool</code> (false/true)</li>
+                    <li><code>0</code> and <code>1</code> are also valid <code>int</code> values</li>
+                </ul>
+                <p><strong>Fix:</strong> Use different function names or different parameter types that don't overlap.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 3:</strong> In the makefile, what happens if you change <code>Student.h</code> (add a new method) but forget to run <code>make clean</code> first?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_3')">Show Explanation</button>
+            <div class="answer-section" id="exp4_3">
+                <p><strong>What happens:</strong> Running <code>make</code> will rebuild both <code>main.o</code> and <code>Student.o</code> automatically.</p>
+                <p><strong>Why:</strong> Both object files list <code>Student.h</code> as a dependency:
+                    <pre><code class="language-makefile">main.o: main.cpp Student.h
+Student.o: Student.cpp Student.h</code></pre>
+                </p>
+                <p><strong>Result:</strong> Make detects that <code>Student.h</code> is newer than the .o files and recompiles them. You don't need <code>make clean</code> - the dependencies handle it!</p>
+                <p><strong>When to use <code>make clean</code>:</strong> When you want to force a complete rebuild (e.g., after changing compiler flags or to troubleshoot weird errors).</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 4:</strong> Add the <code>-Wall</code> flag to the compiler commands. What does it do?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_4')">Show Explanation</button>
+            <div class="answer-section" id="exp4_4">
+                <p><strong>What <code>-Wall</code> does:</strong> Enables "all warnings" during compilation.</p>
+                <p><strong>Why use it:</strong> Catches potential bugs like:</p>
+                <ul>
+                    <li>Unused variables</li>
+                    <li>Comparisons that are always true/false</li>
+                    <li>Missing return statements</li>
+                    <li>Type conversion issues</li>
+                </ul>
+                <p><strong>Example warning:</strong> If you declare <code>int x;</code> but never use it, the compiler warns you.</p>
+                <p><strong>Best practice:</strong> Always compile with <code>-Wall</code> and fix all warnings before submitting code.</p>
+            </div>
+        </section>
+
+        <!-- Example 5: Advanced Makefile with Pattern Rules -->
+        <section class="content-card">
+            <h2>Example 5: Advanced Makefile with Variables and Pattern Rules</h2>
+            <p>
+                This example shows a more sophisticated makefile that scales better for large projects with many source files.
+            </p>
+
+            <h3>Scenario: Course Management System</h3>
+            <p>
+                Suppose you're building a system with 5 classes: Student, Course, Grade, Instructor, and Department. Writing individual rules for each .o file gets tedious. Let's use pattern rules.
+            </p>
+
+            <h3>Project Structure</h3>
+            <div class="file-tree"><pre>courseManager/
+├── main.cpp
+├── Student.h / Student.cpp
+├── Course.h / Course.cpp
+├── Grade.h / Grade.cpp
+├── Instructor.h / Instructor.cpp
+├── Department.h / Department.cpp
+└── Makefile</pre></div>
+
+            <h3>Advanced Makefile</h3>
+            <pre><code class="language-makefile"># Course Management System - Advanced Makefile
+
+# Compiler settings
+CXX = g++
+CXXFLAGS = -std=c++98 -Wall -Wextra -pedantic
+LDFLAGS =
+
+# Source files (automatically find all .cpp files)
+SOURCES = main.cpp Student.cpp Course.cpp Grade.cpp Instructor.cpp Department.cpp
+
+# Object files (replace .cpp with .o)
+OBJECTS = $(SOURCES:.cpp=.o)
+
+# Executable name
+TARGET = courseManager
+
+# Default target: build the executable
+all: $(TARGET)
+
+# Link object files into executable
+$(TARGET): $(OBJECTS)
+	$(CXX) $(LDFLAGS) $(OBJECTS) -o $(TARGET)
+	@echo "Build complete: $(TARGET)"
+
+# Pattern rule: how to build any .o file from a .cpp file
+%.o: %.cpp %.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+	@echo "Compiled: $<"
+
+# Special case: main.o depends on ALL headers (uses all classes)
+main.o: main.cpp Student.h Course.h Grade.h Instructor.h Department.h
+	$(CXX) $(CXXFLAGS) -c main.cpp
+	@echo "Compiled: main.cpp"
+
+# Run the program
+run: $(TARGET)
+	@echo "Running $(TARGET)..."
+	@./$(TARGET)
+
+# Clean compiled files
+clean:
+	rm -f $(OBJECTS) $(TARGET)
+	@echo "Cleaned all build files"
+
+# Rebuild everything from scratch
+rebuild: clean all
+
+# Show variables (for debugging the makefile)
+debug:
+	@echo "Sources: $(SOURCES)"
+	@echo "Objects: $(OBJECTS)"
+	@echo "Target: $(TARGET)"
+
+# Declare phony targets (not actual files)
+.PHONY: all run clean rebuild debug</code></pre>
+
+            <h3>What's New in This Makefile</h3>
+
+            <div class="step-box">
+                <h4>1. Variables for Everything</h4>
+                <ul>
+                    <li><code>CXX = g++</code> - Compiler command</li>
+                    <li><code>CXXFLAGS = -std=c++98 -Wall -Wextra -pedantic</code> - Compiler flags</li>
+                    <li><code>SOURCES = ...</code> - List of all source files</li>
+                    <li><code>OBJECTS = $(SOURCES:.cpp=.o)</code> - Auto-generate object file list</li>
+                </ul>
+                <p><strong>Benefit:</strong> To add a new class, just add its .cpp to SOURCES. Everything else updates automatically.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>2. Pattern Rule (%.o: %.cpp %.h)</h4>
+                <p>This single rule replaces 5 individual rules:</p>
+                <pre><code class="language-makefile">%.o: %.cpp %.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@</code></pre>
+                <p><strong>How it works:</strong></p>
+                <ul>
+                    <li><code>%</code> is a wildcard (matches any filename)</li>
+                    <li><code>$&lt;</code> = first dependency (the .cpp file)</li>
+                    <li><code>$@</code> = target name (the .o file)</li>
+                </ul>
+                <p>So <code>Student.o</code> depends on <code>Student.cpp</code> and <code>Student.h</code>, and is compiled with the pattern rule.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>3. Automatic Dependency Generation</h4>
+                <p><code>OBJECTS = $(SOURCES:.cpp=.o)</code> transforms the list:</p>
+                <ul>
+                    <li>Input: <code>main.cpp Student.cpp Course.cpp ...</code></li>
+                    <li>Output: <code>main.o Student.o Course.o ...</code></li>
+                </ul>
+            </div>
+
+            <div class="step-box">
+                <h4>4. Phony Targets</h4>
+                <pre><code class="language-makefile">.PHONY: all run clean rebuild debug</code></pre>
+                <p>Tells make these are command names, not files. Without this, if you had a file named "clean", <code>make clean</code> wouldn't work.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>5. Silent Commands (@echo)</h4>
+                <p><code>@echo "Build complete"</code> - The <code>@</code> prevents make from printing the command itself, only the output.</p>
+                <p>Without <code>@</code>: Shows <code>echo "Build complete"</code> then <code>Build complete</code></p>
+                <p>With <code>@</code>: Shows only <code>Build complete</code></p>
+            </div>
+
+            <h3>Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 1:</strong> Add a new class <code>Schedule</code> (Schedule.h and Schedule.cpp). What do you need to change in the makefile?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp5_1')">Show Explanation</button>
+            <div class="answer-section" id="exp5_1">
+                <p><strong>Changes needed:</strong> Just one line!</p>
+                <pre><code class="language-makefile">SOURCES = main.cpp Student.cpp Course.cpp Grade.cpp Instructor.cpp Department.cpp Schedule.cpp</code></pre>
+                <p><strong>Why so easy:</strong></p>
+                <ul>
+                    <li><code>OBJECTS</code> auto-updates to include <code>Schedule.o</code></li>
+                    <li>Pattern rule <code>%.o: %.cpp %.h</code> handles compiling <code>Schedule.cpp</code></li>
+                    <li>Main target <code>$(TARGET): $(OBJECTS)</code> automatically links the new .o file</li>
+                </ul>
+                <p><strong>If main.cpp uses Schedule:</strong> Also add <code>Schedule.h</code> to main.o dependencies.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 2:</strong> What does <code>make debug</code> show? Why is this useful?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp5_2')">Show Explanation</button>
+            <div class="answer-section" id="exp5_2">
+                <p><strong>Output:</strong></p>
+                <pre><code class="language-plaintext">Sources: main.cpp Student.cpp Course.cpp Grade.cpp Instructor.cpp Department.cpp
+Objects: main.o Student.o Course.o Grade.o Instructor.o Department.o
+Target: courseManager</code></pre>
+                <p><strong>Why useful:</strong> Helps debug the makefile itself. If you're not sure what files will be compiled or linked, <code>make debug</code> shows you the variable values without actually building anything.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 3:</strong> What's the difference between <code>make clean</code> and <code>make rebuild</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp5_3')">Show Explanation</button>
+            <div class="answer-section" id="exp5_3">
+                <p><strong><code>make clean</code>:</strong> Removes all .o files and the executable. Leaves you with just source files.</p>
+                <p><strong><code>make rebuild</code>:</strong> Runs <code>clean</code> then <code>all</code>, giving you a fresh build.</p>
+                <pre><code class="language-makefile">rebuild: clean all</code></pre>
+                <p><strong>When to use rebuild:</strong> When you've changed compiler flags, switched branches in git, or something seems broken but shouldn't be.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 4:</strong> The pattern rule assumes every .cpp has a matching .h. What if you add a utility file <code>utils.cpp</code> with no header?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp5_4')">Show Explanation</button>
+            <div class="answer-section" id="exp5_4">
+                <p><strong>Problem:</strong> The pattern rule <code>%.o: %.cpp %.h</code> would look for <code>utils.h</code> and fail if it doesn't exist.</p>
+                <p><strong>Solution 1:</strong> Add a specific rule for utils.o:
+                    <pre><code class="language-makefile">utils.o: utils.cpp
+	$(CXX) $(CXXFLAGS) -c utils.cpp</code></pre>
+                </p>
+                <p><strong>Solution 2:</strong> Use a more flexible pattern rule:
+                    <pre><code class="language-makefile">%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@</code></pre>
+                    Then manually add header dependencies for files that have them.
+                </p>
+            </div>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Advanced makefiles like this one are overkill for small projects, but they scale beautifully. Once set up, adding new files is trivial. Professional C++ projects use even more sophisticated build systems (CMake, Bazel), but understanding makefiles is foundational.
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="content-card">
+            <h2>Summary</h2>
+            <p>
+                These examples showed you how makefiles and function overloading work in real projects:
+            </p>
+
+            <h3>Makefiles</h3>
+            <ul>
+                <li><strong>Example 1:</strong> Complete makefile for a 3-file project with proper dependencies</li>
+                <li><strong>Example 4:</strong> Integrated makefile with class-based design</li>
+                <li><strong>Example 5:</strong> Advanced makefile with pattern rules and variables for scalability</li>
+            </ul>
+
+            <h3>Function Overloading</h3>
+            <ul>
+                <li><strong>Example 2:</strong> Overloading based on parameter types and counts (average functions)</li>
+                <li><strong>Example 4:</strong> Overloading member functions for flexible output (print methods)</li>
+            </ul>
+
+            <h3>Default Parameters</h3>
+            <ul>
+                <li><strong>Example 3:</strong> Using defaults to make functions more flexible (session scheduler)</li>
+                <li>Showed limitations: can't skip middle parameters, must be rightmost</li>
+            </ul>
+
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li>Makefiles track dependencies so you only rebuild what changed</li>
+                <li>Tab characters (not spaces) are required before commands</li>
+                <li>List all headers a .cpp file includes as dependencies for the .o file</li>
+                <li>Function overloading chooses the version based on signature (name + parameter types)</li>
+                <li>Default parameters must be rightmost and only in the declaration</li>
+                <li>Combining overloading and defaults can create ambiguity - be careful</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>Next Steps:</strong> Try the Practice problems to apply these concepts yourself. Then test your understanding with the Quiz.
+            </div>
+        </section>
+    </div>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        // Store CodeMirror instances and original code
+        const editors = {};
+        const originalCode = {};
+
+        // Initialize CodeMirror editors
+        function initEditor(id, textareaId) {
+            const textarea = document.getElementById(textareaId);
+            if (!textarea) return null;
+
+            originalCode[id] = textarea.value;
+
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+
+            editors[id] = editor;
+            return editor;
+        }
+
+        // Initialize all editors on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            initEditor('playground1', 'editor1');
+            initEditor('playground2', 'editor2');
+            Prism.highlightAll();
+        });
+
+        // Run code via Piston API
+        async function runCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const code = editor.getValue();
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+            const runBtn = document.querySelector(`#${playgroundId} .run-btn`);
+            const loadingIndicator = document.getElementById(`loading${playgroundId.replace('playground', '')}`);
+
+            // Show loading state
+            runBtn.disabled = true;
+            loadingIndicator.classList.add('active');
+            outputDiv.className = 'output-text output-info';
+            outputDiv.textContent = 'Compiling and executing your code...';
+
+            try {
+                // Call Piston API
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        stdin: '',
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                // Display results
+                if (result.compile && result.compile.code !== 0) {
+                    // Compilation error
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.innerHTML = `<div class="output-info">❌ Compilation Error:</div>${escapeHtml(result.compile.stderr || result.compile.output)}`;
+                } else if (result.run) {
+                    // Execution output
+                    if (result.run.code === 0) {
+                        // Success
+                        outputDiv.className = 'output-text output-success';
+                        const output = result.run.stdout || result.run.output || '(no output)';
+                        outputDiv.innerHTML = `<div class="output-info">✅ Executed successfully:</div>${escapeHtml(output)}`;
+                    } else {
+                        // Runtime error
+                        outputDiv.className = 'output-text output-error';
+                        const error = result.run.stderr || result.run.output || 'Runtime error';
+                        outputDiv.innerHTML = `<div class="output-info">❌ Runtime Error (exit code ${result.run.code}):</div>${escapeHtml(error)}`;
+                    }
+                } else {
+                    // Unknown error
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.textContent = 'Error: Unable to execute code. Please try again.';
+                }
+
+            } catch (error) {
+                // Network or API error
+                outputDiv.className = 'output-text output-error';
+                outputDiv.innerHTML = `<div class="output-info">❌ Error:</div>Failed to connect to compilation service. Please check your internet connection and try again.`;
+                console.error('Piston API error:', error);
+            } finally {
+                // Hide loading state
+                runBtn.disabled = false;
+                loadingIndicator.classList.remove('active');
+            }
+        }
+
+        // Reset code to original
+        function resetCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+
+            editor.setValue(originalCode[playgroundId]);
+            outputDiv.className = 'output-text output-placeholder';
+            outputDiv.textContent = 'Click "Run Code" to compile and execute...';
+        }
+
+        // Escape HTML for safe display
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Toggle answer sections
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Explanation';
+            } else {
+                button.textContent = 'Show Explanation';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

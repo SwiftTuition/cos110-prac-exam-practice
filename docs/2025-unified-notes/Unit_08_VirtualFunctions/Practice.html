@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 8: Virtual Functions & Pointers - Practice | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #10b981;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        .problem-box {
+            background: #0c1222;
+            border: 2px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .problem-box h4 {
+            color: #0ea5e9;
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #1a2d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .solution-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .solution-section.visible {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 8: Virtual Functions & Pointers</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html" class="active">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Practice Problems</h2>
+
+            <p>
+                These problems let you practice implementing virtual functions and polymorphism. They progress from basic to challenging. Try solving each problem on your own before revealing the solution.
+            </p>
+
+            <div class="info-box">
+                <strong>How to approach these problems:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Read the problem carefully and understand what's required</li>
+                    <li>Think about which functions need to be virtual</li>
+                    <li>Consider whether to use pure virtual functions (abstract classes)</li>
+                    <li>Don't forget virtual destructors!</li>
+                    <li>Try solving it yourself first</li>
+                    <li>Only reveal the solution after you've attempted it</li>
+                    <li>Test the solution and understand why it works</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Problem 1: Basic Polymorphism -->
+        <section class="content-card">
+            <h2>Problem 1: Vehicle Hierarchy (Easy)</h2>
+
+            <div class="problem-box">
+                <h4>Task</h4>
+                <p>
+                    Create a polymorphic vehicle system with a base <code>Vehicle</code> class and two derived classes: <code>Car</code> and <code>Motorcycle</code>.
+                </p>
+
+                <h4>Requirements</h4>
+                <ul>
+                    <li><code>Vehicle</code> class should have:
+                        <ul>
+                            <li>Protected member: <code>string brand</code></li>
+                            <li>Constructor that takes brand</li>
+                            <li>Virtual function: <code>void displayInfo()</code></li>
+                            <li>Virtual destructor</li>
+                        </ul>
+                    </li>
+                    <li><code>Car</code> class should have:
+                        <ul>
+                            <li>Private member: <code>int numDoors</code></li>
+                            <li>Constructor that takes brand and number of doors</li>
+                            <li>Override <code>displayInfo()</code> to show brand and doors</li>
+                        </ul>
+                    </li>
+                    <li><code>Motorcycle</code> class should have:
+                        <ul>
+                            <li>Private member: <code>bool hasSidecar</code></li>
+                            <li>Constructor that takes brand and sidecar status</li>
+                            <li>Override <code>displayInfo()</code> to show brand and sidecar</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>Test Code</h4>
+                <pre><code class="language-cpp">int main() {
+    Vehicle* vehicles[2];
+    vehicles[0] = new Car("Toyota", 4);
+    vehicles[1] = new Motorcycle("Harley-Davidson", false);
+
+    for (int i = 0; i &lt; 2; i++) {
+        vehicles[i]-&gt;displayInfo();
+    }
+
+    for (int i = 0; i &lt; 2; i++) {
+        delete vehicles[i];
+    }
+
+    return 0;
+}</code></pre>
+
+                <h4>Expected Output</h4>
+                <pre>Brand: Toyota, Doors: 4
+Brand: Harley-Davidson, Sidecar: No</pre>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleSolution('solution1')">Show Solution</button>
+            <div class="solution-section" id="solution1">
+                <h4>Complete Solution</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Solution Code</div>
+                    </div>
+
+                    <textarea id="editor1">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Vehicle {
+protected:
+    string brand;
+public:
+    Vehicle(string b) : brand(b) {}
+
+    virtual void displayInfo() {
+        cout &lt;&lt; "Brand: " &lt;&lt; brand &lt;&lt; endl;
+    }
+
+    virtual ~Vehicle() {}
+};
+
+class Car : public Vehicle {
+private:
+    int numDoors;
+public:
+    Car(string b, int doors) : Vehicle(b), numDoors(doors) {}
+
+    void displayInfo() {
+        cout &lt;&lt; "Brand: " &lt;&lt; brand &lt;&lt; ", Doors: " &lt;&lt; numDoors &lt;&lt; endl;
+    }
+};
+
+class Motorcycle : public Vehicle {
+private:
+    bool hasSidecar;
+public:
+    Motorcycle(string b, bool sidecar) : Vehicle(b), hasSidecar(sidecar) {}
+
+    void displayInfo() {
+        cout &lt;&lt; "Brand: " &lt;&lt; brand &lt;&lt; ", Sidecar: "
+             &lt;&lt; (hasSidecar ? "Yes" : "No") &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Vehicle* vehicles[2];
+    vehicles[0] = new Car("Toyota", 4);
+    vehicles[1] = new Motorcycle("Harley-Davidson", false);
+
+    for (int i = 0; i &lt; 2; i++) {
+        vehicles[i]-&gt;displayInfo();
+    }
+
+    for (int i = 0; i &lt; 2; i++) {
+        delete vehicles[i];
+    }
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loading1" class="loading-indicator">Running...</div>
+                            <div id="output1" class="output-text output-placeholder">
+                                Click "Run Code" to see the output...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4>Explanation</h4>
+                <ol>
+                    <li><strong>Virtual <code>displayInfo()</code>:</strong> Declared virtual in <code>Vehicle</code> so each derived class's version gets called when using base pointers.</li>
+                    <li><strong>Protected <code>brand</code>:</strong> Allows derived classes to access it directly in their <code>displayInfo()</code>.</li>
+                    <li><strong>Virtual destructor:</strong> Ensures derived class destructors run when deleting through base pointers.</li>
+                    <li><strong>Constructor initialization:</strong> Each derived class calls the base constructor using the initializer list.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Problem 2: Abstract Interface -->
+        <section class="content-card">
+            <h2>Problem 2: Musical Instrument Interface (Intermediate)</h2>
+
+            <div class="problem-box">
+                <h4>Task</h4>
+                <p>
+                    Create an abstract <code>Instrument</code> interface and implement three specific instruments with different musicians.
+                </p>
+
+                <h4>Requirements</h4>
+                <ul>
+                    <li><code>Instrument</code> abstract class should have:
+                        <ul>
+                            <li>Protected member: <code>string playerName</code></li>
+                            <li>Constructor that takes player name</li>
+                            <li>Pure virtual function: <code>void play() = 0</code></li>
+                            <li>Pure virtual function: <code>void tune() = 0</code></li>
+                            <li>Virtual destructor</li>
+                        </ul>
+                    </li>
+                    <li>Create three derived classes:
+                        <ul>
+                            <li><code>Piano</code> - player: Thabo</li>
+                            <li><code>Guitar</code> - player: Annika</li>
+                            <li><code>Drums</code> - player: Nkosi</li>
+                        </ul>
+                    </li>
+                    <li>Each instrument should have unique <code>play()</code> and <code>tune()</code> implementations</li>
+                </ul>
+
+                <h4>Test Code</h4>
+                <pre><code class="language-cpp">int main() {
+    Instrument* orchestra[3];
+    orchestra[0] = new Piano("Thabo");
+    orchestra[1] = new Guitar("Annika");
+    orchestra[2] = new Drums("Nkosi");
+
+    for (int i = 0; i &lt; 3; i++) {
+        orchestra[i]-&gt;tune();
+        orchestra[i]-&gt;play();
+        cout &lt;&lt; endl;
+    }
+
+    for (int i = 0; i &lt; 3; i++) {
+        delete orchestra[i];
+    }
+
+    return 0;
+}</code></pre>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleSolution('solution2')">Show Solution</button>
+            <div class="solution-section" id="solution2">
+                <h4>Complete Solution</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Solution Code</div>
+                    </div>
+
+                    <textarea id="editor2">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Instrument {
+protected:
+    string playerName;
+public:
+    Instrument(string name) : playerName(name) {}
+
+    virtual void play() = 0;
+    virtual void tune() = 0;
+    virtual ~Instrument() {}
+};
+
+class Piano : public Instrument {
+public:
+    Piano(string name) : Instrument(name) {}
+
+    void play() {
+        cout &lt;&lt; playerName &lt;&lt; " plays a beautiful piano melody" &lt;&lt; endl;
+    }
+
+    void tune() {
+        cout &lt;&lt; playerName &lt;&lt; " tunes the piano strings" &lt;&lt; endl;
+    }
+};
+
+class Guitar : public Instrument {
+public:
+    Guitar(string name) : Instrument(name) {}
+
+    void play() {
+        cout &lt;&lt; playerName &lt;&lt; " strums energetic guitar chords" &lt;&lt; endl;
+    }
+
+    void tune() {
+        cout &lt;&lt; playerName &lt;&lt; " tunes the 6 guitar strings" &lt;&lt; endl;
+    }
+};
+
+class Drums : public Instrument {
+public:
+    Drums(string name) : Instrument(name) {}
+
+    void play() {
+        cout &lt;&lt; playerName &lt;&lt; " beats a powerful drum rhythm" &lt;&lt; endl;
+    }
+
+    void tune() {
+        cout &lt;&lt; playerName &lt;&lt; " adjusts drum head tension" &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Instrument* orchestra[3];
+    orchestra[0] = new Piano("Thabo");
+    orchestra[1] = new Guitar("Annika");
+    orchestra[2] = new Drums("Nkosi");
+
+    for (int i = 0; i &lt; 3; i++) {
+        orchestra[i]-&gt;tune();
+        orchestra[i]-&gt;play();
+        cout &lt;&lt; endl;
+    }
+
+    for (int i = 0; i &lt; 3; i++) {
+        delete orchestra[i];
+    }
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loading2" class="loading-indicator">Running...</div>
+                            <div id="output2" class="output-text output-placeholder">
+                                Click "Run Code" to see the output...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4>Explanation</h4>
+                <ol>
+                    <li><strong>Pure virtual functions:</strong> <code>play() = 0</code> and <code>tune() = 0</code> make <code>Instrument</code> abstract. Every derived class MUST implement both.</li>
+                    <li><strong>Cannot instantiate:</strong> <code>Instrument i("Someone");</code> would be a compiler error.</li>
+                    <li><strong>All derived classes concrete:</strong> Piano, Guitar, and Drums all implement both pure virtuals, so they can be instantiated.</li>
+                    <li><strong>Polymorphism works:</strong> Loop calls the correct version for each instrument type through base pointers.</li>
+                </ol>
+
+                <div class="success-box">
+                    <strong>Key Insight:</strong> Abstract classes define an interface (contract) that all derived classes must follow. This ensures consistent behavior across different implementations.
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 3: What's Wrong? -->
+        <section class="content-card">
+            <h2>Problem 3: Find and Fix the Bug (Debugging)</h2>
+
+            <div class="problem-box">
+                <h4>Task</h4>
+                <p>
+                    The following code compiles and runs, but doesn't produce the expected polymorphic behavior. Find the bug and fix it.
+                </p>
+
+                <h4>Buggy Code</h4>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Shape {
+public:
+    void draw() {
+        cout &lt;&lt; "Drawing a generic shape" &lt;&lt; endl;
+    }
+};
+
+class Circle : public Shape {
+public:
+    void draw() {
+        cout &lt;&lt; "Drawing a circle" &lt;&lt; endl;
+    }
+};
+
+class Square : public Shape {
+public:
+    void draw() {
+        cout &lt;&lt; "Drawing a square" &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Shape* shapes[2];
+    shapes[0] = new Circle();
+    shapes[1] = new Square();
+
+    for (int i = 0; i &lt; 2; i++) {
+        shapes[i]-&gt;draw();
+    }
+
+    for (int i = 0; i &lt; 2; i++) {
+        delete shapes[i];
+    }
+
+    return 0;
+}</code></pre>
+
+                <h4>Current (Wrong) Output</h4>
+                <pre>Drawing a generic shape
+Drawing a generic shape</pre>
+
+                <h4>Expected Output</h4>
+                <pre>Drawing a circle
+Drawing a square</pre>
+
+                <h4>Question</h4>
+                <p>What's wrong? Why does it print "Drawing a generic shape" twice instead of calling the derived class versions?</p>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleSolution('solution3')">Show Solution</button>
+            <div class="solution-section" id="solution3">
+                <h4>The Bug</h4>
+                <p>
+                    The <code>draw()</code> function in the <code>Shape</code> class is <strong>not virtual</strong>. Without the <code>virtual</code> keyword, static binding is used - the compiler looks at the pointer type (<code>Shape*</code>) and always calls <code>Shape::draw()</code>.
+                </p>
+
+                <h4>The Fix</h4>
+                <p>Add the <code>virtual</code> keyword to <code>draw()</code> in the <code>Shape</code> class:</p>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Fixed Code</div>
+                    </div>
+
+                    <textarea id="editor3">#include &lt;iostream&gt;
+using namespace std;
+
+class Shape {
+public:
+    virtual void draw() {
+        cout &lt;&lt; "Drawing a generic shape" &lt;&lt; endl;
+    }
+
+    virtual ~Shape() {}
+};
+
+class Circle : public Shape {
+public:
+    void draw() {
+        cout &lt;&lt; "Drawing a circle" &lt;&lt; endl;
+    }
+};
+
+class Square : public Shape {
+public:
+    void draw() {
+        cout &lt;&lt; "Drawing a square" &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Shape* shapes[2];
+    shapes[0] = new Circle();
+    shapes[1] = new Square();
+
+    for (int i = 0; i &lt; 2; i++) {
+        shapes[i]-&gt;draw();
+    }
+
+    for (int i = 0; i &lt; 2; i++) {
+        delete shapes[i];
+    }
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loading3" class="loading-indicator">Running...</div>
+                            <div id="output3" class="output-text output-placeholder">
+                                Click "Run Code" to see the output...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4>What Changed</h4>
+                <ol>
+                    <li><strong>Line 5:</strong> Changed <code>void draw()</code> to <code>virtual void draw()</code></li>
+                    <li><strong>Added virtual destructor:</strong> <code>virtual ~Shape() {}</code> to prevent memory leaks</li>
+                </ol>
+
+                <h4>Why This Fixes It</h4>
+                <p>
+                    With <code>virtual</code>, the compiler uses dynamic binding. At runtime, when <code>shapes[i]-&gt;draw()</code> is called, the program checks what <code>shapes[i]</code> actually points to (Circle or Square) and calls the correct version.
+                </p>
+
+                <div class="warning-box">
+                    <strong>Common Mistake:</strong> Forgetting to make functions virtual in the base class is one of the most common bugs in polymorphic code. Without <code>virtual</code>, you don't get polymorphism - you just get static binding based on pointer type.
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 4: Output Prediction -->
+        <section class="content-card">
+            <h2>Problem 4: Predict the Output (Challenge)</h2>
+
+            <div class="problem-box">
+                <h4>Task</h4>
+                <p>
+                    Predict the output of this complex code involving virtual and non-virtual functions. This tests your understanding of when polymorphism works and when it doesn't.
+                </p>
+
+                <h4>Code to Analyze</h4>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Base {
+public:
+    virtual void func1() {
+        cout &lt;&lt; "Base::func1" &lt;&lt; endl;
+    }
+
+    void func2() {
+        cout &lt;&lt; "Base::func2" &lt;&lt; endl;
+    }
+
+    virtual ~Base() {}
+};
+
+class Derived : public Base {
+public:
+    void func1() {
+        cout &lt;&lt; "Derived::func1" &lt;&lt; endl;
+    }
+
+    void func2() {
+        cout &lt;&lt; "Derived::func2" &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Base* ptr = new Derived();
+
+    ptr-&gt;func1();
+    ptr-&gt;func2();
+
+    delete ptr;
+    return 0;
+}</code></pre>
+
+                <h4>Question</h4>
+                <p>What will this program print? Try to predict before revealing the answer.</p>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleSolution('solution4')">Show Solution</button>
+            <div class="solution-section" id="solution4">
+                <h4>Correct Output</h4>
+                <pre>Derived::func1
+Base::func2</pre>
+
+                <h4>Line-by-Line Analysis</h4>
+                <ol>
+                    <li>
+                        <strong><code>Base* ptr = new Derived();</code></strong><br>
+                        Creates a <code>Derived</code> object, but <code>ptr</code> is of type <code>Base*</code>.
+                    </li>
+                    <li>
+                        <strong><code>ptr-&gt;func1();</code></strong><br>
+                        <code>func1()</code> is <strong>virtual</strong> in Base.<br>
+                        Dynamic binding: Check actual object type → It's Derived → Call <code>Derived::func1()</code><br>
+                        <strong>Prints:</strong> "Derived::func1"
+                    </li>
+                    <li>
+                        <strong><code>ptr-&gt;func2();</code></strong><br>
+                        <code>func2()</code> is <strong>NOT virtual</strong> in Base.<br>
+                        Static binding: Compiler looks at pointer type → It's <code>Base*</code> → Call <code>Base::func2()</code><br>
+                        <strong>Prints:</strong> "Base::func2"
+                    </li>
+                </ol>
+
+                <h4>Key Insight</h4>
+                <div class="info-box">
+                    <strong>The Rule:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><strong>Virtual functions:</strong> Use dynamic binding (actual object type determines which version)</li>
+                        <li><strong>Non-virtual functions:</strong> Use static binding (pointer/reference type determines which version)</li>
+                    </ul>
+                </div>
+
+                <h4>Interactive Test</h4>
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Run to Confirm</div>
+                    </div>
+
+                    <textarea id="editor4">#include &lt;iostream&gt;
+using namespace std;
+
+class Base {
+public:
+    virtual void func1() {
+        cout &lt;&lt; "Base::func1" &lt;&lt; endl;
+    }
+
+    void func2() {
+        cout &lt;&lt; "Base::func2" &lt;&lt; endl;
+    }
+
+    virtual ~Base() {}
+};
+
+class Derived : public Base {
+public:
+    void func1() {
+        cout &lt;&lt; "Derived::func1" &lt;&lt; endl;
+    }
+
+    void func2() {
+        cout &lt;&lt; "Derived::func2" &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Base* ptr = new Derived();
+
+    cout &lt;&lt; "Calling func1 (virtual):" &lt;&lt; endl;
+    ptr-&gt;func1();
+
+    cout &lt;&lt; "Calling func2 (non-virtual):" &lt;&lt; endl;
+    ptr-&gt;func2();
+
+    delete ptr;
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loading4" class="loading-indicator">Running...</div>
+                            <div id="output4" class="output-text output-placeholder">
+                                Click "Run Code" to see the output...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="success-box">
+                    <strong>Practice Tip:</strong> When analyzing code with virtual and non-virtual functions, always check whether the function is declared <code>virtual</code> in the base class. That's the ONLY thing that determines whether you get polymorphism or not.
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script>
+        const editors = {};
+        const originalCode = {};
+        window.codeEditors = editors;
+
+        function initEditor(id) {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initEditor('editor1');
+            initEditor('editor2');
+            initEditor('editor3');
+            initEditor('editor4');
+            Prism.highlightAll();
+        });
+
+        function toggleSolution(id) {
+            const solutionSection = document.getElementById(id);
+            solutionSection.classList.toggle('visible');
+
+            const button = event.target;
+            if (solutionSection.classList.contains('visible')) {
+                button.textContent = 'Hide Solution';
+
+                // Refresh CodeMirror editors when revealing
+                setTimeout(() => {
+                    Object.values(editors).forEach(editor => {
+                        editor.refresh();
+                    });
+                }, 50);
+            } else {
+                button.textContent = 'Show Solution';
+            }
+        }
+
+        async function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = playgroundId.replace('playground', 'output');
+            const loadingId = playgroundId.replace('playground', 'loading');
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = event.target;
+
+            loadingEl.classList.add('active');
+            if (runBtn) runBtn.disabled = true;
+            outputEl.textContent = '';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                if (runBtn) runBtn.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            const outputId = editorId.replace('editor', 'output');
+            editors[editorId].setValue(originalCode[editorId]);
+
+            const outputEl = document.getElementById(outputId);
+            outputEl.textContent = 'Click "Run Code" to see the output...';
+            outputEl.className = 'output-text output-placeholder';
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

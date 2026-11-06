@@ -1,0 +1,2177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 5: Operator Overloading - Quiz | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        .quiz-question-box {
+            background: #1e293b;
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-number-badge {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-question-box h3 {
+            color: #a78bfa;
+            margin-top: 0;
+        }
+
+        .quiz-reveal-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: white;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .quiz-reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        .quiz-answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #8b5cf6;
+        }
+
+        .quiz-answer-section.visible {
+            display: block;
+        }
+
+        .quiz-answer-section strong {
+            color: #a78bfa;
+        }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 5: Operator Overloading</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html" class="active">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Assessment Quiz</h2>
+
+            <p>
+                This quiz contains 28 questions modeled after actual EO1 exam questions. These questions test your understanding of operator overloading at the level expected in the exam.
+            </p>
+
+            <div class="info-box">
+                <strong>Instructions:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Try to answer each question before revealing the solution</li>
+                    <li>Read all options carefully for multiple choice questions</li>
+                    <li>For code tracing, work through line by line on paper first</li>
+                    <li>This is practice - use it to identify weak areas</li>
+                </ul>
+            </div>
+
+            <div class="info-box" style="border-left-color: #f59e0b; background: #1f2937;">
+                <strong style="color: #fbbf24;">⚠️ Known Display Issue:</strong>
+                <p style="margin-top: 0.5rem; color: #d1d5db;">
+                    If you click "Show Answer" and the solution appears as a black box or doesn't display properly,
+                    just <strong>click anywhere on the screen</strong> (on the page background, scroll bar, or near the answer area).
+                    This will trigger the content to fully render. I've tried to fix this rendering bug multiple times,
+                    but it persists - so this is the workaround for now! Sorry for the inconvenience.
+                </p>
+            </div>
+        </section>
+
+        <!-- Question 1 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 1</div>
+            <h3>Operator Function Syntax (Adapted from EO1 2025 Q3)</h3>
+            <p>Given the expression: <code>result = (a + b) * c;</code></p>
+            <p>Where <code>a</code>, <code>b</code>, <code>c</code>, and <code>result</code> are objects of class <code>Number</code>, rewrite this using explicit operator function calls.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer1')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer1">
+                <p><strong>Answer:</strong></p>
+                <pre><code class="language-cpp">result.operator=(operator*(operator+(a, b), c));</code></pre>
+
+                <p><strong>Detailed Explanation:</strong></p>
+                <p>Working from innermost to outermost operations:</p>
+                <ol>
+                    <li><code>a + b</code> becomes <code>operator+(a, b)</code> - calls the + operator with a and b as arguments</li>
+                    <li>The result is then multiplied by c: <code>operator*(result_of_add, c)</code></li>
+                    <li>Finally, assignment: <code>result.operator=(result_of_mult)</code></li>
+                </ol>
+
+                <p><strong>Key Insight:</strong> Binary operators like + and * are typically implemented as non-member functions taking two parameters. Assignment (=) is typically a member function, so it's called as <code>result.operator=(...)</code>.</p>
+            </div>
+        </section>
+
+        <!-- Question 2 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 2</div>
+            <h3>Friend vs Member Functions</h3>
+            <p>Which of the following statements is TRUE about friend functions in operator overloading?</p>
+            <ol type="A">
+                <li>Friend functions are always more efficient than member functions</li>
+                <li>Friend functions allow symmetric type conversion for both operands</li>
+                <li>Friend functions must be declared inside the class but defined with the <code>friend</code> keyword</li>
+                <li>Friend functions cannot access private members of the class</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer2')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer2">
+                <p><strong>Answer:</strong> B - Friend functions allow symmetric type conversion for both operands</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>Friend functions are non-member functions, so both operands are parameters. The compiler can apply automatic type conversion to either operand. This means both <code>obj + 5</code> and <code>5 + obj</code> can work (if there's an appropriate constructor). With member functions, only the right operand can be converted.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - Friend and member functions have the same efficiency when accessing private members. Both can access private data directly. The choice between them is about interface design, not performance.</li>
+                    <li><strong>C:</strong> Incorrect - Friend functions are declared with the <code>friend</code> keyword inside the class, but defined WITHOUT the <code>friend</code> keyword outside the class. The definition is just a regular function.</li>
+                    <li><strong>D:</strong> Incorrect - This is backwards. The whole point of friend functions is that they CAN access private and protected members. That's what makes them "friends".</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 3 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 3</div>
+            <h3>Stream Operator Requirements</h3>
+            <p>Which of the following is a requirement for overloading the <code><<</code> operator for output?</p>
+            <ol type="A">
+                <li>It must be implemented as a member function</li>
+                <li>It must return <code>void</code></li>
+                <li>It must return <code>ostream&</code></li>
+                <li>The object parameter must be non-const</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer3')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer3">
+                <p><strong>Answer:</strong> C - It must return <code>ostream&</code></p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>The <code>operator<<</code> must return <code>ostream&</code> (a reference to the output stream) to enable chaining. When you write <code>cout << obj1 << obj2</code>, the expression <code>(cout << obj1)</code> must evaluate to <code>cout</code> so it can be used for the next <code><< obj2</code> operation. Returning by reference avoids copying the stream object.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - <code>operator<<</code> must be a NON-member function (usually a friend). The left operand is <code>ostream</code>, not your class. You can't add member functions to <code>ostream</code> (it's in the standard library).</li>
+                    <li><strong>B:</strong> Incorrect - Returning <code>void</code> breaks chaining. You couldn't write <code>cout << obj << endl</code> because <code>(cout << obj)</code> would be <code>void</code>, and <code>void << endl</code> is nonsense.</li>
+                    <li><strong>D:</strong> Incorrect - The object parameter should be <code>const</code> because we're only reading it for output, not modifying it. <code>ostream& operator<<(ostream& os, const MyClass& obj)</code> is the correct signature.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 4 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 4</div>
+            <h3>Code Tracing with Operators</h3>
+            <p>What is the output of the following code?</p>
+
+<pre><code class="language-cpp">class Counter {
+public:
+    Counter(int v = 0) : value(v) {}
+
+    Counter& operator++() {
+        value++;
+        return *this;
+    }
+
+    const Counter operator++(int) {
+        Counter old = *this;
+        value++;
+        return old;
+    }
+
+    void print() { cout << value; }
+
+private:
+    int value;
+};
+
+int main() {
+    Counter c(5);
+    (c++).print();
+    cout << " ";
+    (++c).print();
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer4')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer4">
+                <p><strong>Output:</strong></p>
+                <pre>5 7</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line 20:</strong> Create <code>Counter c(5)</code> → c.value = 5</li>
+                    <li><strong>Line 21:</strong> <code>(c++).print()</code>:
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Postfix <code>++</code> is called</li>
+                            <li>Saves old value: <code>old.value = 5</code></li>
+                            <li>Increments: <code>c.value = 6</code></li>
+                            <li>Returns old (5)</li>
+                            <li>Calls <code>print()</code> on temporary (old) → prints <strong>5</strong></li>
+                        </ul>
+                    </li>
+                    <li><strong>After line 21:</strong> c.value = 6 (the increment happened, but we printed the old value)</li>
+                    <li><strong>Line 22:</strong> Prints <code>" "</code> (space)</li>
+                    <li><strong>Line 23:</strong> <code>(++c).print()</code>:
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Prefix <code>++</code> is called</li>
+                            <li>Increments: <code>c.value = 7</code></li>
+                            <li>Returns reference to <code>c</code></li>
+                            <li>Calls <code>print()</code> on c → prints <strong>7</strong></li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <p><strong>Key Difference:</strong></p>
+                <ul>
+                    <li><strong>Postfix (c++):</strong> Returns OLD value (5), but c still gets incremented to 6</li>
+                    <li><strong>Prefix (++c):</strong> Increments FIRST (6→7), then returns reference to modified c</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 5 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 5</div>
+            <h3>Return Types</h3>
+            <p>For the <code>operator+=</code> member function, what should the return type be and why?</p>
+            <ol type="A">
+                <li><code>void</code> - Because it modifies the object directly</li>
+                <li><code>ClassName</code> - To return a new modified object</li>
+                <li><code>ClassName&</code> - To enable chaining and avoid copying</li>
+                <li><code>const ClassName&</code> - To prevent modification of the result</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer5')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer5">
+                <p><strong>Answer:</strong> C - <code>ClassName&</code> (non-const reference)</p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>Compound assignment operators like <code>+=</code> should return <code>*this</code> by reference. This enables two things:</p>
+                <ol>
+                    <li><strong>Chaining:</strong> <code>a += b += c</code> works because each <code>+=</code> returns the modified object</li>
+                    <li><strong>Efficiency:</strong> Returning by reference avoids making a copy of the object</li>
+                    <li><strong>Consistency:</strong> Matches the behavior of built-in types (<code>int</code> also returns reference from <code>+=</code>)</li>
+                </ol>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A (void):</strong> Breaks chaining. <code>a += b += c</code> wouldn't work because <code>(b += c)</code> returns <code>void</code>, and you can't do <code>a += void</code>. Also doesn't match how built-in <code>+=</code> works.</li>
+                    <li><strong>B (ClassName):</strong> Returns a copy, not a reference. Inefficient and incorrect - you'd be returning a copy of the modified object, not the object itself. Also breaks chaining properly because you'd modify the copy, not the original.</li>
+                    <li><strong>D (const ClassName&):</strong> The <code>const</code> is wrong. You should be able to further modify the result. For example, <code>(a += b)++</code> or <code>(a += b) = c</code> should be possible (though rarely used). Making it const prevents these operations unnecessarily.</li>
+                </ul>
+
+                <p><strong>Implementation Example:</strong></p>
+                <pre><code class="language-cpp">ClassName& operator+=(const ClassName& other) {
+    // Modify *this
+    this->data += other.data;
+    return *this;  // Return reference to modified object
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 6 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 6</div>
+            <h3>True or False: Operator Overloading Rules</h3>
+            <p><strong>True or False:</strong> You can overload the <code>operator[]</code> for a class as a non-member function.</p>
+            <p>Justify your answer.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer6')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer6">
+                <p><strong>Answer:</strong> False</p>
+
+                <p><strong>Detailed Justification:</strong></p>
+                <p>The C++ standard <strong>requires</strong> that certain operators MUST be implemented as non-static member functions. The subscript operator <code>[]</code> is one of them.</p>
+
+                <p><strong>Operators that MUST be members:</strong></p>
+                <ul>
+                    <li><code>=</code> (assignment)</li>
+                    <li><code>[]</code> (subscript)</li>
+                    <li><code>()</code> (function call)</li>
+                    <li><code>-></code> (member access)</li>
+                </ul>
+
+                <p><strong>Why this restriction exists:</strong></p>
+                <p>These operators are fundamentally tied to the object they operate on. The subscript operator <code>[]</code> is providing direct access to the object's internal data structure. It only makes sense as a member because:</p>
+                <ol>
+                    <li>The left operand MUST be an object of the class</li>
+                    <li>It operates on the object's internal state</li>
+                    <li>There's no case where you'd want symmetric conversion (you can't subscript an int: <code>5[obj]</code> is nonsense)</li>
+                </ol>
+
+                <p><strong>Correct Implementation:</strong></p>
+                <pre><code class="language-cpp">class MyArray {
+public:
+    int& operator[](int index) {  // MUST be a member
+        return data[index];
+    }
+private:
+    int* data;
+};</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 7 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 7</div>
+            <h3>Implementing Comparison Operators</h3>
+            <p>Which implementation of <code>operator!=</code> is most efficient if you've already implemented <code>operator==</code>?</p>
+
+            <ol type="A">
+                <li><pre style="margin-top: 0.5rem;"><code class="language-cpp">bool operator!=(const MyClass& a, const MyClass& b) {
+    return (a.data1 != b.data1 || a.data2 != b.data2);
+}</code></pre></li>
+                <li><pre style="margin-top: 0.5rem;"><code class="language-cpp">bool operator!=(const MyClass& a, const MyClass& b) {
+    return !(a == b);
+}</code></pre></li>
+                <li><pre style="margin-top: 0.5rem;"><code class="language-cpp">bool operator!=(const MyClass& a, const MyClass& b) {
+    if (a.data1 == b.data1 && a.data2 == b.data2)
+        return false;
+    return true;
+}</code></pre></li>
+                <li><pre style="margin-top: 0.5rem;"><code class="language-cpp">bool MyClass::operator!=(const MyClass& other) const {
+    return !(*this).operator==(other);
+}</code></pre></li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer7')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer7">
+                <p><strong>Answer:</strong> B</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>Option B is the best because it:</p>
+                <ul>
+                    <li><strong>Reuses existing logic:</strong> Delegates to <code>operator==</code> which you've already implemented and tested</li>
+                    <li><strong>Avoids duplication:</strong> No duplicate comparison logic to maintain</li>
+                    <li><strong>Prevents bugs:</strong> If you update how equality works, inequality automatically updates too</li>
+                    <li><strong>Clear and concise:</strong> The intent is obvious - "not equal" is literally "not (equal)"</li>
+                </ul>
+
+                <p><strong>Why other options are worse:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Duplicates the comparison logic from <code>operator==</code>. If you have 10 member variables, you have to update both functions when you add an 11th. Violates DRY (Don't Repeat Yourself) principle.</li>
+                    <li><strong>C:</strong> Also duplicates logic, just written differently. Same maintenance problem as A.</li>
+                    <li><strong>D:</strong> Unnecessarily verbose. <code>(*this).operator==(other)</code> is the same as <code>*this == other</code>, which the compiler handles. While technically correct, it's harder to read than option B.</li>
+                </ul>
+
+                <p><strong>Best Practice Pattern:</strong></p>
+                <p>Implement the "primitive" operators (<code>==</code>, <code><</code>) with full logic. Derive all others from them:</p>
+                <pre><code class="language-cpp">bool operator!=(const MyClass& a, const MyClass& b) { return !(a == b); }
+bool operator>(const MyClass& a, const MyClass& b) { return b < a; }
+bool operator<=(const MyClass& a, const MyClass& b) { return !(b < a); }
+bool operator>=(const MyClass& a, const MyClass& b) { return !(a < b); }</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 8 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 8</div>
+            <h3>Prefix vs Postfix Increment (Adapted from EO1 2024)</h3>
+            <p>What distinguishes the prefix <code>++</code> operator from the postfix <code>++</code> operator in their function signatures?</p>
+            <ol type="A">
+                <li>Different return types: prefix returns reference, postfix returns value</li>
+                <li>Postfix has a dummy <code>int</code> parameter, prefix has no parameters</li>
+                <li>Prefix is always a member function, postfix is always a friend</li>
+                <li>Prefix takes the object by reference, postfix by value</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer8')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer8">
+                <p><strong>Answer:</strong> B - Postfix has a dummy <code>int</code> parameter, prefix has no parameters</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>The C++ standard uses a clever trick to distinguish prefix from postfix: the postfix version has an unused <code>int</code> parameter. This parameter has no name and is never used - it exists solely to make the signature different.</p>
+
+                <p><strong>Signatures:</strong></p>
+                <pre><code class="language-cpp">// Prefix (no parameters if member, one if friend)
+Counter& operator++();  // member version
+
+// Postfix (dummy int parameter)
+const Counter operator++(int);  // member version
+//                        ^^^--- unused dummy parameter</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> While true that return types differ, this is NOT what distinguishes them in the signature. C++ doesn't allow overloading based solely on return type. The signatures must differ in their parameters.</li>
+                    <li><strong>C:</strong> Both can be implemented as either member or friend functions. Neither is required to be one or the other.</li>
+                    <li><strong>D:</strong> Incorrect - both typically work with the same object. The calling object (for members) or parameter (for friends) is the same. The difference is the dummy <code>int</code> parameter.</li>
+                </ul>
+
+                <p><strong>Usage:</strong></p>
+                <pre><code class="language-cpp">Counter c(5);
+++c;   // Calls operator++()    - prefix
+c++;   // Calls operator++(int) - postfix (compiler passes 0)</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 9 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 9</div>
+            <h3>Find the Bug</h3>
+            <p>The following code has a bug. Identify the bug and explain how to fix it.</p>
+
+<pre><code class="language-cpp">class Money {
+public:
+    Money(int d, int c) : dollars(d), cents(c) {}
+
+    friend Money operator+(const Money& m1, const Money& m2);
+
+private:
+    int dollars, cents;
+};
+
+friend Money operator+(const Money& m1, const Money& m2) {
+    int totalCents = (m1.dollars * 100 + m1.cents) +
+                     (m2.dollars * 100 + m2.cents);
+    return Money(totalCents / 100, totalCents % 100);
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer9')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer9">
+                <p><strong>Bug Location:</strong> Line 11</p>
+
+                <p><strong>What's Wrong:</strong> The <code>friend</code> keyword appears in the function definition (line 11), but it should only be in the declaration (line 5).</p>
+
+                <p><strong>Why It's Wrong:</strong></p>
+                <p>The <code>friend</code> keyword is a class permission - it goes in the class declaration to grant access. The function definition is written as a regular free function (no <code>friend</code> keyword, no class scope). Using <code>friend</code> in the definition causes a compilation error.</p>
+
+                <p><strong>How to Fix:</strong></p>
+                <pre><code class="language-cpp">// Correct version - NO 'friend' keyword in definition
+Money operator+(const Money& m1, const Money& m2) {
+    int totalCents = (m1.dollars * 100 + m1.cents) +
+                     (m2.dollars * 100 + m2.cents);
+    return Money(totalCents / 100, totalCents % 100);
+}</code></pre>
+
+                <p><strong>Key Rule:</strong></p>
+                <ul>
+                    <li><strong>Declaration (inside class):</strong> Use <code>friend</code> keyword</li>
+                    <li><strong>Definition (outside class):</strong> NO <code>friend</code> keyword, NO <code>ClassName::</code> scope</li>
+                </ul>
+
+                <p><strong>Why this confuses students:</strong> Member function definitions use <code>ClassName::</code> scope. Friend functions look like member declarations but are defined as free functions. This asymmetry is deliberate - friend functions are not members, they're external functions with special access.</p>
+            </div>
+        </section>
+
+        <!-- Question 10 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 10</div>
+            <h3>Implementing Multiplication Operator (Similar to EO1 2025 Q10)</h3>
+            <p>Given this incomplete <code>Box</code> class:</p>
+
+<pre><code class="language-cpp">class Box {
+public:
+    Box(int w, int h, int d) : width(w), height(h), depth(d) {}
+    int getVolume() const { return width * height * depth; }
+private:
+    int width, height, depth;
+};</code></pre>
+
+            <p>Write the implementation for <code>operator*</code> that multiplies all dimensions by a factor. After <code>Box b2 = b1 * 2;</code>, <code>b2</code> should have dimensions twice as large as <code>b1</code>.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer10')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer10">
+                <p><strong>Answer:</strong></p>
+                <pre><code class="language-cpp">class Box {
+public:
+    Box(int w, int h, int d) : width(w), height(h), depth(d) {}
+    int getVolume() const { return width * height * depth; }
+
+    // Friend declaration
+    friend Box operator*(const Box& box, int factor);
+
+private:
+    int width, height, depth;
+};
+
+// Friend function definition
+Box operator*(const Box& box, int factor) {
+    return Box(box.width * factor,
+               box.height * factor,
+               box.depth * factor);
+}</code></pre>
+
+                <p><strong>Explanation:</strong></p>
+                <ol>
+                    <li><strong>Friend function:</strong> Allows symmetric conversion. Both <code>box * 2</code> and <code>2 * box</code> can work if you also implement <code>operator*(int, const Box&)</code>.</li>
+                    <li><strong>Returns new Box:</strong> Arithmetic operators create and return new objects, they don't modify operands.</li>
+                    <li><strong>Const parameters:</strong> Neither operand is modified - we read from both and create a new result.</li>
+                    <li><strong>Direct member access:</strong> As a friend, we can access <code>box.width</code>, <code>box.height</code>, <code>box.depth</code> directly.</li>
+                </ol>
+
+                <p><strong>For symmetric conversion, add:</strong></p>
+                <pre><code class="language-cpp">Box operator*(int factor, const Box& box) {
+    return box * factor;  // Reuse the existing operator
+}</code></pre>
+
+                <p><strong>Usage:</strong></p>
+                <pre><code class="language-cpp">Box b1(2, 3, 4);          // 2x3x4 box
+Box b2 = b1 * 2;           // 4x6x8 box
+Box b3 = 3 * b1;           // 6x9x12 box (needs second operator)
+cout << b2.getVolume();    // 192 (4*6*8)</code></pre>
+            </div>
+        </section>
+
+        <!-- Continue with more questions... -->
+        <!-- I'll add 18 more questions to reach 28 total -->
+
+        <!-- Question 11 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 11</div>
+            <h3>Operator Overloading Restrictions</h3>
+            <p>Which of the following operators CANNOT be overloaded in C++?</p>
+            <ol type="A">
+                <li><code>operator[]</code> (subscript)</li>
+                <li><code>operator-></code> (member access)</li>
+                <li><code>operator.</code> (dot operator)</li>
+                <li><code>operator()</code> (function call)</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer11')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer11">
+                <p><strong>Answer:</strong> C - <code>operator.</code> (dot operator) cannot be overloaded</p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>The dot operator <code>.</code> is one of a few operators that C++ explicitly forbids overloading. Others include:</p>
+                <ul>
+                    <li><code>.</code> (dot / member selection)</li>
+                    <li><code>::</code> (scope resolution)</li>
+                    <li><code>?:</code> (ternary conditional)</li>
+                    <li><code>sizeof</code></li>
+                    <li><code>.*</code> (pointer-to-member)</li>
+                </ul>
+
+                <p><strong>Why these can't be overloaded:</strong> These operators are fundamental to the language's semantics. Allowing them to be overloaded would make code unpredictable and potentially break the type system.</p>
+
+                <p><strong>Why other options can be overloaded:</strong></p>
+                <ul>
+                    <li><strong>A (<code>[]</code>):</strong> Can be overloaded to provide array-like access to class objects</li>
+                    <li><strong>B (<code>-></code>):</strong> Can be overloaded to create smart pointers</li>
+                    <li><strong>D (<code>()</code>):</strong> Can be overloaded to make objects callable like functions (function objects / functors)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 12 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 12</div>
+            <h3>Code Output Prediction</h3>
+            <p>What does this code print?</p>
+
+<pre><code class="language-cpp">class Value {
+public:
+    Value(int v) : val(v) {}
+
+    Value operator+(const Value& other) const {
+        return Value(val + other.val);
+    }
+
+    Value& operator+=(const Value& other) {
+        val += other.val;
+        return *this;
+    }
+
+    int get() const { return val; }
+
+private:
+    int val;
+};
+
+int main() {
+    Value a(5), b(3), c(2);
+    Value result = a + b + c;
+    cout << result.get() << " ";
+    a += b += c;
+    cout << a.get() << " " << b.get();
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer12')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer12">
+                <p><strong>Output:</strong></p>
+                <pre>10 10 5</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line 20:</strong> Create a(5), b(3), c(2)</li>
+                    <li><strong>Line 21:</strong> <code>Value result = a + b + c</code>:
+                        <ul style="margin-left: 1.5rem;">
+                            <li>First: <code>a + b</code> → creates temporary Value(5+3) = Value(8)</li>
+                            <li>Then: <code>Value(8) + c</code> → creates temporary Value(8+2) = Value(10)</li>
+                            <li>Assign to result → result.val = 10</li>
+                            <li>Note: a, b, c unchanged (operator+ doesn't modify operands)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line 22:</strong> Prints result.get() → <strong>10</strong> and a space</li>
+                    <li><strong>Line 23:</strong> <code>a += b += c</code>:
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Right-to-left associativity!</li>
+                            <li>First: <code>b += c</code> → b.val = 3+2 = 5, returns reference to b</li>
+                            <li>Then: <code>a += b</code> → a.val = 5+5 = 10, returns reference to a</li>
+                            <li>Result: a.val = 10, b.val = 5, c.val = 2</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line 24:</strong> Prints a.get() → <strong>10</strong>, space, b.get() → <strong>5</strong></li>
+                </ol>
+
+                <p><strong>Key Insights:</strong></p>
+                <ul>
+                    <li><code>operator+</code> creates new objects without modifying operands</li>
+                    <li><code>operator+=</code> modifies the left operand and returns it by reference</li>
+                    <li>Compound assignment has right-to-left associativity</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Questions 13-28 would continue in the same format... -->
+        <!-- For brevity, I'll add a few more representative questions -->
+
+        <!-- Question 13 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 13</div>
+            <h3>Const Correctness in Operators</h3>
+            <p>Given a <code>Point</code> class, which operator signature is correct for checking equality?</p>
+
+            <ol type="A">
+                <li><code>bool operator==(Point& other)</code></li>
+                <li><code>bool operator==(const Point& other) const</code></li>
+                <li><code>bool operator==(Point& other) const</code></li>
+                <li><code>const bool operator==(const Point& other) const</code></li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer13')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer13">
+                <p><strong>Answer:</strong> B - <code>bool operator==(const Point& other) const</code></p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <ul>
+                    <li><strong>First <code>const</code>:</strong> The parameter is <code>const Point&</code> because we're only reading it, not modifying it</li>
+                    <li><strong>Second <code>const</code>:</strong> The member function is <code>const</code> because comparing doesn't modify the calling object either</li>
+                    <li><strong>Return type:</strong> Plain <code>bool</code> - there's no reason to return <code>const bool</code> for a fundamental type</li>
+                </ul>
+
+                <p><strong>Why others are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> No <code>const</code> anywhere - prevents comparing const objects: <code>const Point p1(1,2); const Point p2(1,2); p1 == p2</code> won't compile</li>
+                    <li><strong>C:</strong> Parameter isn't const - prevents using with const arguments or temporaries</li>
+                    <li><strong>D:</strong> <code>const bool</code> return is pointless - you can't modify a bool anyway, and it prevents certain optimizations</li>
+                </ul>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">class Point {
+public:
+    bool operator==(const Point& other) const {
+        return (x == other.x && y == other.y);
+    }
+private:
+    int x, y;
+};</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 14 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 14</div>
+            <h3>Assignment Operator Special Case</h3>
+            <p>Why should the assignment operator check for self-assignment?</p>
+
+            <ol type="A">
+                <li>To improve performance by avoiding unnecessary work</li>
+                <li>To prevent crashes when deallocating and reallocating the same memory</li>
+                <li>Both A and B</li>
+                <li>Self-assignment check is not necessary in C++</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer14')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer14">
+                <p><strong>Answer:</strong> C - Both A and B</p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>Self-assignment checking serves two critical purposes:</p>
+
+                <p><strong>Reason A - Performance:</strong></p>
+                <p>If someone writes <code>obj = obj;</code>, without checking you'd unnecessarily copy all data to itself. Checking <code>if (this != &other)</code> skips this wasted work.</p>
+
+                <p><strong>Reason B - Correctness (MORE IMPORTANT):</strong></p>
+                <p>With dynamic memory, self-assignment can cause crashes:</p>
+                <pre><code class="language-cpp">// WITHOUT self-assignment check
+MyClass& operator=(const MyClass& other) {
+    delete[] data;              // Delete our data
+    data = new int[other.size]; // Allocate new
+    // Copy from other...
+}
+
+// If self-assignment (obj = obj):
+// 1. delete[] data    → Deletes our data
+// 2. other.data is ALSO deleted (it's the same object!)
+// 3. new int[other.size] → other.size is garbage!
+// CRASH!</code></pre>
+
+                <p><strong>Correct Implementation:</strong></p>
+                <pre><code class="language-cpp">MyClass& operator=(const MyClass& other) {
+    if (this != &other) {  // Check for self-assignment!
+        delete[] data;
+        size = other.size;
+        data = new int[size];
+        for (int i = 0; i < size; i++)
+            data[i] = other.data[i];
+    }
+    return *this;
+}</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>D:</strong> Completely wrong - self-assignment check is critical for classes with dynamic memory</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 15 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 15</div>
+            <h3>Conversion and Operators</h3>
+            <p>If a class has a constructor <code>MyClass(int)</code>, which expression will work with a member <code>operator+</code>?</p>
+
+            <ol type="A">
+                <li><code>obj + 5</code> only</li>
+                <li><code>5 + obj</code> only</li>
+                <li>Both <code>obj + 5</code> and <code>5 + obj</code></li>
+                <li>Neither will work</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer15')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer15">
+                <p><strong>Answer:</strong> A - <code>obj + 5</code> only</p>
+
+                <p><strong>Why A is correct:</strong></p>
+                <p>With a member function <code>operator+</code>:</p>
+                <ul>
+                    <li><code>obj + 5</code> translates to <code>obj.operator+(5)</code></li>
+                    <li>The compiler can convert <code>5</code> to <code>MyClass(5)</code> using the constructor</li>
+                    <li>This works: <code>obj.operator+(MyClass(5))</code></li>
+                </ul>
+
+                <p><strong>Why <code>5 + obj</code> doesn't work:</strong></p>
+                <ul>
+                    <li><code>5 + obj</code> translates to <code>5.operator+(obj)</code></li>
+                    <li><code>int</code> doesn't have an <code>operator+</code> that takes <code>MyClass</code></li>
+                    <li>The compiler can't add member functions to built-in types</li>
+                    <li>Result: <strong>compilation error</strong></li>
+                </ul>
+
+                <p><strong>To make both work, use friend function:</strong></p>
+                <pre><code class="language-cpp">class MyClass {
+public:
+    MyClass(int v) : value(v) {}  // Allows int → MyClass conversion
+
+    // Friend allows conversion on BOTH sides
+    friend MyClass operator+(const MyClass& a, const MyClass& b) {
+        return MyClass(a.value + b.value);
+    }
+
+private:
+    int value;
+};
+
+// Now BOTH work:
+MyClass result1 = obj + 5;  // Works: obj.operator+(MyClass(5))
+MyClass result2 = 5 + obj;  // Works: operator+(MyClass(5), obj)</code></pre>
+
+                <p><strong>Key Principle:</strong> Automatic conversion only works for parameters, not for the calling object (left side of member function call).</p>
+            </div>
+        </section>
+
+        <!-- Question 16 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 16</div>
+            <h3>Subscript Operator with Const Overloading</h3>
+            <p>Why do we need two versions of <code>operator[]</code>?</p>
+
+<pre><code class="language-cpp">class IntArray {
+public:
+    int& operator[](int index);             // Version 1
+    const int& operator[](int index) const; // Version 2
+private:
+    int* data;
+};</code></pre>
+
+            <ol type="A">
+                <li>To allow subscripting with different index types</li>
+                <li>One for reading, one for writing to array elements</li>
+                <li>To work with both const and non-const objects</li>
+                <li>This is a compiler error - you can't overload based only on const</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer16')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer16">
+                <p><strong>Answer:</strong> C - To work with both const and non-const objects</p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>We need TWO versions to handle const and non-const objects properly:</p>
+
+                <p><strong>Version 1 (non-const):</strong></p>
+                <ul>
+                    <li>Returns <code>int&</code> - allows modification</li>
+                    <li>Called on non-const objects</li>
+                    <li>Enables: <code>arr[0] = 42;</code> (writing)</li>
+                </ul>
+
+                <p><strong>Version 2 (const):</strong></p>
+                <ul>
+                    <li>Returns <code>const int&</code> - prevents modification</li>
+                    <li>Called on const objects</li>
+                    <li>Enables: <code>int x = arr[0];</code> (reading from const array)</li>
+                </ul>
+
+                <p><strong>Example Usage:</strong></p>
+                <pre><code class="language-cpp">IntArray arr;
+arr[0] = 10;        // Calls non-const version, returns int&
+
+const IntArray cArr;
+int x = cArr[0];    // Calls const version, returns const int&
+cArr[0] = 10;       // ERROR! Can't modify const reference</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Both versions take the same parameter type (<code>int index</code>). Different index types would require different parameter types, not const overloading.</li>
+                    <li><strong>B:</strong> Close but not quite right. BOTH versions can be used for reading. The difference is whether the object itself is const, not whether you're reading or writing. The const version prevents writing, but the choice of which is called depends on the object's constness.</li>
+                    <li><strong>D:</strong> Incorrect - you CAN overload member functions based on const. The const keyword is part of the function signature for member functions.</li>
+                </ul>
+
+                <p><strong>Full Implementation:</strong></p>
+                <pre><code class="language-cpp">class IntArray {
+public:
+    // Non-const version: for modifiable arrays
+    int& operator[](int index) {
+        return data[index];  // Returns reference - can modify
+    }
+
+    // Const version: for const arrays
+    const int& operator[](int index) const {
+        return data[index];  // Returns const ref - can't modify
+    }
+
+private:
+    int* data;
+};</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 17 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 17</div>
+            <h3>Function Call Operator (Functor)</h3>
+            <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Multiplier {
+public:
+    Multiplier(int f) : factor(f) {}
+
+    int operator()(int value) const {
+        return value * factor;
+    }
+
+private:
+    int factor;
+};
+
+int main() {
+    Multiplier triple(3);
+    Multiplier doubleIt(2);
+
+    cout << triple(5) << " ";
+    cout << doubleIt(triple(4));
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer17')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer17">
+                <p><strong>Output:</strong></p>
+                <pre>15 24</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line 13:</strong> Create <code>Multiplier triple(3)</code> → triple.factor = 3</li>
+                    <li><strong>Line 14:</strong> Create <code>Multiplier doubleIt(2)</code> → doubleIt.factor = 2</li>
+                    <li><strong>Line 16:</strong> <code>triple(5)</code>:
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Calls <code>triple.operator()(5)</code></li>
+                            <li>Returns <code>5 * triple.factor</code> = 5 * 3 = <strong>15</strong></li>
+                            <li>Prints: <strong>15</strong> and space</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line 17:</strong> <code>doubleIt(triple(4))</code>:
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Inner: <code>triple(4)</code> → <code>4 * 3 = 12</code></li>
+                            <li>Outer: <code>doubleIt(12)</code> → <code>12 * 2 = 24</code></li>
+                            <li>Prints: <strong>24</strong></li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <p><strong>What's Happening:</strong></p>
+                <p>The function call operator <code>operator()</code> makes objects callable like functions. These are called <strong>functors</strong> or <strong>function objects</strong>.</p>
+
+                <p><strong>Key Benefits of Functors:</strong></p>
+                <ul>
+                    <li><strong>State:</strong> Unlike regular functions, functors can hold state (the <code>factor</code> member variable)</li>
+                    <li><strong>Customizable:</strong> Each functor object can have different state</li>
+                    <li><strong>Syntax:</strong> Used just like functions: <code>obj(args)</code></li>
+                </ul>
+
+                <p><strong>Real-World Use:</strong></p>
+                <p>Functors are used extensively with STL algorithms:</p>
+                <pre><code class="language-cpp">vector<int> nums = {1, 2, 3, 4, 5};
+Multiplier triple(3);
+transform(nums.begin(), nums.end(), nums.begin(), triple);
+// nums is now {3, 6, 9, 12, 15}</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 18 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 18</div>
+            <h3>Code Tracing: Complex Operator Chaining</h3>
+            <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Num {
+public:
+    Num(int v = 0) : value(v) {}
+
+    Num operator+(const Num& other) const {
+        return Num(value + other.value);
+    }
+
+    Num& operator=(const Num& other) {
+        value = other.value;
+        return *this;
+    }
+
+    Num& operator--() {
+        value--;
+        return *this;
+    }
+
+    void print() { cout << value; }
+
+private:
+    int value;
+};
+
+int main() {
+    Num a(10), b(5), c(3);
+    (a = b + c).print();
+    cout << " ";
+    (--a).print();
+    cout << " ";
+    a.print();
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer18')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer18">
+                <p><strong>Output:</strong></p>
+                <pre>8 7 7</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line 25:</strong> Create a(10), b(5), c(3)</li>
+                    <li><strong>Line 26:</strong> <code>(a = b + c).print()</code>:
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Step 1: <code>b + c</code> → calls operator+</li>
+                            <li>Returns temporary Num(5 + 3) = Num(8)</li>
+                            <li>Step 2: <code>a = Num(8)</code> → calls operator=</li>
+                            <li>Sets a.value = 8, returns reference to a</li>
+                            <li>Step 3: <code>a.print()</code> → prints <strong>8</strong></li>
+                            <li>Variables: a.value = 8, b.value = 5, c.value = 3</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line 27:</strong> Prints space</li>
+                    <li><strong>Line 28:</strong> <code>(--a).print()</code>:
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Prefix decrement: a.value-- → a.value = 7</li>
+                            <li>Returns reference to a</li>
+                            <li><code>a.print()</code> → prints <strong>7</strong></li>
+                            <li>Variables: a.value = 7</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line 29:</strong> Prints space</li>
+                    <li><strong>Line 30:</strong> <code>a.print()</code>:
+                        <ul style="margin-left: 1.5rem;">
+                            <li>a.value is still 7 from previous decrement</li>
+                            <li>Prints <strong>7</strong></li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <p><strong>Key Concepts:</strong></p>
+                <ul>
+                    <li><code>operator+</code> creates NEW object (temporary) without modifying operands</li>
+                    <li><code>operator=</code> modifies left operand and returns reference to it</li>
+                    <li>Prefix <code>--</code> modifies and returns reference (enables chaining)</li>
+                    <li>Parentheses allow calling <code>.print()</code> on expression result</li>
+                </ul>
+
+                <p><strong>Memory State Diagram:</strong></p>
+                <div class="ascii-diagram"><pre>After line 25:  a.value = 10, b.value = 5, c.value = 3
+After line 26:  a.value = 8,  b.value = 5, c.value = 3  (a modified)
+After line 28:  a.value = 7,  b.value = 5, c.value = 3  (a decremented)</pre></div>
+            </div>
+        </section>
+
+        <!-- Question 19 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 19</div>
+            <h3>Find the Bug: Stream Insertion</h3>
+            <p>The following code has a bug. Identify and fix it.</p>
+
+<pre><code class="language-cpp">class Fraction {
+public:
+    Fraction(int n, int d) : numerator(n), denominator(d) {}
+
+    friend ostream& operator<<(ostream& os, Fraction& frac);
+
+private:
+    int numerator, denominator;
+};
+
+ostream& operator<<(ostream& os, Fraction& frac) {
+    os << frac.numerator << "/" << frac.denominator;
+    return os;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer19')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer19">
+                <p><strong>Bug Location:</strong> Lines 5 and 11 (parameter should be <code>const</code>)</p>
+
+                <p><strong>What's Wrong:</strong></p>
+                <p>The <code>Fraction</code> parameter is passed by non-const reference (<code>Fraction& frac</code>), but it should be <code>const Fraction& frac</code>.</p>
+
+                <p><strong>Why It's Wrong:</strong></p>
+                <p>This causes problems with:</p>
+                <ol>
+                    <li><strong>Const objects:</strong>
+                        <pre><code class="language-cpp">const Fraction f(3, 4);
+cout << f;  // ERROR! Can't bind const to non-const reference</code></pre>
+                    </li>
+                    <li><strong>Temporary objects:</strong>
+                        <pre><code class="language-cpp">cout << Fraction(1, 2);  // ERROR! Temporary is const</code></pre>
+                    </li>
+                    <li><strong>Chaining:</strong>
+                        <pre><code class="language-cpp">cout << Fraction(1, 2) << " " << Fraction(3, 4);
+// First Fraction(1,2) fails - it's a temporary</code></pre>
+                    </li>
+                </ol>
+
+                <p><strong>How to Fix:</strong></p>
+                <pre><code class="language-cpp">class Fraction {
+public:
+    Fraction(int n, int d) : numerator(n), denominator(d) {}
+
+    // FIX: Add const to parameter
+    friend ostream& operator<<(ostream& os, const Fraction& frac);
+
+private:
+    int numerator, denominator;
+};
+
+// FIX: Add const to parameter
+ostream& operator<<(ostream& os, const Fraction& frac) {
+    os << frac.numerator << "/" << frac.denominator;
+    return os;
+}</code></pre>
+
+                <p><strong>Why This Works:</strong></p>
+                <ul>
+                    <li>Output operation doesn't modify the object - we're only reading it</li>
+                    <li><code>const</code> reference accepts const objects, non-const objects, AND temporaries</li>
+                    <li>Matches the pattern of standard library stream operators</li>
+                </ul>
+
+                <p><strong>General Rule:</strong> Input/output operators should take the object parameter as <code>const&</code> (for output) or non-const <code>&</code> (for input, because reading modifies state).</p>
+            </div>
+        </section>
+
+        <!-- Question 20 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 20</div>
+            <h3>Operator Precedence and Associativity</h3>
+            <p>Given proper operator overloading for class <code>Expr</code>, how is the expression <code>a = b + c * d</code> evaluated?</p>
+
+            <ol type="A">
+                <li><code>a.operator=(operator+(b, operator*(c, d)))</code></li>
+                <li><code>operator=(a, operator*(operator+(b, c), d))</code></li>
+                <li><code>a.operator=(operator*(operator+(b, c), d))</code></li>
+                <li><code>operator+(b, operator*(c, d)).operator=(a)</code></li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer20')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer20">
+                <p><strong>Answer:</strong> A - <code>a.operator=(operator+(b, operator*(c, d)))</code></p>
+
+                <p><strong>Why A is correct:</strong></p>
+                <p>Operator overloading <strong>preserves precedence and associativity</strong> from built-in operators.</p>
+
+                <p><strong>Evaluation Order:</strong></p>
+                <ol>
+                    <li><strong>Step 1:</strong> <code>*</code> has higher precedence than <code>+</code>, so <code>c * d</code> is evaluated first
+                        <ul style="margin-left: 1.5rem;">
+                            <li><code>operator*(c, d)</code> → returns temporary result1</li>
+                        </ul>
+                    </li>
+                    <li><strong>Step 2:</strong> <code>+</code> is evaluated next with b and result1
+                        <ul style="margin-left: 1.5rem;">
+                            <li><code>operator+(b, result1)</code> → returns temporary result2</li>
+                        </ul>
+                    </li>
+                    <li><strong>Step 3:</strong> <code>=</code> has lowest precedence, evaluated last
+                        <ul style="margin-left: 1.5rem;">
+                            <li><code>a.operator=(result2)</code></li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <p><strong>Precedence Table (Highest to Lowest):</strong></p>
+                <div class="ascii-diagram"><pre>Higher  *  /  %           (multiplicative)
+        +  -              (additive)
+        << >>             (shift)
+        <  >  <= >=       (relational)
+        == !=             (equality)
+        =  += -= etc.     (assignment)
+Lower</pre></div>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>B:</strong> Wrong on two counts:
+                        <ol>
+                            <li>Assignment is member function, not free function: can't be <code>operator=(a, ...)</code></li>
+                            <li>Order is wrong: evaluates <code>b + c</code> first (ignores precedence)</li>
+                        </ol>
+                    </li>
+                    <li><strong>C:</strong> Order is wrong - evaluates <code>b + c</code> before <code>* d</code>, violating precedence rules</li>
+                    <li><strong>D:</strong> Completely backwards - tries to assign <code>a</code> to the temporary result, which doesn't make sense</li>
+                </ul>
+
+                <p><strong>Key Principle:</strong> You CANNOT change precedence or associativity when overloading operators. They're built into the language.</p>
+            </div>
+        </section>
+
+        <!-- Question 21 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 21</div>
+            <h3>Return Type Justification</h3>
+            <p>Why does the prefix increment <code>operator++</code> return by reference, but postfix returns by value?</p>
+
+            <ol type="A">
+                <li>Postfix needs to return the old value before incrementing</li>
+                <li>Prefix is faster, so it can afford to return a reference</li>
+                <li>It's arbitrary - both could return the same type</li>
+                <li>Postfix can't return by reference for syntax reasons</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer21')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer21">
+                <p><strong>Answer:</strong> A - Postfix needs to return the old value before incrementing</p>
+
+                <p><strong>Why A is correct:</strong></p>
+
+                <p><strong>Prefix (<code>++x</code>) - Returns reference:</strong></p>
+                <pre><code class="language-cpp">Counter& operator++() {
+    value++;           // Increment first
+    return *this;      // Return reference to modified object
+}
+// int x = 5; ++x → x is now 6, expression value is 6 (reference to x)</code></pre>
+
+                <p><strong>Postfix (<code>x++</code>) - Returns by value:</strong></p>
+                <pre><code class="language-cpp">const Counter operator++(int) {
+    Counter old = *this;  // Save old value
+    value++;              // Increment
+    return old;           // Return COPY of old value
+}
+// int x = 5; x++ → x is now 6, but expression value is 5 (temporary copy)</code></pre>
+
+                <p><strong>Detailed Explanation:</strong></p>
+                <ul>
+                    <li><strong>Prefix:</strong> Increments THEN returns the modified object. Since the object still exists and has been modified, we can safely return a reference to it.</li>
+                    <li><strong>Postfix:</strong> Must return the OLD value (before increment), but we've already incremented the object. The old value only exists as a local variable (<code>old</code>) which will be destroyed when the function ends. We MUST return a copy, not a reference to local variable.</li>
+                </ul>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>B:</strong> While prefix IS faster (no copy), that's a consequence, not the reason. The reason is semantic - prefix returns the modified object (can be reference), postfix returns old value (must be copy).</li>
+                    <li><strong>C:</strong> Not arbitrary at all. Postfix MUST return by value because it's returning a local variable. Returning reference to local = undefined behavior.</li>
+                    <li><strong>D:</strong> Postfix could theoretically return by reference if it didn't need to return the old value, but it DOES need to (that's the definition of postfix increment).</li>
+                </ul>
+
+                <p><strong>Visual Example:</strong></p>
+                <pre><code class="language-cpp">Counter c(5);
+Counter& ref1 = ++c;    // OK: c is now 6, ref1 refers to c (also 6)
+Counter val = c++;      // c is now 7, val is a copy holding old value (6)
+
+ref1.print();  // 7 (ref1 refers to c, which is 7)
+val.print();   // 6 (val is copy of old value)
+c.print();     // 7</code></pre>
+
+                <p><strong>Why postfix returns <code>const</code> value:</strong> To prevent nonsense like <code>(x++)++</code>. The temporary copy shouldn't be modified.</p>
+            </div>
+        </section>
+
+        <!-- Question 22 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 22</div>
+            <h3>Implementation Comparison (Adapted from Tutorial 3)</h3>
+            <p>Which implementation of <code>operator-</code> (subtraction) is better?</p>
+
+            <p><strong>Option A:</strong></p>
+<pre><code class="language-cpp">Complex operator-(const Complex& a, const Complex& b) {
+    Complex result;
+    result.real = a.real - b.real;
+    result.imag = a.imag - b.imag;
+    return result;
+}</code></pre>
+
+            <p><strong>Option B:</strong></p>
+<pre><code class="language-cpp">Complex operator-(const Complex& a, const Complex& b) {
+    return Complex(a.real - b.real, a.imag - b.imag);
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer22')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer22">
+                <p><strong>Answer:</strong> B is better</p>
+
+                <p><strong>Why B is better:</strong></p>
+                <ol>
+                    <li><strong>Clearer intent:</strong> Directly expresses "create and return a new Complex with these values"</li>
+                    <li><strong>Potentially more efficient:</strong> Enables compiler optimizations like Return Value Optimization (RVO) or copy elision. The compiler can construct the result directly in the caller's memory.</li>
+                    <li><strong>Fewer lines:</strong> More concise without sacrificing readability</li>
+                    <li><strong>Initialization vs Assignment:</strong> Uses constructor (initialization) rather than default construction followed by assignment</li>
+                </ol>
+
+                <p><strong>What's wrong with A:</strong></p>
+                <ul>
+                    <li>Creates default <code>Complex</code> object first, then assigns values</li>
+                    <li>Two steps where one would suffice</li>
+                    <li>Harder for compiler to optimize</li>
+                    <li>More verbose</li>
+                </ul>
+
+                <p><strong>Performance Comparison:</strong></p>
+                <div class="ascii-diagram"><pre>Option A:
+1. Call default constructor for result (real=0, imag=0)
+2. Assign real = a.real - b.real
+3. Assign imag = a.imag - b.imag
+4. Return result (potentially copy)
+
+Option B:
+1. Call parameterized constructor directly with computed values
+2. Return result (compiler can optimize away copy with RVO)</pre></div>
+
+                <p><strong>Best Practice Pattern:</strong></p>
+                <p>For binary arithmetic operators that create new objects:</p>
+                <pre><code class="language-cpp">// ✅ GOOD: Direct construction
+Type operator+(const Type& a, const Type& b) {
+    return Type(a.data + b.data);
+}
+
+// ❌ AVOID: Default construct then modify
+Type operator+(const Type& a, const Type& b) {
+    Type result;
+    result.data = a.data + b.data;
+    return result;
+}</code></pre>
+
+                <p><strong>Exception:</strong> If computation is complex, Option A style might be clearer:</p>
+                <pre><code class="language-cpp">Matrix operator*(const Matrix& a, const Matrix& b) {
+    Matrix result(a.rows, b.cols);
+    // Complex nested loop calculation...
+    return result;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 23 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 23</div>
+            <h3>Memory Management in Assignment Operator</h3>
+            <p>What is the correct order of operations in an assignment operator with dynamic memory?</p>
+
+            <ol type="A">
+                <li>Check self-assignment → Delete old memory → Copy new data → Allocate new memory</li>
+                <li>Delete old memory → Allocate new memory → Check self-assignment → Copy new data</li>
+                <li>Check self-assignment → Allocate new memory → Delete old memory → Copy new data</li>
+                <li>Check self-assignment → Delete old memory → Allocate new memory → Copy new data</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer23')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer23">
+                <p><strong>Answer:</strong> D - Check self-assignment → Delete old memory → Allocate new memory → Copy new data</p>
+
+                <p><strong>Why D is correct:</strong></p>
+                <p>This is the correct sequence for the <strong>classic copy-and-swap idiom</strong>:</p>
+
+                <pre><code class="language-cpp">MyClass& operator=(const MyClass& other) {
+    // 1. Check self-assignment (FIRST!)
+    if (this != &other) {
+
+        // 2. Delete old memory
+        delete[] data;
+
+        // 3. Allocate new memory
+        size = other.size;
+        data = new int[size];
+
+        // 4. Copy new data
+        for (int i = 0; i < size; i++) {
+            data[i] = other.data[i];
+        }
+    }
+    return *this;
+}</code></pre>
+
+                <p><strong>Step-by-Step Reasoning:</strong></p>
+                <ol>
+                    <li><strong>Step 1 - Self-assignment check MUST be first:</strong>
+                        <ul style="margin-left: 1.5rem;">
+                            <li>If <code>obj = obj</code>, and we delete our memory, we also delete <code>other</code>'s memory (they're the same!)</li>
+                            <li>Must check before doing ANYTHING destructive</li>
+                        </ul>
+                    </li>
+                    <li><strong>Step 2 - Delete old memory:</strong>
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Prevents memory leak</li>
+                            <li>Safe because we've ruled out self-assignment</li>
+                        </ul>
+                    </li>
+                    <li><strong>Step 3 - Allocate new memory:</strong>
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Create space for the new data</li>
+                            <li>Size based on <code>other.size</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Step 4 - Copy data:</strong>
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Deep copy from <code>other</code> to <code>this</code></li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Can't copy new data before allocating memory - where would you copy it to?</li>
+                    <li><strong>B:</strong> Deleting before self-assignment check is DISASTER - you delete the source data!</li>
+                    <li><strong>C:</strong> Allocating before deleting causes memory leak (old memory never freed) and wastes memory (briefly have both old and new allocated)</li>
+                </ul>
+
+                <p><strong>What happens with wrong order B:</strong></p>
+                <pre><code class="language-cpp">// WRONG ORDER B
+MyClass& operator=(const MyClass& other) {
+    delete[] data;     // Delete our memory
+    // If self-assignment (obj = obj):
+    // other.data is NOW DELETED! (same object)
+
+    data = new int[other.size];  // other.size is GARBAGE!
+    // CRASH or random behavior
+}</code></pre>
+
+                <p><strong>Advanced: Copy-and-Swap Idiom (Exception-Safe):</strong></p>
+                <pre><code class="language-cpp">MyClass& operator=(const MyClass& other) {
+    if (this != &other) {
+        MyClass temp(other);  // Copy construct
+        swap(temp);           // Swap with temp
+    }  // temp destroyed (deletes old data)
+    return *this;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 24 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 24</div>
+            <h3>Chaining Behavior</h3>
+            <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Chain {
+public:
+    Chain(int v) : val(v) {}
+
+    Chain& add(int n) {
+        val += n;
+        return *this;
+    }
+
+    Chain& multiply(int n) {
+        val *= n;
+        return *this;
+    }
+
+    void print() { cout << val; }
+
+private:
+    int val;
+};
+
+int main() {
+    Chain c(5);
+    c.add(3).multiply(2).add(10).print();
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer24')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer24">
+                <p><strong>Output:</strong></p>
+                <pre>26</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line 21:</strong> Create <code>Chain c(5)</code> → c.val = 5</li>
+                    <li><strong>Line 22:</strong> <code>c.add(3).multiply(2).add(10).print()</code>
+                        <ul style="margin-left: 1.5rem;">
+                            <li><strong>c.add(3):</strong> c.val = 5 + 3 = 8, returns reference to c</li>
+                            <li><strong>.multiply(2):</strong> c.val = 8 * 2 = 16, returns reference to c</li>
+                            <li><strong>.add(10):</strong> c.val = 16 + 10 = 26, returns reference to c</li>
+                            <li><strong>.print():</strong> prints c.val → <strong>26</strong></li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <p><strong>Step-by-Step Evaluation:</strong></p>
+                <div class="ascii-diagram"><pre>Start:  c.val = 5
+
+c.add(3)        → c.val = 5 + 3 = 8    (returns c)
+.multiply(2)    → c.val = 8 * 2 = 16   (returns c)
+.add(10)        → c.val = 16 + 10 = 26 (returns c)
+.print()        → outputs 26</pre></div>
+
+                <p><strong>Why This Works - Method Chaining:</strong></p>
+                <ul>
+                    <li>Each method returns <code>*this</code> by reference</li>
+                    <li>The reference allows calling another method immediately</li>
+                    <li>All operations modify the SAME object (<code>c</code>)</li>
+                    <li>This pattern is called <strong>"fluent interface"</strong> or <strong>"method chaining"</strong></li>
+                </ul>
+
+                <p><strong>Key Design Pattern:</strong></p>
+                <pre><code class="language-cpp">// Return *this by reference to enable chaining
+ClassName& methodName() {
+    // Do something
+    return *this;  // Returns reference to current object
+}</code></pre>
+
+                <p><strong>Real-World Example:</strong></p>
+                <p>This pattern is used in stream operations:</p>
+                <pre><code class="language-cpp">cout << "Hello" << " " << "World" << endl;
+//   ↑ returns cout
+//               ↑ returns cout
+//                      ↑ returns cout
+//                              ↑ returns cout</code></pre>
+
+                <p><strong>Common Mistake - Returning by Value:</strong></p>
+                <pre><code class="language-cpp">// WRONG - returns copy
+Chain add(int n) {
+    val += n;
+    return *this;  // Returns COPY
+}
+
+// Result: c.add(3).multiply(2) modifies COPY, not c!
+// c.val would still be 5, not 26</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 25 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 25</div>
+            <h3>Tutorial Question - Input Stream Operator (Adapted from Tutorial 4)</h3>
+            <p>Implement <code>operator>></code> for reading a <code>Time</code> object in format <code>HH:MM</code> (e.g., "14:30").</p>
+
+<pre><code class="language-cpp">class Time {
+public:
+    Time() : hours(0), minutes(0) {}
+
+    // TODO: Declare friend operator>>
+
+    void print() {
+        cout << hours << ":" << minutes;
+    }
+
+private:
+    int hours, minutes;
+};</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer25')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer25">
+                <p><strong>Answer:</strong></p>
+                <pre><code class="language-cpp">class Time {
+public:
+    Time() : hours(0), minutes(0) {}
+
+    // Friend declaration
+    friend istream& operator>>(istream& is, Time& t);
+
+    void print() {
+        cout << hours << ":" << minutes;
+    }
+
+private:
+    int hours, minutes;
+};
+
+// Friend function definition
+istream& operator>>(istream& is, Time& t) {
+    char colon;  // To read the ':' separator
+    is >> t.hours >> colon >> t.minutes;
+    return is;
+}</code></pre>
+
+                <p><strong>Detailed Explanation:</strong></p>
+                <ol>
+                    <li><strong>Signature:</strong>
+                        <ul style="margin-left: 1.5rem;">
+                            <li><code>istream&</code> - reference to input stream (cin, file stream, etc.)</li>
+                            <li><code>Time&</code> - non-const reference (we're modifying it with input)</li>
+                            <li>Returns <code>istream&</code> to enable chaining</li>
+                        </ul>
+                    </li>
+                    <li><strong>Must be friend:</strong> Input operator CANNOT be a member because the left operand is <code>istream</code>, not <code>Time</code></li>
+                    <li><strong>Implementation:</strong>
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Read hours (integer)</li>
+                            <li>Read colon character (discarded)</li>
+                            <li>Read minutes (integer)</li>
+                            <li>Return stream reference for chaining</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <p><strong>Usage Example:</strong></p>
+                <pre><code class="language-cpp">Time t1, t2;
+cout << "Enter time 1 (HH:MM): ";
+cin >> t1;        // User enters: 14:30
+
+cout << "Enter time 2 (HH:MM): ";
+cin >> t2;        // User enters: 09:15
+
+// Chaining works:
+cin >> t1 >> t2;  // Read both in one line</code></pre>
+
+                <p><strong>Important Notes:</strong></p>
+                <ul>
+                    <li><strong>Parameter must be non-const:</strong> We're MODIFYING the object with input data</li>
+                    <li><strong>Return type must be <code>istream&</code>:</strong> Enables chaining: <code>cin >> t1 >> t2</code></li>
+                    <li><strong>Error handling:</strong> In production code, check <code>is.fail()</code> to handle bad input</li>
+                </ul>
+
+                <p><strong>With Error Handling:</strong></p>
+                <pre><code class="language-cpp">istream& operator>>(istream& is, Time& t) {
+    char colon;
+    is >> t.hours >> colon >> t.minutes;
+
+    // Validate input
+    if (colon != ':' || t.hours < 0 || t.hours > 23 ||
+        t.minutes < 0 || t.minutes > 59) {
+        is.setstate(ios::failbit);  // Mark stream as failed
+    }
+
+    return is;
+}</code></pre>
+
+                <p><strong>Why friend, not member?</strong></p>
+                <div class="ascii-diagram"><pre>If member:  cin.operator>>(t)  ❌ Can't add members to istream
+If friend:  operator>>(cin, t)  ✅ Free function with access</pre></div>
+            </div>
+        </section>
+
+        <!-- Question 26 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 26</div>
+            <h3>Synthesized Question: Multiple Concepts</h3>
+            <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Smart {
+public:
+    Smart(int v) : value(v) {
+        cout << "C" << value << " ";
+    }
+
+    Smart(const Smart& other) : value(other.value) {
+        cout << "Copy" << value << " ";
+    }
+
+    Smart& operator=(const Smart& other) {
+        value = other.value;
+        cout << "=" << value << " ";
+        return *this;
+    }
+
+    Smart operator+(const Smart& other) const {
+        return Smart(value + other.value);
+    }
+
+    ~Smart() {
+        cout << "D" << value << " ";
+    }
+
+private:
+    int value;
+};
+
+int main() {
+    Smart a(2), b(3);
+    Smart c = a + b;
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer26')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer26">
+                <p><strong>Output:</strong></p>
+                <pre>C2 C3 C5 D5 D3 D2</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line 28:</strong> <code>Smart a(2), b(3);</code>
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Create a(2): calls constructor → prints <strong>"C2 "</strong></li>
+                            <li>Create b(3): calls constructor → prints <strong>"C3 "</strong></li>
+                            <li>Objects: a.value = 2, b.value = 3</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line 29:</strong> <code>Smart c = a + b;</code>
+                        <ul style="margin-left: 1.5rem;">
+                            <li><strong>a + b:</strong> Calls <code>a.operator+(b)</code></li>
+                            <li>Inside operator+: <code>return Smart(2 + 3);</code></li>
+                            <li>Creates temporary Smart(5): constructor → prints <strong>"C5 "</strong></li>
+                            <li><strong>Smart c = ...</strong>: This is INITIALIZATION, not assignment!</li>
+                            <li>With modern C++: Copy elision - temporary directly becomes c (no copy constructor call)</li>
+                            <li>Result: c.value = 5 (no "Copy5" printed due to copy elision)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line 30:</strong> <code>return 0;</code> - Function ends, destructors called in REVERSE order:
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Destroy c: destructor → prints <strong>"D5 "</strong></li>
+                            <li>Destroy b: destructor → prints <strong>"D3 "</strong></li>
+                            <li>Destroy a: destructor → prints <strong>"D2 "</strong></li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <p><strong>Key Concepts Tested:</strong></p>
+                <ul>
+                    <li><strong>Constructor vs Copy Constructor:</strong> <code>Smart c = a + b;</code> is initialization (calls constructor on temporary), not <code>c.operator=(a + b)</code></li>
+                    <li><strong>Copy Elision:</strong> Compiler optimizes away the copy from temporary to c</li>
+                    <li><strong>Operator+ creates new object:</strong> Returns by value (temporary)</li>
+                    <li><strong>Destructor order:</strong> Reverse of construction (c, b, a)</li>
+                    <li><strong>Temporary lifetime:</strong> Temporary from <code>a + b</code> is optimized away</li>
+                </ul>
+
+                <p><strong>Without Copy Elision (older compilers):</strong></p>
+                <p>Output might be: <code>C2 C3 C5 Copy5 D5 D5 D3 D2</code></p>
+                <ul>
+                    <li>Extra "Copy5" from copying temporary to c</li>
+                    <li>Extra "D5" from destroying the temporary</li>
+                </ul>
+
+                <p><strong>Memory Diagram:</strong></p>
+                <div class="ascii-diagram"><pre>After line 28:
+   a.value = 2
+   b.value = 3
+
+After line 29:
+   a.value = 2
+   b.value = 3
+   c.value = 5  (optimized from temporary)
+
+End of main:
+   Destroy c (D5), then b (D3), then a (D2)</pre></div>
+            </div>
+        </section>
+
+        <!-- Question 27 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 27</div>
+            <h3>EO1-Style Implementation Question</h3>
+            <p>Complete the implementation of the <code>operator+</code> for a <code>Matrix</code> class that adds two matrices. Assume matrices have the same dimensions.</p>
+
+<pre><code class="language-cpp">class Matrix {
+public:
+    Matrix(int r, int c) : rows(r), cols(c) {
+        data = new int*[rows];
+        for (int i = 0; i < rows; i++) {
+            data[i] = new int[cols];
+            for (int j = 0; j < cols; j++)
+                data[i][j] = 0;
+        }
+    }
+
+    // TODO: Implement operator+
+
+    ~Matrix() {
+        for (int i = 0; i < rows; i++)
+            delete[] data[i];
+        delete[] data;
+    }
+
+private:
+    int** data;
+    int rows, cols;
+
+    friend Matrix operator+(const Matrix& a, const Matrix& b);
+};</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer27')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer27">
+                <p><strong>Answer:</strong></p>
+                <pre><code class="language-cpp">Matrix operator+(const Matrix& a, const Matrix& b) {
+    // Create result matrix with same dimensions
+    Matrix result(a.rows, a.cols);
+
+    // Add corresponding elements
+    for (int i = 0; i < a.rows; i++) {
+        for (int j = 0; j < a.cols; j++) {
+            result.data[i][j] = a.data[i][j] + b.data[i][j];
+        }
+    }
+
+    return result;
+}</code></pre>
+
+                <p><strong>Detailed Explanation:</strong></p>
+                <ol>
+                    <li><strong>Signature:</strong>
+                        <ul style="margin-left: 1.5rem;">
+                            <li>Returns <code>Matrix</code> by value (new object)</li>
+                            <li>Takes both operands as <code>const</code> references (not modifying them)</li>
+                            <li>Friend function to access private members</li>
+                        </ul>
+                    </li>
+                    <li><strong>Create result:</strong> <code>Matrix result(a.rows, a.cols)</code> allocates 2D array via constructor</li>
+                    <li><strong>Add elements:</strong> Nested loop adds corresponding elements from a and b</li>
+                    <li><strong>Return:</strong> Return new matrix (copy or move)</li>
+                </ol>
+
+                <p><strong>Why Friend Function:</strong></p>
+                <ul>
+                    <li>Needs access to private <code>data</code>, <code>rows</code>, <code>cols</code></li>
+                    <li>Non-member allows symmetric conversion (if there were implicit constructors)</li>
+                    <li>More natural syntax: <code>operator+(a, b)</code> rather than <code>a.operator+(b)</code></li>
+                </ul>
+
+                <p><strong>Usage Example:</strong></p>
+                <pre><code class="language-cpp">Matrix m1(2, 2), m2(2, 2);
+
+// Fill m1
+m1.data[0][0] = 1; m1.data[0][1] = 2;
+m1.data[1][0] = 3; m1.data[1][1] = 4;
+
+// Fill m2
+m2.data[0][0] = 5; m2.data[0][1] = 6;
+m2.data[1][0] = 7; m2.data[1][1] = 8;
+
+Matrix m3 = m1 + m2;
+
+// Result:
+// m3.data[0][0] = 6  m3.data[0][1] = 8
+// m3.data[1][0] = 10 m3.data[1][1] = 12</code></pre>
+
+                <p><strong>Important Considerations:</strong></p>
+                <ul>
+                    <li><strong>Memory management:</strong> The result's constructor allocates memory, destructor deallocates it</li>
+                    <li><strong>Assumption:</strong> We assume dimensions match. Production code should check: <code>if (a.rows != b.rows || a.cols != b.cols) throw exception;</code></li>
+                    <li><strong>Deep copy on return:</strong> The result matrix is properly deep-copied when returned (via copy constructor)</li>
+                </ul>
+
+                <p><strong>Common Mistakes to Avoid:</strong></p>
+                <pre><code class="language-cpp">// ❌ WRONG - doesn't allocate memory for result
+Matrix operator+(const Matrix& a, const Matrix& b) {
+    Matrix result;  // Calls default constructor (doesn't exist!)
+    // ...
+}
+
+// ❌ WRONG - returns reference to local variable
+Matrix& operator+(const Matrix& a, const Matrix& b) {
+    Matrix result(a.rows, a.cols);
+    // ...
+    return result;  // DANGER! result destroyed after return
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 28 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 28</div>
+            <h3>Debugging Scenario: Complex Bug</h3>
+            <p>This code compiles but produces unexpected output. Find and fix ALL bugs.</p>
+
+<pre><code class="language-cpp">class Counter {
+public:
+    Counter(int v = 0) : value(v) {}
+
+    Counter operator+(Counter& other) {
+        return Counter(value + other.value);
+    }
+
+    friend ostream& operator<<(ostream& os, Counter c) {
+        os << c.value;
+        return os;
+    }
+
+    const Counter& operator++() {
+        value++;
+        return *this;
+    }
+
+private:
+    int value;
+};
+
+int main() {
+    Counter a(5), b(3);
+    Counter c = a + b + Counter(2);  // Line 25
+    cout << c << endl;                // Line 26
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer28')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer28">
+                <p><strong>Bugs Found:</strong> 3 bugs total</p>
+
+                <p><strong>Bug 1 - Line 5: Missing <code>const</code> on parameter</strong></p>
+                <p><strong>Location:</strong> <code>Counter operator+(Counter& other)</code></p>
+                <p><strong>Problem:</strong> Parameter should be <code>const Counter& other</code>. Without const:</p>
+                <ul>
+                    <li>Can't use with temporaries: <code>a + Counter(2)</code> fails</li>
+                    <li>Temporary <code>Counter(2)</code> can't bind to non-const reference</li>
+                    <li>Line 25 won't compile!</li>
+                </ul>
+
+                <p><strong>Bug 2 - Line 9: Passing by value instead of const reference</strong></p>
+                <p><strong>Location:</strong> <code>ostream& operator<<(ostream& os, Counter c)</code></p>
+                <p><strong>Problem:</strong> Should be <code>const Counter& c</code>, not <code>Counter c</code>:</p>
+                <ul>
+                    <li>Passing by value creates unnecessary copy</li>
+                    <li>Inefficient for larger objects</li>
+                    <li>Can't output const objects or temporaries in some contexts</li>
+                </ul>
+
+                <p><strong>Bug 3 - Line 14: Wrong return type for prefix ++</strong></p>
+                <p><strong>Location:</strong> <code>const Counter& operator++()</code></p>
+                <p><strong>Problem:</strong> Should return <code>Counter&</code>, not <code>const Counter&</code>:</p>
+                <ul>
+                    <li>Prefix ++ should allow further modification: <code>(++a)++</code></li>
+                    <li><code>const</code> prevents chaining</li>
+                    <li>Doesn't match behavior of built-in types</li>
+                </ul>
+
+                <p><strong>Corrected Code:</strong></p>
+                <pre><code class="language-cpp">class Counter {
+public:
+    Counter(int v = 0) : value(v) {}
+
+    // FIX 1: Add const to parameter
+    Counter operator+(const Counter& other) {
+        return Counter(value + other.value);
+    }
+
+    // FIX 2: Pass by const reference
+    friend ostream& operator<<(ostream& os, const Counter& c) {
+        os << c.value;
+        return os;
+    }
+
+    // FIX 3: Remove const from return type
+    Counter& operator++() {
+        value++;
+        return *this;
+    }
+
+private:
+    int value;
+};
+
+int main() {
+    Counter a(5), b(3);
+    Counter c = a + b + Counter(2);  // Now works! 5 + 3 + 2 = 10
+    cout << c << endl;                // Outputs: 10
+    return 0;
+}</code></pre>
+
+                <p><strong>Why Each Bug Matters:</strong></p>
+                <div class="ascii-diagram"><pre>Bug 1 (const parameter):
+  a + b + Counter(2)
+  └─→ (a + b) + Counter(2)
+             └─→ temporary can't bind to Counter&
+  RESULT: Compilation error
+
+Bug 2 (pass by value):
+  cout << c
+  └─→ creates unnecessary copy of c
+  RESULT: Inefficient, but works
+
+Bug 3 (const return):
+  (++a) = b  // Can't do this
+  (++a)++    // Can't do this
+  RESULT: Prevents legal operations</pre></div>
+
+                <p><strong>Testing the Fix:</strong></p>
+                <pre><code class="language-cpp">Counter a(5), b(3);
+
+// Bug 1 test: temporaries in expression
+Counter c = a + b + Counter(2);  // ✅ Now compiles: 10
+
+// Bug 2 test: const object output
+const Counter d(7);
+cout << d;  // ✅ Now works
+
+// Bug 3 test: chaining increment
+Counter e(5);
+++(++e);    // ✅ Now works: e.value = 7</code></pre>
+
+                <p><strong>Lesson:</strong> Small mistakes in operator signatures can have big impacts:</p>
+                <ul>
+                    <li>Always use <code>const</code> for read-only parameters</li>
+                    <li>Pass by reference to avoid copies</li>
+                    <li>Match return types to semantics and built-in behavior</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    </div>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Prism.highlightAll();
+        });
+
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+
+            const button = event.target;
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+
+                // CRITICAL: Force browser reflow before highlighting
+                void(answerSection.offsetHeight);
+
+                // Re-highlight Prism code blocks after reflow
+                if (typeof Prism !== 'undefined') {
+                    // Find all code blocks in this answer section and highlight them individually
+                    answerSection.querySelectorAll('pre code').forEach(function(codeBlock) {
+                        Prism.highlightElement(codeBlock);
+                    });
+                }
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

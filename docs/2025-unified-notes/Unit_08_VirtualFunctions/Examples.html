@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 8: Virtual Functions & Pointers - Examples | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #10b981;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code,
+        .content-card h1 code,
+        .content-card h2 code,
+        .content-card h3 code,
+        .content-card h4 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        .step-box {
+            background: #0c1222;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .step-box h4 {
+            color: #10b981;
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #1a2d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 8: Virtual Functions & Pointers</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Worked Examples</h2>
+
+            <p>
+                These examples show complete implementations of virtual functions and polymorphism in different contexts. Each example includes experimental suggestions to help you understand what happens when you modify the code.
+            </p>
+
+            <div class="info-box">
+                <strong>How to use these examples:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Read the explanation before looking at the code</li>
+                    <li>Run the code to see the output</li>
+                    <li>Try the experimental suggestions (modify and re-run)</li>
+                    <li>Think about WHY each change produces the result it does</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Example 1: Animal Polymorphism -->
+        <section class="content-card">
+            <h2>Example 1: Animal Sounds - Basic Polymorphism</h2>
+
+            <p>
+                This is the classic polymorphism example. We have different animals that make different sounds, but we want to treat them all as <code>Animal</code> objects and let each one make its own sound.
+            </p>
+
+            <h3>The Problem We're Solving</h3>
+
+            <p>
+                Without virtual functions, we'd need separate functions for each animal type:
+            </p>
+
+<pre><code class="language-cpp">void makeDogSpeak(Dog* d) { /* ... */ }
+void makeCatSpeak(Cat* c) { /* ... */ }
+void makeBirdSpeak(Bird* b) { /* ... */ }</code></pre>
+
+            <p>
+                With polymorphism, we write ONE function that works for all animals:
+            </p>
+
+<pre><code class="language-cpp">void makeAnimalSpeak(Animal* a) {  // Works for ANY animal!
+    a-&gt;makeSound();
+}</code></pre>
+
+            <h3>Complete Implementation</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Complete Code: Animal Polymorphism</div>
+                </div>
+
+                <textarea id="editor1">#include &lt;iostream&gt;
+using namespace std;
+
+class Animal {
+public:
+    virtual void makeSound() {
+        cout &lt;&lt; "Some generic animal sound" &lt;&lt; endl;
+    }
+
+    virtual ~Animal() {}
+};
+
+class Dog : public Animal {
+public:
+    void makeSound() {
+        cout &lt;&lt; "Woof! Woof!" &lt;&lt; endl;
+    }
+};
+
+class Cat : public Animal {
+public:
+    void makeSound() {
+        cout &lt;&lt; "Meow!" &lt;&lt; endl;
+    }
+};
+
+class Bird : public Animal {
+public:
+    void makeSound() {
+        cout &lt;&lt; "Tweet tweet!" &lt;&lt; endl;
+    }
+};
+
+void makeAnimalSpeak(Animal* a) {
+    a-&gt;makeSound();
+}
+
+int main() {
+    Animal* zoo[3];
+    zoo[0] = new Dog();
+    zoo[1] = new Cat();
+    zoo[2] = new Bird();
+
+    cout &lt;&lt; "Walking through the zoo:" &lt;&lt; endl;
+    for (int i = 0; i &lt; 3; i++) {
+        makeAnimalSpeak(zoo[i]);
+    }
+
+    for (int i = 0; i &lt; 3; i++) {
+        delete zoo[i];
+    }
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading1" class="loading-indicator">Running...</div>
+                        <div id="output1" class="output-text output-placeholder">
+                            Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>How It Works</h3>
+
+            <div class="step-box">
+                <h4>Step 1: Create polymorphic array</h4>
+                <p><code>Animal* zoo[3];</code> - Array of base class pointers that can hold any derived class.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Store different derived objects</h4>
+                <p><code>zoo[0] = new Dog();</code> - Each element points to a different derived class object.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Call through base pointer</h4>
+                <p><code>zoo[i]-&gt;makeSound();</code> - Because <code>makeSound()</code> is virtual, each object calls its own version.</p>
+            </div>
+
+            <h3>🔬 Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 1:</strong> Remove the <code>virtual</code> keyword from <code>Animal::makeSound()</code>. What output do you get?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_1')">Show Explanation</button>
+            <div class="answer-section" id="exp1_1">
+                <p><strong>What happens:</strong> All three animals print "Some generic animal sound".</p>
+                <p><strong>Why:</strong> Without <code>virtual</code>, static binding is used. The compiler sees <code>Animal*</code> pointers and calls <code>Animal::makeSound()</code> for all of them, ignoring what they actually point to.</p>
+                <p><strong>Lesson:</strong> The <code>virtual</code> keyword is essential for polymorphism.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 2:</strong> Add a new animal class (Snake) that says "Hissss!". Add it to the zoo. Does it work without modifying <code>makeAnimalSpeak()</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_2')">Show Explanation</button>
+            <div class="answer-section" id="exp1_2">
+                <p><strong>What happens:</strong> Yes! You can add:</p>
+                <pre><code class="language-cpp">class Snake : public Animal {
+public:
+    void makeSound() {
+        cout &lt;&lt; "Hissss!" &lt;&lt; endl;
+    }
+};</code></pre>
+                <p>And use <code>zoo[3] = new Snake();</code> - it works immediately.</p>
+                <p><strong>Why:</strong> Polymorphism makes code extensible. You can add new derived classes without changing functions that use the base class.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 3:</strong> Remove the virtual destructor (<code>virtual ~Animal() {}</code>). Does the code still compile and run?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_3')">Show Explanation</button>
+            <div class="answer-section" id="exp1_3">
+                <p><strong>What happens:</strong> Code compiles and runs, output looks the same.</p>
+                <p><strong>Hidden danger:</strong> If derived classes allocated memory (like <code>int* data = new int[100];</code> in constructor and <code>delete[] data;</code> in destructor), that memory would leak!</p>
+                <p><strong>Why:</strong> Without virtual destructor, <code>delete zoo[i];</code> only calls <code>Animal::~Animal()</code>, not the derived destructors.</p>
+                <p><strong>Rule:</strong> Always make base class destructor virtual when using polymorphism.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 4:</strong> Try storing by value instead of pointer: <code>Animal zoo[3] = {Dog(), Cat(), Bird()};</code> What happens?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_4')">Show Explanation</button>
+            <div class="answer-section" id="exp1_4">
+                <p><strong>What happens:</strong> This won't compile correctly in C++98, but even if you initialize them separately, object slicing occurs.</p>
+                <p><strong>Why:</strong> When you store by value, only the <code>Animal</code> parts fit in each array slot. The <code>Dog</code>/<code>Cat</code>/<code>Bird</code> parts get sliced off. All three become pure <code>Animal</code> objects.</p>
+                <p><strong>Result:</strong> All would say "Some generic animal sound" because they're literally <code>Animal</code> objects now, not derived objects.</p>
+                <p><strong>Lesson:</strong> Polymorphism requires pointers or references, never value copies.</p>
+            </div>
+        </section>
+
+        <!-- Example 2: Shape Hierarchy -->
+        <section class="content-card">
+            <h2>Example 2: Shape Hierarchy with getArea()</h2>
+
+            <p>
+                Shapes are a perfect use case for abstract base classes. There's no such thing as a generic "shape area" - only specific shapes (Circle, Rectangle, Triangle) have areas.
+            </p>
+
+            <h3>Using Pure Virtual Functions</h3>
+
+            <p>
+                We'll make <code>Shape</code> an abstract class with pure virtual <code>getArea()</code> and <code>display()</code> functions. Every derived class MUST implement these.
+            </p>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Complete Code: Shape Polymorphism</div>
+                </div>
+
+                <textarea id="editor2">#include &lt;iostream&gt;
+using namespace std;
+
+class Shape {
+public:
+    virtual double getArea() = 0;
+    virtual void display() = 0;
+    virtual ~Shape() {}
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+public:
+    Circle(double r) : radius(r) {}
+
+    double getArea() {
+        return 3.14159 * radius * radius;
+    }
+
+    void display() {
+        cout &lt;&lt; "Circle with radius " &lt;&lt; radius &lt;&lt; endl;
+    }
+};
+
+class Rectangle : public Shape {
+private:
+    double width, height;
+public:
+    Rectangle(double w, double h) : width(w), height(h) {}
+
+    double getArea() {
+        return width * height;
+    }
+
+    void display() {
+        cout &lt;&lt; "Rectangle " &lt;&lt; width &lt;&lt; " x " &lt;&lt; height &lt;&lt; endl;
+    }
+};
+
+class Triangle : public Shape {
+private:
+    double base, height;
+public:
+    Triangle(double b, double h) : base(b), height(h) {}
+
+    double getArea() {
+        return 0.5 * base * height;
+    }
+
+    void display() {
+        cout &lt;&lt; "Triangle with base " &lt;&lt; base
+             &lt;&lt; " and height " &lt;&lt; height &lt;&lt; endl;
+    }
+};
+
+void printShapeInfo(Shape* s) {
+    s-&gt;display();
+    cout &lt;&lt; "Area: " &lt;&lt; s-&gt;getArea() &lt;&lt; endl;
+    cout &lt;&lt; endl;
+}
+
+int main() {
+    Shape* shapes[3];
+    shapes[0] = new Circle(5.0);
+    shapes[1] = new Rectangle(4.0, 6.0);
+    shapes[2] = new Triangle(3.0, 8.0);
+
+    cout &lt;&lt; "Shape Information:" &lt;&lt; endl;
+    for (int i = 0; i &lt; 3; i++) {
+        printShapeInfo(shapes[i]);
+    }
+
+    for (int i = 0; i &lt; 3; i++) {
+        delete shapes[i];
+    }
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading2" class="loading-indicator">Running...</div>
+                        <div id="output2" class="output-text output-placeholder">
+                            Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>🔬 Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 1:</strong> Try creating a <code>Shape</code> object directly: <code>Shape* s = new Shape();</code> What error do you get?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_1')">Show Explanation</button>
+            <div class="answer-section" id="exp2_1">
+                <p><strong>What happens:</strong> Compiler error: "cannot instantiate abstract class".</p>
+                <p><strong>Why:</strong> <code>Shape</code> has pure virtual functions (<code>= 0</code>), making it abstract. You can't create objects of abstract classes.</p>
+                <p><strong>Allowed:</strong> <code>Shape* s = new Circle(5);</code> - pointers to abstract classes are fine, as long as they point to concrete derived objects.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 2:</strong> Create a <code>Square</code> class that inherits from <code>Rectangle</code> (not <code>Shape</code>). Does polymorphism still work?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_2')">Show Explanation</button>
+            <div class="answer-section" id="exp2_2">
+                <p><strong>Code to try:</strong></p>
+                <pre><code class="language-cpp">class Square : public Rectangle {
+public:
+    Square(double side) : Rectangle(side, side) {}
+};</code></pre>
+                <p><strong>What happens:</strong> Works perfectly! <code>Shape* s = new Square(5);</code> is valid.</p>
+                <p><strong>Why:</strong> Square inherits from Rectangle, which inherits from Shape. Polymorphism works through the whole inheritance chain.</p>
+                <p><strong>Type relationships:</strong> Square IS-A Rectangle IS-A Shape.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 3:</strong> What if <code>Circle</code> implements <code>getArea()</code> but forgets to implement <code>display()</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_3')">Show Explanation</button>
+            <div class="answer-section" id="exp2_3">
+                <p><strong>What happens:</strong> <code>Circle</code> becomes abstract! You can't instantiate it.</p>
+                <p><strong>Why:</strong> To be a concrete (instantiable) class, you must implement ALL pure virtual functions from the base class. If even one is missing, the class remains abstract.</p>
+                <p><strong>Error:</strong> "cannot instantiate abstract class Circle"</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 4:</strong> Add a <code>getPerimeter()</code> pure virtual function to <code>Shape</code>. What breaks?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_4')">Show Explanation</button>
+            <div class="answer-section" id="exp2_4">
+                <p><strong>What happens:</strong> All three shape classes (Circle, Rectangle, Triangle) stop compiling!</p>
+                <p><strong>Why:</strong> Adding a new pure virtual function to the base class means ALL derived classes must implement it. Until they do, they're all abstract.</p>
+                <p><strong>Fix:</strong> Add <code>double getPerimeter()</code> implementation to each derived class.</p>
+                <p><strong>Lesson:</strong> Adding pure virtual functions to a base class is a breaking change - all derived classes must update.</p>
+            </div>
+        </section>
+
+        <!-- Example 3: My Hero Academia Quirks (Personalized) -->
+        <section class="content-card">
+            <h2>Example 3: Hero Quirks - Advanced Polymorphism</h2>
+
+            <p>
+                In My Hero Academia (a popular anime), heroes have unique superpowers called "quirks". Each hero's quirk works completely differently, but they all inherit from a common <code>Hero</code> interface. This is a perfect example of polymorphism in action.
+            </p>
+
+            <h3>The Interface Design</h3>
+
+            <p>
+                We'll create a <code>Hero</code> abstract class with pure virtual functions for quirk activation and information display. Each specific hero implements these based on their unique abilities.
+            </p>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Complete Code: Hero Quirk System</div>
+                </div>
+
+                <textarea id="editor3">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Hero {
+protected:
+    string name;
+    int powerLevel;
+public:
+    Hero(string n, int p) : name(n), powerLevel(p) {}
+
+    virtual void activateQuirk() = 0;
+    virtual void displayInfo() = 0;
+    virtual ~Hero() {}
+};
+
+class Deku : public Hero {
+public:
+    Deku() : Hero("Izuku Midoriya (Deku)", 85) {}
+
+    void activateQuirk() {
+        cout &lt;&lt; name &lt;&lt; " activates One For All!" &lt;&lt; endl;
+        cout &lt;&lt; "  -&gt; Superhuman strength and speed!" &lt;&lt; endl;
+    }
+
+    void displayInfo() {
+        cout &lt;&lt; "Hero: " &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; "Quirk: One For All (inherited power)" &lt;&lt; endl;
+        cout &lt;&lt; "Power Level: " &lt;&lt; powerLevel &lt;&lt; endl;
+    }
+};
+
+class Bakugo : public Hero {
+public:
+    Bakugo() : Hero("Katsuki Bakugo", 90) {}
+
+    void activateQuirk() {
+        cout &lt;&lt; name &lt;&lt; " activates Explosion!" &lt;&lt; endl;
+        cout &lt;&lt; "  -&gt; Creates explosive blasts from palms!" &lt;&lt; endl;
+    }
+
+    void displayInfo() {
+        cout &lt;&lt; "Hero: " &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; "Quirk: Explosion (nitroglycerin sweat)" &lt;&lt; endl;
+        cout &lt;&lt; "Power Level: " &lt;&lt; powerLevel &lt;&lt; endl;
+    }
+};
+
+class Todoroki : public Hero {
+public:
+    Todoroki() : Hero("Shoto Todoroki", 95) {}
+
+    void activateQuirk() {
+        cout &lt;&lt; name &lt;&lt; " activates Half-Cold Half-Hot!" &lt;&lt; endl;
+        cout &lt;&lt; "  -&gt; Ice from right side, fire from left!" &lt;&lt; endl;
+    }
+
+    void displayInfo() {
+        cout &lt;&lt; "Hero: " &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; "Quirk: Half-Cold Half-Hot (dual element)" &lt;&lt; endl;
+        cout &lt;&lt; "Power Level: " &lt;&lt; powerLevel &lt;&lt; endl;
+    }
+};
+
+void heroShowcase(Hero* h) {
+    h-&gt;displayInfo();
+    h-&gt;activateQuirk();
+    cout &lt;&lt; endl;
+}
+
+int main() {
+    Hero* team[3];
+    team[0] = new Deku();
+    team[1] = new Bakugo();
+    team[2] = new Todoroki();
+
+    cout &lt;&lt; "=== U.A. High School Hero Team ===" &lt;&lt; endl;
+    cout &lt;&lt; endl;
+
+    for (int i = 0; i &lt; 3; i++) {
+        heroShowcase(team[i]);
+    }
+
+    for (int i = 0; i &lt; 3; i++) {
+        delete team[i];
+    }
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading3" class="loading-indicator">Running...</div>
+                        <div id="output3" class="output-text output-placeholder">
+                            Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>🔬 Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 1:</strong> Add another hero - Uraraka with "Zero Gravity" quirk (makes objects float). Does she integrate seamlessly?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_1')">Show Explanation</button>
+            <div class="answer-section" id="exp3_1">
+                <p><strong>Code to add:</strong></p>
+                <pre><code class="language-cpp">class Uraraka : public Hero {
+public:
+    Uraraka() : Hero("Ochaco Uraraka", 75) {}
+
+    void activateQuirk() {
+        cout &lt;&lt; name &lt;&lt; " activates Zero Gravity!" &lt;&lt; endl;
+        cout &lt;&lt; "  -&gt; Makes objects weightless!" &lt;&lt; endl;
+    }
+
+    void displayInfo() {
+        cout &lt;&lt; "Hero: " &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; "Quirk: Zero Gravity" &lt;&lt; endl;
+        cout &lt;&lt; "Power Level: " &lt;&lt; powerLevel &lt;&lt; endl;
+    }
+};</code></pre>
+                <p><strong>What happens:</strong> Works perfectly! Add <code>team[3] = new Uraraka();</code> and she's part of the team.</p>
+                <p><strong>Why:</strong> The polymorphic design means <code>heroShowcase()</code> works for ANY hero without modification.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 2:</strong> Add a <code>trainQuirk()</code> function that increases <code>powerLevel</code>. Should it be virtual?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_2')">Show Explanation</button>
+            <div class="answer-section" id="exp3_2">
+                <p><strong>Implementation:</strong> Add to <code>Hero</code> base class:</p>
+                <pre><code class="language-cpp">virtual void trainQuirk() {
+    powerLevel += 5;
+    cout &lt;&lt; name &lt;&lt; " trained! Power level: " &lt;&lt; powerLevel &lt;&lt; endl;
+}</code></pre>
+                <p><strong>Should it be virtual?</strong> Yes, if different heroes train differently!</p>
+                <p>For example, Deku might gain more from training (+10 instead of +5) because he's still learning his quirk.</p>
+                <p><strong>Rule:</strong> Make it virtual if behavior might differ across derived classes. Keep it non-virtual if it's always the same.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 3:</strong> What if you make <code>powerLevel</code> private instead of protected?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_3')">Show Explanation</button>
+            <div class="answer-section" id="exp3_3">
+                <p><strong>What happens:</strong> Code won't compile! Derived classes can't access <code>powerLevel</code>.</p>
+                <p><strong>Error in derived classes:</strong> "powerLevel is private in Hero"</p>
+                <p><strong>Fix options:</strong></p>
+                <ol>
+                    <li>Keep <code>powerLevel</code> as <code>protected</code> (current approach)</li>
+                    <li>Make it <code>private</code> and add <code>protected int getPowerLevel()</code> and <code>void setPowerLevel(int p)</code></li>
+                </ol>
+                <p><strong>Protected members</strong> are accessible to derived classes but not to outsiders - perfect for inheritance!</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 4:</strong> Try calling <code>activateQuirk()</code> through a reference instead of a pointer.
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_4')">Show Explanation</button>
+            <div class="answer-section" id="exp3_4">
+                <p><strong>Change function to:</strong></p>
+                <pre><code class="language-cpp">void heroShowcase(Hero& h) {  // Reference instead of pointer
+    h.displayInfo();        // Use . instead of -&gt;
+    h.activateQuirk();
+}</code></pre>
+                <p><strong>Calling it:</strong> <code>heroShowcase(*team[i]);</code> (dereference pointer)</p>
+                <p><strong>What happens:</strong> Works identically! Polymorphism works with references too.</p>
+                <p><strong>Advantage:</strong> References can't be NULL, making them safer if NULL isn't a valid input.</p>
+            </div>
+        </section>
+
+        <!-- Example 4: Clash Royale Cards (Personalized) -->
+        <section class="content-card">
+            <h2>Example 4: Clash Royale Cards - Multi-Level Hierarchy</h2>
+
+            <p>
+                Clash Royale is a real-time strategy mobile game where you deploy cards in battle. Cards come in three types: Troops (units that move and attack), Buildings (stationary defenses), and Spells (instant effects). This demonstrates polymorphism with multiple levels of inheritance.
+            </p>
+
+            <h3>Multi-Level Hierarchy Design</h3>
+
+            <p>
+                We'll have <code>Card</code> as the abstract base class, with three derived types, and then specific cards inheriting from those types.
+            </p>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Complete Code: Clash Royale Card System</div>
+                </div>
+
+                <textarea id="editor4">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Card {
+protected:
+    string name;
+    int elixirCost;
+public:
+    Card(string n, int cost) : name(n), elixirCost(cost) {}
+
+    virtual void deploy() = 0;
+    virtual void displayInfo() = 0;
+    virtual ~Card() {}
+};
+
+class Troop : public Card {
+protected:
+    int hitPoints;
+    int damage;
+public:
+    Troop(string n, int cost, int hp, int dmg)
+        : Card(n, cost), hitPoints(hp), damage(dmg) {}
+
+    void deploy() {
+        cout &lt;&lt; "Deploying " &lt;&lt; name &lt;&lt; " (Troop)" &lt;&lt; endl;
+        cout &lt;&lt; "  -&gt; Marching to attack! HP: " &lt;&lt; hitPoints
+             &lt;&lt; ", Damage: " &lt;&lt; damage &lt;&lt; endl;
+    }
+
+    void displayInfo() {
+        cout &lt;&lt; "Troop Card: " &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; "Elixir: " &lt;&lt; elixirCost &lt;&lt; endl;
+        cout &lt;&lt; "HP: " &lt;&lt; hitPoints &lt;&lt; ", Damage: " &lt;&lt; damage &lt;&lt; endl;
+    }
+};
+
+class Building : public Card {
+protected:
+    int hitPoints;
+    int lifetime;
+public:
+    Building(string n, int cost, int hp, int life)
+        : Card(n, cost), hitPoints(hp), lifetime(life) {}
+
+    void deploy() {
+        cout &lt;&lt; "Deploying " &lt;&lt; name &lt;&lt; " (Building)" &lt;&lt; endl;
+        cout &lt;&lt; "  -&gt; Placing defensive structure. Lasts "
+             &lt;&lt; lifetime &lt;&lt; " seconds." &lt;&lt; endl;
+    }
+
+    void displayInfo() {
+        cout &lt;&lt; "Building Card: " &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; "Elixir: " &lt;&lt; elixirCost &lt;&lt; endl;
+        cout &lt;&lt; "HP: " &lt;&lt; hitPoints &lt;&lt; ", Lifetime: "
+             &lt;&lt; lifetime &lt;&lt; "s" &lt;&lt; endl;
+    }
+};
+
+class Spell : public Card {
+protected:
+    int damage;
+    int radius;
+public:
+    Spell(string n, int cost, int dmg, int rad)
+        : Card(n, cost), damage(dmg), radius(rad) {}
+
+    void deploy() {
+        cout &lt;&lt; "Casting " &lt;&lt; name &lt;&lt; " (Spell)" &lt;&lt; endl;
+        cout &lt;&lt; "  -&gt; Instant effect! Damage: " &lt;&lt; damage
+             &lt;&lt; ", Radius: " &lt;&lt; radius &lt;&lt; endl;
+    }
+
+    void displayInfo() {
+        cout &lt;&lt; "Spell Card: " &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; "Elixir: " &lt;&lt; elixirCost &lt;&lt; endl;
+        cout &lt;&lt; "Damage: " &lt;&lt; damage &lt;&lt; ", Radius: "
+             &lt;&lt; radius &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Card* deck[4];
+    deck[0] = new Troop("Hog Rider", 4, 800, 160);
+    deck[1] = new Building("Cannon", 3, 380, 30);
+    deck[2] = new Spell("Fireball", 4, 325, 3);
+    deck[3] = new Troop("Ice Spirit", 1, 190, 95);
+
+    cout &lt;&lt; "=== Deploying Cards ===" &lt;&lt; endl;
+    cout &lt;&lt; endl;
+
+    for (int i = 0; i &lt; 4; i++) {
+        deck[i]-&gt;displayInfo();
+        deck[i]-&gt;deploy();
+        cout &lt;&lt; endl;
+    }
+
+    for (int i = 0; i &lt; 4; i++) {
+        delete deck[i];
+    }
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading4" class="loading-indicator">Running...</div>
+                        <div id="output4" class="output-text output-placeholder">
+                            Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>🔬 Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 1:</strong> Are <code>Troop</code>, <code>Building</code>, and <code>Spell</code> abstract or concrete classes?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_1')">Show Explanation</button>
+            <div class="answer-section" id="exp4_1">
+                <p><strong>Answer:</strong> They're concrete! You can create objects of them.</p>
+                <p><strong>Why:</strong> They implement ALL pure virtual functions from <code>Card</code> (<code>deploy()</code> and <code>displayInfo()</code>). Even though they're derived from an abstract class, they become concrete by implementing all required functions.</p>
+                <p><strong>Test:</strong> <code>Troop t("Knight", 3, 600, 100);</code> works fine.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 2:</strong> Create a specific <code>HogRider</code> class that inherits from <code>Troop</code>. Does it need to implement <code>deploy()</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_2')">Show Explanation</button>
+            <div class="answer-section" id="exp4_2">
+                <p><strong>Answer:</strong> No, it doesn't HAVE to (but it can if you want custom behavior).</p>
+                <p><strong>Why:</strong> <code>Troop</code> already implements <code>deploy()</code>, so <code>HogRider</code> inherits that implementation.</p>
+                <p><strong>Minimal implementation:</strong></p>
+                <pre><code class="language-cpp">class HogRider : public Troop {
+public:
+    HogRider() : Troop("Hog Rider", 4, 800, 160) {}
+    // That's it! Inherits deploy() and displayInfo()
+};</code></pre>
+                <p><strong>Custom behavior (optional):</strong> Override <code>deploy()</code> to add "HOOOG RIIIDEEER!" sound effect.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 3:</strong> Can you store cards in a <code>Troop*</code> array instead of <code>Card*</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_3')">Show Explanation</button>
+            <div class="answer-section" id="exp4_3">
+                <p><strong>What happens:</strong> You can only store <code>Troop</code> objects (and classes derived from <code>Troop</code>).</p>
+                <p><strong>Problem:</strong> <code>Troop* deck[4];</code> can't hold <code>Building</code> or <code>Spell</code> objects because they don't inherit from <code>Troop</code>.</p>
+                <p><strong>Error if you try:</strong> "cannot convert Building* to Troop*"</p>
+                <p><strong>Lesson:</strong> Use the most general base class (<code>Card*</code>) when you need to store different derived types together.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>Experiment 4:</strong> Add a <code>getElixirCost()</code> function to <code>Card</code>. Should it be virtual?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_4')">Show Explanation</button>
+            <div class="answer-section" id="exp4_4">
+                <p><strong>Implementation:</strong></p>
+                <pre><code class="language-cpp">int getElixirCost() {  // NOT virtual
+    return elixirCost;
+}</code></pre>
+                <p><strong>Should it be virtual?</strong> No! Every card returns its elixir cost the same way - just return the member variable. The behavior doesn't change across derived classes.</p>
+                <p><strong>Rule:</strong> Only make functions virtual if different derived classes need different implementations. Simple getters usually don't need to be virtual.</p>
+                <p><strong>Note:</strong> If you wanted derived classes to calculate cost differently (e.g., discounts), then make it virtual.</p>
+            </div>
+        </section>
+
+        <!-- Example 5: Find the Bug -->
+        <section class="content-card">
+            <h2>Example 5: Find the Bug - Memory Management</h2>
+
+            <p>
+                This code compiles and runs, but has a subtle bug that causes a memory leak. Can you find it?
+            </p>
+
+            <div class="warning-box">
+                <strong>Challenge:</strong> Run this code. It appears to work fine. But there's a memory leak. Identify what's wrong and how to fix it.
+            </div>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Buggy Code: Find the Memory Leak</div>
+                </div>
+
+                <textarea id="editor5">#include &lt;iostream&gt;
+using namespace std;
+
+class Base {
+private:
+    int* baseData;
+public:
+    Base() {
+        baseData = new int[10];
+        cout &lt;&lt; "Base constructor" &lt;&lt; endl;
+    }
+
+    ~Base() {
+        delete[] baseData;
+        cout &lt;&lt; "Base destructor" &lt;&lt; endl;
+    }
+
+    virtual void display() {
+        cout &lt;&lt; "Base class" &lt;&lt; endl;
+    }
+};
+
+class Derived : public Base {
+private:
+    int* derivedData;
+public:
+    Derived() {
+        derivedData = new int[20];
+        cout &lt;&lt; "Derived constructor" &lt;&lt; endl;
+    }
+
+    ~Derived() {
+        delete[] derivedData;
+        cout &lt;&lt; "Derived destructor" &lt;&lt; endl;
+    }
+
+    void display() {
+        cout &lt;&lt; "Derived class" &lt;&lt; endl;
+    }
+};
+
+int main() {
+    cout &lt;&lt; "Creating objects via base pointer:" &lt;&lt; endl;
+    Base* ptr1 = new Derived();
+    Base* ptr2 = new Derived();
+
+    cout &lt;&lt; "\nCalling display():" &lt;&lt; endl;
+    ptr1-&gt;display();
+    ptr2-&gt;display();
+
+    cout &lt;&lt; "\nDeleting objects:" &lt;&lt; endl;
+    delete ptr1;
+    delete ptr2;
+
+    cout &lt;&lt; "\nProgram complete." &lt;&lt; endl;
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground5')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor5')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading5" class="loading-indicator">Running...</div>
+                        <div id="output5" class="output-text output-placeholder">
+                            Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>🔍 Analysis</h3>
+
+            <button class="reveal-btn" onclick="toggleAnswer('bug_hint')">Show Hint</button>
+            <div class="answer-section" id="bug_hint">
+                <p><strong>Hint:</strong> Look at which destructors run. Both constructors run (Base and Derived), but do both destructors run?</p>
+                <p>Count the destructor messages in the output. How many do you see?</p>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('bug_solution')">Show Complete Solution</button>
+            <div class="answer-section" id="bug_solution">
+                <h4>The Bug</h4>
+                <p><strong>Problem:</strong> Only the Base destructor runs! The Derived destructor never gets called.</p>
+                <p><strong>Output analysis:</strong></p>
+                <ul>
+                    <li>Both constructors run: "Base constructor" + "Derived constructor" (twice)</li>
+                    <li>Only Base destructor runs: "Base destructor" (twice)</li>
+                    <li>Missing: "Derived destructor" never appears!</li>
+                </ul>
+
+                <h4>Why This Happens</h4>
+                <p>When you <code>delete ptr1;</code> where <code>ptr1</code> is <code>Base*</code>, the compiler looks at the destructor. The <code>Base</code> destructor is NOT virtual, so static binding is used. Only <code>Base::~Base()</code> runs.</p>
+
+                <p><strong>Result:</strong> <code>derivedData</code> never gets deleted - memory leak!</p>
+
+                <h4>The Fix</h4>
+                <p>Make the Base destructor virtual:</p>
+                <pre><code class="language-cpp">class Base {
+    // ... members ...
+public:
+    virtual ~Base() {  // Add 'virtual' keyword!
+        delete[] baseData;
+        cout &lt;&lt; "Base destructor" &lt;&lt; endl;
+    }
+};</code></pre>
+
+                <p><strong>After fix:</strong> Both destructors run in correct order (Derived first, then Base).</p>
+
+                <h4>The Rule</h4>
+                <div class="warning-box">
+                    <strong>CRITICAL RULE:</strong> If a class has ANY virtual functions, make the destructor virtual too. Always. No exceptions.
+                </div>
+
+                <p><strong>Why:</strong> If you're using polymorphism (virtual functions), you're likely deleting through base pointers. Without a virtual destructor, derived destructors won't run - guaranteed memory leak.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script>
+        const editors = {};
+        const originalCode = {};
+
+        function initEditor(id) {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initEditor('editor1');
+            initEditor('editor2');
+            initEditor('editor3');
+            initEditor('editor4');
+            initEditor('editor5');
+            Prism.highlightAll();
+        });
+
+        function toggleAnswer(id) {
+            const answerSection = document.getElementById(id);
+            answerSection.classList.toggle('visible');
+
+            const button = event.target;
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Explanation';
+            } else {
+                button.textContent = 'Show Explanation';
+            }
+        }
+
+        async function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = playgroundId.replace('playground', 'output');
+            const loadingId = playgroundId.replace('playground', 'loading');
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = event.target;
+
+            loadingEl.classList.add('active');
+            if (runBtn) runBtn.disabled = true;
+            outputEl.textContent = '';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                if (runBtn) runBtn.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            const outputId = editorId.replace('editor', 'output');
+            editors[editorId].setValue(originalCode[editorId]);
+
+            const outputEl = document.getElementById(outputId);
+            outputEl.textContent = 'Click "Run Code" to see the output...';
+            outputEl.className = 'output-text output-placeholder';
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

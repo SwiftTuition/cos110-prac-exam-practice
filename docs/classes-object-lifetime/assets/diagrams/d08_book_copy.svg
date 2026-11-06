@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="370" viewBox="0 0 440 370" role="img"><rect width="100%" height="100%" fill="#ffffff"/>
+<text x="12" y="24" text-anchor="start" font-size="16" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Book copy(dune); after the heading change</text>
+<text x="79.0" y="64" text-anchor="middle" font-size="14" font-weight="normal" fill="#6b3fa0" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">dune.chapters</text>
+<rect x="14" y="70" width="130" height="30" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<circle cx="79.0" cy="85.0" r="4" fill="#1f2933"/>
+<text x="14" y="124" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">numberOfChapters = 2</text>
+<text x="178" y="56" text-anchor="middle" font-size="14" font-weight="normal" fill="#7b8794" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Chapter* array</text>
+<rect x="178" y="64" width="70" height="32" rx="0" fill="#f4f7fb" stroke="#1f2933" stroke-width="1.6"/>
+<rect x="178" y="96" width="70" height="32" rx="0" fill="#f4f7fb" stroke="#1f2933" stroke-width="1.6"/>
+<text x="213" y="85" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">[0]</text>
+<text x="213" y="117" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">[1]</text>
+<path d="M79 85 L178 80" stroke="#1d5fbf" stroke-width="2" fill="none"/>
+<path d="M178 80 L169.0 84.4 L168.6 76.6 Z" fill="#1d5fbf" stroke="#1d5fbf"/>
+<rect x="290" y="54" width="140" height="44" rx="0" fill="#e8f5ee" stroke="#1f2933" stroke-width="1.6"/>
+<text x="360" y="72" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">:Chapter</text>
+<text x="360" y="91" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">&quot;Arrakis&quot;</text>
+<path d="M248 80 L290 76" stroke="#1d5fbf" stroke-width="2" fill="none"/>
+<path d="M290 76 L281.2 80.7 L280.5 73.0 Z" fill="#1d5fbf" stroke="#1d5fbf"/>
+<rect x="290" y="106" width="140" height="44" rx="0" fill="#e8f5ee" stroke="#1f2933" stroke-width="1.6"/>
+<text x="360" y="124" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">:Chapter</text>
+<text x="360" y="143" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">&quot;Muad&#x27;Dib&quot;</text>
+<path d="M248 112 L290 128" stroke="#1d5fbf" stroke-width="2" fill="none"/>
+<path d="M290 128 L280.0 128.4 L282.8 121.1 Z" fill="#1d5fbf" stroke="#1d5fbf"/>
+<text x="79.0" y="224" text-anchor="middle" font-size="14" font-weight="normal" fill="#6b3fa0" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">copy.chapters</text>
+<rect x="14" y="230" width="130" height="30" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<circle cx="79.0" cy="245.0" r="4" fill="#1f2933"/>
+<text x="14" y="284" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">numberOfChapters = 2</text>
+<text x="178" y="216" text-anchor="middle" font-size="14" font-weight="normal" fill="#7b8794" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Chapter* array</text>
+<rect x="178" y="224" width="70" height="32" rx="0" fill="#f4f7fb" stroke="#1f2933" stroke-width="1.6"/>
+<rect x="178" y="256" width="70" height="32" rx="0" fill="#f4f7fb" stroke="#1f2933" stroke-width="1.6"/>
+<text x="213" y="245" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">[0]</text>
+<text x="213" y="277" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">[1]</text>
+<path d="M79 245 L178 240" stroke="#1d5fbf" stroke-width="2" fill="none"/>
+<path d="M178 240 L169.0 244.4 L168.6 236.6 Z" fill="#1d5fbf" stroke="#1d5fbf"/>
+<rect x="290" y="214" width="140" height="44" rx="0" fill="#fff1e6" stroke="#1f2933" stroke-width="1.6"/>
+<text x="360" y="232" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">:Chapter</text>
+<text x="360" y="251" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">&quot;Changed&quot;</text>
+<path d="M248 240 L290 236" stroke="#1d5fbf" stroke-width="2" fill="none"/>
+<path d="M290 236 L281.2 240.7 L280.5 233.0 Z" fill="#1d5fbf" stroke="#1d5fbf"/>
+<rect x="290" y="266" width="140" height="44" rx="0" fill="#e8f5ee" stroke="#1f2933" stroke-width="1.6"/>
+<text x="360" y="284" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">:Chapter</text>
+<text x="360" y="303" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">&quot;Muad&#x27;Dib&quot;</text>
+<path d="M248 272 L290 288" stroke="#1d5fbf" stroke-width="2" fill="none"/>
+<path d="M290 288 L280.0 288.4 L282.8 281.1 Z" fill="#1d5fbf" stroke="#1d5fbf"/>
+<text x="220" y="362" text-anchor="middle" font-size="14" font-weight="normal" fill="#7b8794" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Two arrays and four Chapters: nothing is shared.</text>
+</svg>

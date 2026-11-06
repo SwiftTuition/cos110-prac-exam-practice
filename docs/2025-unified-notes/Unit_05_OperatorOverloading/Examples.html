@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 5: Operator Overloading - Examples | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #10b981;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code,
+        .content-card h1 code,
+        .content-card h2 code,
+        .content-card h3 code,
+        .content-card h4 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        .step-box {
+            background: #0c1222;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .step-box h4 {
+            color: #10b981;
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #1a2d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 5: Operator Overloading</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Worked Examples</h2>
+
+            <p>
+                These examples show complete implementations of operator overloading in different contexts. Each example includes experimental suggestions to help you understand what happens when you modify the code.
+            </p>
+
+            <div class="info-box">
+                <strong>How to use these examples:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Read the explanation before looking at the code</li>
+                    <li>Run the code to see how it works</li>
+                    <li>Try the experiments - modify the code and observe what breaks</li>
+                    <li>Use the reveal buttons to check your understanding</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Example 1: Money Class with Arithmetic Operators -->
+        <section class="content-card">
+            <h2>Example 1: Money Class with Arithmetic Operators</h2>
+
+            <p>
+                This example implements a <code>Money</code> class that represents dollar amounts. We'll overload <code>+</code>, <code>-</code>, and <code>==</code> operators as friend functions to enable symmetric type conversion.
+            </p>
+
+            <h3>Problem Statement</h3>
+            <p>
+                Create a class to represent money amounts with dollars and cents. The class should support:
+            </p>
+            <ul>
+                <li>Adding two money amounts together</li>
+                <li>Subtracting one amount from another</li>
+                <li>Comparing two amounts for equality</li>
+            </ul>
+
+            <h3>Solution Strategy</h3>
+
+            <div class="step-box">
+                <h4>Step 1: Design the Class</h4>
+                <p>We need two private members: <code>dollars</code> and <code>cents</code>. We'll use friend functions so both <code>m1 + m2</code> and <code>m1 + 100</code> work (symmetric conversion).</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Handle Cents Overflow</h4>
+                <p>When adding or subtracting, cents might exceed 99 or go negative. We convert everything to total cents, perform the operation, then convert back to dollars and cents.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Return Appropriate Types</h4>
+                <p>Arithmetic operators (<code>+</code>, <code>-</code>) return a new <code>Money</code> object by value. The equality operator (<code>==</code>) returns <code>bool</code>.</p>
+            </div>
+
+            <h3>Complete Implementation</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Money Class Implementation</div>
+                </div>
+
+                <textarea id="editor1">#include <iostream>
+#include <cmath>
+using namespace std;
+
+class Money {
+public:
+    Money(int d = 0, int c = 0) : dollars(d), cents(c) {}
+
+    // Friend function declarations
+    friend Money operator+(const Money& m1, const Money& m2);
+    friend Money operator-(const Money& m1, const Money& m2);
+    friend bool operator==(const Money& m1, const Money& m2);
+
+    void print() const {
+        cout << "$" << dollars << "." << (cents < 10 ? "0" : "") << cents;
+    }
+
+private:
+    int dollars;
+    int cents;
+};
+
+// Addition operator
+Money operator+(const Money& m1, const Money& m2) {
+    // Convert to total cents
+    int totalCents = (m1.dollars * 100 + m1.cents) +
+                     (m2.dollars * 100 + m2.cents);
+
+    // Handle negative amounts
+    int absTotal = abs(totalCents);
+    int newDollars = absTotal / 100;
+    int newCents = absTotal % 100;
+
+    if (totalCents < 0) {
+        newDollars = -newDollars;
+        newCents = -newCents;
+    }
+
+    return Money(newDollars, newCents);
+}
+
+// Subtraction operator
+Money operator-(const Money& m1, const Money& m2) {
+    int totalCents = (m1.dollars * 100 + m1.cents) -
+                     (m2.dollars * 100 + m2.cents);
+
+    int absTotal = abs(totalCents);
+    int newDollars = absTotal / 100;
+    int newCents = absTotal % 100;
+
+    if (totalCents < 0) {
+        newDollars = -newDollars;
+        newCents = -newCents;
+    }
+
+    return Money(newDollars, newCents);
+}
+
+// Equality operator
+bool operator==(const Money& m1, const Money& m2) {
+    return (m1.dollars == m2.dollars && m1.cents == m2.cents);
+}
+
+int main() {
+    Money price(25, 75);
+    Money discount(5, 50);
+    Money tax(2, 10);
+
+    cout << "Price: "; price.print(); cout << endl;
+    cout << "Discount: "; discount.print(); cout << endl;
+    cout << "Tax: "; tax.print(); cout << endl;
+
+    Money subtotal = price - discount;
+    cout << "\nAfter discount: "; subtotal.print(); cout << endl;
+
+    Money total = subtotal + tax;
+    cout << "After tax: "; total.print(); cout << endl;
+
+    if (total == Money(22, 35)) {
+        cout << "\nCalculation verified!" << endl;
+    }
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading1" class="loading-indicator">Running...</div>
+                        <div id="output1" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Experiments to Try</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 1:</strong> Change the operators from friend functions to member functions. What breaks?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_1')">Show Explanation</button>
+            <div class="answer-section" id="exp1_1">
+                <p><strong>What changes:</strong> You'd need to rewrite as: <code>Money operator+(const Money& other) const</code> inside the class.</p>
+                <p><strong>What breaks:</strong> Symmetric conversion. <code>m1 + 5</code> might work (if there's a <code>Money(int)</code> constructor), but <code>5 + m1</code> won't compile because the compiler tries to call <code>5.operator+(m1)</code>, which doesn't make sense.</p>
+                <p><strong>Why friend is better:</strong> Friend functions treat both operands equally, enabling conversion on either side.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 2:</strong> What if you forget to handle negative amounts in the operators?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_2')">Show Explanation</button>
+            <div class="answer-section" id="exp1_2">
+                <p><strong>What happens:</strong> Subtracting a larger amount from smaller (like <code>Money(5, 0) - Money(10, 0)</code>) gives incorrect results.</p>
+                <p><strong>Why:</strong> Without the <code>abs()</code> and sign handling, negative total cents would produce wrong dollar/cent separation. For example, -500 cents would become -5 dollars and 0 cents instead of -5 dollars and 0 cents properly.</p>
+                <p><strong>Fix:</strong> Always use <code>abs()</code> for division/modulo, then restore the sign afterward.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 3:</strong> Try adding <code>Money(int totalDollars)</code> constructor and use <code>m1 + 100</code>. Does it work?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_3')">Show Explanation</button>
+            <div class="answer-section" id="exp1_3">
+                <p><strong>What happens:</strong> Both <code>m1 + 100</code> and <code>100 + m1</code> work!</p>
+                <p><strong>Why:</strong> The compiler can convert <code>100</code> to <code>Money(100)</code> automatically. Since we used friend functions, conversion works on both sides.</p>
+                <p><strong>Add this constructor:</strong></p>
+                <pre><code class="language-cpp">Money(int totalDollars) : dollars(totalDollars), cents(0) {}</code></pre>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 4:</strong> What if <code>operator==</code> was a member function instead?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_4')">Show Explanation</button>
+            <div class="answer-section" id="exp1_4">
+                <p><strong>What happens:</strong> It still works fine for most cases.</p>
+                <p><strong>Why:</strong> Comparison doesn't usually need symmetric conversion. You rarely write <code>100 == m1</code>. Member function <code>bool operator==(const Money& other) const</code> would work perfectly for <code>m1 == m2</code>.</p>
+                <p><strong>Best practice:</strong> Friend is still preferred for consistency, but member works here.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 5:</strong> Remove the <code>const</code> from <code>operator+</code> parameters. Does it still compile?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_5')">Show Explanation</button>
+            <div class="answer-section" id="exp1_5">
+                <p><strong>What happens:</strong> It compiles, but you can't pass temporary objects or const objects.</p>
+                <p><strong>Example that breaks:</strong> <code>Money total = Money(10, 0) + Money(5, 0);</code> - temporaries can't bind to non-const references in some contexts.</p>
+                <p><strong>Best practice:</strong> Always use <code>const&</code> for parameters you're not modifying. It's more efficient and flexible.</p>
+            </div>
+        </section>
+
+        <!-- Example 2: Hero Ranking System -->
+        <section class="content-card">
+            <h2>Example 2: Hero Ranking System with Comparison Operators</h2>
+
+            <p>
+                In One Punch Man (an anime where heroes are ranked by class and strength), heroes are categorized from C-Class (weakest) to S-Class (strongest). Let's create a <code>Hero</code> class with comparison operators to rank heroes properly.
+            </p>
+
+            <h3>Problem Statement</h3>
+            <p>
+                Create a <code>Hero</code> class with a rank (S=4, A=3, B=2, C=1) and a power level within that rank. Implement comparison operators (<code><</code>, <code>></code>, <code>==</code>) to determine which hero is stronger.
+            </p>
+
+            <h3>Solution Strategy</h3>
+
+            <div class="step-box">
+                <h4>Step 1: Rank Hierarchy</h4>
+                <p>S-Class beats A-Class regardless of power level. Within the same class, higher power level wins.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Comparison Logic</h4>
+                <p>First compare ranks. If ranks are equal, compare power levels. This creates a hierarchical ordering.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Implement All Comparisons</h4>
+                <p>Once we have <code><</code> and <code>==</code>, we can derive <code>></code>, <code><=</code>, <code>>=</code>, and <code>!=</code> from them.</p>
+            </div>
+
+            <h3>Complete Implementation</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Hero Class Implementation</div>
+                </div>
+
+                <textarea id="editor2">#include <iostream>
+#include <string>
+using namespace std;
+
+class Hero {
+public:
+    Hero(string n, char r, int p) : name(n), rank(r), powerLevel(p) {}
+
+    // Friend comparison operators
+    friend bool operator<(const Hero& h1, const Hero& h2);
+    friend bool operator>(const Hero& h1, const Hero& h2);
+    friend bool operator==(const Hero& h1, const Hero& h2);
+
+    void print() const {
+        cout << name << " (" << rank << "-Class, Power: " << powerLevel << ")";
+    }
+
+private:
+    string name;
+    char rank;      // S, A, B, or C
+    int powerLevel;
+
+    // Helper to convert rank to numeric value
+    int getRankValue() const {
+        switch(rank) {
+            case 'S': return 4;
+            case 'A': return 3;
+            case 'B': return 2;
+            case 'C': return 1;
+            default: return 0;
+        }
+    }
+
+    friend int getRankValue(const Hero& h) {
+        return h.getRankValue();
+    }
+};
+
+bool operator<(const Hero& h1, const Hero& h2) {
+    int rank1 = getRankValue(h1);
+    int rank2 = getRankValue(h2);
+
+    // Different ranks: compare ranks
+    if (rank1 != rank2) {
+        return rank1 < rank2;
+    }
+
+    // Same rank: compare power levels
+    return h1.powerLevel < h2.powerLevel;
+}
+
+bool operator>(const Hero& h1, const Hero& h2) {
+    return h2 < h1;  // Reuse < operator
+}
+
+bool operator==(const Hero& h1, const Hero& h2) {
+    return h1.rank == h2.rank && h1.powerLevel == h2.powerLevel;
+}
+
+int main() {
+    // Heroes inspired by One Punch Man
+    Hero saitama("Saitama", 'B', 9999);      // Should be S-Class!
+    Hero genos("Genos", 'S', 85);
+    Hero mumenRider("Mumen Rider", 'C', 15); // The people's hero!
+    Hero kingOfWeird("King", 'S', 5);        // Overhyped
+
+    cout << "=== Hero Rankings ===" << endl;
+
+    if (genos > saitama) {
+        cout << "Genos is ranked higher than Saitama" << endl;
+    } else {
+        cout << "Saitama outranks Genos (or equal)" << endl;
+    }
+
+    if (mumenRider < saitama) {
+        mumenRider.print();
+        cout << " is ranked lower than ";
+        saitama.print();
+        cout << endl;
+    }
+
+    cout << "\nComparing S-Class heroes:" << endl;
+    if (genos > kingOfWeird) {
+        genos.print();
+        cout << " > ";
+        kingOfWeird.print();
+        cout << " (same rank, higher power)" << endl;
+    }
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading2" class="loading-indicator">Running...</div>
+                        <div id="output2" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Experiments to Try</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 1:</strong> Implement <code>operator!=</code> and <code>operator<=</code>. How can you derive them from existing operators?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_1')">Show Explanation</button>
+            <div class="answer-section" id="exp2_1">
+                <p><strong>Implementation:</strong></p>
+                <pre><code class="language-cpp">bool operator!=(const Hero& h1, const Hero& h2) {
+    return !(h1 == h2);  // NOT equal
+}
+
+bool operator<=(const Hero& h1, const Hero& h2) {
+    return (h1 < h2) || (h1 == h2);  // Less than OR equal
+}</code></pre>
+                <p><strong>Why this works:</strong> You only need to implement <code><</code> and <code>==</code>. All other comparisons can be built from these two primitives.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 2:</strong> What happens if you forget to check rank first and only compare power levels?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_2')">Show Explanation</button>
+            <div class="answer-section" id="exp2_2">
+                <p><strong>What breaks:</strong> A C-Class hero with power 1000 would rank higher than an S-Class hero with power 50.</p>
+                <p><strong>Example:</strong> Mumen Rider (C-Class, 1000 power) would be stronger than Genos (S-Class, 85 power), which is wrong!</p>
+                <p><strong>Fix:</strong> Always compare primary criterion first (rank), then secondary (power level) only if primary is equal.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 3:</strong> Why is <code>operator></code> implemented as <code>return h2 < h1</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_3')">Show Explanation</button>
+            <div class="answer-section" id="exp2_3">
+                <p><strong>Logic:</strong> If h1 > h2, then h2 < h1. It's the reverse relationship!</p>
+                <p><strong>Why do this:</strong> Avoids duplicating logic. We've already written the comparison logic in <code>operator<</code>. Reusing it prevents bugs and inconsistencies.</p>
+                <p><strong>Best practice:</strong> Implement <code><</code> and <code>==</code> with full logic. Derive all others from these two.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 4:</strong> Add a <code>getName()</code> getter and sort a vector of heroes. What would you need?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_4')">Show Explanation</button>
+            <div class="answer-section" id="exp2_4">
+                <p><strong>What you need:</strong> The <code>operator<</code> we already have! STL's <code>sort()</code> uses <code>operator<</code> by default.</p>
+                <p><strong>Code:</strong></p>
+                <pre><code class="language-cpp">#include <vector>
+#include <algorithm>
+
+vector<Hero> heroes;
+heroes.push_back(Hero("Saitama", 'B', 9999));
+heroes.push_back(Hero("Genos", 'S', 85));
+heroes.push_back(Hero("Mumen", 'C', 15));
+
+sort(heroes.begin(), heroes.end());  // Uses operator<
+// Now sorted from weakest to strongest!</code></pre>
+            </div>
+        </section>
+
+        <!-- Example 3: Tutoring Session Tracker -->
+        <section class="content-card">
+            <h2>Example 3: Tutoring Session Tracker with Stream Operators</h2>
+
+            <p>
+                Let's create a <code>Session</code> class for Swift Tuition that tracks tutoring sessions. We'll implement stream operators (<code><<</code> and <code>>></code>) and the <code>+=</code> operator to add minutes to a session.
+            </p>
+
+            <h3>Problem Statement</h3>
+            <p>
+                Create a class to track tutoring sessions with student name, subject, and duration. Support:
+            </p>
+            <ul>
+                <li>Reading session data from input (<code>cin >> session</code>)</li>
+                <li>Writing session data to output (<code>cout << session</code>)</li>
+                <li>Adding extra time to a session (<code>session += 30</code> for 30 more minutes)</li>
+            </ul>
+
+            <h3>Solution Strategy</h3>
+
+            <div class="step-box">
+                <h4>Step 1: Stream Input (>>)</h4>
+                <p>Must be a friend function. Takes <code>istream&</code> and <code>Session&</code> (non-const). Returns <code>istream&</code> for chaining.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Stream Output (<<)</h4>
+                <p>Also friend. Takes <code>ostream&</code> and <code>const Session&</code>. Returns <code>ostream&</code>.</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Compound Assignment (+=)</h4>
+                <p>Member function. Modifies the calling object, returns <code>*this</code> by reference.</p>
+            </div>
+
+            <h3>Complete Implementation</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Session Class Implementation</div>
+                </div>
+
+                <textarea id="editor3">#include <iostream>
+#include <string>
+using namespace std;
+
+class Session {
+public:
+    Session(string s = "", string sub = "", int d = 0)
+        : student(s), subject(sub), duration(d) {}
+
+    // Friend stream operators
+    friend ostream& operator<<(ostream& os, const Session& session);
+    friend istream& operator>>(istream& is, Session& session);
+
+    // Member compound assignment operator
+    Session& operator+=(int minutes) {
+        duration += minutes;
+        return *this;  // Return reference for chaining
+    }
+
+private:
+    string student;
+    string subject;
+    int duration;  // in minutes
+};
+
+// Output operator - displays session nicely
+ostream& operator<<(ostream& os, const Session& session) {
+    os << "Student: " << session.student << "\n";
+    os << "Subject: " << session.subject << "\n";
+    os << "Duration: " << session.duration << " minutes";
+    return os;  // MUST return for chaining!
+}
+
+// Input operator - reads session data
+istream& operator>>(istream& is, Session& session) {
+    cout << "Enter student name: ";
+    is >> session.student;
+
+    cout << "Enter subject: ";
+    is >> session.subject;
+
+    cout << "Enter duration (minutes): ";
+    is >> session.duration;
+
+    return is;  // MUST return for chaining!
+}
+
+int main() {
+    // Create sample sessions
+    Session s1("Thabo", "COS_110", 60);
+    Session s2("Lesedi", "WTW_146", 90);
+
+    cout << "=== Session 1 ===" << endl;
+    cout << s1 << endl << endl;
+
+    cout << "=== Session 2 ===" << endl;
+    cout << s2 << endl << endl;
+
+    // Add 30 minutes to session 1
+    cout << "Adding 30 minutes to session 1..." << endl;
+    s1 += 30;
+    cout << s1 << endl << endl;
+
+    // Chaining compound assignment
+    cout << "Adding 15 + 15 minutes to session 2..." << endl;
+    s2 += 15 += 15;  // Chains because we return *this
+    cout << s2 << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading3" class="loading-indicator">Running...</div>
+                        <div id="output3" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Experiments to Try</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 1:</strong> What happens if <code>operator<<</code> returns <code>void</code> instead of <code>ostream&</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_1')">Show Explanation</button>
+            <div class="answer-section" id="exp3_1">
+                <p><strong>What breaks:</strong> Chaining stops working. <code>cout << s1 << endl</code> won't compile.</p>
+                <p><strong>Why:</strong> <code>(cout << s1)</code> would return <code>void</code>, and you can't apply <code><< endl</code> to <code>void</code>.</p>
+                <p><strong>Error message:</strong> "no match for operator<< (operand types are 'void' and ...)"</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 2:</strong> Why is the <code>Session&</code> parameter <code>const</code> in <code>operator<<</code> but NOT in <code>operator>></code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_2')">Show Explanation</button>
+            <div class="answer-section" id="exp3_2">
+                <p><strong>Output (<<):</strong> We're only reading the session to print it. The session doesn't change, so it's <code>const</code>.</p>
+                <p><strong>Input (>>):</strong> We're modifying the session by reading into it. Can't be <code>const</code> because we change its values.</p>
+                <p><strong>Rule:</strong> Reading = const, Writing/Modifying = non-const.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 3:</strong> Why does <code>operator+=</code> return <code>Session&</code> instead of <code>void</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_3')">Show Explanation</button>
+            <div class="answer-section" id="exp3_3">
+                <p><strong>Enables chaining:</strong> <code>s1 += 10 += 20</code> works because each <code>+=</code> returns the modified object.</p>
+                <p><strong>Mimics built-in behavior:</strong> For <code>int x = 5; x += 3 += 2;</code>, the result is 10 (x = 5 + 3 + 2). Our operator should behave the same way.</p>
+                <p><strong>Standard practice:</strong> All compound assignment operators (<code>+=</code>, <code>-=</code>, <code>*=</code>) return <code>*this</code> by reference.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 4:</strong> Implement <code>operator+</code> using <code>operator+=</code>. How would you do it?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_4')">Show Explanation</button>
+            <div class="answer-section" id="exp3_4">
+                <p><strong>Implementation:</strong></p>
+                <pre><code class="language-cpp">// Friend function
+Session operator+(const Session& s, int minutes) {
+    Session result = s;  // Copy the session
+    result += minutes;   // Use += to add minutes
+    return result;       // Return new session
+}</code></pre>
+                <p><strong>Why this pattern:</strong> We implement <code>+=</code> first (modifies object), then build <code>+</code> on top of it (creates new object). Avoids duplicating logic.</p>
+                <p><strong>Common pattern:</strong> Implement <code>+=</code>, <code>-=</code>, etc. as members. Implement <code>+</code>, <code>-</code> as friends using the compound operators.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1rem;">
+                <strong>🔬 Experiment 5:</strong> Why must stream operators be friend functions and not member functions?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_5')">Show Explanation</button>
+            <div class="answer-section" id="exp3_5">
+                <p><strong>The problem with member functions:</strong> For <code>cout << session</code>, the left operand is <code>cout</code> (an <code>ostream</code>), not <code>session</code>.</p>
+                <p><strong>If it were a member:</strong> We'd need <code>ostream::operator<<(Session)</code>, which means modifying the <code>ostream</code> class. We can't do that - it's in the standard library!</p>
+                <p><strong>Friend solution:</strong> <code>operator<<(ostream&, Session&)</code> is a free function we control, but it has access to Session's private members.</p>
+            </div>
+        </section>
+
+        <!-- Example 4: Find the Bug -->
+        <section class="content-card">
+            <h2>Example 4: Find the Bug - Broken Fraction Class</h2>
+
+            <p>
+                The following <code>Fraction</code> class has several bugs in its operator implementations. Your task is to identify and fix them. Don't look at the solution until you've tried to find the bugs yourself!
+            </p>
+
+            <div class="warning-box">
+                <strong>Challenge:</strong> This code compiles but produces incorrect results. Run it and observe the output, then identify what's wrong.
+            </div>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Buggy Fraction Class</div>
+                </div>
+
+                <textarea id="editor4">#include <iostream>
+using namespace std;
+
+class Fraction {
+public:
+    Fraction(int n = 0, int d = 1) : numerator(n), denominator(d) {}
+
+    friend Fraction operator+(const Fraction& f1, const Fraction& f2);
+    friend bool operator==(const Fraction& f1, Fraction& f2);
+    friend void operator<<(ostream& os, const Fraction& f);
+
+    Fraction& operator+=(const Fraction& other) {
+        numerator = numerator * other.denominator + other.numerator * denominator;
+        denominator = denominator * other.denominator;
+    }
+
+private:
+    int numerator;
+    int denominator;
+};
+
+Fraction operator+(const Fraction& f1, const Fraction& f2) {
+    Fraction result;
+    result.numerator = f1.numerator * f2.denominator + f2.numerator * f1.denominator;
+    result.denominator = f1.denominator;
+    return result;
+}
+
+bool operator==(const Fraction& f1, Fraction& f2) {
+    f2.numerator = f2.numerator * f1.denominator;
+    f2.denominator = f2.denominator * f1.denominator;
+    return (f1.numerator == f2.numerator && f1.denominator == f2.denominator);
+}
+
+void operator<<(ostream& os, const Fraction& f) {
+    os << f.numerator << "/" << f.denominator;
+}
+
+int main() {
+    Fraction f1(1, 2);
+    Fraction f2(1, 3);
+
+    cout << "f1 = "; operator<<(cout, f1); cout << endl;
+    cout << "f2 = "; operator<<(cout, f2); cout << endl;
+
+    Fraction f3 = f1 + f2;
+    cout << "f1 + f2 = "; operator<<(cout, f3); cout << endl;
+
+    f1 += f2;
+    cout << "After f1 += f2, f1 = "; operator<<(cout, f1); cout << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading4" class="loading-indicator">Running...</div>
+                        <div id="output4" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Identify the Bugs</h3>
+            <p>
+                Run the code above and observe the output. Then try to identify all the bugs before revealing the solution below.
+            </p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('bug_solution')">Show Complete Bug Analysis</button>
+            <div class="answer-section" id="bug_solution">
+                <h4>Bug #1: operator+ has wrong denominator calculation</h4>
+                <p><strong>Location:</strong> Line 23</p>
+                <p><strong>What's wrong:</strong> <code>result.denominator = f1.denominator;</code> should be <code>result.denominator = f1.denominator * f2.denominator;</code></p>
+                <p><strong>Why it's wrong:</strong> When adding fractions, the denominator should be the product of both denominators. The code only uses one denominator.</p>
+                <p><strong>Impact:</strong> 1/2 + 1/3 = 5/2 (wrong!) instead of 5/6 (correct)</p>
+
+                <h4>Bug #2: operator+= doesn't return anything</h4>
+                <p><strong>Location:</strong> Line 14</p>
+                <p><strong>What's wrong:</strong> Function should return <code>*this</code> but has no return statement (and no return type!)</p>
+                <p><strong>Why it's wrong:</strong> Compound assignment operators should return a reference to the modified object for chaining.</p>
+                <p><strong>Fix:</strong> Change signature to <code>Fraction& operator+=(const Fraction& other)</code> and add <code>return *this;</code></p>
+
+                <h4>Bug #3: operator== modifies its parameter</h4>
+                <p><strong>Location:</strong> Line 28-29</p>
+                <p><strong>What's wrong:</strong> The function modifies <code>f2</code> during comparison, and <code>f2</code> is not const</p>
+                <p><strong>Why it's wrong:</strong> Comparison should never modify operands! Also, the parameter should be <code>const Fraction& f2</code>.</p>
+                <p><strong>Fix:</strong> Use cross-multiplication without modifying: <code>return (f1.numerator * f2.denominator == f2.numerator * f1.denominator);</code></p>
+
+                <h4>Bug #4: operator<< returns void</h4>
+                <p><strong>Location:</strong> Line 33</p>
+                <p><strong>What's wrong:</strong> Returns <code>void</code> instead of <code>ostream&</code></p>
+                <p><strong>Why it's wrong:</strong> Breaks chaining. Can't write <code>cout << f1 << endl;</code></p>
+                <p><strong>Fix:</strong> Change to <code>ostream& operator<<(ostream& os, const Fraction& f)</code> and add <code>return os;</code></p>
+
+                <h4>Corrected Code:</h4>
+                <pre><code class="language-cpp">Fraction operator+(const Fraction& f1, const Fraction& f2) {
+    Fraction result;
+    result.numerator = f1.numerator * f2.denominator + f2.numerator * f1.denominator;
+    result.denominator = f1.denominator * f2.denominator;  // FIX
+    return result;
+}
+
+bool operator==(const Fraction& f1, const Fraction& f2) {  // FIX: const
+    // FIX: Don't modify, use cross-multiplication
+    return (f1.numerator * f2.denominator == f2.numerator * f1.denominator);
+}
+
+ostream& operator<<(ostream& os, const Fraction& f) {  // FIX: return type
+    os << f.numerator << "/" << f.denominator;
+    return os;  // FIX: return statement
+}
+
+Fraction& operator+=(const Fraction& other) {  // FIX: return type
+    numerator = numerator * other.denominator + other.numerator * denominator;
+    denominator = denominator * other.denominator;
+    return *this;  // FIX: return statement
+}</code></pre>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script>
+        const editors = {};
+        const originalCode = {};
+        window.codeEditors = editors;
+
+        function initEditor(id) {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initEditor('editor1');
+            initEditor('editor2');
+            initEditor('editor3');
+            initEditor('editor4');
+            Prism.highlightAll();
+        });
+
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+
+            // Refresh CodeMirror editors when revealing
+            if (answerSection.classList.contains('visible') && window.codeEditors) {
+                setTimeout(() => {
+                    Object.values(window.codeEditors).forEach(editor => {
+                        editor.refresh();
+                    });
+                }, 50);
+            }
+
+            const button = event.target;
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Explanation';
+            } else {
+                button.textContent = 'Show Explanation';
+            }
+        }
+
+        async function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = playgroundId.replace('playground', 'output');
+            const loadingId = playgroundId.replace('playground', 'loading');
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = event.target;
+
+            loadingEl.classList.add('active');
+            if (runBtn) runBtn.disabled = true;
+            outputEl.textContent = '';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                if (runBtn) runBtn.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            const outputId = editorId.replace('editor', 'output');
+            editors[editorId].setValue(originalCode[editorId]);
+
+            const outputEl = document.getElementById(outputId);
+            outputEl.textContent = 'Click "Run Code" to see the output...';
+            outputEl.className = 'output-text output-placeholder';
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

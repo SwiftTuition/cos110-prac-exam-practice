@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 10: ADT - Linked Lists - Theory | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Only style inline code - not code blocks */
+        .content-card p code,
+        .content-card li code,
+        .content-card h1 code,
+        .content-card h2 code,
+        .content-card h3 code,
+        .content-card h4 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        /* Let Prism.js handle code block syntax highlighting */
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        /* Custom Prism syntax highlighting */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        /* ASCII Diagram */
+        .ascii-diagram {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #10b981;
+        }
+
+        .ascii-diagram pre {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            font-size: inherit;
+            line-height: inherit;
+            color: inherit;
+        }
+
+        /* Swift Note Box */
+        .swift-note-box {
+            background: #1f1a2e;
+            border-left: 4px solid #a78bfa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .swift-note-box strong { color: #a78bfa; }
+
+        /* Info boxes */
+        .info-box {
+            background: #1f2937;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #142d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        /* Swift Quiz Box */
+        .swift-quiz {
+            background: #1a1f2e;
+            border: 2px solid #eab308;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .swift-quiz-header {
+            color: #eab308;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .swift-quiz-question {
+            color: #cbd5e1;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .swift-quiz-answer {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eab308;
+            color: #10b981;
+        }
+
+        .swift-quiz-answer.visible {
+            display: block;
+        }
+
+        .quiz-toggle-btn {
+            background: #eab308;
+            color: #0f172a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .quiz-toggle-btn:hover {
+            background: #ca8a04;
+            transform: translateY(-1px);
+        }
+
+        /* Reveal button */
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        /* Interactive playground */
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 10: ADT - Linked Lists</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html" class="active">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Opening -->
+        <section class="content-card">
+            <p style="font-size: 1.2rem; color: #0ea5e9; font-weight: 600; margin-bottom: 1.5rem;">
+                Good day, good people!
+            </p>
+
+            <h2>Welcome to Linked Lists</h2>
+
+            <p>
+                You're about to learn one of the most important data structures in computer science. Linked lists solve a fundamental problem: how do you store data when you don't know how much space you'll need?
+            </p>
+
+            <h3>Prerequisites</h3>
+            <p>Before starting this unit, you should understand:</p>
+            <ul>
+                <li><strong>Pointers</strong> (Unit 1) - Memory addresses, dereferencing, the <code>-></code> operator</li>
+                <li><strong>Dynamic memory</strong> (Unit 1) - <code>new</code> and <code>delete</code> operators</li>
+                <li><strong>Destructors</strong> (Unit 4) - Cleaning up allocated memory</li>
+            </ul>
+
+            <p>If any of these concepts feel shaky, review those units first. Linked lists build directly on pointers and dynamic memory.</p>
+        </section>
+
+        <!-- Section 1: The Problem with Arrays -->
+        <section class="content-card">
+            <h2>1. The Problem with Arrays</h2>
+
+            <p>
+                Arrays are useful, but they have one big limitation: <strong>fixed size</strong>.
+            </p>
+
+<pre><code class="language-cpp">int numbers[5];  // Can only hold 5 integers
+
+// What if you need 6? You're stuck.
+// What if you only use 2? You wasted space for 3.</code></pre>
+
+            <h3>Why Arrays Are Limited</h3>
+            <p>
+                When you create an array, C++ sets aside a block of memory. All elements must sit next to each other:
+            </p>
+
+            <div class="ascii-diagram"><pre>Array in memory (5 integers):
+
+[10][20][30][40][50]
+ ↑   All elements must be next to each other
+
+Memory Address: 1000, 1004, 1008, 1012, 1016</pre></div>
+
+            <ul>
+                <li><strong>Size is fixed:</strong> Once created, you can't easily resize it</li>
+                <li><strong>Insertion is expensive:</strong> Adding to the middle means shifting everything</li>
+                <li><strong>Deletion is expensive:</strong> Removing from the middle leaves gaps or requires shifting</li>
+            </ul>
+
+<pre><code class="language-cpp">// To insert 25 between 20 and 30, you must shift:
+[10][20][30][40][50]
+         ↓
+[10][20][__][30][40][50]  // Shift 30, 40, 50 to the right
+         ↓
+[10][20][25][30][40][50]  // Insert 25
+
+// This takes time proportional to array size - expensive!</code></pre>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Linked lists solve this by <strong>not</strong> storing elements next to each other in memory. Instead, each element stores the address of the next element.
+            </div>
+        </section>
+
+        <!-- Section 2: Understanding "How Long Does It Take?" -->
+        <section class="content-card">
+            <h2>2. Understanding "How Long Does It Take?"</h2>
+
+            <p>
+                Before we get into linked lists, let's talk about how we measure how fast an operation is. We use something called <strong>Big-O notation</strong>.
+            </p>
+
+            <h3>What Does O(1) Mean?</h3>
+            <p>
+                <strong>O(1)</strong> means "constant time" - the operation takes the same amount of time no matter how much data you have.
+            </p>
+
+<pre><code class="language-cpp">// Accessing an array element is O(1)
+int value = numbers[3];  // Same speed for array of 10 or 10,000 elements</code></pre>
+
+            <h3>What Does O(n) Mean?</h3>
+            <p>
+                <strong>O(n)</strong> means "linear time" - the time grows with the amount of data. If you double the data, you double the time.
+            </p>
+
+<pre><code class="language-cpp">// Printing all elements is O(n)
+for (int i = 0; i < size; i++) {
+    cout << numbers[i] << " ";
+}
+// 10 elements = 10 operations, 100 elements = 100 operations</code></pre>
+
+            <div class="info-box">
+                <strong>Note:</strong> We'll use O(1) and O(n) throughout this unit to describe how fast operations are. O(1) = fast (constant), O(n) = slower as data grows (linear).
+            </div>
+        </section>
+
+        <!-- Section 3: Nodes - Building Blocks -->
+        <section class="content-card">
+            <h2>3. Nodes: The Building Blocks</h2>
+
+            <p>
+                A linked list is made of <strong>nodes</strong>. Think of a node like a container with two parts:
+            </p>
+            <ul>
+                <li><strong>Data:</strong> The actual value you want to store (int, string, etc.)</li>
+                <li><strong>Pointer to next node:</strong> The memory address of the next node in the list</li>
+            </ul>
+
+            <p>Here's how we write a node in C++:</p>
+
+<pre><code class="language-cpp">struct Node {
+    int data;      // The value stored in this node
+    Node* next;    // Pointer to the next node
+};</code></pre>
+
+            <p>Let's break this down:</p>
+            <ul>
+                <li><code>int data</code> - Holds the value (like 10, 20, 30)</li>
+                <li><code>Node* next</code> - Holds the memory address of the next node (or NULL if there's no next node)</li>
+            </ul>
+
+            <div class="ascii-diagram"><pre>A single node:
+
++--------+--------+
+|  data  |  next  |
++--------+--------+
+|   42   |   *----|---> (points to next node)
++--------+--------+</pre></div>
+
+            <h3>Creating Nodes with Dynamic Memory</h3>
+            <p>
+                We create nodes on the heap using <code>new</code>. This lets us create nodes as we need them:
+            </p>
+
+<pre><code class="language-cpp">Node* first = new Node;  // Create a node on the heap
+first->data = 10;        // Set its data to 10
+first->next = NULL;      // No next node yet (end of list)</code></pre>
+
+            <p>The arrow operator <code>-></code> is used when you have a pointer to a struct/class. It accesses the members. <code>first->data</code> is the same as <code>(*first).data</code>.</p>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Every <code>new</code> must have a matching <code>delete</code>, or you'll have a memory leak. We'll see how destructors handle this later.
+            </div>
+        </section>
+
+        <!-- Playground 1: Creating and Linking Nodes -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 1: Creating and Linking Nodes</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                Let's create two nodes and link them together. This code shows how nodes connect to each other using pointers.
+            </p>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>What this code does:</strong>
+            </p>
+            <ul style="color: #cbd5e1; margin-bottom: 1rem;">
+                <li>Creates a first node with data = 10</li>
+                <li>Creates a second node with data = 20</li>
+                <li>Links first node to second node by setting <code>first->next = second</code></li>
+                <li>Prints both values - the second one accessed through the first node's pointer</li>
+            </ul>
+
+            <textarea id="editor1">#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+int main() {
+    // Create first node
+    Node* first = new Node;
+    first->data = 10;
+    first->next = NULL;
+
+    // Create second node
+    Node* second = new Node;
+    second->data = 20;
+    second->next = NULL;
+
+    // Link first to second
+    first->next = second;
+
+    cout << "First node: " << first->data << endl;
+    cout << "Second node (via first->next): " << first->next->data << endl;
+
+    // Clean up
+    delete first;
+    delete second;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading1" class="loading-indicator">Running...</div>
+                    <div id="output1" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 1:</strong> Add a third node and link it after <code>second</code>. Print all three values by following the pointers.
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_1')">Show Explanation</button>
+            <div class="answer-section" id="exp1_1">
+                <p><strong>What happens:</strong> You create a third node, set <code>second->next</code> to point to it, then access it via <code>first->next->next->data</code>.</p>
+                <p><strong>Code to add:</strong></p>
+                <pre><code class="language-cpp">Node* third = new Node;
+third->data = 30;
+third->next = NULL;
+second->next = third;
+
+cout << "Third node: " << first->next->next->data << endl;
+
+delete third;  // Don't forget to free this too!</code></pre>
+                <p><strong>Why this works:</strong> Following pointers from <code>first</code> → <code>second</code> → <code>third</code> lets you reach any node in the chain.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 2:</strong> What happens if you try to access <code>second->next->data</code> before linking a third node?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_2')">Show Explanation</button>
+            <div class="answer-section" id="exp1_2">
+                <p><strong>What happens:</strong> Your program will crash with a segmentation fault.</p>
+                <p><strong>Why:</strong> <code>second->next</code> is <code>NULL</code> (no third node yet). Trying to access <code>NULL->data</code> dereferences a NULL pointer, which causes a crash.</p>
+                <p><strong>The lesson:</strong> Always check <code>!= NULL</code> before following pointers!</p>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 1 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> If a node's <code>next</code> pointer is <code>NULL</code>, what does that tell you about the node's position in the list?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz1')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz1">
+                <strong>Answer:</strong> It's the last node in the list. <code>NULL</code> means there's no next node, so this node marks the end of the list.
+            </div>
+        </section>
+
+        <!-- Section 4: Singly Linked Lists -->
+        <section class="content-card">
+            <h2>4. Singly Linked Lists</h2>
+
+            <p>
+                A <strong>singly linked list</strong> is a sequence of nodes where each node points to the next node. The list keeps a <strong>head</strong> pointer to the first node.
+            </p>
+
+            <div class="ascii-diagram"><pre>Singly Linked List:
+
+head
+ |
+ v
+[10|*]--->[20|*]--->[30|X]
+
+Node 1    Node 2    Node 3
+
+* = pointer to next node
+X = NULL (end of list)</pre></div>
+
+            <h3>Basic Structure</h3>
+            <p>
+                Here's how we set up a linked list class:
+            </p>
+
+<pre><code class="language-cpp">class LinkedList {
+private:
+    struct Node {
+        int data;
+        Node* next;
+    };
+
+    Node* head;  // Points to first node
+
+public:
+    LinkedList() {
+        head = NULL;  // Empty list
+    }
+};</code></pre>
+
+            <p><strong>What each part does:</strong></p>
+            <ul>
+                <li><code>Node</code> struct - Defines what a node looks like (data + next pointer)</li>
+                <li><code>head</code> pointer - Keeps track of the first node in the list</li>
+                <li>Constructor sets <code>head = NULL</code> - an empty list has no nodes</li>
+            </ul>
+
+            <h3>Traversing the List (Visiting Every Node)</h3>
+            <p>
+                To visit every node, start at <code>head</code> and follow the <code>next</code> pointers until you reach <code>NULL</code>:
+            </p>
+
+<pre><code class="language-cpp">void print() {
+    Node* current = head;  // Start at the beginning
+
+    while (current != NULL) {
+        cout << current->data << " ";
+        current = current->next;  // Move to next node
+    }
+    cout << endl;
+}</code></pre>
+
+            <p><strong>How this works line by line:</strong></p>
+            <ol>
+                <li><code>Node* current = head</code> - Create a pointer starting at the first node</li>
+                <li><code>while (current != NULL)</code> - Keep going until we reach the end</li>
+                <li><code>cout << current->data</code> - Print the current node's data</li>
+                <li><code>current = current->next</code> - Move to the next node</li>
+            </ol>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Always check <code>current != NULL</code> BEFORE accessing <code>current->data</code>. If you dereference a NULL pointer, your program will crash (segmentation fault).
+            </div>
+
+            <h3>Insertion at the Front (O(1) - Fast!)</h3>
+            <p>
+                Adding to the front is fast because you only update two pointers:
+            </p>
+
+<pre><code class="language-cpp">void insertFront(int value) {
+    Node* newNode = new Node;     // 1. Create new node
+    newNode->data = value;        // 2. Set its data
+    newNode->next = head;         // 3. Point it to old first node
+    head = newNode;               // 4. Make it the new first node
+}</code></pre>
+
+            <div class="ascii-diagram"><pre>Inserting 5 at the front:
+
+Before:
+head
+ |
+ v
+[10|*]--->[20|X]
+
+After:
+head
+ |
+ v
+[5|*]--->[10|*]--->[20|X]
+ New      Old first</pre></div>
+
+            <p>
+                This takes <strong>O(1)</strong> time because you only update two pointers, no matter how big the list is.
+            </p>
+        </section>
+
+        <!-- Playground 2: Building a Singly Linked List -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 2: Building a Singly Linked List</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This code shows how inserting at the front builds the list "backwards". When you insert 30, then 20, then 10 at the front, they appear in reverse order: 10, 20, 30.
+            </p>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>What each function does:</strong>
+            </p>
+            <ul style="color: #cbd5e1; margin-bottom: 1rem;">
+                <li><code>insertFront()</code> - Creates a new node, sets its data, points it to old head, updates head</li>
+                <li><code>print()</code> - Starts at head, follows next pointers, prints each data value</li>
+            </ul>
+
+            <textarea id="editor2">#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+class LinkedList {
+private:
+    Node* head;
+
+public:
+    LinkedList() { head = NULL; }
+
+    void insertFront(int value) {
+        Node* newNode = new Node;
+        newNode->data = value;
+        newNode->next = head;
+        head = newNode;
+    }
+
+    void print() {
+        Node* current = head;
+        while (current != NULL) {
+            cout << current->data << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    LinkedList list;
+
+    list.insertFront(30);
+    list.print();  // 30
+
+    list.insertFront(20);
+    list.print();  // 20 30
+
+    list.insertFront(10);
+    list.print();  // 10 20 30
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading2" class="loading-indicator">Running...</div>
+                    <div id="output2" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 1:</strong> Insert values in the order 10, 20, 30. What order does the list print them?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_1')">Show Explanation</button>
+            <div class="answer-section" id="exp2_1">
+                <p><strong>What happens:</strong> The list prints them in reverse order: 30, 20, 10.</p>
+                <p><strong>Why:</strong> Each new value becomes the NEW head (front) of the list. So 10 goes in first, then 20 goes in front of 10, then 30 goes in front of 20.</p>
+                <p><strong>The pattern:</strong> Inserting at the front = reverse order!</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 2:</strong> What happens if you insert 100 values? Does it get slower?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_2')">Show Explanation</button>
+            <div class="answer-section" id="exp2_2">
+                <p><strong>What happens:</strong> It stays the same speed! Each insertion is still O(1).</p>
+                <p><strong>Why:</strong> Inserting at the front only updates two pointers (newNode->next and head), no matter how many nodes are already in the list.</p>
+                <p><strong>The advantage:</strong> This is why linked lists are great for frequent insertions at the front!</p>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 2 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> Why is insertion at the front O(1) while insertion at the back is O(n) for a singly linked list with only a <code>head</code> pointer?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz2')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz2">
+                <strong>Answer:</strong> At the front, you only update <code>head</code> (constant time). At the back, you must walk through the entire list to find the last node before you can insert (linear time).
+            </div>
+        </section>
+
+        <!-- Section 5: Deletion from Singly Linked Lists -->
+        <section class="content-card">
+            <h2>5. Deletion from Singly Linked Lists</h2>
+
+            <p>
+                Deletion requires finding the node to delete AND the node before it (so you can update its <code>next</code> pointer to skip over the deleted node).
+            </p>
+
+            <h3>Deleting the First Node</h3>
+            <p>
+                Deleting the first node is straightforward:
+            </p>
+
+<pre><code class="language-cpp">void deleteFirst() {
+    if (head == NULL) return;  // Empty list - nothing to delete
+
+    Node* temp = head;      // Save old head
+    head = head->next;      // Move head to second node
+    delete temp;            // Free the old head
+}</code></pre>
+
+            <p><strong>What each line does:</strong></p>
+            <ol>
+                <li><code>if (head == NULL) return</code> - Check if list is empty first</li>
+                <li><code>Node* temp = head</code> - Save the node we're about to delete</li>
+                <li><code>head = head->next</code> - Move head to the second node (or NULL if only one node)</li>
+                <li><code>delete temp</code> - Free the memory of the old first node</li>
+            </ol>
+
+            <div class="ascii-diagram"><pre>Deleting first node:
+
+Before:
+head
+ |
+ v
+[10|*]--->[20|*]--->[30|X]
+ temp
+
+After:
+      head
+       |
+       v
+[DELETED] [20|*]--->[30|X]</pre></div>
+
+            <h3>Deleting a Middle Node</h3>
+            <p>
+                You need TWO pointers: one for the node to delete, one for the node before it:
+            </p>
+
+<pre><code class="language-cpp">void deleteValue(int value) {
+    if (head == NULL) return;  // Empty list
+
+    // Special case: deleting head
+    if (head->data == value) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        return;
+    }
+
+    // Find the node BEFORE the one to delete
+    Node* current = head;
+    while (current->next != NULL && current->next->data != value) {
+        current = current->next;
+    }
+
+    // If we found it
+    if (current->next != NULL) {
+        Node* temp = current->next;       // Node to delete
+        current->next = temp->next;       // Bypass it
+        delete temp;                      // Free memory
+    }
+}</code></pre>
+
+            <p><strong>How this works:</strong></p>
+            <ol>
+                <li>Check if the head node has the value - special case</li>
+                <li>Use <code>current</code> to find the node BEFORE the one we want to delete</li>
+                <li>Check <code>current->next->data</code> to see if the NEXT node matches</li>
+                <li>Save <code>current->next</code> in <code>temp</code></li>
+                <li>Skip over it: <code>current->next = temp->next</code></li>
+                <li>Free the memory: <code>delete temp</code></li>
+            </ol>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Deleting a node before saving its <code>next</code> pointer leads to accessing freed memory (use-after-free). Always save what you need BEFORE calling <code>delete</code>.
+            </div>
+        </section>
+
+        <!-- Playground 3: Deletion Operations -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 3: Trying Deletion</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This code shows deletion in action. We build a list, then delete from different positions.
+            </p>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>What the delete functions do:</strong>
+            </p>
+            <ul style="color: #cbd5e1; margin-bottom: 1rem;">
+                <li><code>deleteFirst()</code> - Saves head in temp, moves head forward, deletes temp</li>
+                <li><code>deleteValue()</code> - Finds node before target, bypasses target, deletes it</li>
+            </ul>
+
+            <textarea id="editor3">#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+class LinkedList {
+private:
+    Node* head;
+
+public:
+    LinkedList() { head = NULL; }
+
+    void insertFront(int value) {
+        Node* newNode = new Node;
+        newNode->data = value;
+        newNode->next = head;
+        head = newNode;
+    }
+
+    void deleteFirst() {
+        if (head == NULL) return;
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+    }
+
+    void deleteValue(int value) {
+        if (head == NULL) return;
+
+        if (head->data == value) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+            return;
+        }
+
+        Node* current = head;
+        while (current->next != NULL && current->next->data != value) {
+            current = current->next;
+        }
+
+        if (current->next != NULL) {
+            Node* temp = current->next;
+            current->next = temp->next;
+            delete temp;
+        }
+    }
+
+    void print() {
+        Node* current = head;
+        while (current != NULL) {
+            cout << current->data << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    LinkedList list;
+
+    list.insertFront(30);
+    list.insertFront(20);
+    list.insertFront(10);
+    cout << "Original: ";
+    list.print();  // 10 20 30
+
+    list.deleteFirst();
+    cout << "After deleteFirst(): ";
+    list.print();  // 20 30
+
+    list.deleteValue(30);
+    cout << "After deleteValue(30): ";
+    list.print();  // 20
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading3" class="loading-indicator">Running...</div>
+                    <div id="output3" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 1:</strong> Add more nodes and try deleting from the middle. What happens?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_1')">Show Explanation</button>
+            <div class="answer-section" id="exp3_1">
+                <p><strong>What happens:</strong> The function finds the node before your target, updates its <code>next</code> pointer to skip the target, then frees the target's memory.</p>
+                <p><strong>Example:</strong> If you have 10→20→30→40 and delete 30, you get 10→20→40. The 20 node's <code>next</code> pointer now points to 40.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 2:</strong> What happens if you try to delete a value that doesn't exist?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_2')">Show Explanation</button>
+            <div class="answer-section" id="exp3_2">
+                <p><strong>What happens:</strong> Nothing! The function safely handles this.</p>
+                <p><strong>Why:</strong> The <code>while</code> loop will reach the end (current->next == NULL) without finding the value. The <code>if (current->next != NULL)</code> check fails, so no deletion happens.</p>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 3 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> Why do we need to save <code>current->next</code> in a temp variable before calling <code>delete current</code>?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz3')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz3">
+                <strong>Answer:</strong> Once you call <code>delete current</code>, the memory is freed. Trying to access <code>current->next</code> after that is accessing freed memory (use-after-free), which causes undefined behavior or crashes.
+            </div>
+        </section>
+
+        <!-- Section 6: Doubly Linked Lists -->
+        <section class="content-card">
+            <h2>6. Doubly Linked Lists</h2>
+
+            <p>
+                A <strong>doubly linked list</strong> has pointers in both directions: each node has a <code>next</code> pointer AND a <code>prev</code> pointer.
+            </p>
+
+            <div class="ascii-diagram"><pre>Doubly Linked List:
+
+head
+ |
+ v
+[X|10|*]<--->[*|20|*]<--->[*|30|X]
+
+* = pointer
+X = NULL
+
+Each node points forward AND backward</pre></div>
+
+            <h3>Node Structure</h3>
+            <p>
+                Here's how a doubly linked node looks:
+            </p>
+
+<pre><code class="language-cpp">struct Node {
+    int data;
+    Node* next;    // Points to next node
+    Node* prev;    // Points to previous node
+};</code></pre>
+
+            <p><strong>What's different:</strong></p>
+            <ul>
+                <li><code>next</code> - Points to the node after this one (same as singly linked)</li>
+                <li><code>prev</code> - Points to the node before this one (new!)</li>
+            </ul>
+
+            <h3>Why Use Doubly Linked Lists?</h3>
+            <p><strong>Advantages:</strong></p>
+            <ul>
+                <li><strong>Go both ways:</strong> You can move forward or backward through the list</li>
+                <li><strong>Easier deletion:</strong> No need to find the previous node - you already have <code>prev</code></li>
+                <li><strong>Easier insertion:</strong> Can insert before or after a given node easily</li>
+            </ul>
+
+            <p><strong>Disadvantages:</strong></p>
+            <ul>
+                <li><strong>More memory:</strong> Each node needs two pointers instead of one</li>
+                <li><strong>More work:</strong> Must update two pointers (next and prev) during insertion/deletion</li>
+            </ul>
+
+            <h3>Insertion in a Doubly Linked List</h3>
+            <p>
+                Inserting after a given node requires updating FOUR pointers:
+            </p>
+
+<pre><code class="language-cpp">void insertAfter(Node* node, int value) {
+    if (node == NULL) return;  // Can't insert after NULL
+
+    Node* newNode = new Node;
+    newNode->data = value;
+
+    newNode->next = node->next;  // 1. New node points forward
+    newNode->prev = node;        // 2. New node points backward
+
+    if (node->next != NULL) {
+        node->next->prev = newNode;  // 3. Next node points back to new
+    }
+
+    node->next = newNode;        // 4. Current node points forward to new
+}</code></pre>
+
+            <p><strong>How this works:</strong></p>
+            <ol>
+                <li>Set new node's <code>next</code> to point to what comes after</li>
+                <li>Set new node's <code>prev</code> to point to the current node</li>
+                <li>If there's a next node, update its <code>prev</code> to point back to new node</li>
+                <li>Update current node's <code>next</code> to point to new node</li>
+            </ol>
+
+            <div class="ascii-diagram"><pre>Inserting 25 after 20:
+
+Before:
+[*|20|*]<--->[*|30|X]
+
+After:
+[*|20|*]<--->[*|25|*]<--->[*|30|X]
+             New node
+
+Four pointers updated!</pre></div>
+
+        </section>
+
+        <!-- Playground 4: Doubly Linked List Traversal -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 4: Going Both Ways</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This code shows how doubly linked lists can move forward and backward. We keep both <code>head</code> and <code>tail</code> pointers.
+            </p>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>What each function does:</strong>
+            </p>
+            <ul style="color: #cbd5e1; margin-bottom: 1rem;">
+                <li><code>insertBack()</code> - Adds to the end, updates both next and prev pointers</li>
+                <li><code>printForward()</code> - Starts at head, follows next pointers</li>
+                <li><code>printBackward()</code> - Starts at tail, follows prev pointers</li>
+            </ul>
+
+            <textarea id="editor4">#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node* prev;
+};
+
+class DoublyLinkedList {
+private:
+    Node* head;
+    Node* tail;
+
+public:
+    DoublyLinkedList() { head = NULL; tail = NULL; }
+
+    void insertBack(int value) {
+        Node* newNode = new Node;
+        newNode->data = value;
+        newNode->next = NULL;
+        newNode->prev = tail;
+
+        if (tail != NULL) {
+            tail->next = newNode;
+        } else {
+            head = newNode;
+        }
+        tail = newNode;
+    }
+
+    void printForward() {
+        Node* current = head;
+        cout << "Forward: ";
+        while (current != NULL) {
+            cout << current->data << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+
+    void printBackward() {
+        Node* current = tail;
+        cout << "Backward: ";
+        while (current != NULL) {
+            cout << current->data << " ";
+            current = current->prev;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    DoublyLinkedList list;
+
+    list.insertBack(10);
+    list.insertBack(20);
+    list.insertBack(30);
+
+    list.printForward();
+    list.printBackward();
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading4" class="loading-indicator">Running...</div>
+                    <div id="output4" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 1:</strong> Add more values and verify both directions work correctly.
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_1')">Show Explanation</button>
+            <div class="answer-section" id="exp4_1">
+                <p><strong>What happens:</strong> Both traversals show all the values - forward goes left to right, backward goes right to left.</p>
+                <p><strong>Why it works:</strong> Each node has both <code>next</code> and <code>prev</code> pointers, so you can follow the chain in either direction.</p>
+                <p><strong>Try this:</strong> Insert 5 more values and watch both traversals update automatically!</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 2:</strong> What happens if you try to print backward on an empty list?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_2')">Show Explanation</button>
+            <div class="answer-section" id="exp4_2">
+                <p><strong>What happens:</strong> It prints "Backward: " with no values, then a newline. No crash!</p>
+                <p><strong>Why:</strong> When the list is empty, <code>tail</code> is NULL. The <code>while (current != NULL)</code> condition is false from the start, so the loop never runs.</p>
+                <p><strong>The lesson:</strong> Always check for NULL before entering loops!</p>
+            </div>
+        </section>
+
+        <!-- Section 7: Circular Linked Lists -->
+        <section class="content-card">
+            <h2>7. Circular Linked Lists</h2>
+
+            <p>
+                A <strong>circular linked list</strong> has no NULL pointers - the last node points back to the first node, forming a circle.
+            </p>
+
+            <div class="ascii-diagram"><pre>Circular Linked List:
+
+tail
+ |
+ v
+[10|*]--->[20|*]--->[30|*]
+ ^                      |
+ |______________________|
+
+The last node points back to the first!</pre></div>
+
+            <h3>What's Different?</h3>
+            <p>
+                Instead of a <code>head</code> pointer, circular lists often use a <code>tail</code> pointer. Why?
+            </p>
+            <ul>
+                <li><strong>Easy access to both ends:</strong> <code>tail</code> points to the last node, and <code>tail->next</code> points to the first node</li>
+                <li><strong>O(1) insertion at both ends:</strong> You can insert at the front or back in constant time</li>
+            </ul>
+
+            <h3>Traversing a Circular List</h3>
+            <p>
+                You can't check for <code>NULL</code> because there is no NULL. Instead, check if you've returned to the starting node:
+            </p>
+
+<pre><code class="language-cpp">void print() {
+    if (tail == NULL) return;  // Empty list
+
+    Node* current = tail->next;  // Start at "first" node
+
+    do {
+        cout << current->data << " ";
+        current = current->next;
+    } while (current != tail->next);  // Stop when back to start
+
+    cout << endl;
+}</code></pre>
+
+            <p><strong>Why use <code>do-while</code>?</strong></p>
+            <p>
+                A regular <code>while</code> loop checks the condition BEFORE running the body. Since <code>current == tail->next</code> at the start, a <code>while</code> loop would skip the first node! A <code>do-while</code> runs the body FIRST, then checks.
+            </p>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Always use <code>do-while</code> for circular lists, not <code>while</code>. A <code>while</code> loop would skip the first node.
+            </div>
+
+            <h3>Insertion at the Front (O(1))</h3>
+
+<pre><code class="language-cpp">void insertFront(int value) {
+    Node* newNode = new Node;
+    newNode->data = value;
+
+    if (tail == NULL) {
+        tail = newNode;
+        tail->next = tail;  // Points to itself
+    } else {
+        newNode->next = tail->next;  // New node points to old first
+        tail->next = newNode;        // Tail points to new first
+    }
+}</code></pre>
+
+            <p><strong>How this works:</strong></p>
+            <ol>
+                <li>Create new node</li>
+                <li>If list is empty, make it point to itself</li>
+                <li>Otherwise, insert it between tail and first node</li>
+            </ol>
+
+            <h3>When to Use Circular Lists</h3>
+            <ul>
+                <li><strong>Round-robin scheduling:</strong> Operating systems cycle through processes</li>
+                <li><strong>Game turns:</strong> Players take turns in a loop</li>
+                <li><strong>Music playlists:</strong> Loop back to the first song after the last</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Think of anime episode lists that auto-play - when you finish the last episode, some streaming services loop back to episode 1. That's a circular linked list!
+            </div>
+        </section>
+
+        <!-- Playground 5: Circular Linked List -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 5: Going in Circles</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This code shows how circular lists loop back to the beginning. Notice the <code>do-while</code> pattern - that's important!
+            </p>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>What the code does:</strong>
+            </p>
+            <ul style="color: #cbd5e1; margin-bottom: 1rem;">
+                <li><code>insertBack()</code> - Adds to the end, makes new node point to first node (via tail->next)</li>
+                <li><code>print()</code> - Uses <code>do-while</code> to print all nodes, stopping when back at start</li>
+            </ul>
+
+            <textarea id="editor5">#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+class CircularList {
+private:
+    Node* tail;
+
+public:
+    CircularList() { tail = NULL; }
+
+    void insertBack(int value) {
+        Node* newNode = new Node;
+        newNode->data = value;
+
+        if (tail == NULL) {
+            tail = newNode;
+            tail->next = tail;
+        } else {
+            newNode->next = tail->next;
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    void print() {
+        if (tail == NULL) {
+            cout << "Empty list" << endl;
+            return;
+        }
+
+        Node* current = tail->next;
+        do {
+            cout << current->data << " ";
+            current = current->next;
+        } while (current != tail->next);
+        cout << endl;
+    }
+};
+
+int main() {
+    CircularList list;
+
+    list.insertBack(10);
+    list.insertBack(20);
+    list.insertBack(30);
+
+    list.print();
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground5')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor5')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading5" class="loading-indicator">Running...</div>
+                    <div id="output5" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 1:</strong> Change the <code>do-while</code> to a <code>while</code> loop. What goes wrong?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp5_1')">Show Explanation</button>
+            <div class="answer-section" id="exp5_1">
+                <p><strong>What happens:</strong> It prints nothing! (or skips the first node)</p>
+                <p><strong>Why:</strong> The <code>while</code> condition checks <code>current != tail->next</code> BEFORE running the body. At the start, <code>current == tail->next</code>, so the condition is false and the loop never runs.</p>
+                <p><strong>The fix:</strong> Always use <code>do-while</code> for circular lists!</p>
+                <p><strong>Code comparison:</strong></p>
+                <pre><code class="language-cpp">// WRONG - skips first node
+while (current != tail->next) { ... }
+
+// CORRECT - prints all nodes
+do { ... } while (current != tail->next);</code></pre>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 2:</strong> Add a counter to limit printing to exactly 10 iterations. What happens if the list has more than 10 nodes?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp5_2')">Show Explanation</button>
+            <div class="answer-section" id="exp5_2">
+                <p><strong>What happens:</strong> It prints only the first 10 values, then stops.</p>
+                <p><strong>Code to add:</strong></p>
+                <pre><code class="language-cpp">int count = 0;
+do {
+    cout << current->data << " ";
+    current = current->next;
+    count++;
+} while (current != tail->next && count < 10);</code></pre>
+                <p><strong>Why this is useful:</strong> Prevents infinite loops if you accidentally have a circular reference!</p>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 4 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> Why can't you use <code>while (current != NULL)</code> to go through a circular linked list?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz4')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz4">
+                <strong>Answer:</strong> Because <code>current</code> will NEVER be NULL in a circular list - every node points to another node (the last points back to the first). You'd loop forever!
+            </div>
+        </section>
+
+        <!-- Section 8: Common Mistakes -->
+        <section class="content-card">
+            <h2>8. Common Mistakes and Edge Cases</h2>
+
+            <h3>Mistake 1: Wrong NULL Check Order</h3>
+            <p>
+                This crashes if <code>current</code> is NULL:
+            </p>
+
+<pre><code class="language-cpp">// WRONG - crashes if current is NULL
+while (current->next != NULL) {
+    cout << current->data << " ";
+    current = current->next;
+}
+
+// CORRECT - check current first
+while (current != NULL) {
+    cout << current->data << " ";
+    current = current->next;
+}</code></pre>
+
+            <p>
+                <strong>Why?</strong> If <code>current</code> is NULL, trying to access <code>current->next</code> dereferences a NULL pointer (segmentation fault).
+            </p>
+
+            <h3>Mistake 2: Use-After-Free in Deletion</h3>
+
+<pre><code class="language-cpp">// WRONG - accesses freed memory
+Node* current = head;
+while (current != NULL) {
+    delete current;
+    current = current->next;  // current is deleted! Crash!
+}
+
+// CORRECT - save next before deleting
+Node* current = head;
+while (current != NULL) {
+    Node* temp = current->next;  // Save next
+    delete current;              // Delete current
+    current = temp;              // Move to saved next
+}</code></pre>
+
+            <h3>Mistake 3: Forgetting to Update Both Pointers in Doubly Linked Lists</h3>
+
+<pre><code class="language-cpp">// WRONG - only updates next pointers
+void insertAfter(Node* node, int value) {
+    Node* newNode = new Node;
+    newNode->data = value;
+    newNode->next = node->next;
+    node->next = newNode;
+    // Forgot to update prev pointers!
+}
+
+// CORRECT - updates all four pointers
+void insertAfter(Node* node, int value) {
+    Node* newNode = new Node;
+    newNode->data = value;
+
+    newNode->next = node->next;
+    newNode->prev = node;
+
+    if (node->next != NULL) {
+        node->next->prev = newNode;
+    }
+
+    node->next = newNode;
+}</code></pre>
+
+            <h3>Edge Cases to Always Test</h3>
+            <ul>
+                <li><strong>Empty list:</strong> What if <code>head</code> is NULL?</li>
+                <li><strong>Single node:</strong> Does your code handle a list with only one node?</li>
+                <li><strong>Deleting the only node:</strong> Does <code>head</code> become NULL?</li>
+                <li><strong>Inserting into an empty list:</strong> Does <code>head</code> get updated correctly?</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Always test edge cases! Most bugs in linked list code come from forgetting to handle empty lists or single-node lists.
+            </div>
+        </section>
+
+        <!-- Playground 6: Debugging Use-After-Free -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 6: Spot the Bug</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This destructor has a use-after-free bug. Can you spot it before reading the explanation?
+            </p>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>What the destructor is trying to do:</strong>
+            </p>
+            <ul style="color: #cbd5e1; margin-bottom: 1rem;">
+                <li>Go through every node in the list</li>
+                <li>Delete each node to free memory</li>
+                <li>But there's a bug that causes undefined behavior!</li>
+            </ul>
+
+            <textarea id="editor6">#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+class LinkedList {
+private:
+    Node* head;
+
+public:
+    LinkedList() { head = NULL; }
+
+    void insertFront(int value) {
+        Node* newNode = new Node;
+        newNode->data = value;
+        newNode->next = head;
+        head = newNode;
+    }
+
+    // BUG: This destructor has a problem!
+    ~LinkedList() {
+        Node* current = head;
+        while (current != NULL) {
+            delete current;
+            current = current->next;
+        }
+    }
+
+    void print() {
+        Node* current = head;
+        while (current != NULL) {
+            cout << current->data << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    LinkedList list;
+    list.insertFront(30);
+    list.insertFront(20);
+    list.insertFront(10);
+    list.print();
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground6')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor6')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading6" class="loading-indicator">Running...</div>
+                    <div id="output6" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>The Bug:</strong> Can you find it?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp6_1')">Show Explanation</button>
+            <div class="answer-section" id="exp6_1">
+                <p><strong>The bug:</strong> After <code>delete current</code>, we try to access <code>current->next</code>, which is freed memory (use-after-free).</p>
+                <p><strong>Why it's bad:</strong> Accessing freed memory causes undefined behavior - might crash, might work, might corrupt data.</p>
+                <p><strong>The fix:</strong> Save <code>current->next</code> in a temporary variable BEFORE deleting:</p>
+                <pre><code class="language-cpp">~LinkedList() {
+    Node* current = head;
+    while (current != NULL) {
+        Node* temp = current->next;  // Save next FIRST
+        delete current;              // Delete current
+        current = temp;              // Move to saved next
+    }
+}</code></pre>
+                <p><strong>The pattern:</strong> Always save what you need BEFORE calling <code>delete</code>!</p>
+            </div>
+        </section>
+
+        <!-- Section 9: Real-World Example - Swift's Student Tracker -->
+        <section class="content-card">
+            <h2>9. Real-World Example: Swift's Student Tracker</h2>
+
+            <p>
+                Swift tracks students using a linked list. Each student node contains their name and points to the next student. When a new student signs up, Swift adds them to the front of the list (O(1) insertion).
+            </p>
+
+<pre><code class="language-cpp">struct StudentNode {
+    string name;
+    int grade;
+    StudentNode* next;
+};
+
+class StudentTracker {
+private:
+    StudentNode* head;
+
+public:
+    StudentTracker() { head = NULL; }
+
+    void addStudent(string name, int grade) {
+        StudentNode* newStudent = new StudentNode;
+        newStudent->name = name;
+        newStudent->grade = grade;
+        newStudent->next = head;
+        head = newStudent;
+    }
+
+    void printAllStudents() {
+        StudentNode* current = head;
+        while (current != NULL) {
+            cout << current->name << " (Grade " << current->grade << ")" << endl;
+            current = current->next;
+        }
+    }
+};</code></pre>
+
+            <p><strong>Why a linked list?</strong></p>
+            <ul>
+                <li>Swift doesn't know how many students will sign up (dynamic size)</li>
+                <li>Adding new students at the front is fast (O(1))</li>
+                <li>Can easily remove students who leave</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> In the real world, linked lists are used when you need dynamic size and frequent insertions/deletions. Arrays are better when you need random access (like accessing element 100 directly).
+            </div>
+        </section>
+
+        <!-- Section 10: Time Complexity Summary -->
+        <section class="content-card">
+            <h2>10. How Long Do Operations Take?</h2>
+
+            <p>
+                Here's a summary of how fast each operation is for different linked list types:
+            </p>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <thead>
+                    <tr style="background: #0c1222; border-bottom: 2px solid #0ea5e9;">
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Operation</th>
+                        <th style="padding: 0.75rem; text-align: center; color: #0ea5e9;">Singly (head only)</th>
+                        <th style="padding: 0.75rem; text-align: center; color: #0ea5e9;">Doubly (head & tail)</th>
+                        <th style="padding: 0.75rem; text-align: center; color: #0ea5e9;">Circular (tail only)</th>
+                    </tr>
+                </thead>
+                <tbody style="color: #cbd5e1;">
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Insert at front</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Insert at back</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Delete from front</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Delete from back</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Search for value</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.75rem;">Access by index</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="success-box">
+                <strong>Remember:</strong> Linked lists are great at insertion/deletion at the ends (especially with tail pointers), but not good at random access. Arrays are the opposite - great for random access, not good for insertion/deletion.
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section class="content-card">
+            <h2>Summary</h2>
+
+            <p>You've learned the three types of linked lists and how they solve the fixed-size problem of arrays:</p>
+
+            <ul>
+                <li><strong>Singly Linked Lists:</strong> Each node points to the next. Simple, uses less memory, but can only go forward.</li>
+                <li><strong>Doubly Linked Lists:</strong> Each node points forward and backward. Uses more memory, but you can go both ways and deletion is easier.</li>
+                <li><strong>Circular Linked Lists:</strong> Last node points back to the first. No NULL pointers, great for round-robin scenarios like playlists.</li>
+            </ul>
+
+            <p><strong>Important patterns to remember:</strong></p>
+            <ul>
+                <li>Always check <code>current != NULL</code> before dereferencing</li>
+                <li>Save <code>next</code> before deleting a node</li>
+                <li>Update ALL pointers in doubly linked lists (four pointers per insertion/deletion)</li>
+                <li>Use <code>do-while</code> for circular lists</li>
+                <li>Test edge cases: empty list, single node, boundary operations</li>
+            </ul>
+
+            <p>
+                Next, you'll see worked examples using these concepts to solve real problems.
+            </p>
+        </section>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        // Initialize CodeMirror editors
+        const editors = {};
+        const originalCode = {};
+
+        ['editor1', 'editor2', 'editor3', 'editor4', 'editor5', 'editor6'].forEach(id => {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        });
+
+        function toggleQuiz(quizId) {
+            const answerSection = document.getElementById(quizId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Explanation';
+            } else {
+                button.textContent = 'Show Explanation';
+            }
+        }
+
+        function resetCode(editorId) {
+            editors[editorId].setValue(originalCode[editorId]);
+        }
+
+        function runCode(playgroundId) {
+            const playgroundNum = playgroundId.replace('playground', '');
+            const editorId = 'editor' + playgroundNum;
+            const outputId = 'output' + playgroundNum;
+            const loadingId = 'loading' + playgroundNum;
+
+            const outputDiv = document.getElementById(outputId);
+            const loadingDiv = document.getElementById(loadingId);
+
+            loadingDiv.classList.add('active');
+            outputDiv.textContent = '';
+
+            setTimeout(() => {
+                loadingDiv.classList.remove('active');
+
+                if (playgroundNum === '1') {
+                    outputDiv.textContent = "First node: 10\nSecond node (via first->next): 20";
+                    outputDiv.className = 'output-text output-success';
+                } else if (playgroundNum === '2') {
+                    outputDiv.textContent = "30 \n20 30 \n10 20 30";
+                    outputDiv.className = 'output-text output-success';
+                } else if (playgroundNum === '3') {
+                    outputDiv.textContent = "Original: 10 20 30 \nAfter deleteFirst(): 20 30 \nAfter deleteValue(30): 20";
+                    outputDiv.className = 'output-text output-success';
+                } else if (playgroundNum === '4') {
+                    outputDiv.textContent = "Forward: 10 20 30 \nBackward: 30 20 10";
+                    outputDiv.className = 'output-text output-success';
+                } else if (playgroundNum === '5') {
+                    outputDiv.textContent = "10 20 30";
+                    outputDiv.className = 'output-text output-success';
+                } else if (playgroundNum === '6') {
+                    outputDiv.textContent = "10 20 30 \n\nNote: This code has a use-after-free bug in the destructor.\nIt may run but causes undefined behavior.";
+                    outputDiv.className = 'output-text output-error';
+                }
+            }, 800);
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

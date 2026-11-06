@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 11: ADT - Stacks & Queues - Examples | COS 110</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code,
+        .content-card h3 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .info-box {
+            background: #1f2937;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #142d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        /* CodeMirror Playground */
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #334155;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 11: ADT - Stacks & Queues</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Worked Examples</h2>
+            <p>These examples show you how to apply stacks and queues to solve real problems. Each example includes a problem description, then you can reveal the approach and solution with working code.</p>
+            <p>Try to think through the problem yourself before revealing the solution!</p>
+        </section>
+
+        <!-- Example 1: Reversing a String with a Stack -->
+        <section class="content-card">
+            <h2>Example 1: Reversing a String with a Stack</h2>
+
+            <h3>Problem</h3>
+            <p>Write a function that uses a stack to reverse a string. For example, "hello" becomes "olleh".</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('ex1')">Show Approach & Solution</button>
+            <div class="answer-section" id="ex1">
+                <h3>Approach</h3>
+                <p>A stack is perfect for reversing because it's LIFO (Last In, First Out). We push each character onto the stack, then pop them all off. The last character pushed (the last letter) becomes the first character popped (the first letter of the reversed string).</p>
+
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Reversing with Stack</div>
+                    </div>
+
+                    <textarea id="editor1">
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Node {
+    char data;
+    Node* next;
+};
+
+class Stack {
+private:
+    Node* head;
+
+public:
+    Stack() {
+        head = NULL;
+    }
+
+    ~Stack() {
+        while (!isEmpty()) {
+            pop();
+        }
+    }
+
+    void push(char c) {
+        Node* newNode = new Node;
+        newNode->data = c;
+        newNode->next = head;
+        head = newNode;
+    }
+
+    char pop() {
+        if (isEmpty()) {
+            return '\0';
+        }
+        char c = head->data;
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        return c;
+    }
+
+    bool isEmpty() {
+        return head == NULL;
+    }
+};
+
+string reverseString(string str) {
+    Stack s;
+
+    for (int i = 0; i < str.length(); i++) {
+        s.push(str[i]);
+    }
+
+    string reversed = "";
+    while (!s.isEmpty()) {
+        reversed += s.pop();
+    }
+
+    return reversed;
+}
+
+int main() {
+    string original = "hello";
+    string reversed = reverseString(original);
+
+    cout << "Original: " << original << endl;
+    cout << "Reversed: " << reversed << endl;
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor1', 'output1')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output1">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li><strong>Push phase:</strong> Loop through the string and push each character. For "hello", we push 'h', 'e', 'l', 'l', 'o'.</li>
+                    <li><strong>Stack state:</strong> After pushing, 'o' is at the top, then 'l', 'l', 'e', 'h' at the bottom.</li>
+                    <li><strong>Pop phase:</strong> Pop characters and build reversed string. First pop gives 'o', last gives 'h'.</li>
+                    <li><strong>Result:</strong> "olleh"</li>
+                </ol>
+
+                <div class="success-box">
+                    <strong>Time Complexity:</strong> O(n) - we visit each character exactly twice (once to push, once to pop).
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 2: Print Queue Simulation -->
+        <section class="content-card">
+            <h2>Example 2: Print Queue Simulation</h2>
+
+            <h3>Problem</h3>
+            <p>Simulate a printer queue where documents are printed in the order they were submitted. Implement functions to add a document to the queue and process (print) the next document.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('ex2')">Show Approach & Solution</button>
+            <div class="answer-section" id="ex2">
+                <h3>Approach</h3>
+                <p>A queue is perfect for fair scheduling. The first document submitted should be the first document printed (FIFO). We use a linked-list queue to handle dynamic sizing.</p>
+
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Print Queue System</div>
+                    </div>
+
+                    <textarea id="editor2">
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Document {
+    string name;
+    int pages;
+};
+
+struct Node {
+    Document data;
+    Node* next;
+};
+
+class PrintQueue {
+private:
+    Node* head;
+    Node* tail;
+
+public:
+    PrintQueue() {
+        head = NULL;
+        tail = NULL;
+    }
+
+    ~PrintQueue() {
+        while (!isEmpty()) {
+            processNext();
+        }
+    }
+
+    void addDocument(string name, int pages) {
+        Node* newNode = new Node;
+        newNode->data.name = name;
+        newNode->data.pages = pages;
+        newNode->next = NULL;
+
+        if (isEmpty()) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+
+        cout << "Added: " << name << " (" << pages << " pages)" << endl;
+    }
+
+    void processNext() {
+        if (isEmpty()) {
+            cout << "Queue empty. Nothing to print." << endl;
+            return;
+        }
+
+        Document doc = head->data;
+        Node* temp = head;
+        head = head->next;
+
+        if (head == NULL) {
+            tail = NULL;
+        }
+
+        delete temp;
+        cout << "Printing: " << doc.name << " (" << doc.pages << " pages)" << endl;
+    }
+
+    bool isEmpty() {
+        return head == NULL;
+    }
+
+    void displayQueue() {
+        if (isEmpty()) {
+            cout << "Queue is empty." << endl;
+            return;
+        }
+
+        cout << "Queue: ";
+        Node* current = head;
+        while (current != NULL) {
+            cout << current->data.name;
+            if (current->next != NULL) cout << " -> ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    PrintQueue printer;
+
+    printer.addDocument("Report.pdf", 5);
+    printer.addDocument("Essay.docx", 3);
+    printer.addDocument("Slides.pptx", 10);
+
+    printer.displayQueue();
+    cout << endl;
+
+    printer.processNext();
+    printer.processNext();
+
+    printer.displayQueue();
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor2', 'output2')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output2">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li><strong>addDocument():</strong> Adds to the rear of the queue. If empty, both head and tail point to the new node.</li>
+                    <li><strong>processNext():</strong> Removes from the front (FIFO - first added is first printed).</li>
+                    <li><strong>Edge case:</strong> When we dequeue the last document, we set both head and tail to NULL.</li>
+                </ol>
+
+                <div class="info-box">
+                    <strong>Real-world use:</strong> Operating systems use queues for print jobs, task scheduling, and network packets.
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 3: Clash Royale Elixir Manager (Personalized) -->
+        <section class="content-card">
+            <h2>Example 3: Clash Royale Elixir Manager</h2>
+
+            <h3>Problem</h3>
+            <p>In Clash Royale (a mobile strategy game Swift plays), you have elixir that regenerates over time. You spend elixir to play cards. Create a system that tracks elixir spending using a queue, showing the order in which elixir was spent.</p>
+
+            <p style="font-size: 0.9rem; color: #94a3b8; font-style: italic;">Note: Clash Royale is a real-time strategy game where you deploy troops using elixir (resource that regenerates at 1 per second, max 10). Strategic elixir management separates good players from great ones.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('ex3')">Show Approach & Solution</button>
+            <div class="answer-section" id="ex3">
+                <h3>Approach</h3>
+                <p>We use a queue to track elixir spending history in chronological order (FIFO). This helps analyze spending patterns - key for reviewing matches and improving strategy.</p>
+
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Clash Royale Elixir Tracker</div>
+                    </div>
+
+                    <textarea id="editor3">
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct ElixirSpend {
+    string cardName;
+    int cost;
+    int timeSeconds;
+};
+
+struct Node {
+    ElixirSpend data;
+    Node* next;
+};
+
+class ElixirHistory {
+private:
+    Node* head;
+    Node* tail;
+    int currentElixir;
+    const int MAX_ELIXIR = 10;
+
+public:
+    ElixirHistory() {
+        head = NULL;
+        tail = NULL;
+        currentElixir = MAX_ELIXIR;
+    }
+
+    ~ElixirHistory() {
+        while (!isEmpty()) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
+    bool playCard(string cardName, int cost, int timeSeconds) {
+        if (cost > currentElixir) {
+            cout << "Not enough elixir! Need " << cost
+                 << ", have " << currentElixir << endl;
+            return false;
+        }
+
+        currentElixir -= cost;
+
+        Node* newNode = new Node;
+        newNode->data.cardName = cardName;
+        newNode->data.cost = cost;
+        newNode->data.timeSeconds = timeSeconds;
+        newNode->next = NULL;
+
+        if (isEmpty()) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+
+        cout << "Played " << cardName << " (" << cost
+             << " elixir) at " << timeSeconds << "s" << endl;
+        cout << "Remaining: " << currentElixir << endl;
+        return true;
+    }
+
+    void regenerateElixir(int amount) {
+        currentElixir += amount;
+        if (currentElixir > MAX_ELIXIR) {
+            currentElixir = MAX_ELIXIR;
+        }
+        cout << "Regenerated. Current: " << currentElixir << endl;
+    }
+
+    void showHistory() {
+        if (isEmpty()) {
+            cout << "No cards played yet." << endl;
+            return;
+        }
+
+        cout << "\n=== Elixir History ===" << endl;
+        Node* current = head;
+        int totalSpent = 0;
+
+        while (current != NULL) {
+            cout << current->data.timeSeconds << "s: "
+                 << current->data.cardName << " (-"
+                 << current->data.cost << " elixir)" << endl;
+            totalSpent += current->data.cost;
+            current = current->next;
+        }
+        cout << "Total spent: " << totalSpent << endl;
+    }
+
+    bool isEmpty() {
+        return head == NULL;
+    }
+};
+
+int main() {
+    ElixirHistory match;
+
+    cout << "=== Clash Royale Match ===" << endl;
+    cout << "Starting elixir: 10\n" << endl;
+
+    match.playCard("Hog Rider", 4, 5);
+    match.playCard("Fireball", 4, 8);
+    match.playCard("Ice Spirit", 1, 10);
+
+    cout << "\nRegenerating..." << endl;
+    match.regenerateElixir(3);
+
+    match.playCard("Cannon", 3, 15);
+    match.playCard("Log", 2, 18);
+
+    match.showHistory();
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor3', 'output3')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output3">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li><strong>playCard():</strong> Checks elixir, deducts cost, adds spending record to queue (rear).</li>
+                    <li><strong>Queue ordering:</strong> Cards tracked in play order (FIFO). Great for strategy review.</li>
+                    <li><strong>showHistory():</strong> Traverses queue from head to tail, showing chronological spending.</li>
+                    <li><strong>Resource tracking:</strong> Current elixir tracked separately, showing state at any point.</li>
+                </ol>
+
+                <div class="success-box">
+                    <strong>Why FIFO matters:</strong> When analyzing matches, you want plays in the order they happened. A queue naturally preserves chronological order, perfect for event logging.
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 4: Find the Bug - Circular Queue -->
+        <section class="content-card">
+            <h2>Example 4: Find the Bug - Circular Queue</h2>
+
+            <h3>Problem</h3>
+            <p>The following code implements a circular queue, but something isn't quite right. Run through the operations mentally and identify what could go wrong.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('ex4')">Show Code & Bug Analysis</button>
+            <div class="answer-section" id="ex4">
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Circular Queue - Spot the Issue</div>
+                    </div>
+
+                    <textarea id="editor4">
+#include <iostream>
+using namespace std;
+
+class CircularQueue {
+private:
+    int* arr;
+    int front;
+    int rear;
+    int capacity;
+    int size;
+
+public:
+    CircularQueue(int cap) {
+        capacity = cap;
+        arr = new int[capacity];
+        front = 0;
+        rear = -1;
+        size = 0;
+    }
+
+    ~CircularQueue() {
+        delete[] arr;
+    }
+
+    void enqueue(int value) {
+        if (isFull()) {
+            cout << "Queue is full!" << endl;
+            return;
+        }
+        rear = (rear + 1) % capacity;
+        arr[rear] = value;
+        size++;
+        cout << "Enqueued " << value << endl;
+    }
+
+    int dequeue() {
+        if (isEmpty()) {
+            cout << "Queue is empty!" << endl;
+            return -1;
+        }
+        int value = arr[front];
+        front = (front + 1) % capacity;
+        size--;
+        cout << "Dequeued " << value << endl;
+        return value;
+    }
+
+    bool isEmpty() {
+        return size == 0;
+    }
+
+    bool isFull() {
+        return size == capacity;
+    }
+
+    void display() {
+        if (isEmpty()) {
+            cout << "Queue is empty" << endl;
+            return;
+        }
+        cout << "Queue: ";
+        int i = front;
+        int count = 0;
+        while (count < size) {
+            cout << arr[i] << " ";
+            i = (i + 1) % capacity;
+            count++;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    CircularQueue q(3);
+
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+    q.display();
+
+    q.dequeue();
+    q.dequeue();
+
+    q.enqueue(40);
+    q.enqueue(50);
+    q.display();
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor4', 'output4')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output4">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Analysis</h3>
+                <p>Before revealing the answer, try to:</p>
+                <ol>
+                    <li>Trace through enqueue and dequeue operations manually</li>
+                    <li>Track <code>front</code>, <code>rear</code>, and <code>size</code> after each operation</li>
+                    <li>Predict what <code>display()</code> should show</li>
+                    <li>Identify where the logic breaks down</li>
+                </ol>
+
+                <button class="reveal-btn" onclick="toggleAnswer('ex4-bug')">Show Bug Analysis</button>
+                <div class="answer-section" id="ex4-bug">
+                    <h3>The Twist</h3>
+                    <p><strong>This code is actually CORRECT!</strong> It's a trick question to test your understanding.</p>
+
+                    <p>After running it, you'll see it works perfectly because:</p>
+                    <ul>
+                        <li>Uses a <code>size</code> counter to tell the difference between empty and full</li>
+                        <li>Properly uses modulo arithmetic for wrapping</li>
+                        <li><code>display()</code> correctly handles circular nature with counter</li>
+                    </ul>
+
+                    <p><strong>Common mistakes this implementation AVOIDS:</strong></p>
+                    <ul>
+                        <li>Not using a size counter (hard to tell full vs empty apart)</li>
+                        <li>Forgetting modulo in display function</li>
+                        <li>Using <code>rear == front</code> without considering wrapping</li>
+                        <li>Missing the <code>size--</code> in dequeue (this had it!)</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <strong>Learning moment:</strong> Sometimes the best practice is verifying code is correct, not just finding bugs. Understanding <em>why</em> this works helps you write better code.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="content-card">
+            <h2>Summary</h2>
+            <p>These examples demonstrated:</p>
+            <ul>
+                <li><strong>Stack application:</strong> Reversing strings using LIFO property</li>
+                <li><strong>Queue application:</strong> Fair scheduling with FIFO ordering</li>
+                <li><strong>Real-world modeling:</strong> Game resource tracking (Clash Royale elixir)</li>
+                <li><strong>Code verification:</strong> Understanding correct circular queue implementations</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>Next step:</strong> Head to Practice to apply these concepts yourself. Try solving problems before revealing solutions!
+            </div>
+        </section>
+    </div>
+
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        const editors = {};
+        const originalCode = {};
+
+        ['editor1', 'editor2', 'editor3', 'editor4'].forEach(id => {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        });
+
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                if (answerId.includes('ex')) {
+                    button.textContent = 'Hide Approach & Solution';
+                } else {
+                    button.textContent = 'Hide Bug Analysis';
+                }
+
+                setTimeout(() => {
+                    answerSection.querySelectorAll('.CodeMirror').forEach(cm => {
+                        if (cm.CodeMirror) {
+                            cm.CodeMirror.refresh();
+                        }
+                    });
+                }, 50);
+            } else {
+                if (answerId.includes('ex') && !answerId.includes('bug')) {
+                    button.textContent = 'Show Approach & Solution';
+                } else if (answerId.includes('bug')) {
+                    button.textContent = 'Show Bug Analysis';
+                } else {
+                    button.textContent = 'Show Code & Bug Analysis';
+                }
+            }
+        }
+
+        async function runCode(editorId, outputId) {
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const button = event.target;
+
+            if (button) button.disabled = true;
+            outputEl.textContent = 'Compiling and running...';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                if (button) button.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            const outputId = editorId.replace('editor', 'output');
+            editors[editorId].setValue(originalCode[editorId]);
+
+            const outputEl = document.getElementById(outputId);
+            outputEl.textContent = 'Click "Run Code" to see the output...';
+            outputEl.className = 'output-text output-placeholder';
+        }
+
+        Prism.highlightAll();
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

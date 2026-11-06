@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2. Classes and Object Lifetime | COS 110 Theory Exam Notes 2026</title>
+  <link rel="stylesheet" href="assets/css/house.css">
+  <link rel="stylesheet" href="assets/css/computing.css">
+  <link rel="stylesheet" href="assets/css/pipeline-contracts.css">
+  <script defer src="assets/vendor/cpp98-grammar.js"></script>
+  <script defer src="assets/js/learning-components.js"></script>
+</head>
+<body data-current-page="home" data-template-id="cos110-template-v2.0.0">
+  <header class="site-header">
+    <div class="site-header__inner">
+      <div class="brand"><span class="brand__name">Swift Tuition</span><span class="brand__chapter">COS 110</span></div>
+      <span class="site-header__tag">Program Design: Introduction</span>
+    </div>
+  </header>
+  <header class="page-head">
+    <p class="eyebrow">COS 110 · Pack 2</p>
+    <h1 class="page-title">2. Classes and Object Lifetime</h1>
+    <p class="page-subtitle">COS 110 Theory Exam Notes 2026</p>
+  </header>
+  <nav class="page-tabs" aria-label="Page navigation"><div class="page-tabs__inner"><a href="index.html" aria-current="page">Home</a><a href="theory.html">Theory</a><a href="examples.html">Examples</a><a href="practice.html">Practice</a><a href="quiz.html">Quiz</a></div></nav>
+  <main class="chapter-page">
+<p><strong><a href="#mock-test">Mock test</a></strong>: the question paper (PDF) and its solutions.</p><section id="home-start"><h2>2. Classes and Object Lifetime</h2><p><strong>Access, const, static, constructors and initialisation lists, copy constructor, destructor, assignment operator.</strong></p><p>This pack covers Lectures 4, 5, 7 and 8 and Tutorials 3 to 5 of COS 110: classes, accessors and mutators, header files, <code>this</code>, <code>const</code>, <code>static</code>, constructors and the initialisation list, automatic type conversion, the copy constructor, the destructor, the assignment operator and object lifetime.</p><section class="block block--definition"><p class="block__label">From the COS 110 exam notice</p><p>The theory exam on 11 November 2026 is similar to Semester Tests 1 and 2, with a DrawIO part covering class, object and memory diagrams and flowcharts.</p></section><p>Semester Test 1 tested these topics with traces, find-the-errors questions, the three meanings of <code>const</code>, a constructor with an initialisation list, and an <code>operator=</code> flowchart.</p><p>Semester Test 1 (26 August 2026) and Class Test 2A (17 August 2026) are this year’s COS 110 tests; questions on these pages that name them follow their patterns.</p><p>In the picture below, a filled diamond means the whole owns its parts; a hollow diamond means it only points at parts that live on their own.</p><figure class="teaching-figure" id="home-figure"><p class="code-caption"><a href="assets/diagrams/d09_ownership_destructor.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/d09_ownership_destructor.svg" alt="Top: Book with a filled diamond to Chapter (composition): Book owns the Chapters; ~Book deletes every Chapter, then the array. Bottom: Library with a hollow diamond to Novel (aggregation): Library only points at Novels that live on; ~Library deletes only the array."><figcaption>The diamond decides what the destructor, the copy constructor and the assignment operator do with each pointer.</figcaption></figure></section><section id="home-route"><h2>A route through the pack</h2><ol><li><strong>Theory.</strong> Thirteen sections, in order. Each ends with a Try this.</li><li><strong>Examples.</strong> Eight worked examples from Tutorials 3 to 5 and Semester Test 1. Write each answer before you open the solution.</li><li><strong>Practice.</strong> Sixteen tasks, including two DrawIO flowcharts, then a set of questions from past papers, copied word for word with full solutions.</li><li><strong>Quiz.</strong> Thirty quick checks.</li><li><strong>Topic mock.</strong> A 50-mark paper in the shape of Semester Test 1, on these topics only: <a href="mock/COS110_classes-object-lifetime_Mock_Test.pdf">the question paper (PDF)</a> and <a href="mock-solutions/index.html">the solutions</a> (see <a href="#mock-test">Mock test</a> below).</li></ol><p>The UML these topics need is explained where it is used. <em>3. UML Class Diagrams: Reading, Drawing and Coding</em> and <em>4. Flowcharts, Object Diagrams and Memory Diagrams</em> give more UML practice (optional).</p><table class="attribute-table"><thead><tr><th scope="col">If you have</th><th scope="col">Do</th></tr></thead><tbody><tr><td>about 2 hours</td><td>On the Theory page: const, static members, and The copy constructor to Object lifetime. Then Examples 3, 5 and 7, and the Quiz.</td></tr><tr><td>a full day</td><td>Everything in order, then the topic mock under test conditions.</td></tr></tbody></table></section><section id="mock-test"><h2>Mock test</h2><p>A 50-mark paper on classes and object lifetime, in the shape of Semester Test 1. Write it in one sitting, with DrawIO for questions 16 to 18, before you open the solutions.</p><ul><li><a href="mock/COS110_classes-object-lifetime_Mock_Test.pdf" download="COS110_classes-object-lifetime_Mock_Test.pdf">Download the mock test (PDF)</a></li><li><a href="mock-solutions/index.html">Mock test solutions</a></li></ul></section>
+  </main>
+  <footer class="site-footer"><div class="site-footer__inner">Swift Tuition | COS 110</div></footer>
+</body>
+</html>

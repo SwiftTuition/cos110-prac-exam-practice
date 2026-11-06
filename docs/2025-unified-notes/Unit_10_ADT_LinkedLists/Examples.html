@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 10: ADT - Linked Lists - Examples | COS 110</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand img {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding-bottom: 4px;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            color: #0ea5e9;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid rgba(14, 165, 233, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #06b6d4;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.3rem;
+        }
+
+        h4 {
+            color: #38bdf8;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        p {
+            color: #cbd5e1;
+            margin: 1rem 0;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        code {
+            font-family: 'Cascadia Code', monospace;
+            background: rgba(14, 165, 233, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #06b6d4;
+        }
+
+        pre {
+            margin: 1rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #0c1222;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: 0.9rem;
+        }
+
+        .step-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .step-box h4 {
+            color: #10b981;
+            margin-top: 0;
+        }
+
+        .output-section {
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            font-family: 'Cascadia Code', monospace;
+        }
+
+        .output-section h4 {
+            color: #10b981;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .output-section pre {
+            color: #10b981;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            background: transparent;
+            border: none;
+            margin: 0;
+        }
+
+        .explanation {
+            background: rgba(234, 179, 8, 0.1);
+            border-left: 4px solid #eab308;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .explanation h4 {
+            color: #eab308;
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box strong {
+            color: #ef4444;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .success-box strong {
+            color: #10b981;
+        }
+
+        .complexity-badge {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            margin: 1rem 0;
+            display: inline-block;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .answer-section.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ascii-diagram {
+            background: #0c1222;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .ascii-diagram pre {
+            font-family: 'Cascadia Code', monospace;
+            color: #0ea5e9;
+            line-height: 1.4;
+            margin: 0;
+            background: transparent;
+            border: none;
+        }
+
+        /* Custom Prism syntax highlighting for Deep Ocean theme */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <div class="nav-brand-company">SWIFT TUITION</div>
+                <div class="nav-brand-title">COS 110 - Unit 10: ADT - Linked Lists</div>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Worked Examples</h1>
+        <p class="subtitle">Real-world applications of linked lists with step-by-step solutions</p>
+
+        <!-- Introduction -->
+        <section class="content-card">
+            <p>
+                These examples show you how to apply linked list concepts to solve real problems. Each example includes:
+            </p>
+            <ul>
+                <li><strong>Problem statement</strong> - What we're trying to solve</li>
+                <li><strong>Step-by-step solution</strong> - How to build it</li>
+                <li><strong>Complete code</strong> - Working implementation</li>
+                <li><strong>Expected output</strong> - What you should see</li>
+                <li><strong>Explanation</strong> - Why it works</li>
+            </ul>
+            <p>
+                Try to understand each step before moving to the next example. The complexity builds gradually.
+            </p>
+        </section>
+
+        <!-- Example 1: Link Click Photo Timeline -->
+        <section class="content-card">
+            <h2>Example 1: Photo Timeline Tracker (Singly Linked List)</h2>
+            <span class="complexity-badge">Insert: O(1) | Print: O(n) | Search: O(n)</span>
+
+            <p>
+                <strong>Problem:</strong> Swift's been watching Link Click - a Chinese thriller where two friends run a photo studio with the power to dive into photographs and experience past events. Each photo they enter is linked to a moment in time, forming a chain of events. Let's build a photo timeline tracker using a singly linked list to store photos in chronological order.
+            </p>
+
+            <p>
+                In Link Click, Cheng Xiaoshi can jump into photos and live through the photographer's perspective for exactly 12 hours. Each photo represents a "node" in time, and they're connected in sequence - perfect for a linked list!
+            </p>
+
+            <p>We need to:</p>
+            <ul>
+                <li>Add new photos to the timeline (most recently processed appears first)</li>
+                <li>Print all photos in the timeline</li>
+                <li>Search for a specific photo by location</li>
+            </ul>
+
+            <div class="step-box">
+                <h4>Step 1: Define the Node Structure</h4>
+                <p>Each photo node needs a location, timestamp (year), and a pointer to the next photo in the timeline.</p>
+<pre><code class="language-cpp">struct PhotoNode {
+    string location;
+    int year;
+    PhotoNode* next;
+};</code></pre>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Implement Insert at Front (O(1))</h4>
+                <p>Adding to the front is fast - just update the head pointer.</p>
+<pre><code class="language-cpp">void insertFront(PhotoNode*& head, string location, int year) {
+    PhotoNode* newNode = new PhotoNode;
+    newNode->location = location;
+    newNode->year = year;
+    newNode->next = head;  // New node points to old head
+    head = newNode;        // Head now points to new node
+}</code></pre>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Implement Print Function (O(n))</h4>
+                <p>Go through every photo and print its data.</p>
+<pre><code class="language-cpp">void printTimeline(PhotoNode* head) {
+    if (head == NULL) {
+        cout << "No photos in timeline!" << endl;
+        return;
+    }
+
+    PhotoNode* current = head;
+    cout << "=== Photo Timeline (Time Photo Studio) ===" << endl;
+    while (current != NULL) {
+        cout << "Photo at " << current->location
+             << " (Year: " << current->year << ")" << endl;
+        current = current->next;
+    }
+}</code></pre>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 4: Implement Search Function (O(n))</h4>
+                <p>Look through the timeline to find a specific photo by location.</p>
+<pre><code class="language-cpp">bool searchPhoto(PhotoNode* head, string location) {
+    PhotoNode* current = head;
+    while (current != NULL) {
+        if (current->location == location) {
+            cout << "Found photo at " << location
+                 << " (Year: " << current->year << ")" << endl;
+            return true;
+        }
+        current = current->next;
+    }
+    cout << "Photo at " << location << " not found in timeline." << endl;
+    return false;
+}</code></pre>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 5: Complete Program</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct PhotoNode {
+    string location;
+    int year;
+    PhotoNode* next;
+};
+
+void insertFront(PhotoNode*& head, string location, int year) {
+    PhotoNode* newNode = new PhotoNode;
+    newNode->location = location;
+    newNode->year = year;
+    newNode->next = head;
+    head = newNode;
+}
+
+void printTimeline(PhotoNode* head) {
+    if (head == NULL) {
+        cout << "No photos in timeline!" << endl;
+        return;
+    }
+
+    PhotoNode* current = head;
+    cout << "=== Photo Timeline (Time Photo Studio) ===" << endl;
+    while (current != NULL) {
+        cout << "Photo at " << current->location
+             << " (Year: " << current->year << ")" << endl;
+        current = current->next;
+    }
+}
+
+bool searchPhoto(PhotoNode* head, string location) {
+    PhotoNode* current = head;
+    while (current != NULL) {
+        if (current->location == location) {
+            cout << "Found photo at " << location
+                 << " (Year: " << current->year << ")" << endl;
+            return true;
+        }
+        current = current->next;
+    }
+    cout << "Photo at " << location << " not found in timeline." << endl;
+    return false;
+}
+
+int main() {
+    PhotoNode* timeline = NULL;
+
+    // Add photos to timeline (clients bring photos to dive into)
+    insertFront(timeline, "Old Apartment Building", 2010);
+    insertFront(timeline, "University Campus", 2015);
+    insertFront(timeline, "City Cafe", 2018);
+
+    // Print timeline
+    printTimeline(timeline);
+
+    cout << endl;
+
+    // Search for specific photo
+    searchPhoto(timeline, "University Campus");
+    searchPhoto(timeline, "Beach Resort");
+
+    return 0;
+}</code></pre>
+            </div>
+
+            <div class="output-section">
+                <h4>Expected Output:</h4>
+                <pre>=== Photo Timeline (Time Photo Studio) ===
+Photo at City Cafe (Year: 2018)
+Photo at University Campus (Year: 2015)
+Photo at Old Apartment Building (Year: 2010)
+
+Found photo at University Campus (Year: 2015)
+Photo at Beach Resort not found in timeline.</pre>
+            </div>
+
+            <div class="explanation">
+                <h4>Why It Works:</h4>
+                <ul>
+                    <li><strong>Insert at front is O(1):</strong> We don't need to go through the list - just update two pointers</li>
+                    <li><strong>Most recently processed appears first:</strong> Because we always insert at the head</li>
+                    <li><strong>Search is O(n):</strong> In the worst case, the photo is at the end or not in the timeline</li>
+                    <li><strong>Dynamic size:</strong> We can add as many photos as clients bring without pre-allocating space</li>
+                    <li><strong>Perfect for Link Click:</strong> Each photo is a "node" linking to past events, forming a chain of moments in time!</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Example 2: Music Playlist with Doubly Linked List -->
+        <section class="content-card">
+            <h2>Example 2: Music Playlist (Doubly Linked List)</h2>
+            <span class="complexity-badge">Insert: O(1) | Forward/Backward: O(n) | Delete: O(1) if node given</span>
+
+            <p>
+                <strong>Problem:</strong> Swift's been listening to Fally Ipupa - a Congolese Rumba artist with incredibly smooth vocals. Let's build a music playlist using a doubly linked list so we can skip forward OR go back to the previous song.
+            </p>
+
+            <p>
+                Each song needs to know both the next song AND the previous song in the playlist.
+            </p>
+
+            <div class="step-box">
+                <h4>Step 1: Define Doubly Linked Node</h4>
+<pre><code class="language-cpp">struct SongNode {
+    string title;
+    string artist;
+    int duration;  // seconds
+    SongNode* next;
+    SongNode* prev;
+};</code></pre>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Insert at Back (O(1) with tail pointer)</h4>
+                <p>We keep both head and tail pointers for fast insertion at both ends.</p>
+<pre><code class="language-cpp">void insertBack(SongNode*& head, SongNode*& tail,
+                string title, string artist, int duration) {
+    SongNode* newNode = new SongNode;
+    newNode->title = title;
+    newNode->artist = artist;
+    newNode->duration = duration;
+    newNode->next = NULL;
+    newNode->prev = tail;
+
+    if (tail != NULL) {
+        tail->next = newNode;  // Old tail points forward to new
+    } else {
+        head = newNode;  // List was empty
+    }
+    tail = newNode;  // Update tail
+}</code></pre>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Print Forward and Backward</h4>
+<pre><code class="language-cpp">void printForward(SongNode* head) {
+    cout << "=== Playing Forward ===" << endl;
+    SongNode* current = head;
+    while (current != NULL) {
+        cout << current->title << " by " << current->artist
+             << " (" << current->duration << "s)" << endl;
+        current = current->next;
+    }
+}
+
+void printBackward(SongNode* tail) {
+    cout << "=== Playing Backward ===" << endl;
+    SongNode* current = tail;
+    while (current != NULL) {
+        cout << current->title << " by " << current->artist
+             << " (" << current->duration << "s)" << endl;
+        current = current->prev;
+    }
+}</code></pre>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 4: Complete Program</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct SongNode {
+    string title;
+    string artist;
+    int duration;
+    SongNode* next;
+    SongNode* prev;
+};
+
+void insertBack(SongNode*& head, SongNode*& tail,
+                string title, string artist, int duration) {
+    SongNode* newNode = new SongNode;
+    newNode->title = title;
+    newNode->artist = artist;
+    newNode->duration = duration;
+    newNode->next = NULL;
+    newNode->prev = tail;
+
+    if (tail != NULL) {
+        tail->next = newNode;
+    } else {
+        head = newNode;
+    }
+    tail = newNode;
+}
+
+void printForward(SongNode* head) {
+    cout << "=== Playing Forward ===" << endl;
+    SongNode* current = head;
+    while (current != NULL) {
+        cout << current->title << " by " << current->artist
+             << " (" << current->duration << "s)" << endl;
+        current = current->next;
+    }
+}
+
+void printBackward(SongNode* tail) {
+    cout << "=== Playing Backward ===" << endl;
+    SongNode* current = tail;
+    while (current != NULL) {
+        cout << current->title << " by " << current->artist
+             << " (" << current->duration << "s)" << endl;
+        current = current->prev;
+    }
+}
+
+int main() {
+    SongNode* head = NULL;
+    SongNode* tail = NULL;
+
+    // Add Fally Ipupa songs to playlist
+    insertBack(head, tail, "Eloko Oyo", "Fally Ipupa", 245);
+    insertBack(head, tail, "Chaise Électrique", "Fally Ipupa", 238);
+    insertBack(head, tail, "Original", "Fally Ipupa", 220);
+
+    printForward(head);
+    cout << endl;
+    printBackward(tail);
+
+    return 0;
+}</code></pre>
+            </div>
+
+            <div class="output-section">
+                <h4>Expected Output:</h4>
+                <pre>=== Playing Forward ===
+Eloko Oyo by Fally Ipupa (245s)
+Chaise Électrique by Fally Ipupa (238s)
+Original by Fally Ipupa (220s)
+
+=== Playing Backward ===
+Original by Fally Ipupa (220s)
+Chaise Électrique by Fally Ipupa (238s)
+Eloko Oyo by Fally Ipupa (245s)</pre>
+            </div>
+
+            <div class="explanation">
+                <h4>Why Use a Doubly Linked List?</h4>
+                <ul>
+                    <li><strong>Bidirectional traversal:</strong> Can play songs forward or backward in the playlist</li>
+                    <li><strong>Easy "previous" button:</strong> Just follow the <code>prev</code> pointer</li>
+                    <li><strong>Easier deletion:</strong> Don't need to find the previous node - you already have <code>prev</code></li>
+                    <li><strong>Trade-off:</strong> Uses more memory (two pointers per node instead of one)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Example 3: Find the Bug - Deletion Error -->
+        <section class="content-card">
+            <h2>Example 3: Find the Bug - Memory Leak in Destructor</h2>
+
+            <p>
+                <strong>Problem:</strong> Swift was helping a student implement a photo timeline destructor for their Link Click-inspired app. The student's code compiles but has a use-after-free bug. Can you spot it before seeing the solution?
+            </p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct PhotoNode {
+    string location;
+    PhotoNode* next;
+};
+
+class PhotoTimeline {
+private:
+    PhotoNode* head;
+
+public:
+    PhotoTimeline() { head = NULL; }
+
+    void addPhoto(string location) {
+        PhotoNode* newNode = new PhotoNode;
+        newNode->location = location;
+        newNode->next = head;
+        head = newNode;
+    }
+
+    ~PhotoTimeline() {
+        PhotoNode* current = head;
+        while (current != NULL) {
+            delete current;
+            current = current->next;
+        }
+    }
+};
+
+int main() {
+    PhotoTimeline timeline;
+    timeline.addPhoto("Old Apartment");
+    timeline.addPhoto("University Campus");
+    timeline.addPhoto("City Cafe");
+
+    return 0;
+}</code></pre>
+
+            <button class="reveal-btn" onclick="toggleAnswer('bug3')">Show Solution</button>
+
+            <div class="answer-section" id="bug3">
+                <h4>The Bug:</h4>
+                <p>
+                    After <code>delete current</code>, we try to access <code>current->next</code>. This is accessing freed memory (use-after-free), which causes undefined behavior.
+                </p>
+
+                <h4>Why It's Dangerous:</h4>
+                <ul>
+                    <li>Accessing freed memory is undefined behavior - might crash, might work, might corrupt data</li>
+                    <li>Valgrind would report this as "invalid read"</li>
+                    <li>On some systems it appears to work, but it's still wrong</li>
+                </ul>
+
+                <h4>Correct Version:</h4>
+<pre><code class="language-cpp">~PhotoTimeline() {
+    PhotoNode* current = head;
+    while (current != NULL) {
+        PhotoNode* temp = current->next;  // Save next BEFORE deleting
+        delete current;                   // Delete current
+        current = temp;                   // Move to saved next
+    }
+}</code></pre>
+
+                <h4>The Pattern:</h4>
+                <p>
+                    <strong>Always save what you need BEFORE calling <code>delete</code>!</strong>
+                </p>
+                <p>
+                    This is one of the most common bugs in linked list code. Remember: once you call <code>delete</code>, that memory is gone.
+                </p>
+            </div>
+        </section>
+
+        <!-- Example 4: Circular Linked List - Round Robin -->
+        <section class="content-card">
+            <h2>Example 4: Round-Robin Task Scheduler (Circular Linked List)</h2>
+            <span class="complexity-badge">Insert: O(1) | Rotate: O(1) | No NULL pointers!</span>
+
+            <p>
+                <strong>Problem:</strong> Swift needs to schedule tutoring sessions in a round-robin fashion. After the last student, loop back to the first student. This is perfect for a circular linked list!
+            </p>
+
+            <div class="info-box">
+                <strong>What's different about circular lists:</strong>
+                <ul>
+                    <li>The last node points back to the first node (no NULL)</li>
+                    <li>We use a <code>tail</code> pointer instead of <code>head</code></li>
+                    <li><code>tail->next</code> gives us the first node</li>
+                    <li>Must use <code>do-while</code> loops for traversal</li>
+                </ul>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 1: Define Node and Insert</h4>
+<pre><code class="language-cpp">struct StudentNode {
+    string name;
+    StudentNode* next;
+};
+
+void insertBack(StudentNode*& tail, string name) {
+    StudentNode* newNode = new StudentNode;
+    newNode->name = name;
+
+    if (tail == NULL) {
+        // First node - points to itself
+        tail = newNode;
+        tail->next = tail;
+    } else {
+        // Insert after tail
+        newNode->next = tail->next;  // New node points to first
+        tail->next = newNode;        // Old tail points to new
+        tail = newNode;              // Update tail
+    }
+}</code></pre>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Print All Students (do-while pattern)</h4>
+<pre><code class="language-cpp">void printSchedule(StudentNode* tail) {
+    if (tail == NULL) {
+        cout << "No students scheduled." << endl;
+        return;
+    }
+
+    StudentNode* current = tail->next;  // Start at "first"
+    cout << "=== Round-Robin Schedule ===" << endl;
+    do {
+        cout << "- " << current->name << endl;
+        current = current->next;
+    } while (current != tail->next);  // Stop when back at start
+}</code></pre>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Rotate Schedule</h4>
+                <p>Move to the next student in the rotation.</p>
+<pre><code class="language-cpp">void rotate(StudentNode*& tail) {
+    if (tail != NULL) {
+        tail = tail->next;  // Just move tail forward!
+        cout << "Next student: " << tail->next->name << endl;
+    }
+}</code></pre>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 4: Complete Program</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct StudentNode {
+    string name;
+    StudentNode* next;
+};
+
+void insertBack(StudentNode*& tail, string name) {
+    StudentNode* newNode = new StudentNode;
+    newNode->name = name;
+
+    if (tail == NULL) {
+        tail = newNode;
+        tail->next = tail;
+    } else {
+        newNode->next = tail->next;
+        tail->next = newNode;
+        tail = newNode;
+    }
+}
+
+void printSchedule(StudentNode* tail) {
+    if (tail == NULL) {
+        cout << "No students scheduled." << endl;
+        return;
+    }
+
+    StudentNode* current = tail->next;
+    cout << "=== Round-Robin Schedule ===" << endl;
+    do {
+        cout << "- " << current->name << endl;
+        current = current->next;
+    } while (current != tail->next);
+}
+
+void rotate(StudentNode*& tail) {
+    if (tail != NULL) {
+        tail = tail->next;
+        cout << "Next student: " << tail->next->name << endl;
+    }
+}
+
+int main() {
+    StudentNode* schedule = NULL;
+
+    insertBack(schedule, "Thabo");
+    insertBack(schedule, "Amahle");
+    insertBack(schedule, "Brandon");
+
+    printSchedule(schedule);
+    cout << endl;
+
+    // Rotate through students
+    rotate(schedule);
+    rotate(schedule);
+    rotate(schedule);  // Back to Thabo!
+
+    return 0;
+}</code></pre>
+            </div>
+
+            <div class="output-section">
+                <h4>Expected Output:</h4>
+                <pre>=== Round-Robin Schedule ===
+- Thabo
+- Amahle
+- Brandon
+
+Next student: Amahle
+Next student: Brandon
+Next student: Thabo</pre>
+            </div>
+
+            <div class="explanation">
+                <h4>Why Circular Lists Are Perfect for Round-Robin:</h4>
+                <ul>
+                    <li><strong>No end:</strong> After the last student, automatically loop back to the first</li>
+                    <li><strong>Rotate is O(1):</strong> Just move the tail pointer forward</li>
+                    <li><strong>Fair scheduling:</strong> Everyone gets equal turns in order</li>
+                    <li><strong>Real-world use:</strong> Operating systems use this for CPU scheduling!</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Example 5: Find the Bug - Nothing Prints -->
+        <section class="content-card">
+            <h2>Example 5: Find the Bug - Nothing Prints</h2>
+
+            <p>
+                <strong>Problem:</strong> A student wrote this code to print a circular linked list of their tutoring students. The code compiles without errors, but when they run it, nothing prints at all. Can you find the bug?
+            </p>
+
+<pre><code class="language-cpp">void printList(StudentNode* tail) {
+    if (tail == NULL) return;
+
+    StudentNode* current = tail->next;
+
+    while (current != tail->next) {
+        cout << current->name << endl;
+        current = current->next;
+    }
+}</code></pre>
+
+            <button class="reveal-btn" onclick="toggleAnswer('bug5')">Show Solution</button>
+
+            <div class="answer-section" id="bug5">
+                <h4>The Bug:</h4>
+                <p>
+                    The <code>while</code> loop checks the condition <strong>before</strong> running the loop body.
+                    Since we start with <code>current = tail->next</code>, the condition <code>current != tail->next</code>
+                    is immediately false. The loop never runs at all - nothing gets printed!
+                </p>
+
+                <p>
+                    This is different from an infinite loop. The program doesn't hang - it just skips all the nodes
+                    because the termination condition is met before the first iteration even starts.
+                </p>
+
+                <h4>Correct Version (using do-while):</h4>
+<pre><code class="language-cpp">void printList(StudentNode* tail) {
+    if (tail == NULL) return;
+
+    StudentNode* current = tail->next;
+
+    do {                                // Run body FIRST
+        cout << current->name << endl;
+        current = current->next;
+    } while (current != tail->next);    // Then check condition
+}</code></pre>
+
+                <h4>The Lesson:</h4>
+                <p>
+                    <strong>Always use <code>do-while</code> for circular linked lists!</strong> A <code>while</code> loop checks the condition before running, so it skips the first node.
+                </p>
+
+                <div class="ascii-diagram">
+                    <pre>Circular List:
+
+tail
+ |
+ v
+[Thabo]--->[Amahle]--->[Brandon]
+   ^                       |
+   |_______________________|
+
+If we start at tail->next (Thabo) and use while (current != tail->next):
+- Initially: current == tail->next (both point to Thabo)
+- Condition: current != tail->next is FALSE
+- Loop never runs!
+
+With do-while:
+- Run body first (print Thabo)
+- Then check condition
+- Prints all nodes correctly</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="content-card">
+            <h2>Summary</h2>
+
+            <p>You've seen five complete examples showing:</p>
+
+            <ul>
+                <li><strong>Singly Linked Lists:</strong> Simple watchlist with insert, print, and search (Example 1)</li>
+                <li><strong>Doubly Linked Lists:</strong> Music playlist with forward and backward traversal (Example 2)</li>
+                <li><strong>Use-After-Free Bug:</strong> Why you must save <code>next</code> before deleting (Example 3)</li>
+                <li><strong>Circular Linked Lists:</strong> Round-robin scheduler with no NULL pointers (Example 4)</li>
+                <li><strong>while vs do-while:</strong> Why circular lists need <code>do-while</code> (Example 5)</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>Key Patterns to Remember:</strong>
+                <ul>
+                    <li>Save <code>next</code> before calling <code>delete</code></li>
+                    <li>Always check for NULL before dereferencing</li>
+                    <li>Doubly linked lists update FOUR pointers per insertion</li>
+                    <li>Circular lists use <code>do-while</code> for traversal</li>
+                    <li>Keep both head and tail pointers when you need fast access to both ends</li>
+                </ul>
+            </div>
+
+            <p>
+                Next, move to Practice.html to solve problems on your own using these patterns!
+            </p>
+        </section>
+    </div>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        function toggleAnswer(id) {
+            const answerSection = document.getElementById(id);
+            answerSection.classList.toggle('visible');
+
+            // Refresh CodeMirror editors when revealing answer
+            // (This fixes the issue where code appears hidden until clicked)
+            if (answerSection.classList.contains('visible')) {
+                setTimeout(() => {
+                    // Find all CodeMirror instances in the revealed section
+                    answerSection.querySelectorAll('.CodeMirror').forEach(cm => {
+                        if (cm.CodeMirror) {
+                            cm.CodeMirror.refresh();
+                        }
+                    });
+                }, 50);
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

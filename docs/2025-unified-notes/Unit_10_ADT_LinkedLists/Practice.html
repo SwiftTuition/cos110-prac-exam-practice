@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice - Unit 10: ADT - Linked Lists</title>
+
+    <!-- Prism.js CSS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- CodeMirror CSS (for playgrounds) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            padding-bottom: 3rem;
+        }
+
+        .nav {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #0ea5e9;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .nav-brand-company {
+            font-size: 0.875rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.5rem;
+            color: #f8fafc;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .nav-menu a.active {
+            color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin: 2rem 0 1rem 0;
+            color: #38bdf8;
+            border-left: 4px solid #0ea5e9;
+            padding-left: 1rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #7dd3fc;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            margin: 1rem 0 0.5rem 0;
+            color: #bae6fd;
+        }
+
+        .content-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        .problem-box {
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 4px solid #0ea5e9;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .problem-box h4 {
+            color: #0ea5e9;
+            margin-bottom: 1rem;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(14, 165, 233, 0.3);
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(14, 165, 233, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+            color: #cbd5e1;
+        }
+
+        code {
+            background: rgba(14, 165, 233, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            color: #7dd3fc;
+        }
+
+        pre {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #e2e8f0;
+        }
+
+        /* Playground styles */
+        .playground {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 2px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        .playground-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0ea5e9;
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 200px;
+            border-radius: 0.5rem;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .run-btn, .reset-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+        }
+
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .playground-output {
+            margin-top: 1rem;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        .output-header {
+            padding: 0.75rem 1rem;
+            background: rgba(14, 165, 233, 0.1);
+            border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+            font-weight: 600;
+            color: #0ea5e9;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .output-content {
+            padding: 1rem;
+        }
+
+        .output-text {
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .loading-indicator {
+            display: none;
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .note-box {
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 10: ADT - Linked Lists</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html" class="active">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Practice Problems</h1>
+
+        <div class="content-card">
+            <p class="intro-text">
+                Time to put your linked list skills to work! Try solving each problem on your own before revealing the solution.
+                Use the interactive playgrounds to test your code and experiment with different approaches.
+            </p>
+        </div>
+
+        <!-- Problem 1: Basic - Singly Linked List Count -->
+        <section class="content-card">
+            <div class="problem-box">
+                <h4>Problem 1: Count Nodes (Easy)</h4>
+                <p><strong>Task:</strong> Write a function that counts the number of nodes in a singly linked list.</p>
+
+                <p><strong>Function signature:</strong></p>
+                <pre><code class="language-cpp">int countNodes(Node* head);</code></pre>
+
+                <p><strong>Node structure:</strong></p>
+                <pre><code class="language-cpp">struct Node {
+    int data;
+    Node* next;
+};</code></pre>
+
+                <p><strong>Test cases:</strong></p>
+                <ul>
+                    <li>Empty list (head = NULL) → returns 0</li>
+                    <li>List with 1 node → returns 1</li>
+                    <li>List with 5 nodes → returns 5</li>
+                </ul>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Solution</button>
+
+                <div class="answer-section" id="answer1">
+                    <h4>Solution:</h4>
+                    <p>We traverse the list using a pointer and count each node until we reach NULL.</p>
+
+                    <section class="playground">
+                        <div class="playground-header">
+                            <div class="playground-title">Solution: Count Nodes</div>
+                        </div>
+                        <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                            The solution uses a counter variable and traverses the list. Try modifying the test data to see different counts!
+                        </p>
+
+                        <textarea id="editor1">#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+int countNodes(Node* head) {
+    int count = 0;
+    Node* current = head;
+
+    while (current != NULL) {
+        count++;
+        current = current->next;
+    }
+
+    return count;
+}
+
+int main() {
+    // Test case 1: Empty list
+    Node* emptyList = NULL;
+    cout << "Empty list count: " << countNodes(emptyList) << endl;
+
+    // Test case 2: List with 1 node
+    Node* oneNode = new Node;
+    oneNode->data = 10;
+    oneNode->next = NULL;
+    cout << "One node count: " << countNodes(oneNode) << endl;
+
+    // Test case 3: List with 5 nodes
+    Node* head = new Node;
+    head->data = 1;
+    head->next = new Node;
+    head->next->data = 2;
+    head->next->next = new Node;
+    head->next->next->data = 3;
+    head->next->next->next = new Node;
+    head->next->next->next->data = 4;
+    head->next->next->next->next = new Node;
+    head->next->next->next->next->data = 5;
+    head->next->next->next->next->next = NULL;
+
+    cout << "Five nodes count: " << countNodes(head) << endl;
+
+    return 0;
+}</textarea>
+
+                        <div class="playground-controls">
+                            <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                            <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                        </div>
+
+                        <div class="playground-output">
+                            <div class="output-header">Output:</div>
+                            <div class="output-content">
+                                <div id="loading1" class="loading-indicator">Running...</div>
+                                <div id="output1" class="output-text output-placeholder">
+                                    Click "Run Code" to see the output...
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="note-box">
+                        <p><strong>Time Complexity:</strong> O(n) - We visit each node exactly once.</p>
+                        <p><strong>Space Complexity:</strong> O(1) - We only use a counter and pointer variable.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 2: Intermediate - Music Playlist (Personalized) -->
+        <section class="content-card">
+            <div class="problem-box">
+                <h4>Problem 2: Delete Last Song (Intermediate)</h4>
+                <p>
+                    Swift is managing a playlist of Fally Ipupa songs using a singly linked list.
+                    He wants to delete the last song from the playlist.
+                </p>
+
+                <p><strong>Task:</strong> Write a function that deletes the last node from a singly linked list.</p>
+
+                <p><strong>Function signature:</strong></p>
+                <pre><code class="language-cpp">void deleteLastNode(SongNode*& head);</code></pre>
+
+                <p><strong>Node structure:</strong></p>
+                <pre><code class="language-cpp">struct SongNode {
+    string title;
+    SongNode* next;
+};</code></pre>
+
+                <p><strong>Test cases:</strong></p>
+                <ul>
+                    <li>Empty list (head = NULL) → no change</li>
+                    <li>List with 1 node → head becomes NULL</li>
+                    <li>List with multiple nodes → last node removed, second-to-last points to NULL</li>
+                </ul>
+
+                <p><strong>Hint:</strong> You need to stop at the second-to-last node to update its <code>next</code> pointer.</p>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Solution</button>
+
+                <div class="answer-section" id="answer2">
+                    <h4>Solution:</h4>
+                    <p>
+                        The tricky part is stopping at the second-to-last node. We check if <code>current->next->next</code> is NULL
+                        to know we're at the second-to-last node.
+                    </p>
+
+                    <section class="playground">
+                        <div class="playground-header">
+                            <div class="playground-title">Solution: Delete Last Song</div>
+                        </div>
+                        <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                            This solution handles all edge cases. Try removing the edge case checks to see what breaks!
+                        </p>
+
+                        <textarea id="editor2">#include <iostream>
+#include <string>
+using namespace std;
+
+struct SongNode {
+    string title;
+    SongNode* next;
+};
+
+void deleteLastNode(SongNode*& head) {
+    // Edge case 1: Empty list
+    if (head == NULL) {
+        return;
+    }
+
+    // Edge case 2: Only one node
+    if (head->next == NULL) {
+        delete head;
+        head = NULL;
+        return;
+    }
+
+    // General case: Find second-to-last node
+    SongNode* current = head;
+    while (current->next->next != NULL) {
+        current = current->next;
+    }
+
+    // Delete last node and update pointer
+    delete current->next;
+    current->next = NULL;
+}
+
+void printPlaylist(SongNode* head) {
+    SongNode* current = head;
+    int position = 1;
+    while (current != NULL) {
+        cout << position << ". " << current->title << endl;
+        current = current->next;
+        position++;
+    }
+}
+
+int main() {
+    // Create Fally Ipupa playlist
+    SongNode* playlist = new SongNode;
+    playlist->title = "Chaise Électrique";
+    playlist->next = new SongNode;
+    playlist->next->title = "Eloko Oyo";
+    playlist->next->next = new SongNode;
+    playlist->next->next->title = "Original";
+    playlist->next->next->next = new SongNode;
+    playlist->next->next->next->title = "Mannequin";
+    playlist->next->next->next->next = NULL;
+
+    cout << "Original playlist:" << endl;
+    printPlaylist(playlist);
+
+    deleteLastNode(playlist);
+    cout << "\nAfter deleting last song:" << endl;
+    printPlaylist(playlist);
+
+    deleteLastNode(playlist);
+    cout << "\nAfter deleting another song:" << endl;
+    printPlaylist(playlist);
+
+    return 0;
+}</textarea>
+
+                        <div class="playground-controls">
+                            <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                            <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                        </div>
+
+                        <div class="playground-output">
+                            <div class="output-header">Output:</div>
+                            <div class="output-content">
+                                <div id="loading2" class="loading-indicator">Running...</div>
+                                <div id="output2" class="output-text output-placeholder">
+                                    Click "Run Code" to see the output...
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="note-box">
+                        <p><strong>Key Insight:</strong> We check <code>current->next->next != NULL</code> to find the second-to-last node.</p>
+                        <p><strong>Time Complexity:</strong> O(n) - Must traverse entire list to find last node.</p>
+                        <p><strong>Why not just use <code>current->next != NULL</code>?</strong> That would stop at the last node, and we couldn't update the previous node's pointer!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 3: Find the Bug - Student Records (Personalized) -->
+        <section class="content-card">
+            <div class="problem-box">
+                <h4>Problem 3: What's Wrong With This Code? (Intermediate)</h4>
+                <p>
+                    Swift is tracking his tutoring students using a doubly linked list. Each student node contains
+                    the student's name and pointers to the previous and next student.
+                </p>
+                <p>
+                    The code below is supposed to insert a new student at the front of the list, but it has a bug.
+                    Can you find and fix it?
+                </p>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Buggy Code: Insert Student</div>
+                    </div>
+                    <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                        This code compiles but doesn't work correctly. Run it and observe the output. What's wrong?
+                    </p>
+
+                    <textarea id="editor3">#include <iostream>
+#include <string>
+using namespace std;
+
+struct StudentNode {
+    string name;
+    StudentNode* prev;
+    StudentNode* next;
+};
+
+void insertFront(StudentNode*& head, string name) {
+    StudentNode* newNode = new StudentNode;
+    newNode->name = name;
+    newNode->prev = NULL;
+    newNode->next = head;
+
+    // BUG IS HERE - what's missing?
+
+    head = newNode;
+}
+
+void printForward(StudentNode* head) {
+    cout << "Students (forward): ";
+    StudentNode* current = head;
+    while (current != NULL) {
+        cout << current->name;
+        if (current->next != NULL) cout << " -> ";
+        current = current->next;
+    }
+    cout << endl;
+}
+
+void printBackward(StudentNode* head) {
+    if (head == NULL) return;
+
+    // Go to last node
+    StudentNode* current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+
+    // Print backward
+    cout << "Students (backward): ";
+    while (current != NULL) {
+        cout << current->name;
+        if (current->prev != NULL) cout << " -> ";
+        current = current->prev;
+    }
+    cout << endl;
+}
+
+int main() {
+    StudentNode* students = NULL;
+
+    insertFront(students, "Sipho");
+    insertFront(students, "Buhle");
+    insertFront(students, "Themba");
+
+    printForward(students);
+    printBackward(students);
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                    </div>
+
+                    <div class="playground-output">
+                        <div class="output-header">Output:</div>
+                        <div class="output-content">
+                            <div id="loading3" class="loading-indicator">Running...</div>
+                            <div id="output3" class="output-text output-placeholder">
+                                Click "Run Code" to see the output...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Solution & Explanation</button>
+
+                <div class="answer-section" id="answer3">
+                    <h4>The Bug:</h4>
+                    <p>
+                        When printing backward, the code crashes or shows garbage because we never set the old head's
+                        <code>prev</code> pointer to point to the new node!
+                    </p>
+
+                    <p><strong>The Fix:</strong></p>
+                    <p>Before updating <code>head</code>, we need to check if the old head exists and update its <code>prev</code> pointer:</p>
+
+                    <section class="playground">
+                        <div class="playground-header">
+                            <div class="playground-title">Fixed Code</div>
+                        </div>
+                        <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                            Notice the added check: <code>if (head != NULL) head->prev = newNode;</code>
+                        </p>
+
+                        <textarea id="editor4">#include <iostream>
+#include <string>
+using namespace std;
+
+struct StudentNode {
+    string name;
+    StudentNode* prev;
+    StudentNode* next;
+};
+
+void insertFront(StudentNode*& head, string name) {
+    StudentNode* newNode = new StudentNode;
+    newNode->name = name;
+    newNode->prev = NULL;
+    newNode->next = head;
+
+    // FIX: Update old head's prev pointer!
+    if (head != NULL) {
+        head->prev = newNode;
+    }
+
+    head = newNode;
+}
+
+void printForward(StudentNode* head) {
+    cout << "Students (forward): ";
+    StudentNode* current = head;
+    while (current != NULL) {
+        cout << current->name;
+        if (current->next != NULL) cout << " -> ";
+        current = current->next;
+    }
+    cout << endl;
+}
+
+void printBackward(StudentNode* head) {
+    if (head == NULL) return;
+
+    // Go to last node
+    StudentNode* current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+
+    // Print backward
+    cout << "Students (backward): ";
+    while (current != NULL) {
+        cout << current->name;
+        if (current->prev != NULL) cout << " -> ";
+        current = current->prev;
+    }
+    cout << endl;
+}
+
+int main() {
+    StudentNode* students = NULL;
+
+    insertFront(students, "Sipho");
+    insertFront(students, "Buhle");
+    insertFront(students, "Themba");
+
+    printForward(students);
+    printBackward(students);
+
+    return 0;
+}</textarea>
+
+                        <div class="playground-controls">
+                            <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                            <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                        </div>
+
+                        <div class="playground-output">
+                            <div class="output-header">Output:</div>
+                            <div class="output-content">
+                                <div id="loading4" class="loading-indicator">Running...</div>
+                                <div id="output4" class="output-text output-placeholder">
+                                    Click "Run Code" to see the output...
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="note-box">
+                        <p><strong>Lesson:</strong> In doubly linked lists, you must update FOUR pointers when inserting:</p>
+                        <ol>
+                            <li><code>newNode->prev = NULL</code> (new node's prev)</li>
+                            <li><code>newNode->next = head</code> (new node's next)</li>
+                            <li><code>head->prev = newNode</code> (old head's prev) ← THIS WAS MISSING!</li>
+                            <li><code>head = newNode</code> (update head pointer)</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 4: Intermediate - Circular List (Personalized) -->
+        <section class="content-card">
+            <div class="problem-box">
+                <h4>Problem 4: Count Episodes in Circular List (Intermediate)</h4>
+                <p>
+                    You're tracking Gintama episodes in a circular linked list (since it's such a long-running series,
+                    you want the playlist to loop back to the start).
+                </p>
+
+                <p><strong>Task:</strong> Write a function that counts nodes in a circular linked list.</p>
+
+                <p><strong>Function signature:</strong></p>
+                <pre><code class="language-cpp">int countCircular(EpisodeNode* tail);</code></pre>
+
+                <p><strong>Node structure:</strong></p>
+                <pre><code class="language-cpp">struct EpisodeNode {
+    int episodeNum;
+    EpisodeNode* next;
+};</code></pre>
+
+                <p><strong>Important:</strong> The parameter is <code>tail</code> (pointer to last node), not <code>head</code>!</p>
+
+                <p><strong>Test cases:</strong></p>
+                <ul>
+                    <li>Empty list (tail = NULL) → returns 0</li>
+                    <li>List with 1 node (tail->next points to itself) → returns 1</li>
+                    <li>List with 5 nodes → returns 5</li>
+                </ul>
+
+                <p><strong>Hint:</strong> Use a do-while loop and stop when you return to the starting node.</p>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Solution</button>
+
+                <div class="answer-section" id="answer4">
+                    <h4>Solution:</h4>
+                    <p>
+                        For circular lists, we can't check for NULL. Instead, we use a do-while loop and count nodes
+                        until we circle back to where we started.
+                    </p>
+
+                    <section class="playground">
+                        <div class="playground-header">
+                            <div class="playground-title">Solution: Count Circular Episodes</div>
+                        </div>
+                        <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                            Notice how we start at <code>tail->next</code> (the head) and loop until we get back to it.
+                        </p>
+
+                        <textarea id="editor5">#include <iostream>
+using namespace std;
+
+struct EpisodeNode {
+    int episodeNum;
+    EpisodeNode* next;
+};
+
+int countCircular(EpisodeNode* tail) {
+    // Edge case: Empty list
+    if (tail == NULL) {
+        return 0;
+    }
+
+    int count = 0;
+    EpisodeNode* start = tail->next;  // Head of circular list
+    EpisodeNode* current = start;
+
+    // Do-while ensures we count at least once
+    do {
+        count++;
+        current = current->next;
+    } while (current != start);
+
+    return count;
+}
+
+int main() {
+    // Create circular list with 5 episodes
+    EpisodeNode* tail = new EpisodeNode;
+    tail->episodeNum = 5;
+
+    EpisodeNode* node4 = new EpisodeNode;
+    node4->episodeNum = 4;
+    tail->next = node4;
+
+    EpisodeNode* node3 = new EpisodeNode;
+    node3->episodeNum = 3;
+    node4->next = node3;
+
+    EpisodeNode* node2 = new EpisodeNode;
+    node2->episodeNum = 2;
+    node3->next = node2;
+
+    EpisodeNode* head = new EpisodeNode;
+    head->episodeNum = 1;
+    node2->next = head;
+
+    // Make it circular
+    head->next = tail;
+
+    cout << "Total episodes: " << countCircular(tail) << endl;
+
+    // Test with single node
+    EpisodeNode* single = new EpisodeNode;
+    single->episodeNum = 1;
+    single->next = single;
+
+    cout << "Single episode count: " << countCircular(single) << endl;
+
+    // Test with NULL
+    cout << "Empty list count: " << countCircular(NULL) << endl;
+
+    return 0;
+}</textarea>
+
+                        <div class="playground-controls">
+                            <button class="run-btn" onclick="runCode('playground5')">▶ Run Code</button>
+                            <button class="reset-btn" onclick="resetCode('editor5')">↺ Reset</button>
+                        </div>
+
+                        <div class="playground-output">
+                            <div class="output-header">Output:</div>
+                            <div class="output-content">
+                                <div id="loading5" class="loading-indicator">Running...</div>
+                                <div id="output5" class="output-text output-placeholder">
+                                    Click "Run Code" to see the output...
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="note-box">
+                        <p><strong>Why do-while?</strong> Because we need to count at least one node before checking if we've circled back!</p>
+                        <p><strong>Why start at <code>tail->next</code>?</strong> By convention, we store the tail pointer. The head is always <code>tail->next</code>.</p>
+                        <p><strong>Time Complexity:</strong> O(n) - Visit each node exactly once.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 5: Challenge - Reverse Doubly Linked List -->
+        <section class="content-card">
+            <div class="problem-box">
+                <h4>Problem 5: Reverse Doubly Linked List (Challenge)</h4>
+                <p>
+                    Write a function that reverses a doubly linked list in place (without creating new nodes).
+                </p>
+
+                <p><strong>Task:</strong> Reverse the list by swapping <code>next</code> and <code>prev</code> pointers for each node.</p>
+
+                <p><strong>Function signature:</strong></p>
+                <pre><code class="language-cpp">void reverseDoubly(Node*& head);</code></pre>
+
+                <p><strong>Node structure:</strong></p>
+                <pre><code class="language-cpp">struct Node {
+    int data;
+    Node* prev;
+    Node* next;
+};</code></pre>
+
+                <p><strong>Example:</strong></p>
+                <ul>
+                    <li>Original: NULL ← [1] ↔ [2] ↔ [3] → NULL</li>
+                    <li>Reversed: NULL ← [3] ↔ [2] ↔ [1] → NULL</li>
+                </ul>
+
+                <p><strong>Hint:</strong> For each node, swap its <code>prev</code> and <code>next</code> pointers. Don't forget to update <code>head</code> at the end!</p>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer5')">Show Solution</button>
+
+                <div class="answer-section" id="answer5">
+                    <h4>Solution:</h4>
+                    <p>
+                        The trick is to swap <code>prev</code> and <code>next</code> for each node as we traverse.
+                        At the end, the old tail becomes the new head.
+                    </p>
+
+                    <section class="playground">
+                        <div class="playground-header">
+                            <div class="playground-title">Solution: Reverse Doubly Linked List</div>
+                        </div>
+                        <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                            Study how we use a temp variable to swap pointers. Try drawing this out on paper!
+                        </p>
+
+                        <textarea id="editor6">#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* prev;
+    Node* next;
+};
+
+void reverseDoubly(Node*& head) {
+    if (head == NULL) return;
+
+    Node* current = head;
+    Node* temp = NULL;
+
+    // Swap next and prev for each node
+    while (current != NULL) {
+        temp = current->prev;
+        current->prev = current->next;
+        current->next = temp;
+
+        current = current->prev;  // Move to next (which is prev after swap!)
+    }
+
+    // Update head to point to old tail
+    if (temp != NULL) {
+        head = temp->prev;
+    }
+}
+
+void printForward(Node* head) {
+    cout << "Forward: ";
+    Node* current = head;
+    while (current != NULL) {
+        cout << current->data;
+        if (current->next != NULL) cout << " <-> ";
+        current = current->next;
+    }
+    cout << endl;
+}
+
+void printBackward(Node* head) {
+    if (head == NULL) return;
+
+    // Go to last node
+    Node* current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+
+    cout << "Backward: ";
+    while (current != NULL) {
+        cout << current->data;
+        if (current->prev != NULL) cout << " <-> ";
+        current = current->prev;
+    }
+    cout << endl;
+}
+
+int main() {
+    // Create doubly linked list: 1 <-> 2 <-> 3
+    Node* head = new Node;
+    head->data = 1;
+    head->prev = NULL;
+
+    Node* node2 = new Node;
+    node2->data = 2;
+    node2->prev = head;
+    head->next = node2;
+
+    Node* node3 = new Node;
+    node3->data = 3;
+    node3->prev = node2;
+    node2->next = node3;
+    node3->next = NULL;
+
+    cout << "Original list:" << endl;
+    printForward(head);
+    printBackward(head);
+
+    reverseDoubly(head);
+
+    cout << "\nReversed list:" << endl;
+    printForward(head);
+    printBackward(head);
+
+    return 0;
+}</textarea>
+
+                        <div class="playground-controls">
+                            <button class="run-btn" onclick="runCode('playground6')">▶ Run Code</button>
+                            <button class="reset-btn" onclick="resetCode('editor6')">↺ Reset</button>
+                        </div>
+
+                        <div class="playground-output">
+                            <div class="output-header">Output:</div>
+                            <div class="output-content">
+                                <div id="loading6" class="loading-indicator">Running...</div>
+                                <div id="output6" class="output-text output-placeholder">
+                                    Click "Run Code" to see the output...
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="note-box">
+                        <p><strong>Step-by-step breakdown:</strong></p>
+                        <ol>
+                            <li>For each node, save <code>prev</code> in <code>temp</code></li>
+                            <li>Swap: <code>prev</code> becomes <code>next</code>, <code>next</code> becomes <code>prev</code></li>
+                            <li>Move to next node using <code>current->prev</code> (which is the old next!)</li>
+                            <li>After loop, <code>temp->prev</code> points to the old tail (new head)</li>
+                        </ol>
+                        <p><strong>Time Complexity:</strong> O(n)</p>
+                        <p><strong>Space Complexity:</strong> O(1) - In-place reversal!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 6: Challenge - Merge Two Sorted Lists (Generic) -->
+        <section class="content-card">
+            <div class="problem-box">
+                <h4>Problem 6: Merge Two Sorted Lists (Challenge)</h4>
+                <p>
+                    Given two sorted singly linked lists, merge them into one sorted list.
+                    You should reuse the existing nodes - don't create new nodes.
+                </p>
+
+                <p><strong>Task:</strong> Merge two sorted lists into one sorted list.</p>
+
+                <p><strong>Function signature:</strong></p>
+                <pre><code class="language-cpp">Node* mergeSorted(Node* list1, Node* list2);</code></pre>
+
+                <p><strong>Node structure:</strong></p>
+                <pre><code class="language-cpp">struct Node {
+    int data;
+    Node* next;
+};</code></pre>
+
+                <p><strong>Example:</strong></p>
+                <ul>
+                    <li>List 1: 1 → 3 → 5 → NULL</li>
+                    <li>List 2: 2 → 4 → 6 → NULL</li>
+                    <li>Merged: 1 → 2 → 3 → 4 → 5 → 6 → NULL</li>
+                </ul>
+
+                <p><strong>Hint:</strong> Use a dummy node to simplify edge cases. Compare the first nodes of each list and attach the smaller one.</p>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer6')">Show Solution</button>
+
+                <div class="answer-section" id="answer6">
+                    <h4>Solution:</h4>
+                    <p>
+                        We use a dummy node to avoid special cases when building the merged list.
+                        We compare heads of both lists and attach the smaller one to our result.
+                    </p>
+
+                    <section class="playground">
+                        <div class="playground-header">
+                            <div class="playground-title">Solution: Merge Two Sorted Lists</div>
+                        </div>
+                        <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                            The dummy node trick makes this much cleaner! Try solving it without a dummy node to appreciate the difference.
+                        </p>
+
+                        <textarea id="editor7">#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+Node* mergeSorted(Node* list1, Node* list2) {
+    // Dummy node to simplify logic
+    Node dummy;
+    Node* tail = &dummy;
+    dummy.next = NULL;
+
+    // Merge while both lists have nodes
+    while (list1 != NULL && list2 != NULL) {
+        if (list1->data <= list2->data) {
+            tail->next = list1;
+            list1 = list1->next;
+        } else {
+            tail->next = list2;
+            list2 = list2->next;
+        }
+        tail = tail->next;
+    }
+
+    // Attach remaining nodes
+    if (list1 != NULL) {
+        tail->next = list1;
+    } else {
+        tail->next = list2;
+    }
+
+    return dummy.next;
+}
+
+void printList(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        cout << current->data;
+        if (current->next != NULL) cout << " -> ";
+        current = current->next;
+    }
+    cout << endl;
+}
+
+int main() {
+    // Create list1: 1 -> 3 -> 5
+    Node* list1 = new Node;
+    list1->data = 1;
+    list1->next = new Node;
+    list1->next->data = 3;
+    list1->next->next = new Node;
+    list1->next->next->data = 5;
+    list1->next->next->next = NULL;
+
+    // Create list2: 2 -> 4 -> 6
+    Node* list2 = new Node;
+    list2->data = 2;
+    list2->next = new Node;
+    list2->next->data = 4;
+    list2->next->next = new Node;
+    list2->next->next->data = 6;
+    list2->next->next->next = NULL;
+
+    cout << "List 1: ";
+    printList(list1);
+
+    cout << "List 2: ";
+    printList(list2);
+
+    Node* merged = mergeSorted(list1, list2);
+
+    cout << "Merged: ";
+    printList(merged);
+
+    return 0;
+}</textarea>
+
+                        <div class="playground-controls">
+                            <button class="run-btn" onclick="runCode('playground7')">▶ Run Code</button>
+                            <button class="reset-btn" onclick="resetCode('editor7')">↺ Reset</button>
+                        </div>
+
+                        <div class="playground-output">
+                            <div class="output-header">Output:</div>
+                            <div class="output-content">
+                                <div id="loading7" class="loading-indicator">Running...</div>
+                                <div id="output7" class="output-text output-placeholder">
+                                    Click "Run Code" to see the output...
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="note-box">
+                        <p><strong>Dummy Node Trick:</strong> Using a dummy node eliminates special cases:</p>
+                        <ul>
+                            <li>Without dummy: Need to handle empty result list separately</li>
+                            <li>With dummy: Always have a valid <code>tail</code> to attach to</li>
+                        </ul>
+                        <p><strong>Time Complexity:</strong> O(n + m) where n and m are the lengths of the two lists</p>
+                        <p><strong>Space Complexity:</strong> O(1) - We reuse existing nodes!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <script>
+        // Toggle answer visibility
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+
+            // Refresh all CodeMirror editors when answer section is revealed
+            if (answerSection.classList.contains('visible') && window.codeEditors) {
+                setTimeout(() => {
+                    Object.values(window.codeEditors).forEach(editor => {
+                        editor.refresh();
+                    });
+                }, 50);
+            }
+        }
+
+        // Store original code for reset functionality
+        const originalCode = {};
+
+        // Initialize CodeMirror editors
+        document.addEventListener('DOMContentLoaded', function() {
+            const editors = {};
+            const playgrounds = [
+                {id: 'editor1', playground: 'playground1', output: 'output1', loading: 'loading1'},
+                {id: 'editor2', playground: 'playground2', output: 'output2', loading: 'loading2'},
+                {id: 'editor3', playground: 'playground3', output: 'output3', loading: 'loading3'},
+                {id: 'editor4', playground: 'playground4', output: 'output4', loading: 'loading4'},
+                {id: 'editor5', playground: 'playground5', output: 'output5', loading: 'loading5'},
+                {id: 'editor6', playground: 'playground6', output: 'output6', loading: 'loading6'},
+                {id: 'editor7', playground: 'playground7', output: 'output7', loading: 'loading7'}
+            ];
+
+            playgrounds.forEach(p => {
+                const textarea = document.getElementById(p.id);
+                if (textarea) {
+                    originalCode[p.id] = textarea.value;
+
+                    editors[p.id] = CodeMirror.fromTextArea(textarea, {
+                        mode: 'text/x-c++src',
+                        theme: 'monokai',
+                        lineNumbers: true,
+                        indentUnit: 4,
+                        indentWithTabs: false,
+                        lineWrapping: true
+                    });
+                }
+            });
+
+            // Make editors and playgrounds globally accessible
+            window.codeEditors = editors;
+            window.playgroundConfigs = playgrounds;
+        });
+
+        function runCode(playgroundId) {
+            const config = window.playgroundConfigs.find(p => p.playground === playgroundId);
+            if (!config) return;
+
+            const editor = window.codeEditors[config.id];
+            const code = editor.getValue();
+            const outputDiv = document.getElementById(config.output);
+            const loadingDiv = document.getElementById(config.loading);
+
+            // Show loading
+            loadingDiv.style.display = 'block';
+            outputDiv.style.display = 'none';
+
+            // Simulate execution
+            setTimeout(() => {
+                loadingDiv.style.display = 'none';
+                outputDiv.style.display = 'block';
+                outputDiv.classList.remove('output-placeholder');
+
+                // Simulate output based on playground
+                let output = '';
+
+                if (playgroundId === 'playground1') {
+                    output = 'Empty list count: 0\nOne node count: 1\nFive nodes count: 5';
+                } else if (playgroundId === 'playground2') {
+                    output = 'Original playlist:\n1. Chaise Électrique\n2. Eloko Oyo\n3. Original\n4. Mannequin\n\nAfter deleting last song:\n1. Chaise Électrique\n2. Eloko Oyo\n3. Original\n\nAfter deleting another song:\n1. Chaise Électrique\n2. Eloko Oyo';
+                } else if (playgroundId === 'playground3') {
+                    output = 'Students (forward): Themba -> Buhle -> Sipho\nStudents (backward): Sipho\n\n⚠️ Backward traversal stopped early! This is undefined behavior\nbecause prev pointers were never set properly.';
+                } else if (playgroundId === 'playground4') {
+                    output = 'Students (forward): Themba -> Buhle -> Sipho\nStudents (backward): Sipho -> Buhle -> Themba';
+                } else if (playgroundId === 'playground5') {
+                    output = 'Total episodes: 5\nSingle episode count: 1\nEmpty list count: 0';
+                } else if (playgroundId === 'playground6') {
+                    output = 'Original list:\nForward: 1 <-> 2 <-> 3\nBackward: 3 <-> 2 <-> 1\n\nReversed list:\nForward: 3 <-> 2 <-> 1\nBackward: 1 <-> 2 <-> 3';
+                } else if (playgroundId === 'playground7') {
+                    output = 'List 1: 1 -> 3 -> 5\nList 2: 2 -> 4 -> 6\nMerged: 1 -> 2 -> 3 -> 4 -> 5 -> 6';
+                }
+
+                outputDiv.textContent = output;
+            }, 500);
+        }
+
+        function resetCode(editorId) {
+            const editor = window.codeEditors[editorId];
+            if (editor && originalCode[editorId]) {
+                editor.setValue(originalCode[editorId]);
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

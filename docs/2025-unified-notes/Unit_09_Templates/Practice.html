@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 9: Templates - Practice | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- CodeMirror for interactive playground -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <style>
+        /* DEEP OCEAN THEME */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0ea5e9;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: #f1f5f9;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-hamburger:hover {
+            color: #0ea5e9;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page-header {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .page-header h1 {
+            color: #0ea5e9;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+        }
+
+        /* Problem Card */
+        .problem-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .problem-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            color: #0f172a;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .problem-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .problem-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #10b981;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .problem-card h4 {
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .problem-card p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .problem-card ul, .problem-card ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .problem-card li {
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+
+        .problem-card code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0c1222;
+            border: 2px solid #1e3a5f;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-block pre {
+            color: #f1f5f9;
+            margin: 0;
+        }
+
+        .code-block code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* Custom Prism syntax highlighting */
+        .token.comment { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        /* Reveal Button */
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        /* Solution Section */
+        .solution-section {
+            display: none;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #0f172a;
+            border-radius: 8px;
+            border: 2px solid #eab308;
+        }
+
+        .solution-section.visible {
+            display: block;
+        }
+
+        .solution-section h4 {
+            color: #eab308;
+            margin-bottom: 1rem;
+        }
+
+        /* Callouts */
+        .callout-warning {
+            background: #2d1414;
+            border-left: 5px solid #ef4444;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-warning strong {
+            color: #ef4444;
+        }
+
+        .callout-success {
+            background: #142d1f;
+            border-left: 5px solid #10b981;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-success strong {
+            color: #10b981;
+        }
+
+        .callout-note {
+            background: #0c1e2d;
+            border-left: 5px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-note strong {
+            color: #0ea5e9;
+        }
+
+        /* Code Playground */
+        .code-playground {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .playground-header {
+            background: #0f172a;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .playground-title::before {
+            content: "⚡";
+            font-size: 1.2rem;
+        }
+
+        .playground-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .run-btn::before {
+            content: "▶";
+            font-size: 1rem;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .loading-indicator {
+            color: #eab308;
+            font-size: 0.85rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading-indicator.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #475569;
+            border-top-color: #eab308;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .playground-editor {
+            background: #1e293b;
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 300px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            background: #1e293b !important;
+        }
+
+        .CodeMirror-gutters {
+            background: #0f172a !important;
+            border-right: 1px solid #334155;
+        }
+
+        .playground-output {
+            background: #0f172a;
+            border-top: 1px solid #334155;
+        }
+
+        .output-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .output-header::before {
+            content: "▶";
+            color: #10b981;
+        }
+
+        .output-content {
+            padding: 1.5rem;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .output-text {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .output-success {
+            color: #10b981;
+        }
+
+        .output-error {
+            color: #ef4444;
+        }
+
+        .output-info {
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-wrap: wrap;
+            }
+
+            .nav-brand {
+                gap: 0.75rem;
+            }
+
+            .nav-logo {
+                height: 38px;
+                width: 38px;
+            }
+
+            .nav-brand-company {
+                font-size: 0.6rem;
+            }
+
+            .nav-brand-title {
+                font-size: 0.9rem;
+            }
+
+            .nav-brand-subtitle {
+                font-size: 0.6rem;
+            }
+
+            .nav-hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0;
+                margin-top: 1rem;
+                background: #1e293b;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu li {
+                width: 100%;
+                border-bottom: 1px solid #334155;
+            }
+
+            .nav-menu li:last-child {
+                border-bottom: none;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: 1rem;
+                border-bottom: none !important;
+            }
+
+            .nav-menu a:hover,
+            .nav-menu a.active {
+                background: #0f172a;
+            }
+
+            .playground-header {
+                padding: 0.875rem 1rem;
+            }
+
+            .playground-title {
+                font-size: 0.875rem;
+            }
+
+            .run-btn, .reset-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .CodeMirror {
+                font-size: 13px;
+            }
+
+            .output-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 9: Templates</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+            ☰
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html" class="active">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Practice Problems</h1>
+            <p>
+                Test your understanding with these hands-on problems. Try solving each one yourself before revealing the solution. The best way to learn is by doing!
+            </p>
+        </div>
+
+        <!-- Problem 1: Basic - Function Template -->
+        <div class="problem-card">
+            <span class="problem-number">Problem 1 - Basic</span>
+            <h2>Generic Minimum Function</h2>
+
+            <h3>Your Task</h3>
+            <p>
+                Write a function template called <code>findMin</code> that takes three parameters of the same type and returns the smallest of the three values. Your template should work with any type that supports the <code>&lt;</code> operator.
+            </p>
+
+            <h3>Function Signature</h3>
+            <div class="code-block"><pre><code class="language-cpp">template&lt;class T&gt;
+T findMin(T a, T b, T c);</code></pre></div>
+
+            <h3>Test Cases</h3>
+            <p>Your function should pass these tests:</p>
+            <ul>
+                <li><strong>Input:</strong> <code>findMin(5, 2, 8)</code> → <strong>Output:</strong> <code>2</code></li>
+                <li><strong>Input:</strong> <code>findMin(3.7, 2.1, 4.5)</code> → <strong>Output:</strong> <code>2.1</code></li>
+                <li><strong>Input:</strong> <code>findMin('z', 'a', 'm')</code> → <strong>Output:</strong> <code>'a'</code></li>
+                <li><strong>Input:</strong> <code>findMin("zebra", "apple", "mango")</code> → <strong>Output:</strong> <code>"apple"</code></li>
+            </ul>
+
+            <h3>Starter Code</h3>
+
+            <div class="code-playground" id="playground1">
+                <div class="playground-header">
+                    <div class="playground-title">Your Solution</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground1')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground1')">Reset</button>
+                        <div class="loading-indicator" id="loading1">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor1">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// TODO: Write your findMin template function here
+
+
+int main() {
+    // Test with integers
+    cout &lt;&lt; "Min of 5, 2, 8: " &lt;&lt; findMin(5, 2, 8) &lt;&lt; endl;
+
+    // Test with doubles
+    cout &lt;&lt; "Min of 3.7, 2.1, 4.5: " &lt;&lt; findMin(3.7, 2.1, 4.5) &lt;&lt; endl;
+
+    // Test with characters
+    cout &lt;&lt; "Min of 'z', 'a', 'm': " &lt;&lt; findMin('z', 'a', 'm') &lt;&lt; endl;
+
+    // Test with strings
+    string s1 = "zebra", s2 = "apple", s3 = "mango";
+    cout &lt;&lt; "Min of zebra, apple, mango: " &lt;&lt; findMin(s1, s2, s3) &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Solution</button>
+
+            <div class="solution-section" id="answer1">
+                <h4>✅ Solution</h4>
+
+                <div class="code-block"><pre><code class="language-cpp">template&lt;class T&gt;
+T findMin(T a, T b, T c) {
+    T minimum = a;
+
+    if (b &lt; minimum) {
+        minimum = b;
+    }
+
+    if (c &lt; minimum) {
+        minimum = c;
+    }
+
+    return minimum;
+}</code></pre></div>
+
+                <h4>Alternative Solution (Using Nested Conditionals)</h4>
+                <div class="code-block"><pre><code class="language-cpp">template&lt;class T&gt;
+T findMin(T a, T b, T c) {
+    if (a &lt; b &amp;&amp; a &lt; c) {
+        return a;
+    } else if (b &lt; c) {
+        return b;
+    } else {
+        return c;
+    }
+}</code></pre></div>
+
+                <h4>Alternative Solution (Using Ternary Operator)</h4>
+                <div class="code-block"><pre><code class="language-cpp">template&lt;class T&gt;
+T findMin(T a, T b, T c) {
+    return (a &lt; b) ? ((a &lt; c) ? a : c) : ((b &lt; c) ? b : c);
+}</code></pre></div>
+
+                <h4>Explanation</h4>
+                <p>The first solution uses a straightforward approach:</p>
+                <ol>
+                    <li><strong>Initialize minimum:</strong> Start by assuming <code>a</code> is the smallest value.</li>
+                    <li><strong>Compare with b:</strong> If <code>b</code> is smaller than the current minimum, update <code>minimum</code> to <code>b</code>.</li>
+                    <li><strong>Compare with c:</strong> If <code>c</code> is smaller than the current minimum, update <code>minimum</code> to <code>c</code>.</li>
+                    <li><strong>Return result:</strong> After checking all three values, <code>minimum</code> holds the smallest value.</li>
+                </ol>
+
+                <h4>Why This Works</h4>
+                <p>
+                    This is a function template, which means the compiler generates a specific version for each type we use. When we call <code>findMin(5, 2, 8)</code>, the compiler generates an <code>int</code> version. When we call <code>findMin(3.7, 2.1, 4.5)</code>, it generates a <code>double</code> version.
+                </p>
+                <p>
+                    The key requirement is that type <code>T</code> must support the <code>&lt;</code> operator. Built-in types like <code>int</code>, <code>double</code>, <code>char</code>, and the <code>string</code> class all support this operator, so our template works with all of them.
+                </p>
+
+                <h4>Time Complexity</h4>
+                <p><strong>O(1)</strong> - Constant time. We always perform exactly 2 comparisons regardless of input values.</p>
+
+                <div class="callout-success">
+                    <strong>Best Practice:</strong> The first solution is the clearest and easiest to understand. The ternary operator version is clever but harder to read. In production code, clarity usually wins over cleverness!
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 2: Intermediate - Class Template -->
+        <div class="problem-card">
+            <span class="problem-number">Problem 2 - Intermediate</span>
+            <h2>Generic Circular Buffer</h2>
+
+            <h3>The Scenario</h3>
+            <p>
+                Lerato is building a music app that keeps track of the last 5 songs played. When a 6th song is played, the oldest one is removed. This is called a circular buffer - it wraps around when full. You need to build a generic version that works with any type.
+            </p>
+
+            <h3>Your Task</h3>
+            <p>
+                Complete the <code>CircularBuffer</code> template class with the following features:
+            </p>
+            <ul>
+                <li>Store up to 5 items of any type</li>
+                <li><code>add(T item)</code> - adds an item, removing the oldest if full</li>
+                <li><code>display()</code> - displays all items in order (oldest to newest)</li>
+                <li><code>isFull()</code> - returns <code>true</code> if buffer holds 5 items</li>
+            </ul>
+
+            <h3>Expected Behavior</h3>
+            <div class="code-block"><pre>Adding: Song A
+Adding: Song B
+Adding: Song C
+Adding: Song D
+Adding: Song E
+
+Buffer contents:
+  Song A
+  Song B
+  Song C
+  Song D
+  Song E
+
+Buffer is full!
+
+Adding: Song F  (Song A will be removed)
+
+Buffer contents:
+  Song B
+  Song C
+  Song D
+  Song E
+  Song F</pre></div>
+
+            <h3>Starter Code</h3>
+
+            <div class="code-playground" id="playground2">
+                <div class="playground-header">
+                    <div class="playground-title">Your Solution</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground2')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground2')">Reset</button>
+                        <div class="loading-indicator" id="loading2">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor2">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+template&lt;class T&gt;
+class CircularBuffer {
+public:
+    CircularBuffer() : count(0), front(0) {}
+
+    void add(T item) {
+        // TODO: Implement add functionality
+        // Hint: If buffer is full, oldest item is at index 'front'
+        // When adding, place at (front + count) % 5 if not full
+        // Or at front++ % 5 if full
+    }
+
+    void display() const {
+        // TODO: Display all items from oldest to newest
+        // Hint: Start from index 'front' and wrap around
+    }
+
+    bool isFull() const {
+        // TODO: Return true if buffer has 5 items
+    }
+
+private:
+    T items[5];
+    int count;  // Number of items currently stored (max 5)
+    int front;  // Index of the oldest item
+};
+
+int main() {
+    CircularBuffer&lt;string&gt; recentSongs;
+
+    recentSongs.add("Song A");
+    recentSongs.add("Song B");
+    recentSongs.add("Song C");
+    recentSongs.add("Song D");
+    recentSongs.add("Song E");
+
+    cout &lt;&lt; "Buffer contents:" &lt;&lt; endl;
+    recentSongs.display();
+
+    cout &lt;&lt; "\nBuffer full? " &lt;&lt; (recentSongs.isFull() ? "Yes" : "No") &lt;&lt; endl;
+
+    cout &lt;&lt; "\nAdding Song F (oldest will be removed)..." &lt;&lt; endl;
+    recentSongs.add("Song F");
+
+    cout &lt;&lt; "\nBuffer contents:" &lt;&lt; endl;
+    recentSongs.display();
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Solution</button>
+
+            <div class="solution-section" id="answer2">
+                <h4>✅ Solution</h4>
+
+                <div class="code-block"><pre><code class="language-cpp">template&lt;class T&gt;
+class CircularBuffer {
+public:
+    CircularBuffer() : count(0), front(0) {}
+
+    void add(T item) {
+        if (count &lt; 5) {
+            // Buffer not full yet - just add at the next position
+            items[(front + count) % 5] = item;
+            count++;
+        } else {
+            // Buffer is full - overwrite oldest item
+            items[front] = item;
+            front = (front + 1) % 5;  // Move front pointer forward
+        }
+    }
+
+    void display() const {
+        for (int i = 0; i &lt; count; i++) {
+            cout &lt;&lt; "  " &lt;&lt; items[(front + i) % 5] &lt;&lt; endl;
+        }
+    }
+
+    bool isFull() const {
+        return count == 5;
+    }
+
+private:
+    T items[5];
+    int count;
+    int front;
+};</code></pre></div>
+
+                <h4>How the Circular Buffer Works</h4>
+
+                <h4>The Add Operation</h4>
+                <p>There are two cases:</p>
+                <ol>
+                    <li>
+                        <strong>Buffer not full (<code>count &lt; 5</code>):</strong> We add the item at position <code>(front + count) % 5</code>. The modulo ensures we wrap around if needed. For example, if <code>front = 2</code> and <code>count = 3</code>, we add at index <code>(2 + 3) % 5 = 0</code>. Then we increment <code>count</code>.
+                    </li>
+                    <li>
+                        <strong>Buffer is full (<code>count == 5</code>):</strong> We overwrite the oldest item (at index <code>front</code>) with the new item. Then we move <code>front</code> forward: <code>front = (front + 1) % 5</code>. This ensures <code>front</code> always points to the oldest item.
+                    </li>
+                </ol>
+
+                <h4>The Display Operation</h4>
+                <p>
+                    To display items from oldest to newest, we start at <code>front</code> and iterate <code>count</code> times. For each position <code>i</code>, we access <code>items[(front + i) % 5]</code>. The modulo makes the index wrap around when it reaches 5.
+                </p>
+
+                <p><strong>Example walkthrough:</strong></p>
+                <div class="code-block"><pre>State after adding A, B, C:
+  front = 0, count = 3
+  [A][B][C][ ][ ]
+   ^
+
+After adding D, E:
+  front = 0, count = 5
+  [A][B][C][D][E]
+   ^
+
+After adding F (overwrites A):
+  front = 1, count = 5
+  [F][B][C][D][E]
+      ^
+
+Display shows: B, C, D, E, F (starting from front)</pre></div>
+
+                <h4>Why Templates Here?</h4>
+                <p>
+                    The circular buffer logic is completely independent of what type of data we're storing. By using a template, we can create a <code>CircularBuffer&lt;string&gt;</code> for songs, <code>CircularBuffer&lt;int&gt;</code> for scores, or <code>CircularBuffer&lt;double&gt;</code> for temperatures - all from the same code!
+                </p>
+
+                <h4>Time Complexity</h4>
+                <ul>
+                    <li><code>add()</code>: <strong>O(1)</strong> - constant time insertion regardless of buffer state</li>
+                    <li><code>display()</code>: <strong>O(n)</strong> where n = count (always ≤ 5, so effectively O(1))</li>
+                    <li><code>isFull()</code>: <strong>O(1)</strong> - simple comparison</li>
+                </ul>
+
+                <div class="callout-note">
+                    <strong>Swift Note:</strong> Circular buffers are used in real systems like audio/video streaming, network packet buffers, and logging systems. They're memory-efficient because they reuse the same fixed-size array instead of constantly allocating and deallocating memory!
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 3: What's Wrong? -->
+        <div class="problem-card">
+            <span class="problem-number">Problem 3 - What's Wrong?</span>
+            <h2>Debug the Score Tracker</h2>
+
+            <h3>The Problem</h3>
+            <p>
+                This program is supposed to track high scores using a template class. It compiles with errors, and even after fixing compilation errors, it has logic problems. Your task: Identify ALL the bugs and fix them.
+            </p>
+
+            <p>
+                There are at least <strong>4 distinct template-related errors</strong>. Don't look at the solution until you've tried fixing it yourself!
+            </p>
+
+            <h3>The Buggy Code</h3>
+
+            <div class="code-playground" id="playground3">
+                <div class="playground-header">
+                    <div class="playground-title">Buggy Code - Debug This!</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground3')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground3')">Reset</button>
+                        <div class="loading-indicator" id="loading3">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor3">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+template&lt;class T&gt;
+class ScoreTracker {
+public:
+    ScoreTracker();
+    void setHighScore(T score);
+    T getHighScore();
+
+private:
+    T highScore;
+};
+
+template&lt;class T&gt;
+ScoreTracker::ScoreTracker() {
+    highScore = T();
+}
+
+template&lt;class T&gt;
+void ScoreTracker&lt;T&gt;::setHighScore(T score) {
+    highScore = score;
+}
+
+template&lt;class T&gt;
+T ScoreTracker::getHighScore() {
+    return highScore;
+}
+
+int main() {
+    ScoreTracker gameScore;
+
+    gameScore.setHighScore(9500);
+    cout &lt;&lt; "High score: " &lt;&lt; gameScore.getHighScore() &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Solution</button>
+
+            <div class="solution-section" id="answer3">
+                <h4>✅ Solution</h4>
+
+                <h4>The 4 Bugs</h4>
+
+                <h4>Bug 1: Missing &lt;T&gt; in Constructor Definition (Line 16)</h4>
+                <p><strong>Error:</strong> <code>ScoreTracker::ScoreTracker()</code></p>
+                <p><strong>Fix:</strong> <code>ScoreTracker&lt;T&gt;::ScoreTracker()</code></p>
+                <p>When defining template class members outside the class, you must include <code>&lt;T&gt;</code> after the class name.</p>
+
+                <h4>Bug 2: Missing &lt;T&gt; in getHighScore Definition (Line 27)</h4>
+                <p><strong>Error:</strong> <code>T ScoreTracker::getHighScore()</code></p>
+                <p><strong>Fix:</strong> <code>T ScoreTracker&lt;T&gt;::getHighScore()</code></p>
+                <p>Same issue - all template member functions need the <code>&lt;T&gt;</code>.</p>
+
+                <h4>Bug 3: Missing Type Specification in main (Line 33)</h4>
+                <p><strong>Error:</strong> <code>ScoreTracker gameScore;</code></p>
+                <p><strong>Fix:</strong> <code>ScoreTracker&lt;int&gt; gameScore;</code></p>
+                <p>Template classes require explicit type specification. The compiler can't figure out what <code>T</code> should be without being told.</p>
+
+                <h4>Bug 4: Inconsistent Constructor Initialization (Line 17 - Logic Error)</h4>
+                <p><strong>Potential Issue:</strong> <code>highScore = T();</code> initializes to a default value, which for <code>int</code> is 0. This is fine for tracking high scores (you start at 0), but if you wanted a "no score yet" sentinel, you might want <code>-1</code> or use a separate flag.</p>
+                <p>This isn't necessarily a bug, but it's worth thinking about whether <code>T()</code> is the right default for your use case.</p>
+
+                <h4>Corrected Code</h4>
+                <div class="code-block"><pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+template&lt;class T&gt;
+class ScoreTracker {
+public:
+    ScoreTracker();
+    void setHighScore(T score);
+    T getHighScore();
+
+private:
+    T highScore;
+};
+
+template&lt;class T&gt;
+ScoreTracker&lt;T&gt;::ScoreTracker() {
+    highScore = T();
+}
+
+template&lt;class T&gt;
+void ScoreTracker&lt;T&gt;::setHighScore(T score) {
+    highScore = score;
+}
+
+template&lt;class T&gt;
+T ScoreTracker&lt;T&gt;::getHighScore() {
+    return highScore;
+}
+
+int main() {
+    ScoreTracker&lt;int&gt; gameScore;
+
+    gameScore.setHighScore(9500);
+    cout &lt;&lt; "High score: " &lt;&lt; gameScore.getHighScore() &lt;&lt; endl;
+
+    return 0;
+}</code></pre></div>
+
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>Template member functions must use ClassName&lt;T&gt;::</strong> when defined outside the class</li>
+                    <li><strong>Exception: Constructor name</strong> is <code>ClassName&lt;T&gt;::ClassName()</code> (not <code>ClassName&lt;T&gt;::ClassName&lt;T&gt;()</code>)</li>
+                    <li><strong>Template class objects need type specification:</strong> <code>ClassName&lt;Type&gt; obj;</code></li>
+                    <li><strong>Read compiler errors from top to bottom:</strong> fixing the first error often fixes cascading errors</li>
+                </ul>
+
+                <div class="callout-warning">
+                    <strong>⚠️ Common Mistake:</strong> Forgetting the <code>&lt;T&gt;</code> is the #1 template error students make. The compiler error messages can be confusing, but they usually mention "template" or show a scope resolution issue. When you see these, check your <code>&lt;T&gt;</code> syntax!
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 4: Challenge - Template Inheritance -->
+        <div class="problem-card">
+            <span class="problem-number">Problem 4 - Challenge</span>
+            <h2>Anime Watchlist with Favorites</h2>
+
+            <h3>The Scenario</h3>
+            <p>
+                Thandi tracks anime she wants to watch in a generic watchlist. Now she wants to extend this with a "favorites" feature - the ability to mark certain anime as favorites and view only the favorites.
+            </p>
+
+            <h3>Your Task</h3>
+            <p>
+                Create a derived class <code>WatchlistWithFavorites</code> that inherits from the provided <code>Watchlist</code> base class. Your derived class should add:
+            </p>
+            <ul>
+                <li><code>markFavorite(int index)</code> - marks an item at the given index as a favorite</li>
+                <li><code>showFavorites()</code> - displays only the items marked as favorites</li>
+                <li>A separate array to track which items are favorites (use <code>bool</code> array)</li>
+            </ul>
+
+            <div class="callout-warning">
+                <strong>⚠️ Requirements:</strong> You must use template inheritance. The base class is provided - add only the derived class. Use <code>this-&gt;</code> to access inherited members.
+            </div>
+
+            <h3>Expected Output</h3>
+            <div class="code-block"><pre>Full watchlist:
+  1. Attack on Titan
+  2. Death Note
+  3. Demon Slayer
+  4. One Piece
+
+Marking items 0 and 2 as favorites...
+
+Favorites only:
+  Attack on Titan
+  Demon Slayer</pre></div>
+
+            <h3>Starter Code</h3>
+
+            <div class="code-playground" id="playground4">
+                <div class="playground-header">
+                    <div class="playground-title">Your Solution</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground4')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground4')">Reset</button>
+                        <div class="loading-indicator" id="loading4">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor4">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// Base class (provided - DO NOT MODIFY)
+template&lt;class T&gt;
+class Watchlist {
+protected:
+    T items[10];
+    int count;
+
+public:
+    Watchlist() : count(0) {}
+
+    void add(T item) {
+        if (count &lt; 10) {
+            items[count++] = item;
+        }
+    }
+
+    void display() const {
+        for (int i = 0; i &lt; count; i++) {
+            cout &lt;&lt; "  " &lt;&lt; (i + 1) &lt;&lt; ". " &lt;&lt; items[i] &lt;&lt; endl;
+        }
+    }
+
+    int getCount() const {
+        return count;
+    }
+};
+
+// TODO: Create WatchlistWithFavorites class here
+// It should:
+// - Inherit from Watchlist&lt;T&gt;
+// - Have a bool array 'isFavorite[10]' to track favorites
+// - Implement markFavorite(int index)
+// - Implement showFavorites()
+
+
+int main() {
+    WatchlistWithFavorites&lt;string&gt; anime;
+
+    anime.add("Attack on Titan");
+    anime.add("Death Note");
+    anime.add("Demon Slayer");
+    anime.add("One Piece");
+
+    cout &lt;&lt; "Full watchlist:" &lt;&lt; endl;
+    anime.display();
+
+    cout &lt;&lt; "\nMarking items 0 and 2 as favorites..." &lt;&lt; endl;
+    anime.markFavorite(0);
+    anime.markFavorite(2);
+
+    cout &lt;&lt; "\nFavorites only:" &lt;&lt; endl;
+    anime.showFavorites();
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Solution</button>
+
+            <div class="solution-section" id="answer4">
+                <h4>✅ Solution</h4>
+
+                <div class="code-block"><pre><code class="language-cpp">template&lt;class T&gt;
+class WatchlistWithFavorites : public Watchlist&lt;T&gt; {
+private:
+    bool isFavorite[10];
+
+public:
+    WatchlistWithFavorites() {
+        for (int i = 0; i &lt; 10; i++) {
+            isFavorite[i] = false;
+        }
+    }
+
+    void markFavorite(int index) {
+        if (index &gt;= 0 &amp;&amp; index &lt; this-&gt;count) {
+            isFavorite[index] = true;
+        }
+    }
+
+    void showFavorites() const {
+        for (int i = 0; i &lt; this-&gt;count; i++) {
+            if (isFavorite[i]) {
+                cout &lt;&lt; "  " &lt;&lt; this-&gt;items[i] &lt;&lt; endl;
+            }
+        }
+    }
+};</code></pre></div>
+
+                <h4>Template Inheritance Breakdown</h4>
+
+                <h4>1. Class Declaration</h4>
+                <div class="code-block"><pre><code class="language-cpp">template&lt;class T&gt;
+class WatchlistWithFavorites : public Watchlist&lt;T&gt; {</code></pre></div>
+                <p>
+                    Key points:
+                </p>
+                <ul>
+                    <li>The derived class must also be a template (<code>template&lt;class T&gt;</code>)</li>
+                    <li>In the inheritance list, we specify <code>Watchlist&lt;T&gt;</code>, not just <code>Watchlist</code></li>
+                    <li>This passes the type parameter to the base class, so if we create <code>WatchlistWithFavorites&lt;string&gt;</code>, it inherits from <code>Watchlist&lt;string&gt;</code></li>
+                </ul>
+
+                <h4>2. Constructor</h4>
+                <div class="code-block"><pre><code class="language-cpp">WatchlistWithFavorites() {
+    for (int i = 0; i &lt; 10; i++) {
+        isFavorite[i] = false;
+    }
+}</code></pre></div>
+                <p>
+                    We initialize all favorites to <code>false</code>. The base class constructor is called automatically before our constructor runs (it initializes <code>count = 0</code>).
+                </p>
+
+                <h4>3. Accessing Inherited Members with this-&gt;</h4>
+                <div class="code-block"><pre><code class="language-cpp">if (index &gt;= 0 &amp;&amp; index &lt; this-&gt;count) {</code></pre></div>
+                <p>
+                    We use <code>this-&gt;count</code> and <code>this-&gt;items[i]</code> to access inherited members. The <code>this-&gt;</code> is important for template base classes because it helps with name lookup. Without it, the compiler might not find the inherited members during the template compilation phase.
+                </p>
+
+                <h4>4. Implementing markFavorite</h4>
+                <div class="code-block"><pre><code class="language-cpp">void markFavorite(int index) {
+    if (index &gt;= 0 &amp;&amp; index &lt; this-&gt;count) {
+        isFavorite[index] = true;
+    }
+}</code></pre></div>
+                <p>
+                    We validate the index before marking. If it's valid (between 0 and count-1), we mark that position as a favorite. This doesn't modify the base class data - we're just tracking additional information.
+                </p>
+
+                <h4>5. Implementing showFavorites</h4>
+                <div class="code-block"><pre><code class="language-cpp">void showFavorites() const {
+    for (int i = 0; i &lt; this-&gt;count; i++) {
+        if (isFavorite[i]) {
+            cout &lt;&lt; "  " &lt;&lt; this-&gt;items[i] &lt;&lt; endl;
+        }
+    }
+}</code></pre></div>
+                <p>
+                    We iterate through all items (using <code>this-&gt;count</code> from the base class) and display only those marked as favorites. We access <code>this-&gt;items[i]</code> from the base class to get each item's value.
+                </p>
+
+                <h4>Why This Design Works</h4>
+                <p>
+                    Template inheritance lets us extend generic functionality. The base <code>Watchlist&lt;T&gt;</code> provides core functionality (adding, displaying, counting). The derived class adds specialization (favorites) without rewriting the base functionality.
+                </p>
+                <p>
+                    This means we can create:
+                </p>
+                <ul>
+                    <li><code>WatchlistWithFavorites&lt;string&gt;</code> for anime names</li>
+                    <li><code>WatchlistWithFavorites&lt;int&gt;</code> for episode numbers</li>
+                    <li><code>WatchlistWithFavorites&lt;double&gt;</code> for ratings</li>
+                </ul>
+                <p>
+                    All from the same template code!
+                </p>
+
+                <h4>Time Complexity</h4>
+                <ul>
+                    <li><code>markFavorite()</code>: <strong>O(1)</strong> - direct array access</li>
+                    <li><code>showFavorites()</code>: <strong>O(n)</strong> where n = number of items in the list</li>
+                </ul>
+
+                <div class="callout-success">
+                    <strong>Best Practice:</strong> Always use <code>this-&gt;</code> when accessing inherited members in derived template classes. It makes the code explicit and helps avoid compiler issues with dependent name lookup.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Toggle mobile navigation menu
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                const menu = document.getElementById('navMenu');
+                menu.classList.remove('active');
+            });
+        });
+
+        // Toggle solution visibility
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+        }
+
+        // ============================================
+        // CODE PLAYGROUND FUNCTIONS
+        // ============================================
+
+        const editors = {};
+        const originalCode = {};
+
+        function initEditor(id, textareaId) {
+            const textarea = document.getElementById(textareaId);
+            if (!textarea) return null;
+
+            originalCode[id] = textarea.value;
+
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+
+            editors[id] = editor;
+            return editor;
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            initEditor('playground1', 'editor1');
+            initEditor('playground2', 'editor2');
+            initEditor('playground3', 'editor3');
+            initEditor('playground4', 'editor4');
+        });
+
+        async function runCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const code = editor.getValue();
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+            const runBtn = document.querySelector(`#${playgroundId} .run-btn`);
+            const loadingIndicator = document.getElementById(`loading${playgroundId.replace('playground', '')}`);
+
+            runBtn.disabled = true;
+            loadingIndicator.classList.add('active');
+            outputDiv.className = 'output-text output-info';
+            outputDiv.textContent = 'Compiling and executing your code...';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        stdin: '',
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.compile && result.compile.code !== 0) {
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.innerHTML = `<div class="output-info">❌ Compilation Error:</div>${escapeHtml(result.compile.stderr || result.compile.output)}`;
+                } else if (result.run) {
+                    if (result.run.code === 0) {
+                        outputDiv.className = 'output-text output-success';
+                        const output = result.run.stdout || result.run.output || '(no output)';
+                        outputDiv.innerHTML = `<div class="output-info">✅ Executed successfully:</div>${escapeHtml(output)}`;
+                    } else {
+                        outputDiv.className = 'output-text output-error';
+                        const error = result.run.stderr || result.run.output || 'Runtime error';
+                        outputDiv.innerHTML = `<div class="output-info">❌ Runtime Error (exit code ${result.run.code}):</div>${escapeHtml(error)}`;
+                    }
+                } else {
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.textContent = 'Error: Unable to execute code. Please try again.';
+                }
+
+            } catch (error) {
+                outputDiv.className = 'output-text output-error';
+                outputDiv.innerHTML = `<div class="output-info">❌ Error:</div>Failed to connect to compilation service. Please check your internet connection and try again.`;
+                console.error('Piston API error:', error);
+            } finally {
+                runBtn.disabled = false;
+                loadingIndicator.classList.remove('active');
+            }
+        }
+
+        function resetCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+
+            editor.setValue(originalCode[playgroundId]);
+            outputDiv.className = 'output-text output-placeholder';
+            outputDiv.textContent = 'Click "Run Code" to compile and execute...';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

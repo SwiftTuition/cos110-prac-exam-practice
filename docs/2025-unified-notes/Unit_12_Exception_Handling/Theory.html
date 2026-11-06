@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 12: Exception Handling - Theory | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Inline code styling */
+        .content-card p code,
+        .content-card li code,
+        .content-card h1 code,
+        .content-card h2 code,
+        .content-card h3 code,
+        .content-card h4 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        /* Code blocks get Prism styling */
+        pre[class*="language-"] {
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        code[class*="language-"] {
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.95rem;
+        }
+
+        /* Custom Prism syntax highlighting */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        /* Swift Note Box */
+        .swift-note-box {
+            background: #1f1a2e;
+            border-left: 4px solid #a78bfa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .swift-note-box strong { color: #a78bfa; }
+
+        /* Info boxes */
+        .info-box {
+            background: #0c2d3a;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box {
+            background: #3a2609;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box {
+            background: #0a2e1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .error-box {
+            background: #2e0a0a;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        /* Interactive Playground */
+        .playground-container {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .playground-container h4 {
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .playground-hint {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .playground-hint ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .playground-hint li {
+            margin-bottom: 0.3rem;
+            color: #94a3b8;
+        }
+
+        .CodeMirror {
+            height: auto !important;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: 'Cascadia Code', monospace !important;
+            border: 1px solid #334155;
+        }
+
+        .playground-controls {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-run {
+            background: #0ea5e9;
+            color: #fff;
+        }
+
+        .btn-run:hover { background: #0284c7; }
+        .btn-run:disabled { background: #475569; cursor: not-allowed; }
+
+        .btn-reset {
+            background: #64748b;
+            color: #fff;
+        }
+
+        .btn-reset:hover { background: #475569; }
+
+        .output-container {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .output-container.active {
+            display: block;
+        }
+
+        .output-text {
+            background: #000;
+            color: #10b981;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            min-height: 60px;
+            border: 1px solid #334155;
+        }
+
+        .output-error {
+            color: #ef4444;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+        }
+
+        /* Swift Quiz */
+        .swift-quiz {
+            background: #1a1a2e;
+            border: 2px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .swift-quiz h4 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .swift-quiz-question {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .swift-quiz-answer {
+            background: #0c1222;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid #10b981;
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .swift-quiz-answer.active { display: block; }
+
+        .btn-quiz {
+            background: #8b5cf6;
+            color: #fff;
+        }
+
+        .btn-quiz:hover { background: #7c3aed; }
+
+        /* Greeting */
+        .greeting {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0ea5e9;
+            margin-bottom: 1rem;
+        }
+
+        /* Prerequisites */
+        .prerequisites {
+            background: #0c2d3a;
+            border: 2px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .prerequisites h3 {
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .prerequisites ul {
+            list-style-type: none;
+            margin-left: 0;
+        }
+
+        .prerequisites li:before {
+            content: "✓ ";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* Summary section */
+        .summary {
+            background: #0a2e1f;
+            border: 2px solid #10b981;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .summary h3 {
+            color: #10b981;
+            margin-top: 0;
+        }
+
+        .summary ul {
+            margin-bottom: 0;
+        }
+
+        .summary li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 12: Exception Handling</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html" class="active">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="content-card">
+            <p class="greeting">Good day, good people!</p>
+            <p>Welcome to Unit 12, where we learn about <strong>Exception Handling</strong>. This is one of the most important topics in modern programming. When your program encounters an error, you have two choices: crash ungracefully, or handle it like a professional. We're going with option two.</p>
+
+            <p>In this unit, we'll learn how to use C++'s exception handling mechanism to manage errors, create custom exception classes, build exception hierarchies, and write code that stays stable even when things go wrong.</p>
+        </div>
+
+        <div class="prerequisites">
+            <h3>What You Need to Know First</h3>
+            <ul>
+                <li><strong>Unit 7: Inheritance</strong> - Exception hierarchies use inheritance</li>
+                <li><strong>Classes and Objects</strong> - Exceptions are objects</li>
+                <li><strong>Constructors</strong> - We'll build exception classes</li>
+                <li><strong>References</strong> - We catch exceptions by reference</li>
+            </ul>
+        </div>
+
+        <!-- Section 1: Why Exception Handling? -->
+        <div class="content-card">
+            <h2>1. Why Exception Handling?</h2>
+
+            <p>Before exception handling existed, programmers handled errors using return codes. Here's how that looked:</p>
+
+            <pre><code class="language-cpp">int divide(int a, int b) {
+    if (b == 0) {
+        cout << "Error: Division by zero!" << endl;
+        return -1;  // Magic error code
+    }
+    return a / b;
+}
+
+int main() {
+    int result = divide(10, 0);
+    if (result == -1) {
+        // Handle error
+    }
+    return 0;
+}</code></pre>
+
+            <p><strong>What's happening here?</strong> The function <code>divide</code> checks if <code>b</code> is zero. If it is, we print an error and return <code>-1</code> as a "magic number" to signal an error. The caller (in this case, <code>main</code>) has to check if the result is <code>-1</code> to know if an error occurred.</p>
+
+            <p>This approach has serious problems:</p>
+            <ul>
+                <li><strong>Magic numbers:</strong> What if -1 is actually a valid result? For example, <code>divide(-10, 10)</code> should return <code>-1</code>, but now we can't tell if that's an error or a real answer.</li>
+                <li><strong>Easy to ignore:</strong> The caller might forget to check the error code. If they just use <code>result</code> without checking, they're using an invalid value.</li>
+                <li><strong>Limited information:</strong> An error code is just a number. It doesn't tell you <em>why</em> the error happened, <em>where</em> it happened, or what to do about it.</li>
+                <li><strong>Code gets messy:</strong> You need error checking after every function call, which makes your code hard to read.</li>
+            </ul>
+
+            <p>Exception handling solves all of these problems. It lets you <strong>separate normal code from error-handling code</strong>. Your main logic stays clean, and error handling happens in dedicated places.</p>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Think of exceptions like smoke alarms. They don't prevent fires, but they alert you when one happens so you can respond. Your program's exception handlers are the emergency exits.
+            </div>
+        </div>
+
+        <!-- Section 2: The try-catch-throw Mechanism -->
+        <div class="content-card">
+            <h2>2. The try-catch-throw Mechanism</h2>
+
+            <p>Exception handling in C++ uses three keywords that work together:</p>
+
+            <ul>
+                <li><code>throw</code> - Signals that an error has occurred. Think of it as "raising an alarm."</li>
+                <li><code>try</code> - Wraps code that might throw exceptions. Think of it as "this zone might have problems."</li>
+                <li><code>catch</code> - Handles specific types of exceptions. Think of it as "if this specific problem happens, do this."</li>
+            </ul>
+
+            <p>Let's see how this works. We'll rewrite the division example using exceptions:</p>
+        </div>
+
+        <!-- Playground 1 -->
+        <div class="playground-container">
+            <h4>🎮 Playground 1: Your First try-catch-throw</h4>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">This code shows the basic pattern of exception handling. Read through it first, then run it to see what happens.</p>
+            <div class="playground-hint">
+                <strong>Experiment:</strong>
+                <ul>
+                    <li>Change <code>divide(10, 0)</code> to <code>divide(10, 2)</code> → <strong>Expected:</strong> No exception thrown, catch block doesn't run, prints "Result: 5"</li>
+                    <li>Change <code>throw string(...)</code> to <code>throw 404</code> and add <code>catch (int e)</code> → <strong>Expected:</strong> Catches the integer 404, prints error code as a number</li>
+                    <li>Remove the entire <code>try-catch</code> blocks → <strong>Expected:</strong> Program crashes with "terminate called after throwing an instance of 'std::__cxx11::basic_string...'"</li>
+                </ul>
+            </div>
+            <textarea id="editor1">#include <iostream>
+#include <string>
+using namespace std;
+
+int divide(int a, int b) {
+    if (b == 0) {
+        throw string("Cannot divide by zero!");
+    }
+    return a / b;
+}
+
+int main() {
+    try {
+        int result = divide(10, 0);
+        cout << "Result: " << result << endl;
+    }
+    catch (string error) {
+        cout << "Error caught: " << error << endl;
+    }
+
+    cout << "Program continues normally" << endl;
+    return 0;
+}</textarea>
+            <div class="playground-controls">
+                <button class="btn btn-run" onclick="runCode('editor1', 'output1')">▶ Run Code</button>
+                <button class="btn btn-reset" onclick="resetEditor('editor1')">↻ Reset</button>
+            </div>
+            <div id="output1" class="output-container">
+                <div class="output-text"></div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <p><strong>Let's break down what just happened:</strong></p>
+
+            <ol>
+                <li><strong>Line 6:</strong> When we call <code>throw string("Cannot divide by zero!")</code>, we create a <code>string</code> object and throw it. This immediately stops the function and starts looking for a handler.</li>
+                <li><strong>Line 12-15:</strong> The <code>try</code> block wraps code that might throw an exception. When <code>divide</code> throws, control jumps immediately to the <code>catch</code> block.</li>
+                <li><strong>Line 16-18:</strong> The <code>catch (string error)</code> block catches exceptions of type <code>string</code>. The variable <code>error</code> contains the string we threw.</li>
+                <li><strong>Line 20:</strong> After the <code>catch</code> block runs, the program continues normally. It doesn't crash.</li>
+            </ol>
+
+            <p><strong>Important:</strong> When you <code>throw</code> an exception, the function stops immediately. Any code after the <code>throw</code> statement doesn't run. Control jumps to the nearest matching <code>catch</code> block.</p>
+
+            <div class="info-box">
+                <strong>Flow of Control:</strong>
+                <ol>
+                    <li>Code inside <code>try</code> block starts running</li>
+                    <li>If <code>throw</code> executes, control immediately jumps to the matching <code>catch</code></li>
+                    <li>The <code>catch</code> block handles the error</li>
+                    <li>Program continues after the <code>catch</code> block</li>
+                </ol>
+            </div>
+
+            <h3>Multiple catch Blocks</h3>
+
+            <p>You can throw different types of exceptions and catch each type separately. This lets you handle different errors in different ways.</p>
+
+            <p>Here's an example where we throw both <code>string</code> and <code>int</code> exceptions:</p>
+        </div>
+
+        <!-- Playground 2 -->
+        <div class="playground-container">
+            <h4>🎮 Playground 2: Multiple catch Blocks</h4>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">This code shows how to catch different types of exceptions. We check age validity and throw different types based on which rule is broken.</p>
+            <div class="playground-hint">
+                <strong>Experiment:</strong>
+                <ul>
+                    <li>Try <code>processAge(200)</code> → <strong>Expected:</strong> The <code>catch (string& e)</code> block runs, prints "Age 200 is unrealistically high!"</li>
+                    <li>Try <code>processAge(25)</code> → <strong>Expected:</strong> No exception thrown, prints "Valid age: 25"</li>
+                    <li>Add <code>catch (double e)</code> and throw a <code>double</code> for ages over 200 → <strong>Expected:</strong> Now ages > 200 trigger the double catch instead of string catch</li>
+                </ul>
+            </div>
+            <textarea id="editor2">#include <iostream>
+#include <string>
+using namespace std;
+
+void processAge(int age) {
+    if (age < 0) {
+        throw string("Age cannot be negative!");
+    }
+    if (age > 150) {
+        throw 999;  // Throwing an int
+    }
+    cout << "Age " << age << " is valid" << endl;
+}
+
+int main() {
+    try {
+        processAge(-5);
+    }
+    catch (string error) {
+        cout << "String exception: " << error << endl;
+    }
+    catch (int errorCode) {
+        cout << "Int exception: Code " << errorCode << endl;
+    }
+
+    return 0;
+}</textarea>
+            <div class="playground-controls">
+                <button class="btn btn-run" onclick="runCode('editor2', 'output2')">▶ Run Code</button>
+                <button class="btn btn-reset" onclick="resetEditor('editor2')">↻ Reset</button>
+            </div>
+            <div id="output2" class="output-container">
+                <div class="output-text"></div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <p><strong>What's happening here?</strong></p>
+
+            <ul>
+                <li><strong>Line 6-8:</strong> If age is negative, we throw a <code>string</code> exception with a message</li>
+                <li><strong>Line 9-11:</strong> If age is over 150, we throw an <code>int</code> exception (the number 999)</li>
+                <li><strong>Line 19-21:</strong> This catch block only catches <code>string</code> exceptions</li>
+                <li><strong>Line 22-24:</strong> This catch block only catches <code>int</code> exceptions</li>
+            </ul>
+
+            <p>When you have multiple catch blocks, C++ checks them in order from top to bottom. The first one that matches the type of the thrown exception is the one that runs. The others are skipped.</p>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> You can throw any type: <code>int</code>, <code>string</code>, <code>double</code>, <code>char</code>, or even custom objects. But throwing objects (especially exception classes) is way more useful because they can carry more information about what went wrong.
+            </div>
+        </div>
+
+        <!-- Swift Quiz 1 -->
+        <div class="swift-quiz">
+            <h4>Swift Quiz 1</h4>
+            <p class="swift-quiz-question">What happens if an exception is thrown but there's no matching <code>catch</code> block?</p>
+            <button class="btn btn-quiz" onclick="toggleAnswer('quiz1')">Show Answer</button>
+            <div id="quiz1" class="swift-quiz-answer">
+                <p><strong>Answer:</strong> The program terminates abnormally and calls <code>std::terminate()</code>, which typically calls <code>abort()</code>. Your program crashes. This is why it's important to either catch exceptions or let them propagate to a handler that can catch them.</p>
+            </div>
+        </div>
+
+        <!-- Section 3: Custom Exception Classes -->
+        <div class="content-card">
+            <h2>3. Custom Exception Classes</h2>
+
+            <p>So far, we've been throwing primitive types like <code>string</code> and <code>int</code>. This works, but it's limited. A string can only hold a message. An int can only hold a number. What if you want to store multiple pieces of information about an error?</p>
+
+            <p>That's where custom exception classes come in. We can create our own classes specifically for representing errors. These classes can have multiple data members, methods to display error information, and anything else we need.</p>
+
+            <h3>Basic Exception Class</h3>
+
+            <p>Let's start with a simple exception class for division by zero. We'll store an error message and provide a method to retrieve it:</p>
+        </div>
+
+        <!-- Playground 3 -->
+        <div class="playground-container">
+            <h4>🎮 Playground 3: Custom Exception Class</h4>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">This shows how to create a simple exception class. Notice how it's just a regular class - nothing special about it except that we throw it.</p>
+            <div class="playground-hint">
+                <strong>Experiment:</strong>
+                <ul>
+                    <li>Add a second data member like <code>int lineNumber</code> to track where the error happened → <strong>Expected:</strong> Exception now carries both operation and line number info</li>
+                    <li>Try catching by value <code>catch (DivisionByZeroException e)</code> instead of by reference → <strong>Expected:</strong> Still works, but creates a copy (less efficient, can cause slicing with inheritance)</li>
+                    <li>Create a second exception class called <code>MultiplicationOverflowException</code> → <strong>Expected:</strong> Now you can throw/catch multiplication errors separately from division errors</li>
+                </ul>
+            </div>
+            <textarea id="editor3">#include <iostream>
+#include <string>
+using namespace std;
+
+class DivisionByZeroException {
+private:
+    string message;
+public:
+    DivisionByZeroException(string msg) : message(msg) {}
+
+    string what() const {
+        return message;
+    }
+};
+
+int divide(int a, int b) {
+    if (b == 0) {
+        throw DivisionByZeroException("Cannot divide by zero!");
+    }
+    return a / b;
+}
+
+int main() {
+    try {
+        int result = divide(10, 0);
+        cout << "Result: " << result << endl;
+    }
+    catch (DivisionByZeroException& e) {
+        cout << "Exception: " << e.what() << endl;
+    }
+
+    return 0;
+}</textarea>
+            <div class="playground-controls">
+                <button class="btn btn-run" onclick="runCode('editor3', 'output3')">▶ Run Code</button>
+                <button class="btn btn-reset" onclick="resetEditor('editor3')">↻ Reset</button>
+            </div>
+            <div id="output3" class="output-container">
+                <div class="output-text"></div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <p><strong>Let's break this down line by line:</strong></p>
+
+            <ul>
+                <li><strong>Line 5-13:</strong> We define a class called <code>DivisionByZeroException</code>. It has a private <code>string</code> to store the error message, a constructor that initializes it, and a <code>what()</code> method that returns the message.</li>
+                <li><strong>Line 18:</strong> Instead of <code>throw string(...)</code>, we now <code>throw DivisionByZeroException(...)</code>. This creates an exception object and throws it.</li>
+                <li><strong>Line 28:</strong> We catch by reference: <code>DivisionByZeroException& e</code>. The <code>&</code> is important (more on this soon).</li>
+                <li><strong>Line 29:</strong> We call <code>e.what()</code> to get the error message and print it.</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Notice we catch by reference (<code>DivisionByZeroException&</code>), not by value. This is important for exception hierarchies, which we'll cover next. Always catch exceptions by reference to avoid problems.
+            </div>
+
+            <h3>Exception Class with More Information</h3>
+
+            <p>The real power of exception classes is that they can store multiple pieces of information. Let's look at an example that stores more than just a message.</p>
+
+            <p>Swift's been watching <em>Steins;Gate</em> - a sci-fi thriller anime about a group of friends who accidentally invent time travel by modifying a microwave. The main character, Okabe Rintaro, discovers that changing past events creates different "world lines" (alternate timelines). Some changes cause paradoxes that the universe won't allow. When a paradox occurs, the timeline enforces its rules.</p>
+
+            <p>Let's model timeline errors with an exception class that stores multiple pieces of information:</p>
+        </div>
+
+        <!-- Playground 4 -->
+        <div class="playground-container">
+            <h4>🎮 Playground 4: Multi-Attribute Exception (Steins;Gate Timeline Errors)</h4>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">This exception class stores three pieces of information: the error message, which event caused the problem, and which world line we're in. This is much more useful than just throwing a string.</p>
+            <div class="playground-hint">
+                <strong>Experiment:</strong>
+                <ul>
+                    <li>Add a <code>double divergenceMeter</code> data member to track the timeline number → <strong>Expected:</strong> Exception now displays which worldline the paradox occurs in (e.g., "1.048596")</li>
+                    <li>Try calling <code>sendDMail("Buy IBM stock", "Past Self")</code> with a safe message → <strong>Expected:</strong> No exception thrown, prints "D-Mail sent successfully!"</li>
+                    <li>Add a second type of timeline exception for convergence errors → <strong>Expected:</strong> Now you can distinguish between paradoxes and convergence failures</li>
+                </ul>
+            </div>
+            <textarea id="editor4">#include <iostream>
+#include <string>
+using namespace std;
+
+// Steins;Gate: D-Mail (text message sent to the past) can cause timeline paradoxes
+class TimelineException {
+private:
+    string errorMessage;
+    string eventName;
+    string worldLine;
+public:
+    TimelineException(string msg, string event, string wl)
+        : errorMessage(msg), eventName(event), worldLine(wl) {}
+
+    void display() const {
+        cout << "=== TIMELINE ERROR ===" << endl;
+        cout << "World Line: " << worldLine << endl;
+        cout << "Event: " << eventName << endl;
+        cout << "Error: " << errorMessage << endl;
+    }
+
+    string getEvent() const { return eventName; }
+};
+
+void sendDMail(string message, string recipient) {
+    // D-Mail = text message sent to the past
+    // Some events create paradoxes that can't be changed
+    if (recipient == "Mayuri" && message.find("cancel") != string::npos) {
+        throw TimelineException(
+            "Cannot prevent convergence point!",
+            "Mayuri's fate",
+            "Alpha 1.048596"
+        );
+    }
+
+    cout << "D-Mail sent successfully!" << endl;
+    cout << "To: " << recipient << endl;
+    cout << "Message: " << message << endl;
+}
+
+int main() {
+    try {
+        sendDMail("Cancel your plans", "Mayuri");
+    }
+    catch (TimelineException& e) {
+        e.display();
+        cout << "\nTimeline shift failed!" << endl;
+    }
+
+    return 0;
+}</textarea>
+            <div class="playground-controls">
+                <button class="btn btn-run" onclick="runCode('editor4', 'output4')">▶ Run Code</button>
+                <button class="btn btn-reset" onclick="resetEditor('editor4')">↻ Reset</button>
+            </div>
+            <div id="output4" class="output-container">
+                <div class="output-text"></div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <p><strong>What makes this better than throwing a string?</strong></p>
+
+            <ul>
+                <li><strong>Multiple data members:</strong> We store the error message, the event that caused it, and which timeline we're in. A string can only hold one piece of text.</li>
+                <li><strong>Methods:</strong> We have a <code>display()</code> method that formats the error nicely, and a <code>getEvent()</code> method to retrieve specific information.</li>
+                <li><strong>Type safety:</strong> We can catch <code>TimelineException</code> separately from other exceptions, allowing specific handling.</li>
+                <li><strong>Expandable:</strong> If we need to add more information later (like a divergence meter reading), we just add another data member.</li>
+            </ul>
+
+            <p>This is the power of exception classes. They're objects, so they can store whatever data you need and provide methods to work with that data.</p>
+        </div>
+
+        <!-- Swift Quiz 2 -->
+        <div class="swift-quiz">
+            <h4>Swift Quiz 2</h4>
+            <p class="swift-quiz-question">Why do we catch exceptions by reference (<code>catch (Exception& e)</code>) instead of by value (<code>catch (Exception e)</code>)?</p>
+            <button class="btn btn-quiz" onclick="toggleAnswer('quiz2')">Show Answer</button>
+            <div id="quiz2" class="swift-quiz-answer">
+                <p><strong>Answer:</strong> Catching by reference avoids "slicing." When you have exception hierarchies (derived exceptions), catching by value copies only the base class part and loses the derived class information. Catching by reference preserves the full object and supports polymorphism. It's also more efficient since no copying occurs.</p>
+            </div>
+        </div>
+
+        <!-- Section 4: Exception Hierarchies -->
+        <div class="content-card">
+            <h2>4. Exception Hierarchies</h2>
+
+            <p>Just like regular classes, exception classes can use inheritance. This lets you create families of related exceptions and catch them at different levels of specificity.</p>
+
+            <p>Why is this useful? Imagine you're writing a math library. You might have different types of math errors: division by zero, square root of negative number, logarithm of zero, etc. You could create a separate exception class for each one, but then you'd need a separate catch block for each. That's a lot of repetition.</p>
+
+            <p>With exception hierarchies, you can create a base class <code>MathException</code> and derive specific exceptions from it. Then you can catch all math errors with one <code>catch (MathException& e)</code> block, or catch specific ones individually.</p>
+
+            <h3>Building an Exception Hierarchy</h3>
+
+            <p>Let's create a base exception class for all math errors, then derive two specific exceptions from it:</p>
+        </div>
+
+        <!-- Playground 5 -->
+        <div class="playground-container">
+            <h4>🎮 Playground 5: Exception Hierarchy</h4>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">This code shows a base exception class with two derived classes. Notice how we can catch all math exceptions with the base class, or catch specific ones individually.</p>
+            <div class="playground-hint">
+                <strong>Experiment:</strong>
+                <ul>
+                    <li>Try calling <code>squareRoot(-9)</code> instead of <code>divide(10, 0)</code> → <strong>Expected:</strong> Same catch block handles it! Prints "Math error: Cannot take square root of negative number!"</li>
+                    <li>Add a specific <code>catch (DivisionByZeroException& e)</code> BEFORE the general catch → <strong>Expected:</strong> Now division errors get specific handling, while other math errors use general handler</li>
+                    <li>Create a third derived class: <code>LogarithmOfZeroException</code> → <strong>Expected:</strong> All three error types can be caught by the base <code>MathException</code> handler</li>
+                </ul>
+            </div>
+            <textarea id="editor5">#include <iostream>
+#include <string>
+#include <cmath>
+using namespace std;
+
+// Base exception class for all math errors
+class MathException {
+protected:
+    string message;
+public:
+    MathException(string msg) : message(msg) {}
+
+    virtual string what() const {
+        return message;
+    }
+
+    virtual ~MathException() {}
+};
+
+// Derived exception: Division by zero
+class DivisionByZeroException : public MathException {
+public:
+    DivisionByZeroException()
+        : MathException("Division by zero!") {}
+};
+
+// Derived exception: Negative square root
+class NegativeSquareRootException : public MathException {
+public:
+    NegativeSquareRootException()
+        : MathException("Cannot take square root of negative number!") {}
+};
+
+int divide(int a, int b) {
+    if (b == 0) {
+        throw DivisionByZeroException();
+    }
+    return a / b;
+}
+
+double squareRoot(double x) {
+    if (x < 0) {
+        throw NegativeSquareRootException();
+    }
+    return sqrt(x);
+}
+
+int main() {
+    try {
+        divide(10, 0);
+    }
+    catch (MathException& e) {
+        // This catches ALL MathException types (base and derived)
+        cout << "Math error: " << e.what() << endl;
+    }
+
+    return 0;
+}</textarea>
+            <div class="playground-controls">
+                <button class="btn btn-run" onclick="runCode('editor5', 'output5')">▶ Run Code</button>
+                <button class="btn btn-reset" onclick="resetEditor('editor5')">↻ Reset</button>
+            </div>
+            <div id="output5" class="output-container">
+                <div class="output-text"></div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <p><strong>Let's break this down:</strong></p>
+
+            <ul>
+                <li><strong>Line 7-18:</strong> <code>MathException</code> is the base class. It has a <code>message</code> member, a constructor, and a <code>virtual</code> method <code>what()</code>. The <code>virtual</code> keyword is important - it enables polymorphism.</li>
+                <li><strong>Line 8:</strong> We use <code>protected</code> instead of <code>private</code> so derived classes can access <code>message</code>.</li>
+                <li><strong>Line 21-25:</strong> <code>DivisionByZeroException</code> derives from <code>MathException</code>. It calls the base constructor with a specific message.</li>
+                <li><strong>Line 28-32:</strong> <code>NegativeSquareRootException</code> also derives from <code>MathException</code> with its own message.</li>
+                <li><strong>Line 51-54:</strong> We catch <code>MathException&</code> (by reference!). This catches the base class AND all derived classes.</li>
+            </ul>
+
+            <p><strong>Why is <code>what()</code> virtual?</strong> Because we're catching by reference to the base class. When we call <code>e.what()</code>, polymorphism ensures we call the correct version. If a derived class overrides <code>what()</code>, that version runs. If not, the base version runs.</p>
+
+            <h3>Catch Order Matters</h3>
+
+            <p>When you have multiple catch blocks for a hierarchy, the order matters. C++ checks catch blocks from top to bottom and uses the first match.</p>
+
+            <p>Here's the right way to do it:</p>
+
+            <pre><code class="language-cpp">try {
+    divide(10, 0);
+}
+catch (DivisionByZeroException& e) {
+    // Specific handler - catches ONLY DivisionByZeroException
+    cout << "Division error: " << e.what() << endl;
+}
+catch (NegativeSquareRootException& e) {
+    // Specific handler - catches ONLY NegativeSquareRootException
+    cout << "Square root error: " << e.what() << endl;
+}
+catch (MathException& e) {
+    // General handler - catches all OTHER MathException types
+    cout << "Math error: " << e.what() << endl;
+}</code></pre>
+
+            <p><strong>Rule:</strong> Most specific (derived) exceptions first, most general (base) exceptions last.</p>
+
+            <div class="warning-box">
+                <strong>⚠️ Wrong Order:</strong> If you put the base class catch first, it catches everything and the derived catches never run!
+                <pre><code class="language-cpp">// WRONG! This won't work as expected
+try {
+    divide(10, 0);
+}
+catch (MathException& e) {
+    // This catches EVERYTHING - base and derived
+    cout << "Math error: " << e.what() << endl;
+}
+catch (DivisionByZeroException& e) {
+    // This NEVER runs - unreachable code!
+    cout << "Division error: " << e.what() << endl;
+}</code></pre>
+            </div>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Make your error methods <code>virtual</code> in the base class. This enables polymorphism, so calling the method on a base class reference actually calls the derived class version if it's overridden.
+            </div>
+        </div>
+
+        <!-- Playground 6 -->
+        <div class="playground-container">
+            <h4>🎮 Playground 6: Catch Order Experiment</h4>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">This demonstrates polymorphism with exceptions. The derived exception's display method is called even though we catch with a base class reference.</p>
+            <div class="playground-hint">
+                <strong>Experiment:</strong>
+                <ul>
+                    <li>Swap the order of the two catch blocks → <strong>Expected:</strong> Now the base handler runs first and catches the DerivedException! The specific handler becomes unreachable.</li>
+                    <li>Add <code>catch (...)</code> at the very end to catch anything else → <strong>Expected:</strong> A safety net that catches any exception type not handled by specific catches</li>
+                    <li>Try catching by value <code>catch (BaseException e)</code> instead of reference → <strong>Expected:</strong> Prints "Caught general type: Base exception" (slicing! derived part lost)</li>
+                </ul>
+            </div>
+            <textarea id="editor6">#include <iostream>
+using namespace std;
+
+class BaseException {
+public:
+    virtual void display() {
+        cout << "Base exception" << endl;
+    }
+    virtual ~BaseException() {}
+};
+
+class DerivedException : public BaseException {
+public:
+    void display() {
+        cout << "Derived exception" << endl;
+    }
+};
+
+int main() {
+    try {
+        throw DerivedException();
+    }
+    catch (DerivedException& e) {
+        cout << "Caught specific type: ";
+        e.display();
+    }
+    catch (BaseException& e) {
+        cout << "Caught general type: ";
+        e.display();
+    }
+
+    return 0;
+}</textarea>
+            <div class="playground-controls">
+                <button class="btn btn-run" onclick="runCode('editor6', 'output6')">▶ Run Code</button>
+                <button class="btn btn-reset" onclick="resetEditor('editor6')">↻ Reset</button>
+            </div>
+            <div id="output6" class="output-container">
+                <div class="output-text"></div>
+            </div>
+        </div>
+
+        <!-- Swift Quiz 3 -->
+        <div class="swift-quiz">
+            <h4>Swift Quiz 3</h4>
+            <p class="swift-quiz-question">In an exception hierarchy with <code>BaseException</code> and <code>DerivedException : public BaseException</code>, if you write <code>catch (BaseException e)</code> (without &), what problem occurs?</p>
+            <button class="btn btn-quiz" onclick="toggleAnswer('quiz3')">Show Answer</button>
+            <div id="quiz3" class="swift-quiz-answer">
+                <p><strong>Answer:</strong> Object slicing occurs. When you catch by value, the exception object is copied. If a <code>DerivedException</code> is thrown, only the <code>BaseException</code> part gets copied. All the derived class data and behavior is "sliced off." This means if you call a virtual function, it calls the base version, not the derived version. Always catch by reference to avoid this!</p>
+            </div>
+        </div>
+
+        <!-- Section 5: Rethrowing Exceptions -->
+        <div class="content-card">
+            <h2>5. Rethrowing Exceptions</h2>
+
+            <p>Sometimes you want to catch an exception, do some cleanup or logging, and then pass it to a higher-level handler. This is called <strong>rethrowing</strong>.</p>
+
+            <p>Why would you do this? Imagine a function that opens a file. If an error occurs, you want to close the file before the exception propagates. But you also want the caller to know that an error happened. The solution: catch the exception, close the file, then rethrow the exception.</p>
+
+            <h3>Using throw; (No Argument)</h3>
+
+            <p>Inside a catch block, you can use <code>throw;</code> (with no argument) to rethrow the current exception. This preserves the original exception object perfectly.</p>
+        </div>
+
+        <!-- Playground 7 -->
+        <div class="playground-container">
+            <h4>🎮 Playground 7: Rethrowing Exceptions</h4>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">This shows two levels of exception handling. The low-level handler logs the error and rethrows. The high-level handler notifies the user.</p>
+            <div class="playground-hint">
+                <strong>Experiment:</strong>
+                <ul>
+                    <li>Change <code>throw;</code> to <code>throw e;</code> → <strong>Expected:</strong> Works the same in this case, but creates a new exception object (can cause slicing with hierarchies)</li>
+                    <li>Remove the <code>throw;</code> line → <strong>Expected:</strong> Low-level handler runs but high-level handler doesn't! Program continues normally after low-level logging.</li>
+                    <li>Add a third level of exception handling by wrapping <code>main</code>'s try-catch → <strong>Expected:</strong> Exception propagates through all three levels if each one rethrows</li>
+                </ul>
+            </div>
+            <textarea id="editor7">#include <iostream>
+#include <string>
+using namespace std;
+
+class FileException {
+private:
+    string filename;
+public:
+    FileException(string fname) : filename(fname) {}
+    string getFilename() const { return filename; }
+};
+
+void processFile(string filename) {
+    try {
+        // Simulate file error
+        throw FileException(filename);
+    }
+    catch (FileException& e) {
+        // Low-level handler: log the error
+        cout << "LOW-LEVEL: Logging error..." << endl;
+        cout << "Failed to process: " << e.getFilename() << endl;
+        cout << endl;
+
+        // Rethrow the same exception to higher-level handler
+        throw;
+    }
+}
+
+int main() {
+    try {
+        processFile("data.txt");
+    }
+    catch (FileException& e) {
+        // High-level handler: notify user
+        cout << "HIGH-LEVEL: Notifying user..." << endl;
+        cout << "Error with file: " << e.getFilename() << endl;
+    }
+
+    return 0;
+}</textarea>
+            <div class="playground-controls">
+                <button class="btn btn-run" onclick="runCode('editor7', 'output7')">▶ Run Code</button>
+                <button class="btn btn-reset" onclick="resetEditor('editor7')">↻ Reset</button>
+            </div>
+            <div id="output7" class="output-container">
+                <div class="output-text"></div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <p><strong>What's happening here?</strong></p>
+
+            <ul>
+                <li><strong>Line 16:</strong> We throw a <code>FileException</code></li>
+                <li><strong>Line 18-22:</strong> The low-level catch block in <code>processFile</code> catches it first, logs the error</li>
+                <li><strong>Line 25:</strong> <code>throw;</code> rethrows the exact same exception object</li>
+                <li><strong>Line 32-36:</strong> The high-level catch block in <code>main</code> catches the rethrown exception</li>
+            </ul>
+
+            <p>Notice both handlers run: first the low-level one (logging), then the high-level one (user notification).</p>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Using <code>throw;</code> (with no argument) inside a catch block rethrows the exact same exception object. This preserves all the exception data and type information perfectly.
+            </div>
+
+            <h3>When to Rethrow</h3>
+
+            <p>Rethrowing is useful when you need to:</p>
+            <ul>
+                <li><strong>Log errors:</strong> Record what went wrong at a low level</li>
+                <li><strong>Clean up resources:</strong> Close files, free memory, release locks</li>
+                <li><strong>Add context:</strong> Wrap the exception in a higher-level exception with more information</li>
+                <li><strong>Delegate decisions:</strong> Let a higher-level function decide what to do</li>
+            </ul>
+        </div>
+
+        <!-- Swift Quiz 4 -->
+        <div class="swift-quiz">
+            <h4>Swift Quiz 4</h4>
+            <p class="swift-quiz-question">What's the difference between <code>throw;</code> and <code>throw e;</code> inside a catch block?</p>
+            <button class="btn btn-quiz" onclick="toggleAnswer('quiz4')">Show Answer</button>
+            <div id="quiz4" class="swift-quiz-answer">
+                <p><strong>Answer:</strong> <code>throw;</code> rethrows the original exception object (preserves type and data perfectly). <code>throw e;</code> creates a NEW exception by copying <code>e</code>. If <code>e</code> is a base class reference pointing to a derived object, <code>throw e;</code> will slice it and throw only the base part. Always use <code>throw;</code> for rethrowing!</p>
+            </div>
+        </div>
+
+        <!-- Section 6: Exception Safety -->
+        <div class="content-card">
+            <h2>6. Exception Safety</h2>
+
+            <p>Exception-safe code is code that works correctly even when exceptions are thrown. This is important because when an exception occurs, you need to make sure your program doesn't leak resources or leave data in a broken state.</p>
+
+            <h3>The Problem: Resource Leaks</h3>
+
+            <p>Look at this code. Can you spot the problem?</p>
+
+            <pre><code class="language-cpp">#include <iostream>
+using namespace std;
+
+void riskyFunction() {
+    int* data = new int[100];  // Allocate memory
+
+    // What if this throws an exception?
+    if (someCondition) {
+        throw string("Error!");
+    }
+
+    delete[] data;  // This line never executes if exception thrown!
+}</code></pre>
+
+            <p><strong>The problem:</strong> When the exception is thrown on line 9, the function immediately stops. Line 12 (<code>delete[] data;</code>) never executes. We've leaked 100 integers worth of memory.</p>
+
+            <p>Every time this function is called and throws an exception, we leak more memory. Eventually, the program runs out of memory and crashes.</p>
+
+            <h3>Solution: Cleanup in Catch Blocks</h3>
+
+            <p>We need to make sure cleanup happens whether an exception is thrown or not. Here's how:</p>
+        </div>
+
+        <!-- Playground 8 -->
+        <div class="playground-container">
+            <h4>🎮 Playground 8: Fix the Resource Leak</h4>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">This code has a memory leak. When an exception is thrown, the Student object is never deleted. Your challenge: fix it!</p>
+            <div class="playground-hint">
+                <strong>Challenge:</strong>
+                <ul>
+                    <li>Add a <code>try-catch</code> block inside <code>enrollStudent</code> → <strong>Expected:</strong> Wrap the age check in try, add catch(...) that deletes s and rethrows</li>
+                    <li>In the catch block, <code>delete s;</code> before rethrowing → <strong>Expected:</strong> Student destructor runs before exception propagates upward</li>
+                    <li>Watch the output - you should see "Destroyed student" even when exception is thrown → <strong>Expected:</strong> Prints "Created student: Johan Pretorius", then "Destroyed student: Johan Pretorius", then "Error: Student too young!"</li>
+                </ul>
+            </div>
+            <textarea id="editor8">#include <iostream>
+using namespace std;
+
+class Student {
+public:
+    string name;
+    Student(string n) : name(n) {
+        cout << "Created student: " << name << endl;
+    }
+    ~Student() {
+        cout << "Destroyed student: " << name << endl;
+    }
+};
+
+void enrollStudent(string name, int age) {
+    Student* s = new Student(name);
+
+    if (age < 18) {
+        throw string("Student too young!");
+        // Memory leak! s is never deleted
+    }
+
+    cout << s->name << " enrolled successfully" << endl;
+    delete s;
+}
+
+int main() {
+    try {
+        enrollStudent("Johan Pretorius", 16);
+    }
+    catch (string& e) {
+        cout << "Error: " << e << endl;
+    }
+
+    cout << "Program ending..." << endl;
+    return 0;
+}</textarea>
+            <div class="playground-controls">
+                <button class="btn btn-run" onclick="runCode('editor8', 'output8')">▶ Run Code</button>
+                <button class="btn btn-reset" onclick="resetEditor('editor8')">↻ Reset</button>
+            </div>
+            <div id="output8" class="output-container">
+                <div class="output-text"></div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <p><strong>The fix:</strong></p>
+
+            <pre><code class="language-cpp">void enrollStudent(string name, int age) {
+    Student* s = new Student(name);
+
+    try {
+        if (age < 18) {
+            throw string("Student too young!");
+        }
+        cout << s->name << " enrolled successfully" << endl;
+    }
+    catch (...) {
+        // Cleanup before rethrowing
+        delete s;
+        throw;  // Rethrow the exception
+    }
+
+    delete s;  // Normal cleanup if no exception
+}</code></pre>
+
+            <p><strong>How it works:</strong></p>
+            <ul>
+                <li>If no exception: code runs normally, reaches line 16, deletes <code>s</code></li>
+                <li>If exception thrown: catch block runs, deletes <code>s</code>, then rethrows</li>
+                <li>Either way, <code>s</code> gets deleted - no leak!</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> In modern C++, you'd use RAII (Resource Acquisition Is Initialization) and smart pointers to handle this automatically. But in COS 110 with C++98, you need to be careful with manual cleanup in exception handlers.
+            </div>
+
+            <h3>Three Levels of Exception Safety</h3>
+
+            <ol>
+                <li><strong>No guarantee:</strong> Code might leak resources or corrupt data if exception thrown (bad!)</li>
+                <li><strong>Basic guarantee:</strong> No resource leaks, but data might be in a modified state (acceptable)</li>
+                <li><strong>Strong guarantee:</strong> Operation either completes fully or leaves everything unchanged (ideal)</li>
+            </ol>
+
+            <p>For COS 110, aim for at least the basic guarantee: <strong>always clean up resources, even when exceptions occur</strong>.</p>
+        </div>
+
+        <!-- Swift Quiz 5 -->
+        <div class="swift-quiz">
+            <h4>Swift Quiz 5</h4>
+            <p class="swift-quiz-question">What does <code>catch (...)</code> (three dots) do?</p>
+            <button class="btn btn-quiz" onclick="toggleAnswer('quiz5')">Show Answer</button>
+            <div id="quiz5" class="swift-quiz-answer">
+                <p><strong>Answer:</strong> <code>catch (...)</code> is a catch-all handler that catches any exception of any type. It's useful as a last resort to prevent program termination, but you can't access the exception object or get any information about it. Use it carefully and typically as the very last catch block.</p>
+            </div>
+        </div>
+
+        <!-- Section 7: Common Mistakes -->
+        <div class="content-card">
+            <h2>7. Common Mistakes to Avoid</h2>
+
+            <p>Let's look at the most frequent mistakes students make with exception handling, and how to fix them.</p>
+
+            <h3>Mistake 1: Catching by Value (Slicing)</h3>
+
+            <p>This is one of the most dangerous mistakes:</p>
+
+            <pre><code class="language-cpp">#include <iostream>
+using namespace std;
+
+class BaseException {
+public:
+    virtual void show() { cout << "Base" << endl; }
+};
+
+class DerivedException : public BaseException {
+public:
+    void show() { cout << "Derived" << endl; }
+};
+
+int main() {
+    try {
+        throw DerivedException();
+    }
+    catch (BaseException e) {  // Caught by VALUE - wrong!
+        e.show();  // Prints "Base" even though we threw Derived!
+    }
+    return 0;
+}</code></pre>
+
+            <p><strong>What happens:</strong> When you catch by value, C++ copies the exception. If you throw a <code>DerivedException</code> but catch a <code>BaseException</code>, only the base part gets copied. The derived part is "sliced off." When you call <code>e.show()</code>, it calls the base version, not the derived version.</p>
+
+            <p><strong>The fix:</strong> Always catch by reference!</p>
+
+            <pre><code class="language-cpp">catch (BaseException& e) {  // Catch by reference - correct!
+    e.show();  // Now this calls the Derived version
+}</code></pre>
+
+            <h3>Mistake 2: Wrong Catch Order</h3>
+
+            <pre><code class="language-cpp">try {
+    // code that might throw
+}
+catch (BaseException& e) {
+    // This catches EVERYTHING - base and derived
+}
+catch (DerivedException& e) {
+    // This NEVER runs - unreachable code!
+}</code></pre>
+
+            <p><strong>What happens:</strong> C++ checks catch blocks from top to bottom. The first match wins. Since <code>DerivedException</code> is derived from <code>BaseException</code>, the first catch block matches and runs. The second catch is never reached.</p>
+
+            <p><strong>The fix:</strong> Put most specific (derived) exceptions first, most general (base) exceptions last.</p>
+
+            <pre><code class="language-cpp">try {
+    // code
+}
+catch (DerivedException& e) {
+    // Specific - checked first
+}
+catch (BaseException& e) {
+    // General - checked last
+}</code></pre>
+
+            <h3>Mistake 3: Not Cleaning Up Resources</h3>
+
+            <pre><code class="language-cpp">void processFile() {
+    int* data = new int[1000];
+
+    readFile();  // Might throw exception
+
+    delete[] data;  // Never reached if exception thrown!
+}</code></pre>
+
+            <p><strong>What happens:</strong> If <code>readFile()</code> throws an exception, <code>delete[] data</code> never executes. Memory leak.</p>
+
+            <p><strong>The fix:</strong> Use try-catch with cleanup in the catch block, or avoid manual <code>new</code>/<code>delete</code> when possible.</p>
+
+            <pre><code class="language-cpp">void processFile() {
+    int* data = new int[1000];
+
+    try {
+        readFile();
+    }
+    catch (...) {
+        delete[] data;  // Cleanup before rethrowing
+        throw;
+    }
+
+    delete[] data;  // Normal cleanup
+}</code></pre>
+
+            <h3>Mistake 4: Empty Catch Blocks</h3>
+
+            <pre><code class="language-cpp">try {
+    riskyOperation();
+}
+catch (...) {
+    // Silent failure - error is hidden!
+}</code></pre>
+
+            <p><strong>What happens:</strong> The error is completely hidden. The program continues as if nothing went wrong. This makes debugging nearly impossible.</p>
+
+            <p><strong>The fix:</strong> At minimum, log the error. Never silently swallow exceptions unless you have a very good reason.</p>
+
+            <pre><code class="language-cpp">try {
+    riskyOperation();
+}
+catch (...) {
+    cout << "Error occurred in riskyOperation" << endl;
+    // Or log to file, or notify user, etc.
+}</code></pre>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary">
+            <h3>Summary</h3>
+            <ul>
+                <li><strong>try-catch-throw:</strong> <code>try</code> wraps risky code, <code>throw</code> signals an error, <code>catch</code> handles it</li>
+                <li><strong>Custom exceptions:</strong> Create exception classes to carry multiple pieces of information</li>
+                <li><strong>Exception hierarchies:</strong> Use inheritance to group related exceptions; catch derived before base</li>
+                <li><strong>Catch by reference:</strong> Always use <code>catch (Exception& e)</code> to avoid slicing</li>
+                <li><strong>Rethrowing:</strong> Use <code>throw;</code> in a catch block to pass exception to higher-level handler</li>
+                <li><strong>Exception safety:</strong> Always clean up resources, even when exceptions occur</li>
+                <li><strong>Catch order:</strong> Most specific (derived) exceptions first, most general (base) last</li>
+                <li><strong>Resource management:</strong> Use try-catch to ensure cleanup code runs</li>
+                <li><strong>Never catch by value:</strong> Slicing destroys polymorphism</li>
+                <li><strong>Never silently swallow exceptions:</strong> At least log them</li>
+            </ul>
+            <p style="margin-top: 1rem; color: #94a3b8;">You now have a solid foundation in exception handling. Practice writing exception-safe code, and always think about what happens when things go wrong!</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <script>
+        // Initialize CodeMirror editors
+        const editors = {};
+        const initialCode = {};
+
+        function initEditor(id) {
+            const textarea = document.getElementById(id);
+            if (!textarea) return;
+
+            initialCode[id] = textarea.value;
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                viewportMargin: Infinity
+            });
+        }
+
+        // Initialize all editors
+        for (let i = 1; i <= 8; i++) {
+            initEditor('editor' + i);
+        }
+
+        // Run code using Piston API
+        async function runCode(editorId, outputId) {
+            const code = editors[editorId].getValue();
+            const outputContainer = document.getElementById(outputId);
+            const outputText = outputContainer.querySelector('.output-text');
+            const button = event.target;
+
+            // Show loading state
+            if (button) button.disabled = true;
+            outputContainer.classList.add('active');
+            outputText.textContent = 'Compiling and running...';
+            outputText.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.compile && result.compile.code !== 0) {
+                    // Compilation error
+                    outputText.className = 'output-text output-error';
+                    outputText.textContent = '=== Compilation Error ===\n' + result.compile.stderr;
+                } else if (result.run && result.run.code !== 0 && result.run.signal) {
+                    // Runtime error
+                    outputText.className = 'output-text output-error';
+                    outputText.textContent = '=== Runtime Error ===\n' +
+                        (result.run.output || result.run.stderr || 'Program crashed');
+                } else {
+                    // Success
+                    outputText.className = 'output-text';
+                    const output = result.run.output || result.run.stdout || '(no output)';
+                    outputText.textContent = '=== Output ===\n' + output;
+                }
+            } catch (error) {
+                outputText.className = 'output-text output-error';
+                outputText.textContent = '=== Network Error ===\n' +
+                    'Failed to connect to code execution service.\n' +
+                    'Please check your internet connection.';
+            } finally {
+                if (button) button.disabled = false;
+            }
+        }
+
+        // Reset editor to initial code
+        function resetEditor(editorId) {
+            if (editors[editorId] && initialCode[editorId]) {
+                editors[editorId].setValue(initialCode[editorId]);
+            }
+        }
+
+        // Toggle quiz answer
+        function toggleAnswer(quizId) {
+            const answer = document.getElementById(quizId);
+            answer.classList.toggle('active');
+        }
+
+        // Apply Prism.js syntax highlighting to static code blocks
+        Prism.highlightAll();
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 12: Exception Handling - Examples | COS 110</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .intro-section {
+            background: #1e293b;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #10b981;
+        }
+
+        .intro-section h2 {
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .intro-section p {
+            color: #cbd5e1;
+            margin-bottom: 0.75rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+            border-left: 4px solid #0ea5e9;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .content-card h2 {
+            color: #0ea5e9;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .content-card h3 {
+            color: #10b981;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.3rem;
+        }
+
+        .content-card p {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .content-card ol, .content-card ul {
+            margin-left: 2rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .content-card li {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .content-card strong {
+            color: #f1f5f9;
+        }
+
+        .content-card code {
+            background: #0f172a;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: #10b981;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+        }
+
+        .reveal-btn {
+            background: #0ea5e9;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 1rem 0;
+        }
+
+        .reveal-btn:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+        }
+
+        .answer-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .answer-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .playground {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #334155;
+        }
+
+        .playground-header {
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            height: auto !important;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: 'Cascadia Code', monospace !important;
+            border: 1px solid #334155;
+        }
+
+        .playground-controls {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .run-btn, .reset-btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .run-btn {
+            background: #0ea5e9;
+            color: #fff;
+        }
+
+        .run-btn:hover {
+            background: #0284c7;
+            transform: translateY(-1px);
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: #fff;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0f172a;
+            border-radius: 6px;
+            min-height: 60px;
+            border: 1px solid #334155;
+        }
+
+        .output-text {
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            color: #cbd5e1;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .output-error {
+            color: #f87171;
+        }
+
+        .output-success {
+            color: #4ade80;
+        }
+
+        .success-box {
+            background: #0c2d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong {
+            color: #10b981;
+        }
+
+        .warning-box {
+            background: #2d1f0c;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong {
+            color: #f59e0b;
+        }
+
+        /* Custom Prism syntax highlighting */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition Logo" class="nav-logo">
+            <div class="nav-brand-text">
+                <div class="nav-brand-company">Swift Tuition</div>
+                <div class="nav-brand-title">Unit 12: Exception Handling</div>
+                <div class="nav-brand-subtitle">Examples</div>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Worked Examples</h1>
+            <p>Real-world problems solved using exception handling</p>
+        </div>
+
+        <section class="intro-section">
+            <h2>How to Use These Examples</h2>
+            <p>Each example presents a problem, then reveals the approach and full working code. Try to think through how you would solve each problem before revealing the solution.</p>
+            <p>All code examples are interactive playgrounds - you can modify and run them to experiment with different scenarios.</p>
+        </section>
+
+        <!-- Example 1: Bank Transaction Validator -->
+        <section class="content-card">
+            <h2>Example 1: Bank Transaction Validator</h2>
+
+            <h3>Problem</h3>
+            <p>Build a withdrawal validator for a banking system. The function must check three conditions before processing:</p>
+            <ul>
+                <li>Amount must be positive (not zero or negative)</li>
+                <li>Sufficient funds available in account</li>
+                <li>Daily withdrawal limit not exceeded</li>
+            </ul>
+            <p>If any validation fails, throw a descriptive exception. Test with multiple scenarios including valid withdrawals, insufficient funds, and limit violations.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('ex1')">Show Approach & Solution</button>
+            <div class="answer-section" id="ex1">
+                <h3>Approach</h3>
+                <p>We use exceptions for validation failures instead of error codes. Each validation check throws a string exception with a descriptive message if it fails. The caller wraps the function in try-catch blocks to handle errors appropriately. This approach is cleaner than returning special values like -1 or checking multiple boolean flags.</p>
+
+                <p>The validation order matters: check cheapest conditions first (positive amount) before expensive ones (database lookups for balance). This fails fast on obviously invalid input.</p>
+
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Bank Transaction Validator</div>
+                    </div>
+
+                    <textarea id="editor1">#include <iostream>
+#include <string>
+using namespace std;
+
+void processWithdrawal(double balance, double amount, double dailyLimit, double todayTotal) {
+    // Validation 1: Check for negative amount
+    if (amount <= 0) {
+        throw string("ERROR: Withdrawal amount must be positive!");
+    }
+
+    // Validation 2: Check for sufficient funds
+    if (amount > balance) {
+        throw string("ERROR: Insufficient funds! Balance: R" +
+                    to_string(balance) + ", Requested: R" + to_string(amount));
+    }
+
+    // Validation 3: Check daily limit
+    if (todayTotal + amount > dailyLimit) {
+        throw string("ERROR: Daily withdrawal limit exceeded! "
+                    "Limit: R" + to_string(dailyLimit) +
+                    ", Already withdrawn: R" + to_string(todayTotal));
+    }
+
+    // All checks passed - process withdrawal
+    cout << "SUCCESS: Withdrawal of R" << amount << " approved" << endl;
+    cout << "New balance: R" << (balance - amount) << endl;
+}
+
+int main() {
+    double balance = 5000.00;
+    double dailyLimit = 3000.00;
+    double todayTotal = 1500.00;  // Already withdrew R1500 today
+
+    // Test Case 1: Valid withdrawal
+    cout << "=== Test 1: Valid Withdrawal ===" << endl;
+    try {
+        processWithdrawal(balance, 500.00, dailyLimit, todayTotal);
+    }
+    catch (string& error) {
+        cout << error << endl;
+    }
+    cout << endl;
+
+    // Test Case 2: Insufficient funds
+    cout << "=== Test 2: Insufficient Funds ===" << endl;
+    try {
+        processWithdrawal(balance, 6000.00, dailyLimit, todayTotal);
+    }
+    catch (string& error) {
+        cout << error << endl;
+    }
+    cout << endl;
+
+    // Test Case 3: Daily limit exceeded
+    cout << "=== Test 3: Daily Limit Exceeded ===" << endl;
+    try {
+        processWithdrawal(balance, 2000.00, dailyLimit, todayTotal);
+    }
+    catch (string& error) {
+        cout << error << endl;
+    }
+    cout << endl;
+
+    // Test Case 4: Invalid amount
+    cout << "=== Test 4: Negative Amount ===" << endl;
+    try {
+        processWithdrawal(balance, -100.00, dailyLimit, todayTotal);
+    }
+    catch (string& error) {
+        cout << error << endl;
+    }
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor1', 'output1')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output1">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li><strong>Validation order:</strong> We check conditions from simplest to most complex. Negative amounts fail immediately without checking balance or limits.</li>
+                    <li><strong>Exception messages:</strong> Each thrown string contains specific details about what went wrong. For insufficient funds, we include both the balance and requested amount.</li>
+                    <li><strong>Early exit:</strong> When any <code>throw</code> executes, the function stops immediately. Lines after the throw never run.</li>
+                    <li><strong>Catch handling:</strong> Each test case wraps the function call in try-catch. If an exception occurs, it's caught and printed. Otherwise, the success message displays.</li>
+                    <li><strong>Program continues:</strong> After catching an exception, the program doesn't crash. It continues to the next test case, demonstrating graceful error handling.</li>
+                </ol>
+
+                <div class="success-box">
+                    <strong>Why this is better than error codes:</strong> Compare to: <code>int errorCode = processWithdrawal(...); if (errorCode == -1) { /* insufficient funds */ } else if (errorCode == -2) { /* limit exceeded */ }</code>. Exceptions force the caller to handle errors explicitly.
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 2: Anime Streaming Service -->
+        <section class="content-card">
+            <h2>Example 2: Anime Streaming Service Error Handler</h2>
+
+            <h3>Problem</h3>
+            <p>Create an anime streaming service that validates episode requests. Build two custom exception classes:</p>
+            <ul>
+                <li><code>EpisodeNotFoundException</code> - stores anime title, requested episode number, and total available episodes</li>
+                <li><code>SubscriptionExpiredException</code> - stores username and expiry date</li>
+            </ul>
+            <p>Each exception class should have a <code>display()</code> method that prints formatted error information. The streaming function should check subscription status first, then validate episode numbers.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('ex2')">Show Approach & Solution</button>
+            <div class="answer-section" id="ex2">
+                <h3>Approach</h3>
+                <p>Custom exception classes let us store multiple pieces of error information instead of just a string message. When we catch these exceptions, we can call their <code>display()</code> methods to show formatted errors with all relevant details.</p>
+
+                <p>We check subscription first because there's no point validating episode numbers if the user can't watch anyway. This is another example of failing fast on the cheapest check.</p>
+
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Anime Streaming Service</div>
+                    </div>
+
+                    <textarea id="editor2">#include <iostream>
+#include <string>
+using namespace std;
+
+// Custom exception: Episode not found
+class EpisodeNotFoundException {
+private:
+    string animeTitle;
+    int episodeNumber;
+    int totalEpisodes;
+public:
+    EpisodeNotFoundException(string title, int episodeNum, int total)
+        : animeTitle(title), episodeNumber(episodeNum), totalEpisodes(total) {}
+
+    void display() const {
+        cout << "========================================" << endl;
+        cout << "ERROR: Episode Not Found" << endl;
+        cout << "========================================" << endl;
+        cout << "Anime: " << animeTitle << endl;
+        cout << "Requested Episode: " << episodeNumber << endl;
+        cout << "Available Episodes: 1-" << totalEpisodes << endl;
+        cout << "========================================" << endl;
+    }
+};
+
+// Custom exception: Subscription expired
+class SubscriptionExpiredException {
+private:
+    string username;
+    string expiryDate;
+public:
+    SubscriptionExpiredException(string user, string expiry)
+        : username(user), expiryDate(expiry) {}
+
+    void display() const {
+        cout << "========================================" << endl;
+        cout << "ERROR: Subscription Expired" << endl;
+        cout << "========================================" << endl;
+        cout << "User: " << username << endl;
+        cout << "Expired on: " << expiryDate << endl;
+        cout << "Please renew to continue watching" << endl;
+        cout << "========================================" << endl;
+    }
+};
+
+void streamEpisode(string anime, int episode, int totalEpisodes,
+                   bool hasSubscription, string username) {
+    // Check subscription status first
+    if (!hasSubscription) {
+        throw SubscriptionExpiredException(username, "2025-10-31");
+    }
+
+    // Check episode validity
+    if (episode < 1 || episode > totalEpisodes) {
+        throw EpisodeNotFoundException(anime, episode, totalEpisodes);
+    }
+
+    // Success - stream the episode
+    cout << "Now streaming: " << anime << " - Episode " << episode << endl;
+    cout << "Enjoy your show!" << endl;
+}
+
+int main() {
+    // Test Case 1: Valid streaming
+    cout << "=== Test 1: Valid Streaming ===" << endl;
+    try {
+        streamEpisode("Death Note", 12, 37, true, "Kira_2025");
+    }
+    catch (EpisodeNotFoundException& e) {
+        e.display();
+    }
+    catch (SubscriptionExpiredException& e) {
+        e.display();
+    }
+    cout << endl;
+
+    // Test Case 2: Episode out of range
+    cout << "=== Test 2: Invalid Episode ===" << endl;
+    try {
+        streamEpisode("Death Note", 50, 37, true, "Kira_2025");
+    }
+    catch (EpisodeNotFoundException& e) {
+        e.display();
+    }
+    catch (SubscriptionExpiredException& e) {
+        e.display();
+    }
+    cout << endl;
+
+    // Test Case 3: Expired subscription
+    cout << "=== Test 3: Expired Subscription ===" << endl;
+    try {
+        streamEpisode("Steins;Gate", 1, 24, false, "Okabe_Lab");
+    }
+    catch (EpisodeNotFoundException& e) {
+        e.display();
+    }
+    catch (SubscriptionExpiredException& e) {
+        e.display();
+    }
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor2', 'output2')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output2">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li><strong>Custom exception classes:</strong> These are just regular classes - nothing special about them. Any class can be thrown as an exception.</li>
+                    <li><strong>Multiple data members:</strong> <code>EpisodeNotFoundException</code> stores three pieces of information (anime title, episode number, total episodes). This is much more useful than just throwing "episode not found".</li>
+                    <li><strong>Display methods:</strong> Instead of simple error messages, we can format output nicely with borders and labels, making errors user-friendly.</li>
+                    <li><strong>Catching specific types:</strong> We have separate catch blocks for each exception type. The order doesn't matter here since they're unrelated (neither inherits from the other).</li>
+                    <li><strong>Catching by reference:</strong> We use <code>catch (EpisodeNotFoundException& e)</code> to avoid copying the exception object. This is more efficient and avoids potential slicing issues.</li>
+                </ol>
+
+                <div class="warning-box">
+                    <strong>Important:</strong> Exception classes don't need to inherit from anything special. In Java, exceptions must extend <code>Exception</code>, but in C++ you can throw any type - even primitives like <code>throw 42;</code>. However, classes are better because they can carry multiple pieces of information.
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 3: File Manager with Resource Cleanup -->
+        <section class="content-card">
+            <h2>Example 3: File Manager with Resource Cleanup</h2>
+
+            <h3>Problem</h3>
+            <p>Write two versions of a file processing function:</p>
+            <ul>
+                <li>Unsafe version: Allocates a file handle, processes it, and deletes it. If processing throws an exception, the file handle leaks.</li>
+                <li>Safe version: Uses try-catch to ensure the file handle is deleted even when exceptions occur.</li>
+            </ul>
+            <p>Create a <code>FileHandle</code> class with a constructor that prints when opened and a destructor that prints when closed. This lets us visually track whether resources are being cleaned up properly.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('ex3')">Show Approach & Solution</button>
+            <div class="answer-section" id="ex3">
+                <h3>Approach</h3>
+                <p>The unsafe version demonstrates a common bug: when an exception is thrown, the function exits immediately and cleanup code after the throw never runs. This causes resource leaks.</p>
+
+                <p>The safe version wraps risky code in try-catch. If an exception occurs, the catch block performs cleanup (deletes the resource) then rethrows the exception using <code>throw;</code>. This ensures cleanup happens whether the function succeeds or fails.</p>
+
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Resource Cleanup with Exceptions</div>
+                    </div>
+
+                    <textarea id="editor3">#include <iostream>
+#include <string>
+using namespace std;
+
+// Simulated file handle class
+class FileHandle {
+private:
+    string filename;
+    bool isOpen;
+public:
+    FileHandle(string fname) : filename(fname), isOpen(true) {
+        cout << "  [SYSTEM] Opened file: " << filename << endl;
+    }
+
+    ~FileHandle() {
+        if (isOpen) {
+            cout << "  [SYSTEM] Closed file: " << filename << endl;
+        }
+    }
+
+    void close() {
+        isOpen = false;
+        cout << "  [SYSTEM] Manually closed file: " << filename << endl;
+    }
+};
+
+// UNSAFE VERSION: Resource leak!
+void processFile_UNSAFE(string filename, bool simulateError) {
+    FileHandle* file = new FileHandle(filename);
+
+    if (simulateError) {
+        cout << "  [ERROR] Processing failed!" << endl;
+        throw string("File processing error!");
+        // BUG: 'delete file' never executes - MEMORY LEAK!
+    }
+
+    cout << "  [SUCCESS] File processed successfully" << endl;
+    delete file;  // This only runs if no exception thrown
+}
+
+// SAFE VERSION: Cleanup guaranteed
+void processFile_SAFE(string filename, bool simulateError) {
+    FileHandle* file = new FileHandle(filename);
+
+    try {
+        if (simulateError) {
+            cout << "  [ERROR] Processing failed!" << endl;
+            throw string("File processing error!");
+        }
+
+        cout << "  [SUCCESS] File processed successfully" << endl;
+    }
+    catch (...) {
+        // Clean up before rethrowing
+        delete file;
+        cout << "  [CLEANUP] Resource freed before rethrowing exception" << endl;
+        throw;  // Rethrow the exception to caller
+    }
+
+    delete file;  // Normal cleanup if no exception
+}
+
+int main() {
+    // Test 1: Unsafe version - causes leak
+    cout << "=== Test 1: UNSAFE VERSION (Error Case) ===" << endl;
+    try {
+        processFile_UNSAFE("data.txt", true);
+    }
+    catch (string& error) {
+        cout << "[CAUGHT] " << error << endl;
+        cout << "WARNING: File was never closed - RESOURCE LEAK!" << endl;
+    }
+    cout << endl;
+
+    // Test 2: Safe version - no leak
+    cout << "=== Test 2: SAFE VERSION (Error Case) ===" << endl;
+    try {
+        processFile_SAFE("data.txt", true);
+    }
+    catch (string& error) {
+        cout << "[CAUGHT] " << error << endl;
+        cout << "SUCCESS: File was properly closed before exception propagated" << endl;
+    }
+    cout << endl;
+
+    // Test 3: Safe version - success case
+    cout << "=== Test 3: SAFE VERSION (Success Case) ===" << endl;
+    try {
+        processFile_SAFE("config.ini", false);
+    }
+    catch (string& error) {
+        cout << "[CAUGHT] " << error << endl;
+    }
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor3', 'output3')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output3">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li><strong>Resource leak in unsafe version:</strong> When the exception is thrown, the function exits immediately. The <code>delete file;</code> line never executes. The FileHandle destructor never runs, so we never see "Closed file". The memory is leaked.</li>
+                    <li><strong>Catch-all handler:</strong> The safe version uses <code>catch (...)</code> with three dots. This catches any exception type - useful when you need cleanup but don't care about the specific error.</li>
+                    <li><strong>Rethrowing with throw:</strong> After cleanup, we use <code>throw;</code> with no argument. This rethrows the exact same exception object that was caught. Don't use <code>throw error;</code> because we don't have a named exception here.</li>
+                    <li><strong>Two cleanup paths:</strong> The safe version has cleanup in both the catch block (error path) and after the try-catch (success path). This guarantees the resource is freed regardless of whether an exception occurs.</li>
+                    <li><strong>Exception propagation:</strong> The exception still propagates to the caller after cleanup. The safe version doesn't hide the error - it just ensures cleanup happens first.</li>
+                </ol>
+
+                <div class="success-box">
+                    <strong>Real-world importance:</strong> In production systems, leaking file handles causes "too many open files" errors. Leaking database connections exhausts connection pools. Leaking memory eventually crashes the program. Exception-safe resource management is critical for reliable software.
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 4: Music Playlist Manager -->
+        <section class="content-card">
+            <h2>Example 4: Music Player Playlist Manager</h2>
+
+            <h3>Problem</h3>
+            <p>Build a playlist manager with exception hierarchies. Create a base exception class <code>PlaylistException</code> and two derived classes:</p>
+            <ul>
+                <li><code>TrackNotFoundException</code> - includes track title</li>
+                <li><code>PlaylistFullException</code> - includes current count and maximum capacity</li>
+            </ul>
+            <p>The base class should have a virtual <code>display()</code> method that derived classes override. Demonstrate catching exceptions at different levels: specific derived types first, then general base type.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('ex4')">Show Approach & Solution</button>
+            <div class="answer-section" id="ex4">
+                <h3>Approach</h3>
+                <p>Exception hierarchies work exactly like regular class hierarchies. We use inheritance to group related exceptions under a common base class. This lets us catch all playlist errors with one handler, or catch specific error types individually.</p>
+
+                <p>The base class method must be <code>virtual</code> to enable polymorphism. When we catch with a base class reference but the actual thrown object is a derived class, the derived class's display method will be called.</p>
+
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Playlist Manager with Exception Hierarchies</div>
+                    </div>
+
+                    <textarea id="editor4">#include <iostream>
+#include <string>
+using namespace std;
+
+// BASE exception class for all playlist errors
+class PlaylistException {
+protected:
+    string message;
+    string playlistName;
+public:
+    PlaylistException(string msg, string playlist)
+        : message(msg), playlistName(playlist) {}
+
+    virtual void display() const {
+        cout << "========================================" << endl;
+        cout << "PLAYLIST ERROR" << endl;
+        cout << "========================================" << endl;
+        cout << "Playlist: " << playlistName << endl;
+        cout << "Error: " << message << endl;
+        cout << "========================================" << endl;
+    }
+
+    virtual ~PlaylistException() {}
+};
+
+// DERIVED: Track not found
+class TrackNotFoundException : public PlaylistException {
+private:
+    string trackTitle;
+public:
+    TrackNotFoundException(string playlist, string track)
+        : PlaylistException("Track not found", playlist), trackTitle(track) {}
+
+    void display() const {
+        cout << "========================================" << endl;
+        cout << "ERROR: Track Not Found" << endl;
+        cout << "========================================" << endl;
+        cout << "Playlist: " << playlistName << endl;
+        cout << "Missing Track: " << trackTitle << endl;
+        cout << "Suggestion: Check spelling or search" << endl;
+        cout << "========================================" << endl;
+    }
+};
+
+// DERIVED: Playlist full
+class PlaylistFullException : public PlaylistException {
+private:
+    int maxTracks;
+    int currentTracks;
+public:
+    PlaylistFullException(string playlist, int current, int max)
+        : PlaylistException("Playlist is full", playlist),
+          currentTracks(current), maxTracks(max) {}
+
+    void display() const {
+        cout << "========================================" << endl;
+        cout << "ERROR: Playlist Full" << endl;
+        cout << "========================================" << endl;
+        cout << "Playlist: " << playlistName << endl;
+        cout << "Current: " << currentTracks << "/" << maxTracks << " tracks" << endl;
+        cout << "Remove tracks to add more" << endl;
+        cout << "========================================" << endl;
+    }
+};
+
+void addTrackToPlaylist(string playlist, string track, int currentCount,
+                       int maxCount, bool trackExists) {
+    // Check if playlist is full
+    if (currentCount >= maxCount) {
+        throw PlaylistFullException(playlist, currentCount, maxCount);
+    }
+
+    // Check if track exists
+    if (!trackExists) {
+        throw TrackNotFoundException(playlist, track);
+    }
+
+    // Success
+    cout << "Added \"" << track << "\" to \"" << playlist << "\"" << endl;
+}
+
+int main() {
+    // Test 1: Successful addition
+    cout << "=== Test 1: Add Track Successfully ===" << endl;
+    try {
+        addTrackToPlaylist("My Favorites", "Blinding Lights - The Weeknd", 45, 100, true);
+    }
+    catch (TrackNotFoundException& e) {
+        e.display();
+    }
+    catch (PlaylistFullException& e) {
+        e.display();
+    }
+    catch (PlaylistException& e) {
+        e.display();
+    }
+    cout << endl;
+
+    // Test 2: Track not found
+    cout << "=== Test 2: Track Not Found ===" << endl;
+    try {
+        addTrackToPlaylist("Road Trip", "Unknown Song", 10, 50, false);
+    }
+    catch (TrackNotFoundException& e) {
+        e.display();
+    }
+    catch (PlaylistFullException& e) {
+        e.display();
+    }
+    catch (PlaylistException& e) {
+        e.display();
+    }
+    cout << endl;
+
+    // Test 3: Playlist full
+    cout << "=== Test 3: Playlist Full ===" << endl;
+    try {
+        addTrackToPlaylist("Top 50", "Bella - Maître Gims", 50, 50, true);
+    }
+    catch (TrackNotFoundException& e) {
+        e.display();
+    }
+    catch (PlaylistFullException& e) {
+        e.display();
+    }
+    catch (PlaylistException& e) {
+        e.display();
+    }
+    cout << endl;
+
+    // Test 4: Catching with BASE class (polymorphism demo)
+    cout << "=== Test 4: General Catch (Base Class) ===" << endl;
+    try {
+        addTrackToPlaylist("Workout Mix", "Nonexistent Track", 5, 30, false);
+    }
+    catch (PlaylistException& e) {
+        // This catches ALL PlaylistException types (base and derived)!
+        cout << "Caught with base class handler:" << endl;
+        e.display();  // Polymorphism! Calls TrackNotFoundException::display()
+    }
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor4', 'output4')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output4">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li><strong>Exception inheritance:</strong> We use <code>: public PlaylistException</code> to create a hierarchy. Derived exceptions automatically get the base class's <code>message</code> and <code>playlistName</code> members.</li>
+                    <li><strong>Protected members:</strong> The base class uses <code>protected</code> instead of <code>private</code> so derived classes can access <code>message</code> and <code>playlistName</code>. This is important - <code>private</code> members aren't accessible in derived classes.</li>
+                    <li><strong>Virtual display method:</strong> The <code>virtual</code> keyword in the base class enables polymorphism. When we catch with <code>PlaylistException&</code> but the actual object is <code>TrackNotFoundException</code>, the derived class's <code>display()</code> is called.</li>
+                    <li><strong>Catch order:</strong> Derived classes must be caught before base classes. If we put <code>catch (PlaylistException& e)</code> first, it would catch everything and the derived catches would never run.</li>
+                    <li><strong>Test 4 polymorphism:</strong> We catch with the base class reference but throw a <code>TrackNotFoundException</code>. Because <code>display()</code> is virtual, we see the track-specific error message, not the generic base class message.</li>
+                    <li><strong>Virtual destructor:</strong> The base class needs <code>virtual ~PlaylistException() {}</code>. This ensures proper cleanup if we ever delete a derived exception through a base class pointer.</li>
+                </ol>
+
+                <div class="warning-box">
+                    <strong>Catch order reminder:</strong> If you write <code>catch (PlaylistException& e)</code> before <code>catch (TrackNotFoundException& e)</code>, the base handler catches everything. The derived handler becomes unreachable dead code. Always put specific exceptions first, general exceptions last.
+                </div>
+
+                <div class="success-box">
+                    <strong>Flexibility benefit:</strong> With hierarchies, you can handle errors at different granularities. Need specific handling for each error type? Use multiple catches. Just want to log all playlist errors the same way? Use one base class catch. The hierarchy gives you options.
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <script>
+        // Toggle answer visibility
+        function toggleAnswer(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('active');
+
+            // Refresh CodeMirror editors when revealing
+            if (section.classList.contains('active')) {
+                setTimeout(() => {
+                    section.querySelectorAll('.CodeMirror').forEach(cm => {
+                        if (cm.CodeMirror) {
+                            cm.CodeMirror.refresh();
+                        }
+                    });
+                }, 50);
+            }
+        }
+
+        // Initialize CodeMirror editors
+        const editors = {};
+        const originalCode = {};
+
+        function initEditor(id) {
+            const textarea = document.getElementById(id);
+            if (!textarea) return;
+
+            originalCode[id] = textarea.value;
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                viewportMargin: Infinity
+            });
+        }
+
+        // Initialize all editors
+        for (let i = 1; i <= 4; i++) {
+            initEditor('editor' + i);
+        }
+
+        // Run code using Piston API
+        async function runCode(editorId, outputId) {
+            const code = editors[editorId].getValue();
+            const outputBox = document.getElementById(outputId);
+            const outputDiv = outputBox.querySelector('.output-text');
+            const button = event.target;
+
+            button.disabled = true;
+            button.textContent = '⏳ Running...';
+            outputDiv.className = 'output-text output-placeholder';
+            outputDiv.textContent = 'Executing code...';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{ name: 'main.cpp', content: code }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.compile && result.compile.code !== 0) {
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.textContent = '=== Compilation Error ===\n' +
+                        (result.compile.output || result.compile.stderr || 'Unknown compilation error');
+                } else if (result.run && result.run.code !== 0) {
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.textContent = '=== Runtime Error ===\n' +
+                        (result.run.output || result.run.stderr || 'Program crashed');
+                } else {
+                    outputDiv.className = 'output-text';
+                    const output = result.run.output || result.run.stdout || '(no output)';
+                    outputDiv.textContent = output;
+                }
+            } catch (error) {
+                outputDiv.className = 'output-text output-error';
+                outputDiv.textContent = '=== Network Error ===\n' +
+                    'Failed to connect to code execution service.\n' +
+                    'Please check your internet connection.';
+            } finally {
+                button.disabled = false;
+                button.textContent = '▶ Run Code';
+            }
+        }
+
+        // Reset code to original
+        function resetCode(editorId) {
+            if (editors[editorId] && originalCode[editorId]) {
+                editors[editorId].setValue(originalCode[editorId]);
+            }
+        }
+
+        // Apply Prism.js syntax highlighting to static code blocks
+        Prism.highlightAll();
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="1050" viewBox="0 0 860 1050" role="img"><rect width="100%" height="100%" fill="#ffffff"/>
+<text x="12" y="24" text-anchor="start" font-size="16" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Greenhouse::operator=(other)</text>
+<rect x="149.0" y="40" width="162.0" height="34" rx="17.0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="230" y="62.0" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Start operator=</text>
+<path d="M230 74 L230 96" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 96 L226.1 86.8 L233.9 86.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<path d="M230 96 L350.0 138.0 L230 180 L110.0 138.0 Z" stroke="#1f2933" stroke-width="1.6" fill="#ffffff"/>
+<text x="230" y="133.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Is other the same</text>
+<text x="230" y="152.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">object as this?</text>
+<text x="356" y="130" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Yes</text>
+<path d="M350 138 L480 138" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M480 138 L470.8 141.9 L470.8 134.1 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="480.0" y="121" width="160" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="560" y="142" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Return this object</text>
+<path d="M560 154 L560 176" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M560 176 L556.1 166.8 L563.9 166.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="515.0" y="176" width="90" height="34" rx="17.0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="560" y="198.0" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">End</text>
+<text x="238" y="196" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">No</text>
+<path d="M230 180 L230 204" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 204 L226.1 194.8 L233.9 194.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="130.0" y="204" width="200" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="230" y="225" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Set i to 0</text>
+<path d="M230 237 L230 262" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 262 L226.1 252.8 L233.9 252.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<path d="M230 262 L350.0 304.0 L230 346 L110.0 304.0 Z" stroke="#1f2933" stroke-width="1.6" fill="#ffffff"/>
+<text x="230" y="299.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Is i less than</text>
+<text x="230" y="318.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">numBeds?</text>
+<text x="238" y="364" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Yes</text>
+<path d="M230 346 L230 372" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 372 L226.1 362.8 L233.9 362.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="130.0" y="372" width="200" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="230" y="393" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Delete bed i</text>
+<path d="M230 405 L230 428" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 428 L226.1 418.8 L233.9 418.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="130.0" y="428" width="200" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="230" y="449" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Add 1 to i</text>
+<path d="M130 444 L40 444 L40 304 L110 304" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M110 304 L100.8 307.9 L100.8 300.1 Z" fill="#1f2933" stroke="#1f2933"/>
+<text x="356" y="296" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">No</text>
+<path d="M350 304 L420 304 L420 480 L230 480 L230 494" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 494 L226.1 484.8 L233.9 484.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="100.0" y="494" width="260" height="71" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="230" y="515" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Delete the beds array</text>
+<text x="230" y="534" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Delete the sensors array</text>
+<text x="230" y="553" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">(not the Sensors)</text>
+<path d="M230 565 L230 590" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 590 L226.1 580.8 L233.9 580.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="100.0" y="590" width="260" height="52" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="230" y="611" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Copy name and numBeds</text>
+<text x="230" y="630" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">from other</text>
+<path d="M230 633 L230 658" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 658 L226.1 648.8 L233.9 648.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="100.0" y="658" width="260" height="52" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="230" y="679" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Make a new beds array</text>
+<text x="230" y="698" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">of numBeds slots</text>
+<path d="M230 701 L230 726" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 726 L226.1 716.8 L233.9 716.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="130.0" y="726" width="200" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="230" y="747" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Set i to 0</text>
+<path d="M230 759 L230 784" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 784 L226.1 774.8 L233.9 774.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<path d="M230 784 L350.0 826.0 L230 868 L110.0 826.0 Z" stroke="#1f2933" stroke-width="1.6" fill="#ffffff"/>
+<text x="230" y="821.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Is i less than</text>
+<text x="230" y="840.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">numBeds?</text>
+<text x="238" y="886" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Yes</text>
+<path d="M230 868 L230 894" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 894 L226.1 884.8 L233.9 884.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="100.0" y="894" width="260" height="52" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="230" y="915" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Make a new Bed copied</text>
+<text x="230" y="934" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">from other&#x27;s bed i</text>
+<path d="M230 937 L230 960" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M230 960 L226.1 950.8 L233.9 950.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="130.0" y="960" width="200" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="230" y="981" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Add 1 to i</text>
+<path d="M130 976 L40 976 L40 826 L110 826" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M110 826 L100.8 829.9 L100.8 822.1 Z" fill="#1f2933" stroke="#1f2933"/>
+<text x="356" y="818" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">No</text>
+<path d="M350 826 L450 826 L450 222 L640 222 L640 240" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M640 240 L636.1 230.8 L643.9 230.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="530.0" y="240" width="220" height="52" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="640" y="261" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Copy numSensors</text>
+<text x="640" y="280" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">from other</text>
+<path d="M640 283 L640 308" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M640 308 L636.1 298.8 L643.9 298.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="530.0" y="308" width="220" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="640" y="329" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Set sensors to NULL</text>
+<path d="M640 341 L640 366" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M640 366 L636.1 356.8 L643.9 356.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<path d="M640 366 L760.0 408.0 L640 450 L520.0 408.0 Z" stroke="#1f2933" stroke-width="1.6" fill="#ffffff"/>
+<text x="640" y="403.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Is numSensors</text>
+<text x="640" y="422.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">greater than 0?</text>
+<text x="766" y="400" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">No</text>
+<path d="M760 408 L830 408 L830 836 L640 836 L640 850" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M640 850 L636.1 840.8 L643.9 840.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<text x="648" y="470" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Yes</text>
+<path d="M640 450 L640 476" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M640 476 L636.1 466.8 L643.9 466.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="520.0" y="476" width="240" height="52" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="640" y="497" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Make a new sensors array</text>
+<text x="640" y="516" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">of numSensors slots</text>
+<path d="M640 519 L640 544" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M640 544 L636.1 534.8 L643.9 534.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="540.0" y="544" width="200" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="640" y="565" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Set i to 0</text>
+<path d="M640 577 L640 602" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M640 602 L636.1 592.8 L643.9 592.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<path d="M640 602 L760.0 644.0 L640 686 L520.0 644.0 Z" stroke="#1f2933" stroke-width="1.6" fill="#ffffff"/>
+<text x="640" y="639.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Is i less than</text>
+<text x="640" y="658.5" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">numSensors?</text>
+<text x="648" y="704" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Yes</text>
+<path d="M640 686 L640 712" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M640 712 L636.1 702.8 L643.9 702.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="520.0" y="712" width="240" height="52" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="640" y="733" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Set sensor i to the same</text>
+<text x="640" y="752" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Sensor as other&#x27;s sensor i</text>
+<path d="M640 755 L640 780" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M640 780 L636.1 770.8 L643.9 770.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="540.0" y="780" width="200" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="640" y="801" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Add 1 to i</text>
+<path d="M540 796 L480 796 L480 644 L520 644" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M520 644 L510.8 647.9 L510.8 640.1 Z" fill="#1f2933" stroke="#1f2933"/>
+<text x="766" y="636" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">No</text>
+<path d="M760 644 L830 644" stroke="#1f2933" stroke-width="2" fill="none"/>
+<rect x="540.0" y="850" width="200" height="33" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="640" y="871" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Return this object</text>
+<path d="M640 883 L640 908" stroke="#1f2933" stroke-width="2" fill="none"/>
+<path d="M640 908 L636.1 898.8 L643.9 898.8 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="595.0" y="908" width="90" height="34" rx="17.0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="640" y="930.0" text-anchor="middle" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">End</text>
+<text x="20" y="1036" text-anchor="start" font-size="14" font-weight="normal" fill="#7b8794" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Beds: owned (deep copy). Sensors: shared (copy the pointers only).</text>
+</svg>

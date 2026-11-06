@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="680" viewBox="0 0 900 680" role="img"><rect width="100%" height="100%" fill="#ffffff"/>
+<text x="12" y="24" text-anchor="start" font-size="16" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Class diagram for the Clinic program</text>
+<rect x="200" y="50" width="400" height="244" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="400.0" y="69" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Clinic</text>
+<line x1="200" y1="78" x2="600" y2="78" stroke="#1f2933" stroke-width="1.6"/>
+<text x="208" y="96" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- name: string</text>
+<text x="208" y="116" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- patients: Patient**</text>
+<text x="208" y="136" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- numPatients: int</text>
+<text x="208" y="156" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- onCall: Doctor*</text>
+<text x="208" y="176" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- clinicCount: int</text>
+<line x1="208" y1="179" x2="346.6" y2="179" stroke="#1f2933" stroke-width="1.2"/>
+<line x1="200" y1="186" x2="600" y2="186" stroke="#1f2933" stroke-width="1.6"/>
+<text x="208" y="204" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ Clinic(name: string, numPatients: int)</text>
+<text x="208" y="224" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ ~Clinic()</text>
+<text x="208" y="244" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ setOnCall(d: Doctor*): void</text>
+<text x="208" y="264" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ canBook(c: const Calendar&amp;, day: int): bool</text>
+<text x="208" y="284" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ getClinicCount(): int</text>
+<line x1="208" y1="287" x2="385.1" y2="287" stroke="#1f2933" stroke-width="1.2"/>
+<rect x="680" y="90" width="210" height="84" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="785.0" y="109" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Calendar</text>
+<line x1="680" y1="118" x2="890" y2="118" stroke="#1f2933" stroke-width="1.6"/>
+<line x1="680" y1="146" x2="890" y2="146" stroke="#1f2933" stroke-width="1.6"/>
+<text x="688" y="164" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ isOpen(day: int): bool</text>
+<path d="M600 150 L680 150" stroke="#1f2933" stroke-width="2" fill="none" stroke-dasharray="7 5"/>
+<path d="M680 150 L670.8 153.9 L670.8 146.1 Z" fill="#1f2933" stroke="#1f2933"/>
+<rect x="20" y="420" width="300" height="124" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="170.0" y="439" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Patient</text>
+<line x1="20" y1="448" x2="320" y2="448" stroke="#1f2933" stroke-width="1.6"/>
+<text x="28" y="466" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- name: string</text>
+<text x="28" y="486" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- age: int</text>
+<line x1="20" y1="496" x2="320" y2="496" stroke="#1f2933" stroke-width="1.6"/>
+<text x="28" y="514" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ Patient(name: string, age: int)</text>
+<text x="28" y="534" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ getAge(): int</text>
+<rect x="620" y="420" width="240" height="104" rx="0" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<text x="740.0" y="439" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">Doctor</text>
+<line x1="620" y1="448" x2="860" y2="448" stroke="#1f2933" stroke-width="1.6"/>
+<text x="628" y="466" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">- name: string</text>
+<line x1="620" y1="476" x2="860" y2="476" stroke="#1f2933" stroke-width="1.6"/>
+<text x="628" y="494" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ Doctor(name: string)</text>
+<text x="628" y="514" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Consolas, 'Courier New', monospace" xml:space="preserve">+ getName(): string</text>
+<path d="M300 294 L309 305.0 L300 316 L291 305.0 Z" fill="#1f2933" stroke="#1f2933" stroke-width="1.6"/>
+<path d="M300 316 V380 H170 V420" stroke="#1f2933" stroke-width="1.6" fill="none"/>
+<text x="310" y="334" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">1</text>
+<text x="180" y="412" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">0..*</text>
+<path d="M520 294 L529 305.0 L520 316 L511 305.0 Z" fill="#ffffff" stroke="#1f2933" stroke-width="1.6"/>
+<path d="M520 316 V380 H740 V420" stroke="#1f2933" stroke-width="1.6" fill="none"/>
+<text x="530" y="334" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">*</text>
+<text x="750" y="412" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">0..1</text>
+<path d="M20 580 H868 L880 592 V630 H20 Z" stroke="#1f2933" stroke-width="1.6" fill="#fffbe6"/>
+<path d="M868 580 V592 H880" stroke="#1f2933" stroke-width="1.6" fill="none"/>
+<text x="28" y="598" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">patients: 1D dynamic array of dynamic objects; numPatients holds its size.</text>
+<text x="28" y="617" text-anchor="start" font-size="14" font-weight="normal" fill="#1f2933" font-family="Segoe UI, Arial, sans-serif" xml:space="preserve">const behind canBook, getName, getAge and isOpen is not shown in the boxes.</text>
+</svg>

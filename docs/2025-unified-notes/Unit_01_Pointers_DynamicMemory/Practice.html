@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1: Pointers & Dynamic Memory - Practice | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- CodeMirror for interactive playground -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <style>
+        /* DEEP OCEAN THEME */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0ea5e9;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: #f1f5f9;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-hamburger:hover {
+            color: #0ea5e9;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page-header {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .page-header h1 {
+            color: #0ea5e9;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+        }
+
+        /* Problem Card */
+        .problem-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .problem-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            color: #0f172a;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .problem-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .problem-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #10b981;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .problem-card h4 {
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .problem-card p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .problem-card ul, .problem-card ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .problem-card li {
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+
+        .problem-card code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0c1222;
+            border: 2px solid #1e3a5f;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-block pre {
+            color: #f1f5f9;
+            margin: 0;
+        }
+
+        .code-block code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* Custom Prism syntax highlighting */
+        .token.comment { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        /* Reveal Button */
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        /* Solution Section */
+        .solution-section {
+            display: none;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #0f172a;
+            border-radius: 8px;
+            border: 2px solid #eab308;
+        }
+
+        .solution-section.visible {
+            display: block;
+        }
+
+        .solution-section h4 {
+            color: #eab308;
+            margin-bottom: 1rem;
+        }
+
+        /* Callouts */
+        .callout-warning {
+            background: #2d1414;
+            border-left: 5px solid #ef4444;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-warning strong {
+            color: #ef4444;
+        }
+
+        .callout-success {
+            background: #142d1f;
+            border-left: 5px solid #10b981;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-success strong {
+            color: #10b981;
+        }
+
+        .callout-note {
+            background: #0c1e2d;
+            border-left: 5px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-note strong {
+            color: #0ea5e9;
+        }
+
+        /* Code Playground */
+        .code-playground {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .playground-header {
+            background: #0f172a;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .playground-title::before {
+            content: "⚡";
+            font-size: 1.2rem;
+        }
+
+        .playground-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .run-btn::before {
+            content: "▶";
+            font-size: 1rem;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .loading-indicator {
+            color: #eab308;
+            font-size: 0.85rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading-indicator.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #475569;
+            border-top-color: #eab308;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .playground-editor {
+            background: #1e293b;
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 300px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            background: #1e293b !important;
+        }
+
+        .CodeMirror-gutters {
+            background: #0f172a !important;
+            border-right: 1px solid #334155;
+        }
+
+        .playground-output {
+            background: #0f172a;
+            border-top: 1px solid #334155;
+        }
+
+        .output-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .output-header::before {
+            content: "▶";
+            color: #10b981;
+        }
+
+        .output-content {
+            padding: 1.5rem;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .output-text {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .output-success {
+            color: #10b981;
+        }
+
+        .output-error {
+            color: #ef4444;
+        }
+
+        .output-info {
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-wrap: wrap;
+            }
+
+            .nav-brand {
+                gap: 0.75rem;
+            }
+
+            .nav-logo {
+                height: 38px;
+                width: 38px;
+            }
+
+            .nav-brand-company {
+                font-size: 0.6rem;
+            }
+
+            .nav-brand-title {
+                font-size: 0.9rem;
+            }
+
+            .nav-brand-subtitle {
+                font-size: 0.6rem;
+            }
+
+            .nav-hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0;
+                margin-top: 1rem;
+                background: #1e293b;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu li {
+                width: 100%;
+                border-bottom: 1px solid #334155;
+            }
+
+            .nav-menu li:last-child {
+                border-bottom: none;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: 1rem;
+                border-bottom: none !important;
+            }
+
+            .nav-menu a:hover,
+            .nav-menu a.active {
+                background: #0f172a;
+            }
+
+            .playground-header {
+                padding: 0.875rem 1rem;
+            }
+
+            .playground-title {
+                font-size: 0.875rem;
+            }
+
+            .run-btn, .reset-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .CodeMirror {
+                font-size: 13px;
+            }
+
+            .output-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 1: Pointers & Dynamic Memory</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+            ☰
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html" class="active">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Practice Problems</h1>
+            <p>
+                Test your understanding with these hands-on problems. Try solving each one yourself before revealing the solution. The best way to learn is by doing!
+            </p>
+        </div>
+
+        <!-- Problem 1: Easy - Swap Function -->
+        <div class="problem-card">
+            <span class="problem-number">Problem 1 - Easy</span>
+            <h2>Swap Two Values Using Pointers</h2>
+
+            <h3>Your Task</h3>
+            <p>
+                Write a function called <code>swap</code> that takes two integer pointers and swaps the values they point to. After calling <code>swap(&a, &b)</code>, the value of <code>a</code> should be what <code>b</code> was, and vice versa.
+            </p>
+
+            <h3>Function Signature</h3>
+            <div class="code-block"><pre><code class="language-cpp">void swap(int *ptr1, int *ptr2);</code></pre></div>
+
+            <h3>Test Cases</h3>
+            <p>Your function should pass these tests:</p>
+            <ul>
+                <li><strong>Input:</strong> <code>a = 5, b = 10</code> → <strong>Output:</strong> <code>a = 10, b = 5</code></li>
+                <li><strong>Input:</strong> <code>x = 100, y = 200</code> → <strong>Output:</strong> <code>x = 200, y = 100</code></li>
+                <li><strong>Input:</strong> <code>m = -7, n = 42</code> → <strong>Output:</strong> <code>m = 42, n = -7</code></li>
+            </ul>
+
+            <h3>Starter Code</h3>
+            <p>Complete the playground below:</p>
+
+            <div class="code-playground" id="playground1">
+                <div class="playground-header">
+                    <div class="playground-title">Your Solution</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground1')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground1')">Reset</button>
+                        <div class="loading-indicator" id="loading1">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor1">#include <iostream>
+using namespace std;
+
+// TODO: Implement the swap function
+void swap(int *ptr1, int *ptr2) {
+    // Your code here
+}
+
+int main() {
+    // Test case 1
+    int a = 5, b = 10;
+    cout << "Before swap: a = " << a << ", b = " << b << endl;
+    swap(&a, &b);
+    cout << "After swap: a = " << a << ", b = " << b << endl;
+
+    // Test case 2
+    int x = 100, y = 200;
+    cout << "\nBefore swap: x = " << x << ", y = " << y << endl;
+    swap(&x, &y);
+    cout << "After swap: x = " << x << ", y = " << y << endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Solution</button>
+
+            <div class="solution-section" id="answer1">
+                <h4>✅ Solution</h4>
+
+                <div class="code-block"><pre><code class="language-cpp">void swap(int *ptr1, int *ptr2) {
+    int temp = *ptr1;   // Store value at ptr1 in temporary variable
+    *ptr1 = *ptr2;      // Copy value at ptr2 to location of ptr1
+    *ptr2 = temp;       // Copy temp (original ptr1 value) to location of ptr2
+}</code></pre></div>
+
+                <h4>Explanation</h4>
+                <p>This function uses the classic three-way swap algorithm:</p>
+                <ol>
+                    <li>
+                        <strong>Save the first value:</strong> <code>temp = *ptr1</code> stores the value that <code>ptr1</code> points to. Without this, we'd lose it when we overwrite <code>*ptr1</code>.
+                    </li>
+                    <li>
+                        <strong>Copy second to first:</strong> <code>*ptr1 = *ptr2</code> writes the value from <code>ptr2</code>'s location into <code>ptr1</code>'s location. Now both pointers point to the same value.
+                    </li>
+                    <li>
+                        <strong>Copy saved value to second:</strong> <code>*ptr2 = temp</code> writes the original first value (saved in temp) into <code>ptr2</code>'s location. The swap is complete.
+                    </li>
+                </ol>
+
+                <h4>Why This Works</h4>
+                <p>
+                    Because <code>ptr1</code> and <code>ptr2</code> are pointers (addresses), when we dereference them with <code>*</code>, we're accessing the <strong>actual variables</strong> in <code>main()</code>, not copies. Changes made through the pointers affect the original variables.
+                </p>
+
+                <p>
+                    If the function signature were <code>void swap(int val1, int val2)</code> instead, the function would receive <em>copies</em> of the values, and swapping the copies wouldn't affect the originals.
+                </p>
+
+                <h4>Time Complexity</h4>
+                <p><strong>O(1)</strong> - Constant time. We perform exactly 3 operations regardless of input size.</p>
+
+                <div class="callout-note">
+                    <strong>Swift Note:</strong> The temporary variable is essential. If you try <code>*ptr1 = *ptr2;</code> then <code>*ptr2 = *ptr1;</code>, you'll just copy the same value to both locations - no swap happens because you lost the original <code>*ptr1</code> value!
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 2: Intermediate - Dynamic Array Management -->
+        <div class="problem-card">
+            <span class="problem-number">Problem 2 - Intermediate</span>
+            <h2>Dynamic Student Record Manager</h2>
+
+            <h3>The Scenario</h3>
+            <p>
+                Henk runs a tutoring center in Pretoria. Students enroll throughout the year, so he needs a program that can dynamically allocate an array for student IDs based on how many students enroll, then properly clean up the memory when done.
+            </p>
+
+            <h3>Your Task</h3>
+            <p>
+                Complete the program below to:
+            </p>
+            <ol>
+                <li>Ask the user how many students are enrolling</li>
+                <li>Dynamically allocate an array to store that many student IDs</li>
+                <li>Read the student IDs from the user</li>
+                <li>Display all the IDs</li>
+                <li>Properly deallocate the memory</li>
+            </ol>
+
+            <div class="callout-warning">
+                <strong>⚠️ Requirements:</strong> You must use dynamic memory allocation (<code>new[]</code> and <code>delete[]</code>). Setting the pointer to NULL after deletion is required.
+            </div>
+
+            <h3>Example Run</h3>
+            <div class="code-block"><pre>How many students are enrolling? 3
+Enter ID for student 1: 12345
+Enter ID for student 2: 23456
+Enter ID for student 3: 34567
+
+Student IDs:
+  Student 1: 12345
+  Student 2: 23456
+  Student 3: 34567
+
+All records archived.</pre></div>
+
+            <h3>Starter Code</h3>
+
+            <div class="code-playground" id="playground2">
+                <div class="playground-header">
+                    <div class="playground-title">Your Solution</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground2')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground2')">Reset</button>
+                        <div class="loading-indicator" id="loading2">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor2">#include <iostream>
+using namespace std;
+
+int main() {
+    int numStudents;
+
+    cout << "How many students are enrolling? ";
+    cin >> numStudents;
+
+    // TODO: Dynamically allocate array for student IDs
+
+
+    // TODO: Read student IDs from user
+
+
+    // TODO: Display all student IDs
+
+
+    // TODO: Properly deallocate memory
+
+
+    cout << "\nAll records archived." << endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Solution</button>
+
+            <div class="solution-section" id="answer2">
+                <h4>✅ Solution</h4>
+
+                <div class="code-block"><pre><code class="language-cpp">#include <iostream>
+using namespace std;
+
+int main() {
+    int numStudents;
+
+    cout << "How many students are enrolling? ";
+    cin >> numStudents;
+
+    // Dynamically allocate array for student IDs
+    int *studentIDs = new int[numStudents];
+
+    // Read student IDs from user
+    for (int i = 0; i < numStudents; i++) {
+        cout << "Enter ID for student " << (i + 1) << ": ";
+        cin >> studentIDs[i];
+    }
+
+    // Display all student IDs
+    cout << "\nStudent IDs:" << endl;
+    for (int i = 0; i < numStudents; i++) {
+        cout << "  Student " << (i + 1) << ": "
+             << studentIDs[i] << endl;
+    }
+
+    // Properly deallocate memory
+    delete [] studentIDs;
+    studentIDs = NULL;
+
+    cout << "\nAll records archived." << endl;
+
+    return 0;
+}</code></pre></div>
+
+                <h4>Step-by-Step Explanation</h4>
+
+                <h4>Step 1: Dynamic Allocation</h4>
+                <div class="code-block"><pre><code class="language-cpp">int *studentIDs = new int[numStudents];</code></pre></div>
+                <p>
+                    This allocates a block of memory on the heap large enough for <code>numStudents</code> integers. The variable <code>numStudents</code> is determined at runtime (from user input), which is why we need dynamic allocation - regular arrays require compile-time constants for their size.
+                </p>
+                <p>
+                    The pointer <code>studentIDs</code> stores the address of the first element. Even though it's a pointer, we can use array notation <code>[]</code> to access elements.
+                </p>
+
+                <h4>Step 2: Reading Values</h4>
+                <div class="code-block"><pre><code class="language-cpp">for (int i = 0; i < numStudents; i++) {
+    cout << "Enter ID for student " << (i + 1) << ": ";
+    cin >> studentIDs[i];
+}</code></pre></div>
+                <p>
+                    We loop from <code>0</code> to <code>numStudents - 1</code> (the valid indices) and read each ID directly into the array. The expression <code>studentIDs[i]</code> is equivalent to <code>*(studentIDs + i)</code> - it calculates the address of the i-th element and accesses it.
+                </p>
+                <p>
+                    Note that we display <code>(i + 1)</code> to the user (1-indexed) but use <code>i</code> for array access (0-indexed). This makes the output more natural for humans.
+                </p>
+
+                <h4>Step 3: Displaying Values</h4>
+                <div class="code-block"><pre><code class="language-cpp">for (int i = 0; i < numStudents; i++) {
+    cout << "  Student " << (i + 1) << ": " << studentIDs[i] << endl;
+}</code></pre></div>
+                <p>
+                    Similar loop structure, but this time we're reading from the array instead of writing to it. Again, we use 1-indexed labels for the user but 0-indexed access for the array.
+                </p>
+
+                <h4>Step 4: Deallocation</h4>
+                <div class="code-block"><pre><code class="language-cpp">delete [] studentIDs;
+studentIDs = NULL;</code></pre></div>
+                <p>
+                    <strong>Two essential steps:</strong>
+                </p>
+                <ol>
+                    <li>
+                        <code>delete [] studentIDs;</code> - The brackets are essential because we allocated an array with <code>new[]</code>. This tells C++ to free ALL elements of the array, not just the first one. Using <code>delete studentIDs;</code> (without brackets) would be undefined behavior and likely cause a memory leak.
+                    </li>
+                    <li>
+                        <code>studentIDs = NULL;</code> - After freeing the memory, we set the pointer to NULL. This prevents it from being a dangling pointer. If we accidentally tried to access <code>*studentIDs</code> after this, we'd get an immediate crash (dereferencing NULL) rather than silent corruption from accessing freed memory.
+                    </li>
+                </ol>
+
+                <h4>Why Dynamic Memory Here?</h4>
+                <p>
+                    We don't know <code>numStudents</code> until runtime - the user tells us. In C++98, you can't do:
+                </p>
+                <div class="code-block"><pre><code class="language-cpp">int studentIDs[numStudents];  // ❌ ERROR in C++98: array size must be constant</code></pre></div>
+                <p>
+                    Dynamic allocation with <code>new[]</code> is the only way to create arrays with runtime-determined sizes.
+                </p>
+
+                <h4>Common Mistakes to Avoid</h4>
+                <ul>
+                    <li><strong>Wrong delete operator:</strong> Using <code>delete studentIDs;</code> instead of <code>delete [] studentIDs;</code> - causes undefined behavior</li>
+                    <li><strong>Forgetting to delete:</strong> Not calling <code>delete[]</code> at all - causes a memory leak</li>
+                    <li><strong>Accessing after delete:</strong> Using <code>studentIDs[i]</code> after the <code>delete[]</code> - accesses freed memory (undefined behavior)</li>
+                    <li><strong>Not setting to NULL:</strong> Leaves a dangling pointer that might appear to work but is dangerous</li>
+                </ul>
+
+                <h4>Time Complexity</h4>
+                <p>
+                    <strong>O(n)</strong> where n = <code>numStudents</code>. Both the input loop and display loop iterate exactly n times. Allocation and deallocation are O(n) internally (the system must initialize/free n integers).
+                </p>
+
+                <div class="callout-success">
+                    <strong>Best Practice:</strong> In production code, you'd want to add validation (what if <code>numStudents</code> is negative or zero?). You might also check if allocation succeeded (though in modern systems, if <code>new</code> fails, it throws an exception rather than returning NULL).
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 3: What's Wrong? - Buggy Code -->
+        <div class="problem-card">
+            <span class="problem-number">Problem 3 - What's Wrong?</span>
+            <h2>Debug the Playlist Manager</h2>
+
+            <h3>The Problem</h3>
+            <p>
+                This program is supposed to manage a dynamic playlist by creating an array of song durations (in seconds), then allow the user to add a new song. However, it has memory management bugs that cause undefined behavior.
+            </p>
+
+            <p>
+                Your task: Identify ALL the bugs and fix them. There are at least <strong>3 distinct memory management errors</strong>.
+            </p>
+
+            <h3>The Buggy Code</h3>
+
+            <div class="code-playground" id="playground3">
+                <div class="playground-header">
+                    <div class="playground-title">Buggy Code - Debug This!</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground3')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground3')">Reset</button>
+                        <div class="loading-indicator" id="loading3">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor3">#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "=== Playlist Manager ===" << endl;
+
+    int numSongs = 3;
+    int *durations = new int[numSongs];
+
+    durations[0] = 180;
+    durations[1] = 210;
+    durations[2] = 195;
+
+    cout << "Current playlist:" << endl;
+    for (int i = 0; i < numSongs; i++) {
+        cout << "  Song " << (i+1) << ": "
+             << durations[i] << " seconds" << endl;
+    }
+
+    int newSong = 240;
+    cout << "\nAdding new song (" << newSong << " seconds)..." << endl;
+
+    int *temp = new int;
+    *temp = newSong;
+
+    delete durations;
+    durations = temp;
+
+    cout << "New song added: " << *durations << " seconds" << endl;
+    cout << "Playlist updated!" << endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout-note">
+                <strong>Hint:</strong> Think about the lifecycle of dynamically allocated memory. What happens to the original array? Is the delete operator correct? What happens to the temp pointer? Is anything not cleaned up?
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Solution</button>
+
+            <div class="solution-section" id="answer3">
+                <h4>🐛 The Bugs</h4>
+
+                <h4>Bug #1: Wrong Delete Operator (Line 27)</h4>
+                <p><strong>Code:</strong> <code>delete durations;</code></p>
+                <p><strong>Problem:</strong> <code>durations</code> was allocated with <code>new int[numSongs]</code> (array allocation), so it MUST be freed with <code>delete[] durations;</code> (array deallocation). Using plain <code>delete</code> on an array is undefined behavior - it typically only frees the first element and leaks the rest.</p>
+                <p><strong>Fix:</strong> <code>delete [] durations;</code></p>
+
+                <h4>Bug #2: Memory Leak (Line 27-28)</h4>
+                <p><strong>Code:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">delete durations;
+durations = temp;</code></pre></div>
+                <p><strong>Problem:</strong> When we reassign <code>durations = temp;</code>, we lose the pointer to the 3-element array. Even if we had used <code>delete[]</code> correctly, there's a logical error: we're replacing an array of 3 songs with a single song! The original design seems flawed - we should be expanding the array, not replacing it.</p>
+
+                <h4>Bug #3: Incomplete Cleanup</h4>
+                <p><strong>Problem:</strong> After reassigning <code>durations = temp;</code>, both <code>durations</code> and <code>temp</code> point to the same memory location. When <code>main()</code> ends, neither pointer is deleted, so the single integer allocated for <code>newSong</code> is leaked.</p>
+                <p>Additionally, we never set any pointer to NULL after deletion.</p>
+
+                <h4>Bug #4: Conceptual Error</h4>
+                <p><strong>Problem:</strong> The program claims to "add" a song, but actually <em>replaces</em> the entire playlist with just the new song. After line 28, the original 3 songs are gone (and leaked), and we only have the new song.</p>
+
+                <h4>✅ Corrected Version #1: Just Delete Everything Properly</h4>
+                <p>If the intent really is to replace the playlist:</p>
+                <div class="code-block"><pre><code class="language-cpp">#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "=== Playlist Manager ===" << endl;
+
+    int numSongs = 3;
+    int *durations = new int[numSongs];
+
+    durations[0] = 180;
+    durations[1] = 210;
+    durations[2] = 195;
+
+    cout << "Current playlist:" << endl;
+    for (int i = 0; i < numSongs; i++) {
+        cout << "  Song " << (i+1) << ": "
+             << durations[i] << " seconds" << endl;
+    }
+
+    int newSong = 240;
+    cout << "\nAdding new song (" << newSong << " seconds)..." << endl;
+
+    // Delete the old array BEFORE reassigning
+    delete [] durations;  // FIX: Use delete[] for arrays
+    durations = NULL;
+
+    // Create new single-song playlist
+    int *temp = new int;
+    *temp = newSong;
+    durations = temp;  // Now safe to reassign
+
+    cout << "New song added: " << *durations << " seconds" << endl;
+    cout << "Playlist updated!" << endl;
+
+    // Clean up the new allocation
+    delete durations;
+    durations = NULL;
+
+    return 0;
+}</code></pre></div>
+
+                <h4>✅ Corrected Version #2: Actually Add to the Playlist (Better Design)</h4>
+                <p>If the intent is to expand the array to include the new song:</p>
+                <div class="code-block"><pre><code class="language-cpp">#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "=== Playlist Manager ===" << endl;
+
+    int numSongs = 3;
+    int *durations = new int[numSongs];
+
+    durations[0] = 180;
+    durations[1] = 210;
+    durations[2] = 195;
+
+    cout << "Current playlist:" << endl;
+    for (int i = 0; i < numSongs; i++) {
+        cout << "  Song " << (i+1) << ": "
+             << durations[i] << " seconds" << endl;
+    }
+
+    int newSong = 240;
+    cout << "\nAdding new song (" << newSong << " seconds)..." << endl;
+
+    // Create new larger array
+    int newSize = numSongs + 1;
+    int *newDurations = new int[newSize];
+
+    // Copy old songs
+    for (int i = 0; i < numSongs; i++) {
+        newDurations[i] = durations[i];
+    }
+
+    // Add new song
+    newDurations[numSongs] = newSong;
+
+    // Delete old array
+    delete [] durations;
+
+    // Point to new array
+    durations = newDurations;
+    numSongs = newSize;
+
+    cout << "\nUpdated playlist:" << endl;
+    for (int i = 0; i < numSongs; i++) {
+        cout << "  Song " << (i+1) << ": "
+             << durations[i] << " seconds" << endl;
+    }
+
+    // Clean up
+    delete [] durations;
+    durations = NULL;
+
+    return 0;
+}</code></pre></div>
+
+                <h4>Key Lessons</h4>
+                <ul>
+                    <li><strong>Match allocation with deallocation:</strong> <code>new</code> → <code>delete</code>, <code>new[]</code> → <code>delete[]</code></li>
+                    <li><strong>Never reassign pointers without freeing first</strong> (unless you save the old pointer elsewhere)</li>
+                    <li><strong>Every allocation needs exactly one deallocation</strong></li>
+                    <li><strong>Set pointers to NULL after deletion</strong> to avoid dangling pointers</li>
+                    <li><strong>To resize arrays, you must allocate new, copy, then delete old</strong> - arrays can't be resized in place</li>
+                </ul>
+
+                <div class="callout-warning">
+                    <strong>Real-World Note:</strong> In later units, you'll learn about data structures like linked lists and vectors that handle dynamic resizing automatically. Manual array resizing (Version #2) is inefficient for frequent additions - each addition requires O(n) copying!
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 4: Challenge - 2D Dynamic Array -->
+        <div class="problem-card">
+            <span class="problem-number">Problem 4 - Challenge</span>
+            <h2>Dynamic Grade Table</h2>
+
+            <h3>The Scenario</h3>
+            <p>
+                Wesley, a teacher in Cape Town, needs to store grades for multiple students across multiple assignments. The number of students and assignments varies each semester, so he needs a 2D dynamic array that can be sized at runtime.
+            </p>
+
+            <h3>Your Task</h3>
+            <p>
+                Create a 2D dynamic array (a "table" or "matrix") to store grades. The dimensions should be determined by user input. Your program should:
+            </p>
+            <ol>
+                <li>Ask for the number of students and number of assignments</li>
+                <li>Dynamically allocate a 2D array (<code>grades[students][assignments]</code>)</li>
+                <li>Fill the array with sample grades (you can use a pattern like <code>row * 10 + col</code>)</li>
+                <li>Display the grade table</li>
+                <li>Properly deallocate ALL memory (this is the challenging part!)</li>
+            </ol>
+
+            <div class="callout-note">
+                <strong>Hint:</strong> A 2D dynamic array is actually an <em>array of pointers</em>, where each pointer points to an array (a row). You'll need to:
+                <ul style="margin-top: 0.5rem;">
+                    <li>Allocate an array of <code>int*</code> pointers (one per student)</li>
+                    <li>For each pointer, allocate an array of <code>int</code> (one per assignment)</li>
+                    <li>When deallocating, delete each row's array first, then delete the array of pointers</li>
+                </ul>
+            </div>
+
+            <h3>Example Output</h3>
+            <div class="code-block"><pre>How many students? 3
+How many assignments? 4
+
+Grade Table:
+Student 1:  50  51  52  53
+Student 2:  60  61  62  63
+Student 3:  70  71  72  73
+
+All memory freed.</pre></div>
+
+            <h3>Starter Code</h3>
+
+            <div class="code-playground" id="playground4">
+                <div class="playground-header">
+                    <div class="playground-title">Your Solution</div>
+                    <div class="playground-actions">
+                        <button class="run-btn" onclick="runCode('playground4')">Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('playground4')">Reset</button>
+                        <div class="loading-indicator" id="loading4">
+                            <div class="spinner"></div>
+                            <span>Compiling...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="playground-editor">
+                    <textarea id="editor4">#include <iostream>
+using namespace std;
+
+int main() {
+    int numStudents, numAssignments;
+
+    cout << "How many students? ";
+    cin >> numStudents;
+    cout << "How many assignments? ";
+    cin >> numAssignments;
+
+    // TODO: Allocate 2D array
+    // Hint: First allocate array of pointers, then allocate each row
+
+
+    // TODO: Fill the array with sample grades
+
+
+    // TODO: Display the grade table
+
+
+    // TODO: Deallocate all memory
+    // IMPORTANT: Delete each row first, then delete the array of pointers
+
+
+    cout << "\nAll memory freed." << endl;
+
+    return 0;
+}</textarea>
+                </div>
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Solution</button>
+
+            <div class="solution-section" id="answer4">
+                <h4>✅ Solution</h4>
+
+                <div class="code-block"><pre><code class="language-cpp">#include <iostream>
+using namespace std;
+
+int main() {
+    int numStudents, numAssignments;
+
+    cout << "How many students? ";
+    cin >> numStudents;
+    cout << "How many assignments? ";
+    cin >> numAssignments;
+
+    // Allocate array of pointers (one pointer per student)
+    int **grades = new int*[numStudents];
+
+    // For each student, allocate an array for their assignment grades
+    for (int i = 0; i < numStudents; i++) {
+        grades[i] = new int[numAssignments];
+    }
+
+    // Fill the array with sample grades
+    for (int i = 0; i < numStudents; i++) {
+        for (int j = 0; j < numAssignments; j++) {
+            grades[i][j] = 50 + (i * 10) + j;
+        }
+    }
+
+    // Display the grade table
+    cout << "\nGrade Table:" << endl;
+    for (int i = 0; i < numStudents; i++) {
+        cout << "Student " << (i + 1) << ": ";
+        for (int j = 0; j < numAssignments; j++) {
+            cout << " " << grades[i][j];
+        }
+        cout << endl;
+    }
+
+    // Deallocate memory - MUST delete rows before deleting array of pointers
+    for (int i = 0; i < numStudents; i++) {
+        delete [] grades[i];  // Delete each row
+        grades[i] = NULL;
+    }
+    delete [] grades;  // Delete the array of pointers
+    grades = NULL;
+
+    cout << "\nAll memory freed." << endl;
+
+    return 0;
+}</code></pre></div>
+
+                <h4>Understanding 2D Dynamic Arrays</h4>
+
+                <p>A 2D dynamic array is more complex than a 1D array. Here's what's happening:</p>
+
+                <h4>Step 1: Allocate Array of Pointers</h4>
+                <div class="code-block"><pre><code class="language-cpp">int **grades = new int*[numStudents];</code></pre></div>
+                <p>
+                    <strong>Breaking this down:</strong>
+                </p>
+                <ul>
+                    <li><code>int*</code> is a "pointer to int"</li>
+                    <li><code>int**</code> is a "pointer to pointer to int"</li>
+                    <li><code>new int*[numStudents]</code> creates an array of <code>int*</code> pointers</li>
+                    <li><code>grades</code> stores the address of this array of pointers</li>
+                </ul>
+                <p>
+                    At this point, we have an array of pointers, but each pointer is uninitialized (points to garbage). We haven't allocated any actual grade storage yet.
+                </p>
+
+                <p><strong>Memory visualization after this step:</strong></p>
+                <div class="code-block"><pre>grades → [ptr][ptr][ptr]  (array of 3 pointers, if numStudents = 3)
+          ???  ???  ???   (each pointer contains garbage)</pre></div>
+
+                <h4>Step 2: Allocate Each Row</h4>
+                <div class="code-block"><pre><code class="language-cpp">for (int i = 0; i < numStudents; i++) {
+    grades[i] = new int[numAssignments];
+}</code></pre></div>
+                <p>
+                    For each student (each element of the <code>grades</code> array), we allocate an array of integers to hold that student's assignment grades. Now each pointer in the <code>grades</code> array points to its own separate array.
+                </p>
+
+                <p><strong>Memory visualization after this step (3 students, 4 assignments):</strong></p>
+                <div class="code-block"><pre>grades → [ptr][ptr][ptr]
+           |    |    |
+           ↓    ↓    ↓
+         [int][int][int][int]  ← Student 1's grades
+         [int][int][int][int]  ← Student 2's grades
+         [int][int][int][int]  ← Student 3's grades</pre></div>
+
+                <p>
+                    Now we can access any grade with <code>grades[i][j]</code>:
+                </p>
+                <ul>
+                    <li><code>grades[i]</code> gives us the pointer to student i's array</li>
+                    <li><code>grades[i][j]</code> accesses the j-th element of that array (assignment j's grade)</li>
+                </ul>
+
+                <h4>Step 3: Fill and Display</h4>
+                <div class="code-block"><pre><code class="language-cpp">for (int i = 0; i < numStudents; i++) {
+    for (int j = 0; j < numAssignments; j++) {
+        grades[i][j] = 50 + (i * 10) + j;
+    }
+}</code></pre></div>
+                <p>
+                    We use nested loops to access every element. The formula <code>50 + (i * 10) + j</code> creates a pattern:
+                </p>
+                <ul>
+                    <li>Student 0: grades 50, 51, 52, 53...</li>
+                    <li>Student 1: grades 60, 61, 62, 63...</li>
+                    <li>Student 2: grades 70, 71, 72, 73...</li>
+                </ul>
+
+                <h4>Step 4: Deallocation (MOST IMPORTANT)</h4>
+                <div class="code-block"><pre><code class="language-cpp">// Delete each row first
+for (int i = 0; i < numStudents; i++) {
+    delete [] grades[i];
+    grades[i] = NULL;
+}
+// Then delete the array of pointers
+delete [] grades;
+grades = NULL;</code></pre></div>
+
+                <p><strong>⚠️ ORDER MATTERS!</strong></p>
+                <p>
+                    You MUST delete the rows before deleting the array of pointers. Here's why:
+                </p>
+                <ul>
+                    <li>If you delete <code>grades</code> first, you lose access to all the row pointers (<code>grades[0]</code>, <code>grades[1]</code>, etc.)</li>
+                    <li>Without those pointers, you can't delete the rows, so they leak</li>
+                    <li>You must "unwind" the allocation in reverse order: delete what you allocated last, first</li>
+                </ul>
+
+                <p><strong>Correct order:</strong></p>
+                <ol>
+                    <li>Delete each row with <code>delete [] grades[i]</code> (we allocated these with <code>new int[]</code>)</li>
+                    <li>Set each row pointer to NULL</li>
+                    <li>Delete the array of pointers with <code>delete [] grades</code> (we allocated this with <code>new int*[]</code>)</li>
+                    <li>Set <code>grades</code> to NULL</li>
+                </ol>
+
+                <h4>Why This Pattern?</h4>
+                <p>
+                    C++ doesn't have true multi-dimensional dynamic arrays. Instead, we simulate them with "arrays of arrays" - a pointer to pointers. This gives us:
+                </p>
+                <ul>
+                    <li>Flexibility: Each row can theoretically have a different length (jagged arrays)</li>
+                    <li>Runtime sizing: We don't need compile-time constants</li>
+                    <li>But: We must manually manage memory for each dimension</li>
+                </ul>
+
+                <h4>Time and Space Complexity</h4>
+                <ul>
+                    <li><strong>Allocation:</strong> O(numStudents) for the pointer array + O(numStudents × numAssignments) for the rows = O(n × m)</li>
+                    <li><strong>Deallocation:</strong> O(numStudents × numAssignments) - must free each element's memory</li>
+                    <li><strong>Space:</strong> O(n × m) for the actual data + O(n) for the array of pointers</li>
+                </ul>
+
+                <div class="callout-success">
+                    <strong>Pro Tip:</strong> In real code, you'd often wrap this in a class with a destructor that handles cleanup automatically. That's coming in Unit 4 when you learn about the Big Three (destructor, copy constructor, assignment operator)!
+                </div>
+
+                <div class="callout-warning">
+                    <strong>Common Mistake:</strong> Forgetting to delete the rows, or deleting in the wrong order. This causes memory leaks that are hard to detect. Tools like Valgrind (on Linux) can help find these leaks during development.
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation to Next Section -->
+        <div style="background: #1e293b; padding: 2rem; border-radius: 12px; margin-top: 3rem; text-align: center; border: 1px solid #334155;">
+            <h3 style="color: #0ea5e9; margin-bottom: 1rem;">Ready for the Quiz?</h3>
+            <p style="color: #cbd5e1; margin-bottom: 1.5rem;">
+                Test your knowledge with quiz questions that match the style of actual COS 110 assessments!
+            </p>
+            <a href="Quiz.html" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.8rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+                Go to Quiz →
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        // Store CodeMirror editors globally
+        window.codeEditors = {};
+        const originalCode = {};
+
+        // Toggle mobile navigation menu
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                const menu = document.getElementById('navMenu');
+                menu.classList.remove('active');
+            });
+        });
+
+        // Initialize CodeMirror editors
+        function initEditor(id, textareaId) {
+            const textarea = document.getElementById(textareaId);
+            if (!textarea) return null;
+
+            originalCode[id] = textarea.value;
+
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+
+            window.codeEditors[id] = editor;
+            return editor;
+        }
+
+        // Initialize all editors on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            initEditor('playground1', 'editor1');
+            initEditor('playground2', 'editor2');
+            initEditor('playground3', 'editor3');
+            initEditor('playground4', 'editor4');
+        });
+
+        // Toggle answer visibility with CodeMirror refresh
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Solution';
+
+                // CRITICAL: Refresh all CodeMirror editors when revealing
+                setTimeout(() => {
+                    Object.values(window.codeEditors).forEach(editor => {
+                        editor.refresh();
+                    });
+                }, 50);
+            } else {
+                button.textContent = 'Show Solution';
+            }
+        }
+
+        // Run code via Piston API
+        async function runCode(playgroundId) {
+            const editor = window.codeEditors[playgroundId];
+            const code = editor.getValue();
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+            const runBtn = document.querySelector(`#${playgroundId} .run-btn`);
+            const loadingIndicator = document.getElementById(`loading${playgroundId.replace('playground', '')}`);
+
+            // Show loading state
+            runBtn.disabled = true;
+            loadingIndicator.classList.add('active');
+            outputDiv.className = 'output-text output-info';
+            outputDiv.textContent = 'Compiling and executing your code...';
+
+            try {
+                // Call Piston API
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        stdin: '',
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                // Display results
+                if (result.compile && result.compile.code !== 0) {
+                    // Compilation error
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.innerHTML = `<div class="output-info">❌ Compilation Error:</div>${escapeHtml(result.compile.stderr || result.compile.output)}`;
+                } else if (result.run) {
+                    // Execution output
+                    if (result.run.code === 0) {
+                        // Success
+                        outputDiv.className = 'output-text output-success';
+                        const output = result.run.stdout || result.run.output || '(no output)';
+                        outputDiv.innerHTML = `<div class="output-info">✅ Executed successfully:</div>${escapeHtml(output)}`;
+                    } else {
+                        // Runtime error
+                        outputDiv.className = 'output-text output-error';
+                        const error = result.run.stderr || result.run.output || 'Runtime error';
+                        outputDiv.innerHTML = `<div class="output-info">❌ Runtime Error (exit code ${result.run.code}):</div>${escapeHtml(error)}`;
+                    }
+                } else {
+                    // Unknown error
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.textContent = 'Error: Unable to execute code. Please try again.';
+                }
+
+            } catch (error) {
+                // Network or API error
+                outputDiv.className = 'output-text output-error';
+                outputDiv.innerHTML = `<div class="output-info">❌ Error:</div>Failed to connect to compilation service. Please check your internet connection and try again.`;
+                console.error('Piston API error:', error);
+            } finally {
+                // Hide loading state
+                runBtn.disabled = false;
+                loadingIndicator.classList.remove('active');
+            }
+        }
+
+        // Reset code to original
+        function resetCode(playgroundId) {
+            const editor = window.codeEditors[playgroundId];
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+
+            editor.setValue(originalCode[playgroundId]);
+            outputDiv.className = 'output-text output-placeholder';
+            outputDiv.textContent = 'Click "Run Code" to compile and execute...';
+        }
+
+        // Escape HTML for safe display
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

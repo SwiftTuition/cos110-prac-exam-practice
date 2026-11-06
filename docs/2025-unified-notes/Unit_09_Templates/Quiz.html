@@ -1,0 +1,2893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 9: Templates - Quiz | Swift Tuition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 45px;
+            height: 45px;
+        }
+
+        .header-text h1 {
+            font-size: 2em;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            color: #64748b;
+            font-size: 1.1em;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-theory {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .btn-theory:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-examples {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-examples:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-practice {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .btn-practice:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-quiz {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .question-type {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 1.15em;
+            color: #1e293b;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .code-block .keyword { color: #569cd6; }
+        .code-block .type { color: #4ec9b0; }
+        .code-block .function { color: #dcdcaa; }
+        .code-block .string { color: #ce9178; }
+        .code-block .comment { color: #6a9955; }
+        .code-block .number { color: #b5cea8; }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: #8b5cf6;
+            background: #faf5ff;
+        }
+
+        .option-label {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+            color: #334155;
+            font-size: 1em;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 20px;
+            padding: 25px;
+            background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+            border-radius: 12px;
+            border-left: 5px solid #8b5cf6;
+        }
+
+        .answer-section.show {
+            display: block;
+        }
+
+        .correct-answer {
+            color: #15803d;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .correct-answer::before {
+            content: "✓";
+            background: #15803d;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .explanation {
+            color: #334155;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .explanation-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e9d5ff;
+        }
+
+        .explanation-title {
+            color: #6b21a8;
+            font-weight: bold;
+            font-size: 1.05em;
+            margin-bottom: 10px;
+        }
+
+        .wrong-answer {
+            margin: 12px 0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+        }
+
+        .wrong-answer-label {
+            color: #dc2626;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .wrong-answer-text {
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .footer {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer p {
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+
+        .back-to-top {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-buttons {
+                width: 100%;
+            }
+
+            .nav-btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .question-header {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <img src="swift_tuition_logo.png" alt="Swift Tuition Logo" class="logo">
+                <div class="header-text">
+                    <h1>Unit 9: Templates - Quiz</h1>
+                    <p>Test your knowledge with 28 comprehensive questions</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <a href="Theory.html" class="nav-btn btn-theory">📚 Theory</a>
+                <a href="Examples.html" class="nav-btn btn-examples">💡 Examples</a>
+                <a href="Practice.html" class="nav-btn btn-practice">⚡ Practice</a>
+                <a href="Quiz.html" class="nav-btn btn-quiz">🎯 Quiz</a>
+            </div>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">1</div>
+                <div class="question-type">Multiple Choice</div>
+            </div>
+            <div class="question-text">
+                Which of the following is the correct syntax for declaring a function template?
+            </div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>template&lt;class T&gt; void myFunc(T param);</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>template&lt;T&gt; void myFunc(T param);</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text"><code>void template&lt;class T&gt; myFunc(T param);</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text"><code>template&lt;type T&gt; void myFunc(T param);</code></div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Answer</button>
+            <div class="answer-section" id="answer1">
+                <div class="correct-answer">Correct Answer: A</div>
+                <div class="explanation">
+                    Option A is correct because it follows the proper template syntax: <code>template&lt;class T&gt;</code> (or <code>template&lt;typename T&gt;</code>) must come before the function declaration. The keyword <code>class</code> or <code>typename</code> tells the compiler that T is a type parameter.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Missing the <code>class</code> or <code>typename</code> keyword. The compiler needs to know that T is a type parameter, not a value. <code>template&lt;T&gt;</code> is invalid syntax and will cause a compilation error.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            The <code>template</code> keyword must come BEFORE the function signature, not after the return type. Putting <code>template&lt;class T&gt;</code> in the middle of the function declaration is syntactically incorrect.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            <code>type</code> is not a valid keyword in C++. Only <code>class</code> or <code>typename</code> can be used to declare type parameters in templates. Using <code>type</code> will result in a compilation error.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">2</div>
+                <div class="question-type">Code Tracing</div>
+            </div>
+            <div class="question-text">
+                What is the output of this code?
+            </div>
+            <div class="code-block"><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">T</span> <span class="function">maximum</span>(<span class="type">T</span> a, <span class="type">T</span> b) {
+    <span class="keyword">return</span> (a &gt; b) ? a : b;
+}
+
+<span class="type">int</span> <span class="function">main</span>() {
+    cout &lt;&lt; <span class="function">maximum</span>(<span class="number">15</span>, <span class="number">23</span>) &lt;&lt; <span class="string">" "</span>;
+    cout &lt;&lt; <span class="function">maximum</span>(<span class="number">3.8</span>, <span class="number">2.1</span>);
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>23 3.8</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>15 2.1</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text"><code>23 2.1</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">Compilation error</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Answer</button>
+            <div class="answer-section" id="answer2">
+                <div class="correct-answer">Correct Answer: A (Output: 23 3.8)</div>
+                <div class="explanation">
+                    Let me trace through this line by line:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">First function call: maximum(15, 23)</div>
+                    <div class="explanation">
+                        <strong>Line 10:</strong> Compiler sees <code>maximum(15, 23)</code> where both arguments are <code>int</code><br>
+                        <strong>Template instantiation:</strong> Compiler generates <code>int maximum(int a, int b)</code><br>
+                        <strong>Function execution:</strong> a = 15, b = 23<br>
+                        <strong>Line 6:</strong> Evaluates <code>(15 &gt; 23)</code> which is <code>false</code><br>
+                        <strong>Ternary operator:</strong> Since condition is false, returns <code>b</code> which is <code>23</code><br>
+                        <strong>Output:</strong> Prints <code>23</code> followed by a space
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Second function call: maximum(3.8, 2.1)</div>
+                    <div class="explanation">
+                        <strong>Line 11:</strong> Compiler sees <code>maximum(3.8, 2.1)</code> where both arguments are <code>double</code><br>
+                        <strong>Template instantiation:</strong> Compiler generates <code>double maximum(double a, double b)</code><br>
+                        <strong>Function execution:</strong> a = 3.8, b = 2.1<br>
+                        <strong>Line 6:</strong> Evaluates <code>(3.8 &gt; 2.1)</code> which is <code>true</code><br>
+                        <strong>Ternary operator:</strong> Since condition is true, returns <code>a</code> which is <code>3.8</code><br>
+                        <strong>Output:</strong> Prints <code>3.8</code>
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This would mean the function returns the minimum value instead of maximum. The condition <code>(a &gt; b)</code> ensures we return the larger value, not the smaller one.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This would mean <code>maximum(3.8, 2.1)</code> returned <code>2.1</code>, but since <code>3.8 &gt; 2.1</code> is true, the function correctly returns <code>3.8</code>.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This code compiles perfectly fine. The template can be instantiated with both <code>int</code> and <code>double</code> types because both support the <code>&gt;</code> operator. No type mismatch occurs because each call uses consistent types.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">3</div>
+                <div class="question-type">True/False</div>
+            </div>
+            <div class="question-text">
+                True or False: The keywords <code>class</code> and <code>typename</code> can be used interchangeably when declaring template parameters.
+            </div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">True</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">False</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Answer</button>
+            <div class="answer-section" id="answer3">
+                <div class="correct-answer">Correct Answer: A (True)</div>
+                <div class="explanation">
+                    In C++, <code>class</code> and <code>typename</code> are completely interchangeable when declaring template type parameters. Both of these are valid and identical in meaning:
+                </div>
+                <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;          <span class="comment">// Valid</span>
+<span class="keyword">template</span>&lt;<span class="keyword">typename</span> <span class="type">T</span>&gt;     <span class="comment">// Also valid, means exactly the same thing</span></div>
+                <div class="explanation">
+                    The keyword <code>typename</code> was added later to the C++ standard because <code>class</code> was considered confusing - it made people think the template parameter had to be a class type, when in fact it can be ANY type (including built-in types like <code>int</code>, <code>double</code>, etc.).
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Additional context:</div>
+                    <div class="explanation">
+                        Many modern C++ programmers prefer <code>typename</code> because it's more clear about what the parameter represents - a type name, not necessarily a class. However, in older codebases and in many teaching contexts, you'll still see <code>class</code> being used. Both are correct, and the compiler treats them identically.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why False is wrong:</div>
+                    <div class="wrong-answer-text">
+                        They are not different or restricted to different contexts when declaring template parameters. In template parameter declarations, they have identical meaning and behavior. There is one specific context where <code>typename</code> MUST be used (accessing dependent type names in templates), but that's not what this question is asking about.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">4</div>
+                <div class="question-type">Multiple Choice</div>
+            </div>
+            <div class="question-text">
+                When should you implement template functions in header files (.h) rather than source files (.cpp)?
+            </div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Only when the template has multiple type parameters</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">Always - template definitions must be in header files</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">Never - templates should always be in .cpp files</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">Only when the template is used in multiple files</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Answer</button>
+            <div class="answer-section" id="answer4">
+                <div class="correct-answer">Correct Answer: B</div>
+                <div class="explanation">
+                    Template definitions MUST be in header files (or in the same file where they're used) because of how templates work. The compiler needs to see the complete template definition at the point where it's instantiated with a specific type. Here's why:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">How templates work:</div>
+                    <div class="explanation">
+                        1. Templates are NOT regular functions/classes - they're blueprints<br>
+                        2. When you use <code>maximum&lt;int&gt;(5, 10)</code>, the compiler generates a brand new function<br>
+                        3. To generate this code, the compiler needs to see the template definition<br>
+                        4. If the definition is in a .cpp file, the compiler can't access it when compiling other files<br>
+                        5. This would cause linker errors: "undefined reference to template function"
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">The correct pattern:</div>
+                    <div class="code-block"><span class="comment">// Array.h</span>
+<span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Array</span> {
+<span class="keyword">public</span>:
+    <span class="type">void</span> <span class="function">print</span>() {
+        <span class="comment">// Implementation HERE in .h file</span>
+    }
+};</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option A is wrong:</div>
+                        <div class="wrong-answer-text">
+                            The number of type parameters doesn't matter. Whether you have <code>template&lt;class T&gt;</code> or <code>template&lt;class T, class U&gt;</code>, the definition still needs to be in the header file.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Putting template definitions in .cpp files will cause linker errors. The compiler won't be able to generate the template instances when you try to use them from other files.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Even if you only use the template in one file, it's still best practice to keep the definition in the header. This makes your code more reusable and avoids confusion. The rule is consistent: templates go in headers, period.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">5</div>
+                <div class="question-type">Find the Bug</div>
+            </div>
+            <div class="question-text">
+                This code has a bug. What's wrong with it?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">void</span> <span class="function">swap</span>(<span class="type">T</span> a, <span class="type">T</span> b) {
+    <span class="type">T</span> temp = a;
+    a = b;
+    b = temp;
+}
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="type">int</span> x = <span class="number">5</span>, y = <span class="number">10</span>;
+    <span class="function">swap</span>(x, y);
+    cout &lt;&lt; x &lt;&lt; <span class="string">" "</span> &lt;&lt; y;  <span class="comment">// Expecting: 10 5</span>
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Parameters should be passed by reference: <code>void swap(T&amp; a, T&amp; b)</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">Missing template specification: should call <code>swap&lt;int&gt;(x, y)</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">The temp variable should be <code>int</code>, not <code>T</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">No bug - the code is correct</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer5')">Show Answer</button>
+            <div class="answer-section" id="answer5">
+                <div class="correct-answer">Correct Answer: A</div>
+                <div class="explanation">
+                    The bug is that parameters are passed by value instead of by reference. When you pass by value, the function gets COPIES of x and y, not the originals. Let me trace what actually happens:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Current (buggy) behavior:</div>
+                    <div class="explanation">
+                        <strong>Before swap:</strong> x = 5, y = 10<br>
+                        <strong>Function call:</strong> <code>swap(x, y)</code> creates copies: a = 5, b = 10<br>
+                        <strong>Inside swap:</strong><br>
+                        &nbsp;&nbsp;• temp = a (temp = 5)<br>
+                        &nbsp;&nbsp;• a = b (a = 10)<br>
+                        &nbsp;&nbsp;• b = temp (b = 5)<br>
+                        <strong>Function ends:</strong> Local variables a, b, and temp are destroyed<br>
+                        <strong>After swap:</strong> x is STILL 5, y is STILL 10 (originals unchanged!)<br>
+                        <strong>Output:</strong> <code>5 10</code> instead of expected <code>10 5</code>
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Correct implementation:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">void</span> <span class="function">swap</span>(<span class="type">T</span>&amp; a, <span class="type">T</span>&amp; b) {  <span class="comment">// Pass by REFERENCE</span>
+    <span class="type">T</span> temp = a;
+    a = b;
+    b = temp;
+}</div>
+                    <div class="explanation">
+                        Now a and b are references (aliases) to the original x and y, so modifying them modifies the originals.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            You don't need to explicitly specify <code>&lt;int&gt;</code> because the compiler can deduce the type from the arguments. <code>swap(x, y)</code> where x and y are ints allows the compiler to infer T = int automatically. Template type deduction works here.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Using <code>T</code> for the temp variable is correct and preferred! This keeps the function generic. If you hardcoded <code>int temp</code>, the function wouldn't work for other types like <code>double</code> or <code>string</code>. Using <code>T</code> maintains the template's flexibility.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            The code definitely has a bug - it swaps the copies, not the originals. The output would be <code>5 10</code>, not the expected <code>10 5</code>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">6</div>
+                <div class="question-type">Multiple Choice</div>
+            </div>
+            <div class="question-text">
+                What happens when you call a template function without explicitly specifying the type parameter?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">T</span> <span class="function">add</span>(<span class="type">T</span> a, <span class="type">T</span> b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="type">int</span> result = <span class="function">add</span>(<span class="number">5</span>, <span class="number">10</span>);  <span class="comment">// What happens here?</span></div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Compilation error - must specify type as <code>add&lt;int&gt;(5, 10)</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">Compiler automatically deduces T = int from the arguments</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">T defaults to double for all numeric types</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">Runtime error occurs when the function executes</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer6')">Show Answer</button>
+            <div class="answer-section" id="answer6">
+                <div class="correct-answer">Correct Answer: B</div>
+                <div class="explanation">
+                    The compiler uses template argument deduction to automatically determine that T should be <code>int</code>. Here's exactly how it works:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Deduction process:</div>
+                    <div class="explanation">
+                        1. <strong>Function call:</strong> <code>add(5, 10)</code><br>
+                        2. <strong>Template signature:</strong> <code>T add(T a, T b)</code><br>
+                        3. <strong>First argument:</strong> 5 is an <code>int</code>, so compiler tries T = int<br>
+                        4. <strong>Second argument:</strong> 10 is also an <code>int</code>, confirming T = int<br>
+                        5. <strong>Result:</strong> Compiler generates <code>int add(int a, int b)</code><br>
+                        6. <strong>Compilation:</strong> Function is created and called successfully
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">When deduction works vs. when it doesn't:</div>
+                    <div class="code-block"><span class="comment">// ✓ WORKS - both args are int</span>
+<span class="function">add</span>(<span class="number">5</span>, <span class="number">10</span>);        <span class="comment">// T deduced as int</span>
+
+<span class="comment">// ✓ WORKS - both args are double</span>
+<span class="function">add</span>(<span class="number">3.5</span>, <span class="number">2.1</span>);    <span class="comment">// T deduced as double</span>
+
+<span class="comment">// ✗ ERROR - mismatched types!</span>
+<span class="function">add</span>(<span class="number">5</span>, <span class="number">3.5</span>);      <span class="comment">// T = int or double? Compiler can't decide!</span>
+
+<span class="comment">// ✓ WORKS - explicit type resolves ambiguity</span>
+<span class="function">add</span>&lt;<span class="type">double</span>&gt;(<span class="number">5</span>, <span class="number">3.5</span>);  <span class="comment">// 5 converts to 5.0</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option A is wrong:</div>
+                        <div class="wrong-answer-text">
+                            You CAN specify the type explicitly (<code>add&lt;int&gt;(5, 10)</code>), but you don't HAVE to. Template argument deduction is a core feature of C++ templates that makes them convenient to use. Explicit specification is only needed when the compiler can't deduce the type or when you want to override the deduction.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            There's no default type for templates. The compiler deduces the EXACT type from the arguments. If you pass <code>int</code>s, you get <code>int</code>. If you pass <code>double</code>s, you get <code>double</code>. No automatic conversion to double happens.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This is a compile-time feature, not a runtime one. Template instantiation and type deduction happen during compilation, before the program even runs. If there's a problem, you'll get a compilation error, never a runtime error from the template mechanism itself.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">7</div>
+                <div class="question-type">Code Tracing</div>
+            </div>
+            <div class="question-text">
+                What does this code output?
+            </div>
+            <div class="code-block"><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Box</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span> value;
+<span class="keyword">public</span>:
+    <span class="function">Box</span>(<span class="type">T</span> v) : value(v) {}
+    <span class="type">void</span> <span class="function">triple</span>() { value = value * <span class="number">3</span>; }
+    <span class="type">T</span> <span class="function">getValue</span>() { <span class="keyword">return</span> value; }
+};
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="type">Box</span>&lt;<span class="type">int</span>&gt; b1(<span class="number">4</span>);
+    <span class="type">Box</span>&lt;<span class="type">double</span>&gt; b2(<span class="number">2.5</span>);
+    b1.<span class="function">triple</span>();
+    b2.<span class="function">triple</span>();
+    cout &lt;&lt; b1.<span class="function">getValue</span>() &lt;&lt; <span class="string">" "</span> &lt;&lt; b2.<span class="function">getValue</span>();
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>12 7.5</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>4 2.5</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text"><code>7 5.0</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">Compilation error</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer7')">Show Answer</button>
+            <div class="answer-section" id="answer7">
+                <div class="correct-answer">Correct Answer: A (Output: 12 7.5)</div>
+                <div class="explanation">
+                    Let me trace through this step by step, showing how the template class gets instantiated twice with different types:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Object b1 - Box&lt;int&gt;:</div>
+                    <div class="explanation">
+                        <strong>Line 15:</strong> <code>Box&lt;int&gt; b1(4);</code><br>
+                        &nbsp;&nbsp;• Compiler generates a <code>Box</code> class where T = int<br>
+                        &nbsp;&nbsp;• Constructor is called with v = 4<br>
+                        &nbsp;&nbsp;• Initializer list: <code>value(v)</code> sets <code>value = 4</code><br>
+                        &nbsp;&nbsp;• Object state: b1.value = 4<br><br>
+
+                        <strong>Line 17:</strong> <code>b1.triple();</code><br>
+                        &nbsp;&nbsp;• Line 10 executes: <code>value = value * 3</code><br>
+                        &nbsp;&nbsp;• Calculation: value = 4 * 3 = 12<br>
+                        &nbsp;&nbsp;• Object state: b1.value = 12<br><br>
+
+                        <strong>Line 19:</strong> <code>b1.getValue()</code><br>
+                        &nbsp;&nbsp;• Returns b1.value which is 12<br>
+                        &nbsp;&nbsp;• Prints: <code>12</code>
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Object b2 - Box&lt;double&gt;:</div>
+                    <div class="explanation">
+                        <strong>Line 16:</strong> <code>Box&lt;double&gt; b2(2.5);</code><br>
+                        &nbsp;&nbsp;• Compiler generates a SEPARATE <code>Box</code> class where T = double<br>
+                        &nbsp;&nbsp;• Constructor is called with v = 2.5<br>
+                        &nbsp;&nbsp;• Initializer list: <code>value(v)</code> sets <code>value = 2.5</code><br>
+                        &nbsp;&nbsp;• Object state: b2.value = 2.5<br><br>
+
+                        <strong>Line 18:</strong> <code>b2.triple();</code><br>
+                        &nbsp;&nbsp;• Line 10 executes: <code>value = value * 3</code><br>
+                        &nbsp;&nbsp;• Calculation: value = 2.5 * 3 = 7.5<br>
+                        &nbsp;&nbsp;• Object state: b2.value = 7.5<br><br>
+
+                        <strong>Line 19:</strong> <code>b2.getValue()</code><br>
+                        &nbsp;&nbsp;• Returns b2.value which is 7.5<br>
+                        &nbsp;&nbsp;• Prints: <code>7.5</code>
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Key insight:</div>
+                    <div class="explanation">
+                        The compiler creates TWO completely separate classes from the template: one for <code>int</code> and one for <code>double</code>. They're independent and work with their respective types throughout.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This would mean the <code>triple()</code> function didn't execute. But we clearly call <code>b1.triple()</code> and <code>b2.triple()</code> on lines 17-18, which multiply the values by 3.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This would mean <code>4 * 3 = 7</code> and <code>2.5 * 3 = 5.0</code>, which is mathematically incorrect. The calculation is simply <code>value * 3</code>, giving us 12 and 7.5 respectively.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This code compiles perfectly. Template classes can be instantiated with any type that supports the operations used inside (in this case, both <code>int</code> and <code>double</code> support multiplication by 3). The syntax is all correct.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">8</div>
+                <div class="question-type">Multiple Choice</div>
+            </div>
+            <div class="question-text">
+                What will happen if you try to compile this code?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">void</span> <span class="function">printDouble</span>(<span class="type">T</span> value) {
+    cout &lt;&lt; value * <span class="number">2</span>;
+}
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="function">printDouble</span>(<span class="string">"Hello"</span>);
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Outputs: <code>HelloHello</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">Compilation error - can't multiply a string by 2</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">Outputs the string twice</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">Runtime error when trying to multiply</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer8')">Show Answer</button>
+            <div class="answer-section" id="answer8">
+                <div class="correct-answer">Correct Answer: B</div>
+                <div class="explanation">
+                    This code will fail to compile because you cannot multiply a C-style string (const char*) by an integer. Let me explain what happens during compilation:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Compilation process:</div>
+                    <div class="explanation">
+                        <strong>Step 1:</strong> Template argument deduction<br>
+                        &nbsp;&nbsp;• Compiler sees <code>printDouble("Hello")</code><br>
+                        &nbsp;&nbsp;• Type of <code>"Hello"</code> is <code>const char*</code> (pointer to chars)<br>
+                        &nbsp;&nbsp;• Compiler deduces T = <code>const char*</code><br><br>
+
+                        <strong>Step 2:</strong> Template instantiation attempt<br>
+                        &nbsp;&nbsp;• Compiler tries to generate:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<code>void printDouble(const char* value) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; value * 2;  // Try to compile this<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;}</code><br><br>
+
+                        <strong>Step 3:</strong> Compilation error!<br>
+                        &nbsp;&nbsp;• The expression <code>value * 2</code> where value is <code>const char*</code><br>
+                        &nbsp;&nbsp;• C++ does not define multiplication between a pointer and an int in this way<br>
+                        &nbsp;&nbsp;• Error message: "invalid operands to binary expression"
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Important concept - Template constraints:</div>
+                    <div class="explanation">
+                        Templates don't check if operations are valid until you actually USE them with a specific type. The template itself compiles fine, but when you try to instantiate it with <code>const char*</code>, the compiler discovers that <code>const char* * 2</code> is not a valid operation.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option A is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This would require the <code>*</code> operator to work like string repetition (as in Python), but C++ doesn't support this. The <code>*</code> operator for pointers does pointer arithmetic, not string manipulation, and certainly not string repetition.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Similar to option A, this assumes the multiplication operator somehow duplicates the string. C++ has no built-in operator for string repetition like some other languages do. You'd need to write a loop or use other string functions.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This is a compile-time error, not a runtime error. The compiler catches this problem when trying to instantiate the template. The code never makes it to the running stage - it fails during compilation.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">9</div>
+                <div class="question-type">True/False</div>
+            </div>
+            <div class="question-text">
+                True or False: You can create a template with multiple type parameters, like <code>template&lt;class T, class U&gt;</code>.
+            </div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">True</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">False</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer9')">Show Answer</button>
+            <div class="answer-section" id="answer9">
+                <div class="correct-answer">Correct Answer: A (True)</div>
+                <div class="explanation">
+                    Absolutely! Templates can have multiple type parameters. This is really useful when you need to work with different types in the same function or class. Here's how it works:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Example with function template:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>, <span class="keyword">class</span> <span class="type">U</span>&gt;
+<span class="type">void</span> <span class="function">printPair</span>(<span class="type">T</span> first, <span class="type">U</span> second) {
+    cout &lt;&lt; <span class="string">"First: "</span> &lt;&lt; first &lt;&lt; <span class="string">", Second: "</span> &lt;&lt; second;
+}
+
+<span class="comment">// Can call with different type combinations:</span>
+<span class="function">printPair</span>(<span class="number">42</span>, <span class="string">"hello"</span>);      <span class="comment">// T=int, U=const char*</span>
+<span class="function">printPair</span>(<span class="number">3.14</span>, <span class="number">100</span>);        <span class="comment">// T=double, U=int</span>
+<span class="function">printPair</span>(<span class="string">"hi"</span>, <span class="number">2.5</span>);        <span class="comment">// T=const char*, U=double</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Example with class template:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>, <span class="keyword">class</span> <span class="type">U</span>&gt;
+<span class="keyword">class</span> <span class="type">Pair</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span> first;
+    <span class="type">U</span> second;
+<span class="keyword">public</span>:
+    <span class="function">Pair</span>(<span class="type">T</span> f, <span class="type">U</span> s) : first(f), second(s) {}
+    <span class="type">T</span> <span class="function">getFirst</span>() { <span class="keyword">return</span> first; }
+    <span class="type">U</span> <span class="function">getSecond</span>() { <span class="keyword">return</span> second; }
+};
+
+<span class="comment">// Create pairs with different type combinations:</span>
+<span class="type">Pair</span>&lt;<span class="type">int</span>, <span class="type">string</span>&gt; p1(<span class="number">1</span>, <span class="string">"one"</span>);
+<span class="type">Pair</span>&lt;<span class="type">double</span>, <span class="type">int</span>&gt; p2(<span class="number">3.14</span>, <span class="number">100</span>);</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Real-world usage:</div>
+                    <div class="explanation">
+                        Multiple type parameters are used everywhere in C++! The STL (Standard Template Library) uses this extensively:
+                        <br>• <code>std::map&lt;KeyType, ValueType&gt;</code> - maps need two types
+                        <br>• <code>std::pair&lt;T1, T2&gt;</code> - pairs of different types
+                        <br>• You can even have 3+ type parameters if needed!
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why False is wrong:</div>
+                    <div class="wrong-answer-text">
+                        Templates are not limited to a single type parameter. C++ allows you to have as many type parameters as you need, separated by commas: <code>template&lt;class T, class U, class V&gt;</code> and so on. This is a fundamental feature of C++ templates.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">10</div>
+                <div class="question-type">Fill in the Blank</div>
+            </div>
+            <div class="question-text">
+                Complete this template class declaration to create a generic container:
+            </div>
+            <div class="code-block">_____________  <span class="comment">// Fill in this line</span>
+<span class="keyword">class</span> <span class="type">Container</span> {
+<span class="keyword">private</span>:
+    T* data;
+    <span class="type">int</span> size;
+<span class="keyword">public</span>:
+    <span class="function">Container</span>(<span class="type">int</span> s);
+    T <span class="function">get</span>(<span class="type">int</span> index);
+};</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>template&lt;class T&gt;</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>template&lt;typename T&gt;</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">Both A and B are correct</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text"><code>class template&lt;T&gt;</code></div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer10')">Show Answer</button>
+            <div class="answer-section" id="answer10">
+                <div class="correct-answer">Correct Answer: C (Both A and B are correct)</div>
+                <div class="explanation">
+                    Both <code>template&lt;class T&gt;</code> and <code>template&lt;typename T&gt;</code> are valid and mean exactly the same thing. Either one can be used on the blank line to create a proper template class declaration.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Complete code with option A:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Container</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span>* data;
+    <span class="type">int</span> size;
+<span class="keyword">public</span>:
+    <span class="function">Container</span>(<span class="type">int</span> s);
+    <span class="type">T</span> <span class="function">get</span>(<span class="type">int</span> index);
+};</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Complete code with option B:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Container</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span>* data;
+    <span class="type">int</span> size;
+<span class="keyword">public</span>:
+    <span class="function">Container</span>(<span class="type">int</span> s);
+    <span class="type">T</span> <span class="function">get</span>(<span class="type">int</span> index);
+};</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Usage example:</div>
+                    <div class="code-block"><span class="comment">// Can create containers for any type:</span>
+<span class="type">Container</span>&lt;<span class="type">int</span>&gt; intContainer(<span class="number">10</span>);
+<span class="type">Container</span>&lt;<span class="type">double</span>&gt; doubleContainer(<span class="number">5</span>);
+<span class="type">Container</span>&lt;<span class="type">string</span>&gt; stringContainer(<span class="number">20</span>);</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other option is wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            The syntax <code>class template&lt;T&gt;</code> is completely incorrect. The <code>template</code> keyword must come FIRST, before everything else. The word <code>class</code> appears in two places: once in the template parameter list (<code>template&lt;class T&gt;</code>) and once in the class declaration (<code>class Container</code>). You can't put "class template" together - that's not valid C++ syntax.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">11</div>
+                <div class="question-type">Multiple Choice</div>
+            </div>
+            <div class="question-text">
+                Lerato is creating a music player with a generic playlist. Which of these correctly declares a class template for her Playlist?
+            </div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>template&lt;class T&gt; class Playlist { ... };</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>class Playlist&lt;template T&gt; { ... };</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text"><code>class&lt;T&gt; template Playlist { ... };</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text"><code>Playlist&lt;class T&gt; { ... };</code></div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer11')">Show Answer</button>
+            <div class="answer-section" id="answer11">
+                <div class="correct-answer">Correct Answer: A</div>
+                <div class="explanation">
+                    Option A follows the correct syntax for declaring a template class: <code>template&lt;class T&gt;</code> comes BEFORE the class declaration. This allows Lerato to create playlists for different types:
+                </div>
+                <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Playlist</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span>* songs;
+    <span class="type">int</span> count;
+<span class="keyword">public</span>:
+    <span class="function">Playlist</span>(<span class="type">int</span> size);
+    <span class="type">void</span> <span class="function">addSong</span>(<span class="type">T</span> song);
+};
+
+<span class="comment">// She can then use it for different song types:</span>
+<span class="type">Playlist</span>&lt;<span class="type">string</span>&gt; rockPlaylist(<span class="number">50</span>);
+<span class="type">Playlist</span>&lt;<span class="type">int</span>&gt; songIDPlaylist(<span class="number">100</span>);</div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            The syntax is completely backwards. You can't put <code>template</code> inside the angle brackets. The template parameter list should contain the type parameter (T), not the keyword "template". This would cause immediate compilation errors.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            The keywords are in the wrong order. <code>template</code> must come first, then the parameter list in angle brackets, then the <code>class</code> keyword for the actual class declaration. <code>class&lt;T&gt; template</code> is not valid C++ syntax.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Missing the <code>template</code> keyword entirely! Without <code>template&lt;class T&gt;</code> before the class, the compiler doesn't know this is supposed to be a template. The angle brackets on the class name alone don't make it a template.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">12</div>
+                <div class="question-type">Find the Bug</div>
+            </div>
+            <div class="question-text">
+                Thabo wrote this code for his anime rating system. There's a bug - what's wrong?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Rating</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span> score;
+<span class="keyword">public</span>:
+    <span class="type">void</span> <span class="function">setScore</span>(<span class="type">T</span> s) { score = s; }
+    <span class="type">T</span> <span class="function">getScore</span>() { <span class="keyword">return</span> score; }
+};
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="type">Rating</span> myRating;  <span class="comment">// Create a rating</span>
+    myRating.<span class="function">setScore</span>(<span class="number">8.5</span>);
+    cout &lt;&lt; myRating.<span class="function">getScore</span>();
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Missing type specification - should be <code>Rating&lt;double&gt; myRating;</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">The template parameter should be specified in setScore</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">Need to write <code>template&lt;class T&gt;</code> before main</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">No bug - the code is correct</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer12')">Show Answer</button>
+            <div class="answer-section" id="answer12">
+                <div class="correct-answer">Correct Answer: A</div>
+                <div class="explanation">
+                    The bug is on line 11: <code>Rating myRating;</code>. When you create an object from a template class, you MUST specify what type T should be. The compiler doesn't know if Thabo wants a <code>Rating&lt;int&gt;</code>, <code>Rating&lt;double&gt;</code>, or <code>Rating&lt;string&gt;</code>.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">What happens during compilation:</div>
+                    <div class="explanation">
+                        <strong>Compiler sees:</strong> <code>Rating myRating;</code><br>
+                        <strong>Compiler thinks:</strong> "Rating is a template, not a complete type. What should T be?"<br>
+                        <strong>Error message:</strong> "use of class template 'Rating' requires template arguments"<br>
+                        <strong>Compilation:</strong> FAILS - cannot proceed
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Correct fix:</div>
+                    <div class="code-block"><span class="type">int</span> <span class="function">main</span>() {
+    <span class="type">Rating</span>&lt;<span class="type">double</span>&gt; myRating;  <span class="comment">// NOW compiler knows T = double</span>
+    myRating.<span class="function">setScore</span>(<span class="number">8.5</span>);    <span class="comment">// Works! 8.5 is a double</span>
+    cout &lt;&lt; myRating.<span class="function">getScore</span>();
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+                    <div class="explanation">
+                        Now the compiler can generate a specific <code>Rating</code> class where <code>T = double</code>, with <code>double score;</code>, <code>void setScore(double s);</code>, and <code>double getScore();</code>.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Important rule:</div>
+                    <div class="explanation">
+                        <strong>Function templates:</strong> Type CAN be deduced from arguments<br>
+                        <strong>Class templates:</strong> Type MUST be explicitly specified (in C++98)<br><br>
+                        This is why <code>maximum(5, 10)</code> works without <code>&lt;int&gt;</code>, but <code>Rating myRating</code> doesn't work without <code>&lt;double&gt;</code>.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Once you create <code>Rating&lt;double&gt; myRating</code>, the type is already locked in. You don't specify the template parameter again when calling member functions. <code>myRating.setScore(8.5)</code> is correct - the object already knows it's working with doubles.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            <code>main</code> is not a template function! It's a regular function that uses template classes. Only functions or classes that need to be generic should be templates. <code>main</code> is the entry point of your program and is always the same signature.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            There's definitely a bug. <code>Rating myRating;</code> will not compile because template classes require explicit type arguments in C++98. The compiler needs to know what T is.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 13 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">13</div>
+                <div class="question-type">Code Tracing</div>
+            </div>
+            <div class="question-text">
+                What is the output of this code?
+            </div>
+            <div class="code-block"><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">T</span> <span class="function">triple</span>(<span class="type">T</span> val) {
+    <span class="keyword">return</span> val + val + val;
+}
+
+<span class="type">int</span> <span class="function">main</span>() {
+    cout &lt;&lt; <span class="function">triple</span>(<span class="number">5</span>) &lt;&lt; <span class="string">" "</span>;
+    cout &lt;&lt; <span class="function">triple</span>(<span class="number">2.0</span>);
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>15 6</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>15 6.0</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text"><code>5 2.0</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">Compilation error</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer13')">Show Answer</button>
+            <div class="answer-section" id="answer13">
+                <div class="correct-answer">Correct Answer: B (Output: 15 6.0)</div>
+                <div class="explanation">
+                    Let me trace through both function calls step by step:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">First call: triple(5)</div>
+                    <div class="explanation">
+                        <strong>Line 10:</strong> <code>triple(5)</code> where argument is <code>int</code><br>
+                        <strong>Template deduction:</strong> T = int<br>
+                        <strong>Compiler generates:</strong> <code>int triple(int val)</code><br>
+                        <strong>Function execution:</strong> val = 5<br>
+                        <strong>Line 6:</strong> <code>return val + val + val;</code><br>
+                        &nbsp;&nbsp;• First addition: <code>val + val</code> = 5 + 5 = 10<br>
+                        &nbsp;&nbsp;• Second addition: <code>10 + val</code> = 10 + 5 = 15<br>
+                        <strong>Return value:</strong> 15 (int)<br>
+                        <strong>Output:</strong> Prints <code>15</code> followed by a space
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Second call: triple(2.0)</div>
+                    <div class="explanation">
+                        <strong>Line 11:</strong> <code>triple(2.0)</code> where argument is <code>double</code> (the .0 makes it double)<br>
+                        <strong>Template deduction:</strong> T = double<br>
+                        <strong>Compiler generates:</strong> <code>double triple(double val)</code><br>
+                        <strong>Function execution:</strong> val = 2.0<br>
+                        <strong>Line 6:</strong> <code>return val + val + val;</code><br>
+                        &nbsp;&nbsp;• First addition: <code>val + val</code> = 2.0 + 2.0 = 4.0<br>
+                        &nbsp;&nbsp;• Second addition: <code>4.0 + val</code> = 4.0 + 2.0 = 6.0<br>
+                        <strong>Return value:</strong> 6.0 (double)<br>
+                        <strong>Output:</strong> Prints <code>6.0</code> (or possibly just <code>6</code> depending on cout's default formatting)
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Key insight:</div>
+                    <div class="explanation">
+                        The same template generates TWO different functions: one for <code>int</code> and one for <code>double</code>. The operation <code>val + val + val</code> works for both types because both support the <code>+</code> operator. Each instantiation preserves its type throughout.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option A is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This would mean the second call returned an <code>int</code> (6) instead of a <code>double</code> (6.0). But since we passed <code>2.0</code> (a double), T is deduced as double, and the return type is double. <code>cout</code> will display it as <code>6</code> or <code>6.0</code> (most likely <code>6</code> due to default formatting, but the value is still 6.0).
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This would mean the function didn't perform the calculation at all, just returning the original value. But the function clearly adds the value three times: <code>val + val + val</code> = <code>5 + 5 + 5 = 15</code> and <code>2.0 + 2.0 + 2.0 = 6.0</code>.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This code compiles perfectly. Both <code>int</code> and <code>double</code> support the <code>+</code> operator, so the template can be instantiated for both types. There are no syntax errors or type mismatches.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">14</div>
+                <div class="question-type">True/False</div>
+            </div>
+            <div class="question-text">
+                True or False: Template functions are compiled when you write them, just like regular functions.
+            </div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">True</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">False</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer14')">Show Answer</button>
+            <div class="answer-section" id="answer14">
+                <div class="correct-answer">Correct Answer: B (False)</div>
+                <div class="explanation">
+                    Template functions are NOT compiled when you write them. They're only compiled when you actually USE them with a specific type. This is a fundamental difference between templates and regular functions!
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">How regular functions work:</div>
+                    <div class="code-block"><span class="type">int</span> <span class="function">add</span>(<span class="type">int</span> a, <span class="type">int</span> b) {  <span class="comment">// Compiler compiles this NOW</span>
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="comment">// Function is fully compiled and ready to use</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">How template functions work:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">T</span> <span class="function">add</span>(<span class="type">T</span> a, <span class="type">T</span> b) {  <span class="comment">// Compiler does NOT compile this yet!</span>
+    <span class="keyword">return</span> a + b;     <span class="comment">// This is just a BLUEPRINT</span>
+}
+
+<span class="comment">// Later in your code:</span>
+<span class="type">int</span> x = <span class="function">add</span>(<span class="number">5</span>, <span class="number">10</span>);        <span class="comment">// NOW compiler generates int add(int, int)</span>
+<span class="type">double</span> y = <span class="function">add</span>(<span class="number">2.5</span>, <span class="number">3.5</span>);  <span class="comment">// NOW compiler generates double add(double, double)</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">The compilation process:</div>
+                    <div class="explanation">
+                        <strong>Step 1:</strong> Write template (just stores the blueprint, no compilation yet)<br>
+                        <strong>Step 2:</strong> Use template with <code>int</code> → Compiler generates and compiles <code>int</code> version<br>
+                        <strong>Step 3:</strong> Use template with <code>double</code> → Compiler generates and compiles <code>double</code> version<br>
+                        <strong>Step 4:</strong> Use template with <code>string</code> → Compiler generates and compiles <code>string</code> version
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why this matters:</div>
+                    <div class="explanation">
+                        1. <strong>Errors appear late:</strong> If there's a bug in your template, you won't see it until you use the template with a type that triggers the bug<br><br>
+                        2. <strong>Code generation:</strong> If you use a template with 5 different types, the compiler creates 5 different functions<br><br>
+                        3. <strong>Header files:</strong> This is why template definitions MUST be in header files - the compiler needs to see the blueprint when generating the code
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Example of late error detection:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">void</span> <span class="function">printDouble</span>(<span class="type">T</span> val) {
+    cout &lt;&lt; val * <span class="number">2</span>;  <span class="comment">// Looks fine, compiles without errors at first!</span>
+}
+
+<span class="function">printDouble</span>(<span class="number">10</span>);      <span class="comment">// ✓ Works! Compiler generates int version</span>
+<span class="function">printDouble</span>(<span class="string">"Hi"</span>);    <span class="comment">// ✗ ERROR! Can't multiply string by 2</span>
+                              <span class="comment">//   Error happens HERE, when used!</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why True is wrong:</div>
+                    <div class="wrong-answer-text">
+                        Templates are explicitly NOT compiled when you write them. They use a lazy compilation model: compilation happens on-demand when you instantiate the template with a concrete type. This is called "template instantiation" and it's a compile-time feature, but it doesn't happen when the template is defined - only when it's used.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 15 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">15</div>
+                <div class="question-type">Multiple Choice</div>
+            </div>
+            <div class="question-text">
+                What will happen if you try to compile this code?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">void</span> <span class="function">compare</span>(<span class="type">T</span> a, <span class="type">T</span> b) {
+    <span class="keyword">if</span> (a &gt; b)
+        cout &lt;&lt; <span class="string">"First is larger"</span>;
+    <span class="keyword">else</span>
+        cout &lt;&lt; <span class="string">"Second is larger or equal"</span>;
+}
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="function">compare</span>(<span class="number">10</span>, <span class="number">5</span>);
+    <span class="function">compare</span>(<span class="number">3.5</span>, <span class="number">7.2</span>);
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Compiles successfully and runs correctly</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">Compilation error - can't use &gt; operator on template types</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">Compilation error - mismatched types in function calls</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">Runtime error when comparing values</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer15')">Show Answer</button>
+            <div class="answer-section" id="answer15">
+                <div class="correct-answer">Correct Answer: A</div>
+                <div class="explanation">
+                    This code compiles and runs perfectly! Let me explain why it works and trace through the execution:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">First call: compare(10, 5)</div>
+                    <div class="explanation">
+                        <strong>Template deduction:</strong> Both arguments are <code>int</code>, so T = int<br>
+                        <strong>Generated function:</strong><br>
+                        <code>void compare(int a, int b) {<br>
+                        &nbsp;&nbsp;if (a &gt; b) ...<br>
+                        }</code><br>
+                        <strong>Execution:</strong> a = 10, b = 5<br>
+                        <strong>Condition:</strong> <code>10 &gt; 5</code> is <code>true</code><br>
+                        <strong>Output:</strong> "First is larger"<br>
+                        <strong>Why it works:</strong> <code>int</code> supports the <code>&gt;</code> operator ✓
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Second call: compare(3.5, 7.2)</div>
+                    <div class="explanation">
+                        <strong>Template deduction:</strong> Both arguments are <code>double</code>, so T = double<br>
+                        <strong>Generated function:</strong><br>
+                        <code>void compare(double a, double b) {<br>
+                        &nbsp;&nbsp;if (a &gt; b) ...<br>
+                        }</code><br>
+                        <strong>Execution:</strong> a = 3.5, b = 7.2<br>
+                        <strong>Condition:</strong> <code>3.5 &gt; 7.2</code> is <code>false</code><br>
+                        <strong>Output:</strong> "Second is larger or equal"<br>
+                        <strong>Why it works:</strong> <code>double</code> supports the <code>&gt;</code> operator ✓
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Complete program output:</div>
+                    <div class="code-block">First is larger
+Second is larger or equal</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Template requirements:</div>
+                    <div class="explanation">
+                        Templates work as long as the type you use supports all the operations in the template. In this case:
+                        <br>• The template uses the <code>&gt;</code> operator
+                        <br>• Both <code>int</code> and <code>double</code> support <code>&gt;</code>
+                        <br>• Therefore, both instantiations compile successfully
+                        <br><br>
+                        If you tried <code>compare("hello", "world")</code>, that would ALSO work because C-style strings can be compared with <code>&gt;</code> (compares memory addresses, not content, but it compiles).
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            You CAN use operators like <code>&gt;</code> on template types, as long as the actual type you instantiate supports that operator. Templates don't restrict operations - they just require that whatever type you use supports the operations you perform. Since <code>int</code> and <code>double</code> both support <code>&gt;</code>, this works fine.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            There are no mismatched types. <code>compare(10, 5)</code> has both arguments as <code>int</code>, and <code>compare(3.5, 7.2)</code> has both arguments as <code>double</code>. Each call is internally consistent. If you tried <code>compare(10, 3.5)</code>, THEN you'd get a mismatch error because the compiler can't decide if T should be <code>int</code> or <code>double</code>.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This is not a runtime error situation. The comparison works perfectly for both <code>int</code> and <code>double</code> values. Runtime errors occur when the program crashes during execution, but this program runs smoothly and produces the expected output.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 16 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">16</div>
+                <div class="question-type">Find the Bug</div>
+            </div>
+            <div class="question-text">
+                Naledi is working on her anime tracker. This code has a subtle bug - what is it?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Stack</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span> items[<span class="number">100</span>];
+    <span class="type">int</span> top;
+<span class="keyword">public</span>:
+    <span class="function">Stack</span>() { top = <span class="number">-1</span>; }
+    <span class="type">void</span> <span class="function">push</span>(<span class="type">T</span> item) {
+        items[++top] = item;
+    }
+    <span class="type">T</span> <span class="function">pop</span>() {
+        <span class="keyword">return</span> items[top--];
+    }
+};</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">No bounds checking - could overflow or underflow the array</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">Should use <code>typename</code> instead of <code>class</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">The array size should be a template parameter</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">No bug - the code is correct</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer16')">Show Answer</button>
+            <div class="answer-section" id="answer16">
+                <div class="correct-answer">Correct Answer: A</div>
+                <div class="explanation">
+                    The bug is missing bounds checking! This stack can easily overflow (push too many items) or underflow (pop from an empty stack), causing undefined behavior.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Overflow scenario:</div>
+                    <div class="code-block"><span class="type">Stack</span>&lt;<span class="type">int</span>&gt; s;
+<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">101</span>; i++) {  <span class="comment">// Push 101 items!</span>
+    s.<span class="function">push</span>(i);  <span class="comment">// ⚠ DANGER when i &gt;= 100</span>
+}
+
+<span class="comment">// What happens:</span>
+<span class="comment">// push #0:   top becomes 0, items[0] = 0   ✓ OK</span>
+<span class="comment">// push #99:  top becomes 99, items[99] = 99 ✓ OK</span>
+<span class="comment">// push #100: top becomes 100, items[100] = 100 ✗ OUT OF BOUNDS!</span>
+<span class="comment">// push #101: top becomes 101, items[101] = 101 ✗ UNDEFINED BEHAVIOR!</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Underflow scenario:</div>
+                    <div class="code-block"><span class="type">Stack</span>&lt;<span class="type">string</span>&gt; s;  <span class="comment">// Empty stack, top = -1</span>
+<span class="type">string</span> anime = s.<span class="function">pop</span>();  <span class="comment">// ⚠ DANGER - popping from empty stack!</span>
+
+<span class="comment">// What happens:</span>
+<span class="comment">// top is -1</span>
+<span class="comment">// return items[top--]  →  return items[-1]  ✗ NEGATIVE INDEX!</span>
+<span class="comment">// Then top becomes -2, making it worse</span>
+<span class="comment">// UNDEFINED BEHAVIOR - could crash, return garbage, or corrupt memory</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Correct implementation with bounds checking:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Stack</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span> items[<span class="number">100</span>];
+    <span class="type">int</span> top;
+<span class="keyword">public</span>:
+    <span class="function">Stack</span>() { top = <span class="number">-1</span>; }
+
+    <span class="type">void</span> <span class="function">push</span>(<span class="type">T</span> item) {
+        <span class="keyword">if</span> (top &gt;= <span class="number">99</span>) {  <span class="comment">// Check for overflow!</span>
+            cout &lt;&lt; <span class="string">"Error: Stack overflow!"</span>;
+            <span class="keyword">return</span>;
+        }
+        items[++top] = item;
+    }
+
+    <span class="type">T</span> <span class="function">pop</span>() {
+        <span class="keyword">if</span> (top &lt; <span class="number">0</span>) {  <span class="comment">// Check for underflow!</span>
+            cout &lt;&lt; <span class="string">"Error: Stack underflow!"</span>;
+            <span class="keyword">return</span> <span class="type">T</span>();  <span class="comment">// Return default value</span>
+        }
+        <span class="keyword">return</span> items[top--];
+    }
+};</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            <code>class</code> and <code>typename</code> are completely interchangeable in template parameters. Either one is valid. Using <code>class</code> doesn't cause any bugs - it's purely a stylistic choice.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            While making the array size a template parameter would be a nice IMPROVEMENT (allowing <code>Stack&lt;int, 50&gt;</code>), it's not a BUG. The current implementation with a fixed size of 100 works fine - the bug is the lack of bounds checking, not the hardcoded size.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            There's definitely a bug. Without bounds checking, this stack is unsafe and can cause memory corruption, crashes, or other undefined behavior when used incorrectly.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">17</div>
+                <div class="question-type">Multiple Choice</div>
+            </div>
+            <div class="question-text">
+                When working with template inheritance, why do you sometimes need to use <code>this-&gt;</code> to access inherited members?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Base</span> {
+<span class="keyword">protected</span>:
+    <span class="type">T</span> value;
+};
+
+<span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Derived</span> : <span class="keyword">public</span> <span class="type">Base</span>&lt;<span class="type">T</span>&gt; {
+<span class="keyword">public</span>:
+    <span class="type">void</span> <span class="function">print</span>() {
+        cout &lt;&lt; <span class="keyword">this</span>-&gt;value;  <span class="comment">// Why this-&gt; ?</span>
+    }
+};</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Because templates don't support regular inheritance</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">Because the base class is a template - compiler can't see its members until instantiation</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">It's just a style preference - not actually required</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">To avoid naming conflicts between base and derived classes</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer17')">Show Answer</button>
+            <div class="answer-section" id="answer17">
+                <div class="correct-answer">Correct Answer: B</div>
+                <div class="explanation">
+                    When you inherit from a template base class, the compiler doesn't know what members exist in the base until the template is instantiated with a specific type. Using <code>this-&gt;</code> tells the compiler to delay looking up the name until instantiation time.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">The problem - dependent base classes:</div>
+                    <div class="explanation">
+                        In the code above, <code>Base&lt;T&gt;</code> is called a "dependent base class" because its contents depend on the template parameter <code>T</code>. The compiler doesn't know what's inside <code>Base&lt;T&gt;</code> until you specify what <code>T</code> is.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">What happens without this-&gt;:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Derived</span> : <span class="keyword">public</span> <span class="type">Base</span>&lt;<span class="type">T</span>&gt; {
+<span class="keyword">public</span>:
+    <span class="type">void</span> <span class="function">print</span>() {
+        cout &lt;&lt; value;  <span class="comment">// ✗ COMPILATION ERROR!</span>
+        <span class="comment">// Error: "identifier value is undefined"</span>
+    }
+};</div>
+                    <div class="explanation">
+                        The compiler looks for <code>value</code> in the current scope, doesn't find it, and gives up. It doesn't look in <code>Base&lt;T&gt;</code> because it doesn't know what's in there yet.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Three solutions:</div>
+                    <div class="code-block"><span class="comment">// Solution 1: Use this-&gt; (recommended)</span>
+<span class="type">void</span> <span class="function">print</span>() {
+    cout &lt;&lt; <span class="keyword">this</span>-&gt;value;  <span class="comment">// ✓ Tells compiler to look in base class</span>
+}
+
+<span class="comment">// Solution 2: Use Base&lt;T&gt;:: prefix</span>
+<span class="type">void</span> <span class="function">print</span>() {
+    cout &lt;&lt; <span class="type">Base</span>&lt;<span class="type">T</span>&gt;::value;  <span class="comment">// ✓ Explicitly qualify the name</span>
+}
+
+<span class="comment">// Solution 3: Using declaration</span>
+<span class="keyword">using</span> <span class="type">Base</span>&lt;<span class="type">T</span>&gt;::value;
+<span class="type">void</span> <span class="function">print</span>() {
+    cout &lt;&lt; value;  <span class="comment">// ✓ Now compiler knows where to find it</span>
+}</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why this happens - two-phase lookup:</div>
+                    <div class="explanation">
+                        C++ uses "two-phase name lookup" for templates:
+                        <br><strong>Phase 1:</strong> When template is defined, non-dependent names are looked up
+                        <br><strong>Phase 2:</strong> When template is instantiated, dependent names are looked up
+                        <br><br>
+                        Without <code>this-&gt;</code>, <code>value</code> is treated as non-dependent, so it's looked up in Phase 1 (too early!). With <code>this-&gt;</code>, <code>value</code> becomes dependent, so it's looked up in Phase 2 (when the compiler knows what <code>Base&lt;T&gt;</code> contains).
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option A is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Templates fully support inheritance! You can inherit from template classes, create template derived classes, and use all the normal OOP features. Template inheritance works the same as regular inheritance, just with the added complexity of dependent names.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            It's NOT just style - it's actually REQUIRED for the code to compile! Without <code>this-&gt;</code> (or one of the other solutions), the compiler will give an error saying it can't find the member. This is a real technical requirement due to how template name lookup works.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            While <code>this-&gt;</code> CAN help with naming conflicts in general programming, that's not why it's needed here. Even if there are no naming conflicts at all, you still need <code>this-&gt;</code> when accessing dependent base class members from a template derived class.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 18 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">18</div>
+                <div class="question-type">Code Tracing</div>
+            </div>
+            <div class="question-text">
+                What is the output of this code?
+            </div>
+            <div class="code-block"><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Wrapper</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span> data;
+<span class="keyword">public</span>:
+    <span class="function">Wrapper</span>(<span class="type">T</span> d) : data(d) {}
+    <span class="type">void</span> <span class="function">modify</span>() { data = data + data; }
+    <span class="type">T</span> <span class="function">get</span>() { <span class="keyword">return</span> data; }
+};
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="type">Wrapper</span>&lt;<span class="type">int</span>&gt; w1(<span class="number">7</span>);
+    <span class="type">Wrapper</span>&lt;<span class="type">int</span>&gt; w2(<span class="number">3</span>);
+    w1.<span class="function">modify</span>();
+    cout &lt;&lt; w1.<span class="function">get</span>() &lt;&lt; <span class="string">" "</span> &lt;&lt; w2.<span class="function">get</span>();
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>14 3</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>14 6</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text"><code>7 3</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text"><code>7 6</code></div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer18')">Show Answer</button>
+            <div class="answer-section" id="answer18">
+                <div class="correct-answer">Correct Answer: A (Output: 14 3)</div>
+                <div class="explanation">
+                    Let me trace through this carefully, showing the state of each object:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Object w1 - Wrapper&lt;int&gt;:</div>
+                    <div class="explanation">
+                        <strong>Line 15:</strong> <code>Wrapper&lt;int&gt; w1(7);</code><br>
+                        &nbsp;&nbsp;• Template instantiation: Creates <code>Wrapper</code> class with T = int<br>
+                        &nbsp;&nbsp;• Constructor call: <code>Wrapper(int d)</code> with d = 7<br>
+                        &nbsp;&nbsp;• Initializer list: <code>data(d)</code> sets <code>data = 7</code><br>
+                        &nbsp;&nbsp;• <strong>State:</strong> w1.data = 7<br><br>
+
+                        <strong>Line 17:</strong> <code>w1.modify();</code><br>
+                        &nbsp;&nbsp;• Line 10 executes: <code>data = data + data;</code><br>
+                        &nbsp;&nbsp;• Right side: <code>data + data</code> = 7 + 7 = 14<br>
+                        &nbsp;&nbsp;• Assignment: <code>data = 14</code><br>
+                        &nbsp;&nbsp;• <strong>State:</strong> w1.data = 14<br><br>
+
+                        <strong>Line 18:</strong> <code>w1.get()</code><br>
+                        &nbsp;&nbsp;• Returns w1.data which is 14<br>
+                        &nbsp;&nbsp;• <strong>Output:</strong> Prints <code>14</code>
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Object w2 - Wrapper&lt;int&gt;:</div>
+                    <div class="explanation">
+                        <strong>Line 16:</strong> <code>Wrapper&lt;int&gt; w2(3);</code><br>
+                        &nbsp;&nbsp;• Uses same template instantiation (both are Wrapper&lt;int&gt;)<br>
+                        &nbsp;&nbsp;• Constructor call: <code>Wrapper(int d)</code> with d = 3<br>
+                        &nbsp;&nbsp;• Initializer list: <code>data(d)</code> sets <code>data = 3</code><br>
+                        &nbsp;&nbsp;• <strong>State:</strong> w2.data = 3<br><br>
+
+                        <strong>No modification:</strong> <code>w2.modify()</code> is NEVER called!<br>
+                        &nbsp;&nbsp;• w2.data remains unchanged<br>
+                        &nbsp;&nbsp;• <strong>State:</strong> w2.data = 3<br><br>
+
+                        <strong>Line 18:</strong> <code>w2.get()</code><br>
+                        &nbsp;&nbsp;• Returns w2.data which is still 3<br>
+                        &nbsp;&nbsp;• <strong>Output:</strong> Prints <code>3</code>
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Key insight:</div>
+                    <div class="explanation">
+                        Even though w1 and w2 are both <code>Wrapper&lt;int&gt;</code> objects created from the same template, they are INDEPENDENT objects with their own separate <code>data</code> members. Modifying w1 has NO effect on w2.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This would mean <code>w2.modify()</code> was called, changing w2.data from 3 to 6. But looking at the code, only <code>w1.modify()</code> is called on line 17. w2 is created but never modified.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This would mean <code>w1.modify()</code> didn't work. But it clearly does: <code>data = data + data</code> changes w1.data from 7 to 14. The modify function is called and executes successfully.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This would mean w1 wasn't modified (still 7) but w2 was modified (became 6). This is backwards - the code shows <code>w1.modify()</code> is called, not <code>w2.modify()</code>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">19</div>
+                <div class="question-type">True/False</div>
+            </div>
+            <div class="question-text">
+                True or False: You can create a template function that works with arrays of any type and any size.
+            </div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">True</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">False</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer19')">Show Answer</button>
+            <div class="answer-section" id="answer19">
+                <div class="correct-answer">Correct Answer: A (True)</div>
+                <div class="explanation">
+                    Absolutely! You can create template functions that handle arrays of any type AND any size. C++ supports non-type template parameters (like integers) in addition to type parameters.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Template with type parameter only:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">void</span> <span class="function">printArray</span>(<span class="type">T</span> arr[], <span class="type">int</span> size) {
+    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; size; i++) {
+        cout &lt;&lt; arr[i] &lt;&lt; <span class="string">" "</span>;
+    }
+}
+
+<span class="comment">// Works with any type, but you need to pass the size:</span>
+<span class="type">int</span> nums[] = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>};
+<span class="function">printArray</span>(nums, <span class="number">3</span>);  <span class="comment">// T = int</span>
+
+<span class="type">double</span> scores[] = {<span class="number">8.5</span>, <span class="number">9.0</span>, <span class="number">7.5</span>};
+<span class="function">printArray</span>(scores, <span class="number">3</span>);  <span class="comment">// T = double</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Template with type AND size parameters:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>, <span class="type">int</span> <span class="type">N</span>&gt;  <span class="comment">// N is a non-type parameter!</span>
+<span class="type">void</span> <span class="function">printArray</span>(<span class="type">T</span> (&amp;arr)[<span class="type">N</span>]) {  <span class="comment">// Reference to array of size N</span>
+    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="type">N</span>; i++) {
+        cout &lt;&lt; arr[i] &lt;&lt; <span class="string">" "</span>;
+    }
+}
+
+<span class="comment">// Compiler deduces BOTH type AND size!</span>
+<span class="type">int</span> nums[] = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>};
+<span class="function">printArray</span>(nums);  <span class="comment">// T = int, N = 5 (automatically!)</span>
+
+<span class="type">double</span> scores[] = {<span class="number">8.5</span>, <span class="number">9.0</span>, <span class="number">7.5</span>};
+<span class="function">printArray</span>(scores);  <span class="comment">// T = double, N = 3 (automatically!)</span>
+
+<span class="type">string</span> names[] = {<span class="string">"Alice"</span>, <span class="string">"Bob"</span>};
+<span class="function">printArray</span>(names);  <span class="comment">// T = string, N = 2 (automatically!)</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Real-world example - finding minimum in any array:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>, <span class="type">int</span> <span class="type">SIZE</span>&gt;
+<span class="type">T</span> <span class="function">findMin</span>(<span class="type">T</span> (&amp;arr)[<span class="type">SIZE</span>]) {
+    <span class="type">T</span> minimum = arr[<span class="number">0</span>];
+    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; <span class="type">SIZE</span>; i++) {
+        <span class="keyword">if</span> (arr[i] &lt; minimum) {
+            minimum = arr[i];
+        }
+    }
+    <span class="keyword">return</span> minimum;
+}
+
+<span class="type">int</span> nums[] = {<span class="number">5</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">1</span>, <span class="number">9</span>};
+cout &lt;&lt; <span class="function">findMin</span>(nums);  <span class="comment">// Outputs: 1</span>
+
+<span class="type">double</span> temps[] = {<span class="number">36.5</span>, <span class="number">37.2</span>, <span class="number">35.8</span>};
+cout &lt;&lt; <span class="function">findMin</span>(temps);  <span class="comment">// Outputs: 35.8</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Key advantages:</div>
+                    <div class="explanation">
+                        1. <strong>Type safety:</strong> Works with any type that supports the required operations<br>
+                        2. <strong>Size safety:</strong> Compiler knows the exact array size, preventing out-of-bounds errors<br>
+                        3. <strong>No extra parameters:</strong> Don't need to manually pass the size<br>
+                        4. <strong>Compile-time checking:</strong> Everything is checked at compile time
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why False is wrong:</div>
+                    <div class="wrong-answer-text">
+                        C++ definitely supports this through non-type template parameters. You can parameterize templates not just by type (class/typename), but also by integer values. This allows creating truly generic array-handling functions that work with any type and any size.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">20</div>
+                <div class="question-type">Fill in the Blank</div>
+            </div>
+            <div class="question-text">
+                Complete this code to correctly inherit from a template base class:
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Container</span> {
+<span class="keyword">protected</span>:
+    <span class="type">T</span> value;
+};
+
+<span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">NumberContainer</span> : <span class="keyword">public</span> _____________ {
+<span class="keyword">public</span>:
+    <span class="type">void</span> <span class="function">print</span>() {
+        cout &lt;&lt; <span class="keyword">this</span>-&gt;value;
+    }
+};</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>Container</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>Container&lt;T&gt;</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text"><code>Container&lt;int&gt;</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text"><code>template&lt;T&gt; Container</code></div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer20')">Show Answer</button>
+            <div class="answer-section" id="answer20">
+                <div class="correct-answer">Correct Answer: B (Container&lt;T&gt;)</div>
+                <div class="explanation">
+                    When inheriting from a template class, you must specify the template arguments. Since <code>NumberContainer</code> is also a template with parameter <code>T</code>, we pass that same <code>T</code> to the base class: <code>Container&lt;T&gt;</code>.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Complete correct code:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Container</span> {
+<span class="keyword">protected</span>:
+    <span class="type">T</span> value;
+};
+
+<span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">NumberContainer</span> : <span class="keyword">public</span> <span class="type">Container</span>&lt;<span class="type">T</span>&gt; {
+<span class="keyword">public</span>:
+    <span class="type">void</span> <span class="function">print</span>() {
+        cout &lt;&lt; <span class="keyword">this</span>-&gt;value;
+    }
+};</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">How it works:</div>
+                    <div class="explanation">
+                        When you create <code>NumberContainer&lt;int&gt;</code>:
+                        <br>• <code>NumberContainer</code>'s <code>T</code> becomes <code>int</code>
+                        <br>• Base class becomes <code>Container&lt;int&gt;</code>
+                        <br>• <code>Container</code>'s <code>T</code> also becomes <code>int</code>
+                        <br>• So <code>value</code> is of type <code>int</code>
+                        <br><br>
+                        When you create <code>NumberContainer&lt;double&gt;</code>:
+                        <br>• <code>NumberContainer</code>'s <code>T</code> becomes <code>double</code>
+                        <br>• Base class becomes <code>Container&lt;double&gt;</code>
+                        <br>• <code>Container</code>'s <code>T</code> also becomes <code>double</code>
+                        <br>• So <code>value</code> is of type <code>double</code>
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Usage example:</div>
+                    <div class="code-block"><span class="type">NumberContainer</span>&lt;<span class="type">int</span>&gt; intNum;
+<span class="type">NumberContainer</span>&lt;<span class="type">double</span>&gt; doubleNum;
+<span class="type">NumberContainer</span>&lt;<span class="type">string</span>&gt; stringNum;
+
+<span class="comment">// Each creates a different base class:</span>
+<span class="comment">// intNum inherits from Container&lt;int&gt;</span>
+<span class="comment">// doubleNum inherits from Container&lt;double&gt;</span>
+<span class="comment">// stringNum inherits from Container&lt;string&gt;</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option A is wrong:</div>
+                        <div class="wrong-answer-text">
+                            <code>Container</code> alone is incomplete - it's a template, not a type. Just like you can't write <code>Container myContainer;</code>, you can't inherit from <code>Container</code> without specifying what type it should hold. The compiler needs to know what <code>T</code> should be.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            <code>Container&lt;int&gt;</code> would work, but it hardcodes the base class to always use <code>int</code>. This defeats the purpose of making <code>NumberContainer</code> a template! With this approach, <code>NumberContainer&lt;double&gt;</code> would still inherit from <code>Container&lt;int&gt;</code>, which doesn't make sense.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            <code>template&lt;T&gt; Container</code> has incorrect syntax. You don't put <code>template&lt;&gt;</code> in the inheritance list. The template declaration (<code>template&lt;class T&gt;</code>) goes before the class declaration, not in the base class specification. The syntax is simply <code>Container&lt;T&gt;</code>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 21 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">21</div>
+                <div class="question-type">Multiple Choice</div>
+            </div>
+            <div class="question-text">
+                What's the output if you attempt to call this template function with mismatched types?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">T</span> <span class="function">add</span>(<span class="type">T</span> a, <span class="type">T</span> b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="type">int</span> result = <span class="function">add</span>(<span class="number">5</span>, <span class="number">3.5</span>);</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>8</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>8.5</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">Compilation error - type mismatch</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">Runtime error</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer21')">Show Answer</button>
+            <div class="answer-section" id="answer21">
+                <div class="correct-answer">Correct Answer: C</div>
+                <div class="explanation">
+                    This code will NOT compile because the compiler cannot deduce a single type for T. Let me explain why:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Type deduction attempt:</div>
+                    <div class="explanation">
+                        <strong>Function signature:</strong> <code>T add(T a, T b)</code><br>
+                        <strong>Function call:</strong> <code>add(5, 3.5)</code><br><br>
+
+                        <strong>First argument:</strong> 5 is <code>int</code> → Compiler thinks T = int<br>
+                        <strong>Second argument:</strong> 3.5 is <code>double</code> → Compiler thinks T = double<br>
+                        <strong>Conflict!</strong> T cannot be both <code>int</code> AND <code>double</code><br><br>
+
+                        <strong>Compiler error:</strong> "no matching function for call to 'add(int, double)'"<br>
+                        <strong>Full message:</strong> "template argument deduction/substitution failed: deduced conflicting types for parameter 'T'"
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why this is a problem:</div>
+                    <div class="explanation">
+                        The template requires BOTH parameters to be the same type T. Since you passed an <code>int</code> and a <code>double</code>, the compiler cannot instantiate this template. The function signature says "take two values of THE SAME type T", but you're providing two DIFFERENT types.
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Solutions:</div>
+                    <div class="code-block"><span class="comment">// Solution 1: Make both arguments the same type</span>
+<span class="type">int</span> result1 = <span class="function">add</span>(<span class="number">5</span>, <span class="number">3</span>);      <span class="comment">// ✓ Both int</span>
+<span class="type">double</span> result2 = <span class="function">add</span>(<span class="number">5.0</span>, <span class="number">3.5</span>);  <span class="comment">// ✓ Both double</span>
+
+<span class="comment">// Solution 2: Explicitly specify the type</span>
+<span class="type">double</span> result3 = <span class="function">add</span>&lt;<span class="type">double</span>&gt;(<span class="number">5</span>, <span class="number">3.5</span>);  <span class="comment">// ✓ 5 converts to 5.0</span>
+
+<span class="comment">// Solution 3: Use two template parameters</span>
+<span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>, <span class="keyword">class</span> <span class="type">U</span>&gt;
+<span class="type">??? </span><span class="function">add</span>(<span class="type">T</span> a, <span class="type">U</span> b) {  <span class="comment">// What's the return type? Tricky!</span>
+    <span class="keyword">return</span> a + b;
+}</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option A is wrong:</div>
+                        <div class="wrong-answer-text">
+                            The code never gets to run because it fails to compile. Even if it could run, <code>5 + 3.5 = 8.5</code>, not <code>8</code>. You can't get output from code that doesn't compile.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            While <code>8.5</code> would be the mathematically correct result of <code>5 + 3.5</code>, the code never compiles. The template type deduction fails before any calculation can happen.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            This is a compile-time error, not a runtime error. Template type deduction happens during compilation, so the compiler catches this problem before the program can run. Runtime errors only occur in running programs.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 22 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">22</div>
+                <div class="question-type">Find the Bug</div>
+            </div>
+            <div class="question-text">
+                This template class has a memory issue. What's the bug?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">DynamicArray</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span>* data;
+    <span class="type">int</span> size;
+<span class="keyword">public</span>:
+    <span class="function">DynamicArray</span>(<span class="type">int</span> s) {
+        size = s;
+        data = <span class="keyword">new</span> <span class="type">T</span>[size];
+    }
+};</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Missing destructor - memory leak!</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">Should use <code>malloc</code> instead of <code>new</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">Templates can't have dynamic memory</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">The size variable should be <code>static</code></div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer22')">Show Answer</button>
+            <div class="answer-section" id="answer22">
+                <div class="correct-answer">Correct Answer: A</div>
+                <div class="explanation">
+                    The bug is a classic memory leak! The class allocates memory with <code>new</code> in the constructor, but never deallocates it with <code>delete</code>. Every time a <code>DynamicArray</code> object goes out of scope or is destroyed, the memory stays allocated.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">The memory leak in action:</div>
+                    <div class="code-block"><span class="type">void</span> <span class="function">leakyFunction</span>() {
+    <span class="type">DynamicArray</span>&lt;<span class="type">int</span>&gt; arr(<span class="number">1000</span>);  <span class="comment">// Allocates 1000 ints on heap</span>
+}  <span class="comment">// ⚠ arr goes out of scope, but memory NOT freed!</span>
+   <span class="comment">//   1000 ints still taking up memory</span>
+   <span class="comment">//   No way to access or free this memory now!</span>
+
+<span class="comment">// Call this 100 times = 100,000 leaked ints!</span>
+<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) {
+    <span class="function">leakyFunction</span>();  <span class="comment">// Each call leaks more memory</span>
+}</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">What happens:</div>
+                    <div class="explanation">
+                        <strong>Object created:</strong> <code>DynamicArray&lt;int&gt; arr(1000);</code><br>
+                        &nbsp;&nbsp;• Constructor runs<br>
+                        &nbsp;&nbsp;• <code>new T[1000]</code> allocates memory on the heap<br>
+                        &nbsp;&nbsp;• <code>data</code> points to this memory<br><br>
+
+                        <strong>Object destroyed:</strong> Function ends, <code>arr</code> goes out of scope<br>
+                        &nbsp;&nbsp;• Default destructor runs (does nothing useful)<br>
+                        &nbsp;&nbsp;• Local variables <code>data</code> and <code>size</code> are destroyed<br>
+                        &nbsp;&nbsp;• BUT the heap memory they pointed to is NOT freed<br>
+                        &nbsp;&nbsp;• Memory is now inaccessible but still allocated = LEAK!
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Correct implementation:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">DynamicArray</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span>* data;
+    <span class="type">int</span> size;
+<span class="keyword">public</span>:
+    <span class="function">DynamicArray</span>(<span class="type">int</span> s) {
+        size = s;
+        data = <span class="keyword">new</span> <span class="type">T</span>[size];
+    }
+
+    <span class="comment">// ✓ Add destructor to free memory!</span>
+    ~<span class="function">DynamicArray</span>() {
+        <span class="keyword">delete</span>[] data;  <span class="comment">// Free the array</span>
+    }
+
+    <span class="comment">// Also should add copy constructor and assignment operator</span>
+    <span class="comment">// (Rule of Three!) but destructor is the critical missing piece</span>
+};</div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">The Rule of Three:</div>
+                    <div class="explanation">
+                        If a class needs ANY of these three, it probably needs ALL three:
+                        <br>1. <strong>Destructor</strong> - to free resources
+                        <br>2. <strong>Copy constructor</strong> - to handle deep copies
+                        <br>3. <strong>Copy assignment operator</strong> - to handle deep copies in assignment
+                        <br><br>
+                        This class has dynamic memory, so it needs all three to be safe!
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why the other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B is wrong:</div>
+                        <div class="wrong-answer-text">
+                            <code>new</code> is the correct way to allocate memory in C++, especially for objects. <code>malloc</code> is from C and doesn't call constructors. For templates working with any type T, you MUST use <code>new</code> because T might be a class that needs its constructor called. Using <code>malloc</code> would be wrong.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Templates absolutely CAN use dynamic memory! In fact, most STL containers (<code>vector</code>, <code>list</code>, <code>map</code>) are templates that use dynamic memory internally. Templates work with any code that regular classes can use.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Making <code>size</code> static would be completely wrong! Static members are shared across ALL instances of the class. If size were static, ALL <code>DynamicArray</code> objects would share the same size value, which makes no sense. Each array needs its own size.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 23 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">23</div>
+                <div class="question-type">True/False</div>
+            </div>
+            <div class="question-text">
+                True or False: Template member functions can call other template member functions within the same class.
+            </div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">True</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">False</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer23')">Show Answer</button>
+            <div class="answer-section" id="answer23">
+                <div class="correct-answer">Correct Answer: A (True)</div>
+                <div class="explanation">
+                    Absolutely! Template member functions can call each other just like regular member functions. They're all part of the same class and have access to each other.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Example:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Calculator</span> {
+<span class="keyword">public</span>:
+    <span class="type">T</span> <span class="function">add</span>(<span class="type">T</span> a, <span class="type">T</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+
+    <span class="type">T</span> <span class="function">addThree</span>(<span class="type">T</span> a, <span class="type">T</span> b, <span class="type">T</span> c) {
+        <span class="keyword">return</span> <span class="function">add</span>(<span class="function">add</span>(a, b), c);  <span class="comment">// Calls add() twice!</span>
+    }
+};</div>
+                </div>
+                <div class="explanation">
+                    This works perfectly because both functions belong to the same template class instance.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 24 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">24</div>
+                <div class="question-type">Multiple Choice</div>
+            </div>
+            <div class="question-text">
+                What's the main reason to use templates instead of writing separate functions for each type?
+            </div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Templates run faster</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">Code reuse and maintenance - write once, use with many types</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">Templates use less memory</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">Templates are required by the C++ standard</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer24')">Show Answer</button>
+            <div class="answer-section" id="answer24">
+                <div class="correct-answer">Correct Answer: B</div>
+                <div class="explanation">
+                    The main benefit of templates is code reuse and maintenance. You write the logic ONCE, and it works with multiple types. If you need to fix a bug or add a feature, you only update one template instead of multiple functions.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Without templates:</div>
+                    <div class="code-block"><span class="type">int</span> <span class="function">max_int</span>(<span class="type">int</span> a, <span class="type">int</span> b) { <span class="keyword">return</span> (a &gt; b) ? a : b; }
+<span class="type">double</span> <span class="function">max_double</span>(<span class="type">double</span> a, <span class="type">double</span> b) { <span class="keyword">return</span> (a &gt; b) ? a : b; }
+<span class="type">long</span> <span class="function">max_long</span>(<span class="type">long</span> a, <span class="type">long</span> b) { <span class="keyword">return</span> (a &gt; b) ? a : b; }
+
+<span class="comment">// 3 functions to maintain! If you find a bug, fix it 3 times!</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">With templates:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">T</span> <span class="function">maximum</span>(<span class="type">T</span> a, <span class="type">T</span> b) { <span class="keyword">return</span> (a &gt; b) ? a : b; }
+
+<span class="comment">// 1 function to maintain! Works with int, double, long, etc.</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option A is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Templates don't inherently run faster. Performance is similar to hand-written functions for each type. The compiler generates essentially the same code either way.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Templates can actually use MORE memory because the compiler generates separate code for each type. This is called code bloat.
+                        </div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D is wrong:</div>
+                        <div class="wrong-answer-text">
+                            Templates are optional. You can write C++ programs without using templates at all. They're a tool, not a requirement.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 25 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">25</div>
+                <div class="question-type">Code Tracing</div>
+            </div>
+            <div class="question-text">
+                What is the output?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Box</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span> value;
+<span class="keyword">public</span>:
+    <span class="function">Box</span>(<span class="type">T</span> v) : value(v) {}
+    <span class="type">T</span> <span class="function">get</span>() { <span class="keyword">return</span> value; }
+    <span class="type">void</span> <span class="function">set</span>(<span class="type">T</span> v) { value = v; }
+};
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="type">Box</span>&lt;<span class="type">int</span>&gt; b(<span class="number">100</span>);
+    b.<span class="function">set</span>(<span class="number">200</span>);
+    cout &lt;&lt; b.<span class="function">get</span>();
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>100</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>200</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text"><code>300</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">Compilation error</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer25')">Show Answer</button>
+            <div class="answer-section" id="answer25">
+                <div class="correct-answer">Correct Answer: B (Output: 200)</div>
+                <div class="explanation">
+                    Line-by-line trace:
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Execution:</div>
+                    <div class="explanation">
+                        <strong>Line 11:</strong> <code>Box&lt;int&gt; b(100);</code><br>
+                        &nbsp;&nbsp;• Creates Box with T = int<br>
+                        &nbsp;&nbsp;• Constructor sets value = 100<br><br>
+
+                        <strong>Line 12:</strong> <code>b.set(200);</code><br>
+                        &nbsp;&nbsp;• Calls set function<br>
+                        &nbsp;&nbsp;• Updates value from 100 to 200<br><br>
+
+                        <strong>Line 13:</strong> <code>b.get()</code><br>
+                        &nbsp;&nbsp;• Returns current value which is 200<br>
+                        &nbsp;&nbsp;• Prints: <code>200</code>
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option A:</div>
+                        <div class="wrong-answer-text">100 was the initial value, but set(200) changed it.</div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C:</div>
+                        <div class="wrong-answer-text">set() replaces the value, it doesn't add to it.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 26 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">26</div>
+                <div class="question-type">Find the Bug</div>
+            </div>
+            <div class="question-text">
+                What's wrong with this code?
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="keyword">class</span> <span class="type">Data</span> {
+<span class="keyword">public</span>:
+    <span class="type">T</span> value;
+    <span class="function">Data</span>(<span class="type">T</span> v) : value(v) {}
+};
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="type">Data</span> d(<span class="number">42</span>);
+    cout &lt;&lt; d.value;
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Missing type - should be <code>Data&lt;int&gt; d(42);</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">value should be private</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">Constructor syntax is wrong</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">No bug</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer26')">Show Answer</button>
+            <div class="answer-section" id="answer26">
+                <div class="correct-answer">Correct Answer: A</div>
+                <div class="explanation">
+                    Template classes require explicit type specification in C++98. <code>Data d(42)</code> doesn't tell the compiler what T should be.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">The fix:</div>
+                    <div class="code-block"><span class="type">Data</span>&lt;<span class="type">int</span>&gt; d(<span class="number">42</span>);  <span class="comment">// Now compiler knows T = int</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option B:</div>
+                        <div class="wrong-answer-text">Having public members is fine - that's a design choice, not a bug.</div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C:</div>
+                        <div class="wrong-answer-text">The constructor syntax is correct with the initializer list.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 27 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">27</div>
+                <div class="question-type">Multiple Choice</div>
+            </div>
+            <div class="question-text">
+                Which statement about templates is TRUE?
+            </div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text">Templates can only work with built-in types like int and double</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text">Templates can work with ANY type that supports the operations used in the template</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text">Templates can only work with classes, not primitive types</div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text">You must explicitly list all allowed types when defining a template</div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer27')">Show Answer</button>
+            <div class="answer-section" id="answer27">
+                <div class="correct-answer">Correct Answer: B</div>
+                <div class="explanation">
+                    Templates work with ANY type that supports the required operations. If your template uses <code>&gt;</code>, the type must support <code>&gt;</code>. If it uses <code>+</code>, the type must support <code>+</code>.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Example:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>&gt;
+<span class="type">T</span> <span class="function">add</span>(<span class="type">T</span> a, <span class="type">T</span> b) {
+    <span class="keyword">return</span> a + b;  <span class="comment">// Requires T to support operator+</span>
+}
+
+<span class="comment">// Works with:</span>
+<span class="function">add</span>(<span class="number">5</span>, <span class="number">3</span>);           <span class="comment">// ✓ int has +</span>
+<span class="function">add</span>(<span class="number">2.5</span>, <span class="number">1.5</span>);       <span class="comment">// ✓ double has +</span>
+<span class="function">add</span>(<span class="string">"Hello "</span>, <span class="string">"World"</span>);  <span class="comment">// ✓ string has + (concatenation)</span>
+
+<span class="comment">// Won't work with types that don't have operator+</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option A:</div>
+                        <div class="wrong-answer-text">Templates work with user-defined classes too! You can use templates with your own classes.</div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option C:</div>
+                        <div class="wrong-answer-text">Templates work great with primitive types like int, double, char, etc.</div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D:</div>
+                        <div class="wrong-answer-text">Templates are open-ended - they work with any compatible type without listing them.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 28 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">28</div>
+                <div class="question-type">Fill in the Blank</div>
+            </div>
+            <div class="question-text">
+                Complete the non-type template parameter syntax:
+            </div>
+            <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>, _____ SIZE&gt;
+<span class="keyword">class</span> <span class="type">Array</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span> data[SIZE];
+};</div>
+            <div class="options">
+                <div class="option">
+                    <div class="option-label">A</div>
+                    <div class="option-text"><code>int</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">B</div>
+                    <div class="option-text"><code>class</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">C</div>
+                    <div class="option-text"><code>typename</code></div>
+                </div>
+                <div class="option">
+                    <div class="option-label">D</div>
+                    <div class="option-text"><code>const</code></div>
+                </div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer28')">Show Answer</button>
+            <div class="answer-section" id="answer28">
+                <div class="correct-answer">Correct Answer: A (int)</div>
+                <div class="explanation">
+                    SIZE is a non-type template parameter, so it needs a type specification. Since it's used as an array size, it must be an integer type like <code>int</code>.
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Complete code:</div>
+                    <div class="code-block"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="type">T</span>, <span class="type">int</span> SIZE&gt;
+<span class="keyword">class</span> <span class="type">Array</span> {
+<span class="keyword">private</span>:
+    <span class="type">T</span> data[SIZE];
+};
+
+<span class="comment">// Usage:</span>
+<span class="type">Array</span>&lt;<span class="type">int</span>, <span class="number">10</span>&gt; arr;  <span class="comment">// Creates array of 10 ints</span></div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Two types of template parameters:</div>
+                    <div class="explanation">
+                        <strong>Type parameters:</strong> <code>class T</code> or <code>typename T</code> - become types<br>
+                        <strong>Non-type parameters:</strong> <code>int SIZE</code> - become compile-time constant values
+                    </div>
+                </div>
+                <div class="explanation-section">
+                    <div class="explanation-title">Why other options are wrong:</div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Options B and C:</div>
+                        <div class="wrong-answer-text"><code>class</code> and <code>typename</code> are for TYPE parameters, not value parameters.</div>
+                    </div>
+                    <div class="wrong-answer">
+                        <div class="wrong-answer-label">Option D:</div>
+                        <div class="wrong-answer-text"><code>const</code> is a qualifier, not a type. You need <code>int</code> (or another integer type).</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Completed all 28 questions on Templates! Review your answers and make sure you understand the explanations.</p>
+            <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Back to Top ↑</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('show');
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

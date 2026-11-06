@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 12: Exception Handling - Practice | COS 110</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code,
+        .content-card h3 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .info-box {
+            background: #1f2937;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #142d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        /* CodeMirror Playground */
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #334155;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 12: Exception Handling</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html" class="active">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Practice Problems</h2>
+            <p>Now it's your turn! These problems let you apply what you've learned about exception handling. Try solving each problem before revealing the solution.</p>
+            <p><strong>Tip:</strong> Write your solution on paper or in a code editor first, then compare with the provided solution.</p>
+        </section>
+
+        <!-- Problem 1: Age Validator (Generic) -->
+        <section class="content-card">
+            <h2>Problem 1: Age Validator for Registration</h2>
+
+            <h3>Task</h3>
+            <p>Write a registration system that validates user age. The system should throw exceptions for:</p>
+            <ul>
+                <li>Negative ages (use <code>InvalidAgeException</code>)</li>
+                <li>Ages below 18 (use <code>TooYoungException</code>)</li>
+                <li>Ages above 120 (use <code>TooOldException</code> - probably a data entry error)</li>
+            </ul>
+
+            <p>Create three custom exception classes, each with a message member and a <code>getMessage()</code> method. Write a <code>validateAge()</code> function that throws these exceptions when appropriate.</p>
+
+            <h3>Why This Matters</h3>
+            <p>Web forms and registration systems need to validate user input. Instead of returning magic numbers or boolean values, exceptions provide clear, descriptive error messages that can be displayed to the user.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('prob1')">Show Solution</button>
+            <div class="answer-section" id="prob1">
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Age Validator with Custom Exceptions</div>
+                    </div>
+
+                    <textarea id="editor1">
+#include <iostream>
+#include <string>
+using namespace std;
+
+class InvalidAgeException {
+private:
+    string message;
+public:
+    InvalidAgeException(string msg) : message(msg) {}
+
+    string getMessage() const {
+        return message;
+    }
+};
+
+class TooYoungException {
+private:
+    string message;
+    int attemptedAge;
+public:
+    TooYoungException(string msg, int age) : message(msg), attemptedAge(age) {}
+
+    string getMessage() const {
+        return message;
+    }
+
+    int getAttemptedAge() const {
+        return attemptedAge;
+    }
+};
+
+class TooOldException {
+private:
+    string message;
+public:
+    TooOldException(string msg) : message(msg) {}
+
+    string getMessage() const {
+        return message;
+    }
+};
+
+void validateAge(int age) {
+    if (age < 0) {
+        throw InvalidAgeException("Age cannot be negative!");
+    }
+
+    if (age < 18) {
+        throw TooYoungException("Must be 18 or older to register", age);
+    }
+
+    if (age > 120) {
+        throw TooOldException("Age seems unrealistic - please check your input");
+    }
+
+    cout << "✓ Age " << age << " is valid. Registration successful!" << endl;
+}
+
+int main() {
+    int testAges[] = {25, -5, 16, 150, 18, 120};
+    int numTests = 6;
+
+    cout << "=== Age Validation Tests ===" << endl;
+    cout << endl;
+
+    for (int i = 0; i < numTests; i++) {
+        int age = testAges[i];
+        cout << "Testing age: " << age << endl;
+
+        try {
+            validateAge(age);
+        }
+        catch (InvalidAgeException& e) {
+            cout << "✗ Invalid Age: " << e.getMessage() << endl;
+        }
+        catch (TooYoungException& e) {
+            cout << "✗ Too Young: " << e.getMessage()
+                 << " (attempted: " << e.getAttemptedAge() << ")" << endl;
+        }
+        catch (TooOldException& e) {
+            cout << "✗ Too Old: " << e.getMessage() << endl;
+        }
+
+        cout << endl;
+    }
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor1', 'output1')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output1">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works - Step by Step</h3>
+
+                <p><strong>The validation sequence:</strong> The <code>validateAge()</code> function checks conditions in order from most fundamental to most specific. We check for negative ages first because that's a data type issue, then check age ranges.</p>
+
+                <p><strong>Let's trace through <code>validateAge(16)</code>:</strong></p>
+                <ol>
+                    <li>Check <code>if (age < 0)</code>: 16 is not negative, so skip this check</li>
+                    <li>Check <code>if (age < 18)</code>: 16 is less than 18, so this condition is TRUE</li>
+                    <li>Throw <code>TooYoungException("Must be 18 or older to register", 16)</code></li>
+                    <li>Execution immediately jumps to the catch blocks in main()</li>
+                    <li>The first catch block checks if the exception is <code>InvalidAgeException</code> - NO, skip it</li>
+                    <li>The second catch block checks if the exception is <code>TooYoungException</code> - YES! Catch it</li>
+                    <li>Print error message and the attempted age (16)</li>
+                    <li>Continue execution after the try-catch block</li>
+                </ol>
+
+                <p><strong>Why separate exception classes?</strong></p>
+                <p>We could have used just one generic <code>AgeException</code> class with different messages. But using separate classes allows us to:</p>
+                <ul>
+                    <li><strong>Catch specific errors:</strong> We can handle "too young" differently from "negative age" if needed</li>
+                    <li><strong>Store relevant data:</strong> <code>TooYoungException</code> stores the attempted age so we can display it</li>
+                    <li><strong>Type safety:</strong> The compiler can verify we're catching the right types</li>
+                </ul>
+
+                <p><strong>Let's trace through <code>validateAge(-5)</code>:</strong></p>
+                <ol>
+                    <li>Check <code>if (age < 0)</code>: -5 is negative, so this condition is TRUE</li>
+                    <li>Throw <code>InvalidAgeException("Age cannot be negative!")</code></li>
+                    <li>Execution jumps to catch blocks - the FIRST catch block matches</li>
+                    <li>Print "✗ Invalid Age: Age cannot be negative!"</li>
+                    <li>The other checks (<code>age < 18</code>, <code>age > 120</code>) are never evaluated because we already threw an exception</li>
+                </ol>
+
+                <div class="success-box">
+                    <strong>Key pattern:</strong> Check conditions from most fundamental to most specific. Once you throw an exception, the rest of the function doesn't execute - the exception immediately transfers control to the nearest matching catch block.
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 2: Crunchyroll Subscription Checker (Personalized) -->
+        <section class="content-card">
+            <h2>Problem 2: Crunchyroll Subscription Checker</h2>
+
+            <h3>Scenario</h3>
+            <p>Swift wants to watch "BAKI" on Crunchyroll, but the streaming service needs to verify his subscription status and region. The system can fail in several ways:</p>
+            <ul>
+                <li>Subscription has expired</li>
+                <li>Content not available in the user's region</li>
+                <li>Network connection error when checking subscription</li>
+            </ul>
+
+            <h3>Task</h3>
+            <p>Create a subscription verification system with three exception classes:</p>
+            <ul>
+                <li><code>SubscriptionExpiredException</code> - stores the expiration date</li>
+                <li><code>RegionBlockedException</code> - stores the content title and blocked region</li>
+                <li><code>NetworkException</code> - stores the error code</li>
+            </ul>
+
+            <p>Write a <code>checkAccess()</code> function that simulates these checks and throws appropriate exceptions.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('prob2')">Show Solution</button>
+            <div class="answer-section" id="prob2">
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Crunchyroll Subscription Checker</div>
+                    </div>
+
+                    <textarea id="editor2">
+#include <iostream>
+#include <string>
+using namespace std;
+
+class SubscriptionExpiredException {
+private:
+    string expirationDate;
+public:
+    SubscriptionExpiredException(string date) : expirationDate(date) {}
+
+    void display() const {
+        cout << "Subscription expired on " << expirationDate << endl;
+        cout << "Please renew to continue watching!" << endl;
+    }
+};
+
+class RegionBlockedException {
+private:
+    string contentTitle;
+    string region;
+public:
+    RegionBlockedException(string title, string reg)
+        : contentTitle(title), region(reg) {}
+
+    void display() const {
+        cout << "\"" << contentTitle << "\" is not available in " << region << endl;
+        cout << "This content may be restricted due to licensing agreements." << endl;
+    }
+};
+
+class NetworkException {
+private:
+    int errorCode;
+public:
+    NetworkException(int code) : errorCode(code) {}
+
+    void display() const {
+        cout << "Network error (code " << errorCode << ")" << endl;
+        cout << "Please check your internet connection." << endl;
+    }
+};
+
+void checkAccess(bool isSubscribed, bool inAllowedRegion, bool networkOk,
+                 string title, string region) {
+    if (!networkOk) {
+        throw NetworkException(503);
+    }
+
+    if (!isSubscribed) {
+        throw SubscriptionExpiredException("2025-10-15");
+    }
+
+    if (!inAllowedRegion) {
+        throw RegionBlockedException(title, region);
+    }
+
+    cout << "✓ Access granted! Enjoy \"" << title << "\"" << endl;
+}
+
+int main() {
+    cout << "=== Crunchyroll Access Tests ===" << endl;
+    cout << endl;
+
+    cout << "Test 1: Valid subscription and region" << endl;
+    try {
+        checkAccess(true, true, true, "BAKI", "South Africa");
+    }
+    catch (NetworkException& e) { e.display(); }
+    catch (SubscriptionExpiredException& e) { e.display(); }
+    catch (RegionBlockedException& e) { e.display(); }
+    cout << endl;
+
+    cout << "Test 2: Expired subscription" << endl;
+    try {
+        checkAccess(false, true, true, "BAKI", "South Africa");
+    }
+    catch (NetworkException& e) { e.display(); }
+    catch (SubscriptionExpiredException& e) { e.display(); }
+    catch (RegionBlockedException& e) { e.display(); }
+    cout << endl;
+
+    cout << "Test 3: Region blocked" << endl;
+    try {
+        checkAccess(true, false, true, "Attack on Titan", "China");
+    }
+    catch (NetworkException& e) { e.display(); }
+    catch (SubscriptionExpiredException& e) { e.display(); }
+    catch (RegionBlockedException& e) { e.display(); }
+    cout << endl;
+
+    cout << "Test 4: Network error" << endl;
+    try {
+        checkAccess(true, true, false, "BAKI", "South Africa");
+    }
+    catch (NetworkException& e) { e.display(); }
+    catch (SubscriptionExpiredException& e) { e.display(); }
+    catch (RegionBlockedException& e) { e.display(); }
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor2', 'output2')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output2">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works - Step by Step</h3>
+
+                <p><strong>Check order matters:</strong> We check network connectivity first, then subscription, then region. Why? Because if there's no network, we can't even verify the subscription or region restrictions.</p>
+
+                <p><strong>Let's trace through Test 2 (expired subscription):</strong></p>
+                <ol>
+                    <li>Call <code>checkAccess(false, true, true, "BAKI", "South Africa")</code></li>
+                    <li>Check <code>if (!networkOk)</code>: networkOk is true, so !networkOk is false - skip</li>
+                    <li>Check <code>if (!isSubscribed)</code>: isSubscribed is false, so !isSubscribed is TRUE</li>
+                    <li>Throw <code>SubscriptionExpiredException("2025-10-15")</code></li>
+                    <li>Jump to catch blocks in main()</li>
+                    <li>First catch: Is it a <code>NetworkException</code>? No, skip</li>
+                    <li>Second catch: Is it a <code>SubscriptionExpiredException</code>? YES! Catch it</li>
+                    <li>Call <code>e.display()</code> which prints the expiration date and renewal message</li>
+                </ol>
+
+                <p><strong>Using <code>display()</code> methods:</strong> Each exception class has its own <code>display()</code> method that knows how to format its specific error. This is cleaner than having all the formatting logic in main().</p>
+
+                <p><strong>Let's trace through Test 4 (network error):</strong></p>
+                <ol>
+                    <li>Call <code>checkAccess(true, true, false, "BAKI", "South Africa")</code></li>
+                    <li>Check <code>if (!networkOk)</code>: networkOk is false, so !networkOk is TRUE</li>
+                    <li>Throw <code>NetworkException(503)</code> immediately</li>
+                    <li>The subscription and region checks are NEVER executed because we already threw</li>
+                    <li>Jump to catch blocks, first catch matches <code>NetworkException</code></li>
+                    <li>Display "Network error (code 503)" and connection message</li>
+                </ol>
+
+                <p><strong>Why store data in exception objects?</strong></p>
+                <ul>
+                    <li><code>SubscriptionExpiredException</code> stores the expiration date so we can show when it expired</li>
+                    <li><code>RegionBlockedException</code> stores both the content title and region for a helpful error message</li>
+                    <li><code>NetworkException</code> stores the HTTP error code for debugging</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>Real-world pattern:</strong> Streaming services like Netflix, Crunchyroll, and Disney+ use exactly this pattern - checking network, authentication, and region restrictions in sequence, with specific error messages for each failure case.
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 3: What's Wrong? - Memory Leak in Exception Handling -->
+        <section class="content-card">
+            <h2>Problem 3: What's Wrong? - Array Allocation</h2>
+
+            <h3>Scenario</h3>
+            <p>Lerato is writing a function that allocates a dynamic array based on user input. She knows she needs to validate the size and handle errors, but her code has a critical bug.</p>
+
+            <h3>Task</h3>
+            <p>Find and fix the bug in Lerato's code. The function should:</p>
+            <ul>
+                <li>Throw an exception if the requested size is invalid (negative or zero)</li>
+                <li>Allocate the array if size is valid</li>
+                <li>Not leak memory if an exception is thrown</li>
+            </ul>
+
+            <button class="reveal-btn" onclick="toggleAnswer('prob3')">Show Buggy Code & Solution</button>
+            <div class="answer-section" id="prob3">
+                <h3>Buggy Code</h3>
+                <p><strong>Try to find the bug before running it:</strong></p>
+
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Buggy Array Allocator</div>
+                    </div>
+
+                    <textarea id="editor3">
+#include <iostream>
+#include <string>
+using namespace std;
+
+class InvalidSizeException {
+private:
+    string message;
+public:
+    InvalidSizeException(string msg) : message(msg) {}
+
+    string getMessage() const {
+        return message;
+    }
+};
+
+int* createArray(int size) {
+    int* arr = new int[size];
+
+    if (size <= 0) {
+        throw InvalidSizeException("Size must be positive!");
+    }
+
+    for (int i = 0; i < size; i++) {
+        arr[i] = i * 10;
+    }
+
+    return arr;
+}
+
+int main() {
+    cout << "Test 1: Valid size (5)" << endl;
+    try {
+        int* arr1 = createArray(5);
+        cout << "Array created: ";
+        for (int i = 0; i < 5; i++) {
+            cout << arr1[i] << " ";
+        }
+        cout << endl;
+        delete[] arr1;
+    }
+    catch (InvalidSizeException& e) {
+        cout << "Error: " << e.getMessage() << endl;
+    }
+    cout << endl;
+
+    cout << "Test 2: Invalid size (-3)" << endl;
+    try {
+        int* arr2 = createArray(-3);
+        cout << "Array created" << endl;
+        delete[] arr2;
+    }
+    catch (InvalidSizeException& e) {
+        cout << "Error: " << e.getMessage() << endl;
+    }
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor3', 'output3')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output3">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>What's Wrong?</h3>
+                <button class="reveal-btn" onclick="toggleAnswer('prob3-bugs')">Show Bug & Explanation</button>
+                <div class="answer-section" id="prob3-bugs">
+                    <h3>The Bug</h3>
+
+                    <p><strong>Memory leak in <code>createArray()</code> (lines 16-18)</strong></p>
+                    <p>The function allocates memory with <code>new int[size]</code> BEFORE checking if the size is valid. When we throw the exception on line 19, we never delete the allocated array!</p>
+
+                    <p>Here's what happens with <code>createArray(-3)</code>:</p>
+                    <ol>
+                        <li>Line 17: <code>new int[size]</code> allocates memory (even with negative size, implementation-defined behavior - might allocate, might crash)</li>
+                        <li>Line 18: Check <code>if (size <= 0)</code> - TRUE for -3</li>
+                        <li>Line 19: Throw exception and jump to catch block</li>
+                        <li><strong>Problem:</strong> We never executed <code>delete[] arr</code>, so the memory leaked!</li>
+                        <li>The pointer <code>arr</code> is lost when we throw - we can never free it now</li>
+                    </ol>
+
+                    <p><strong>Second bug: Validation order is wrong</strong></p>
+                    <p>We should validate BEFORE allocating memory, not after. This prevents:</p>
+                    <ul>
+                        <li>Memory leaks when validation fails</li>
+                        <li>Undefined behavior from allocating with invalid sizes</li>
+                        <li>Wasting resources on memory that will immediately be discarded</li>
+                    </ul>
+
+                    <h3>Fixed Version</h3>
+                    <div class="playground">
+                        <div class="playground-header">
+                            <div class="playground-title">Fixed Array Allocator</div>
+                        </div>
+
+                        <textarea id="editor4">
+#include <iostream>
+#include <string>
+using namespace std;
+
+class InvalidSizeException {
+private:
+    string message;
+public:
+    InvalidSizeException(string msg) : message(msg) {}
+
+    string getMessage() const {
+        return message;
+    }
+};
+
+int* createArray(int size) {
+    if (size <= 0) {
+        throw InvalidSizeException("Size must be positive!");
+    }
+
+    int* arr = new int[size];
+
+    for (int i = 0; i < size; i++) {
+        arr[i] = i * 10;
+    }
+
+    return arr;
+}
+
+int main() {
+    cout << "Test 1: Valid size (5)" << endl;
+    try {
+        int* arr1 = createArray(5);
+        cout << "Array created: ";
+        for (int i = 0; i < 5; i++) {
+            cout << arr1[i] << " ";
+        }
+        cout << endl;
+        delete[] arr1;
+    }
+    catch (InvalidSizeException& e) {
+        cout << "Error: " << e.getMessage() << endl;
+    }
+    cout << endl;
+
+    cout << "Test 2: Invalid size (-3)" << endl;
+    try {
+        int* arr2 = createArray(-3);
+        cout << "Array created" << endl;
+        delete[] arr2;
+    }
+    catch (InvalidSizeException& e) {
+        cout << "Error: " << e.getMessage() << endl;
+    }
+    cout << endl;
+
+    cout << "Test 3: Invalid size (0)" << endl;
+    try {
+        int* arr3 = createArray(0);
+        cout << "Array created" << endl;
+        delete[] arr3;
+    }
+    catch (InvalidSizeException& e) {
+        cout << "Error: " << e.getMessage() << endl;
+    }
+
+    return 0;
+}
+</textarea>
+
+                        <div class="playground-controls">
+                            <button class="run-btn" onclick="runCode('editor4', 'output4')">▶ Run Code</button>
+                            <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                        </div>
+
+                        <div class="output-section">
+                            <div class="output-label">Output:</div>
+                            <div class="output-box" id="output4">
+                                <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>What We Fixed - Step by Step</h3>
+
+                    <p><strong>Fix: Validate BEFORE allocating (lines 17-19)</strong></p>
+                    <ol>
+                        <li>Check if size is invalid FIRST: <code>if (size <= 0)</code></li>
+                        <li>If invalid, throw exception immediately - NO memory has been allocated yet</li>
+                        <li>Only allocate memory AFTER validation passes: <code>int* arr = new int[size]</code></li>
+                    </ol>
+
+                    <p><strong>Why this fixes the leak:</strong></p>
+                    <p>In the buggy version, when we threw the exception, we had already allocated memory but didn't clean it up. In the fixed version, if we throw an exception, we haven't allocated anything yet - no leak possible!</p>
+
+                    <p><strong>Let's trace through the fixed <code>createArray(-3)</code>:</strong></p>
+                    <ol>
+                        <li>Check <code>if (size <= 0)</code>: -3 is less than 0, so TRUE</li>
+                        <li>Throw <code>InvalidSizeException("Size must be positive!")</code></li>
+                        <li>We NEVER reach line 21 where <code>new int[size]</code> would execute</li>
+                        <li>No memory allocated = no memory leaked!</li>
+                        <li>Exception caught in main(), error message printed</li>
+                    </ol>
+
+                    <div class="warning-box">
+                        <strong>Golden rule for exception safety:</strong> ALWAYS validate input BEFORE allocating resources (memory, files, network connections, etc.). If validation fails, you want to throw the exception without having acquired any resources that need cleanup.
+                    </div>
+
+                    <div class="success-box">
+                        <strong>Exception safety principle:</strong> This is called the "RAII" (Resource Acquisition Is Initialization) principle - don't acquire resources until you're sure you can use them safely. Validate first, allocate second.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 4: Challenge - Music Library with Multiple Exceptions (Personalized) -->
+        <section class="content-card">
+            <h2>Problem 4: Challenge - Music Library Manager</h2>
+
+            <h3>Scenario</h3>
+            <p>Swift is building a music library system to organize his favorite artists. He has albums from The Weeknd, Maître Gims, and Dadju. The library has a fixed capacity and needs to handle several error conditions:</p>
+            <ul>
+                <li>Library is full (max 10 albums)</li>
+                <li>Album not found when searching</li>
+                <li>Invalid album ID (negative or zero)</li>
+            </ul>
+
+            <h3>Task</h3>
+            <p>Build a complete music library system with:</p>
+            <ul>
+                <li>An exception hierarchy with a base <code>LibraryException</code> class</li>
+                <li>Three derived exceptions: <code>LibraryFullException</code>, <code>AlbumNotFoundException</code>, <code>InvalidIDException</code></li>
+                <li>Methods to add albums, search by ID, and display the library</li>
+                <li>Proper exception handling for all error cases</li>
+            </ul>
+
+            <p>This is a challenge problem that tests exception hierarchies and real-world error handling.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('prob4')">Show Solution</button>
+            <div class="answer-section" id="prob4">
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Music Library Manager with Exception Hierarchy</div>
+                    </div>
+
+                    <textarea id="editor5">
+#include <iostream>
+#include <string>
+using namespace std;
+
+class LibraryException {
+protected:
+    string message;
+public:
+    LibraryException(string msg) : message(msg) {}
+
+    virtual void display() const {
+        cout << "Library Error: " << message << endl;
+    }
+
+    virtual ~LibraryException() {}
+};
+
+class LibraryFullException : public LibraryException {
+private:
+    int maxCapacity;
+public:
+    LibraryFullException(string msg, int capacity)
+        : LibraryException(msg), maxCapacity(capacity) {}
+
+    void display() const {
+        cout << "Library Full: " << message << endl;
+        cout << "Maximum capacity is " << maxCapacity << " albums." << endl;
+    }
+};
+
+class AlbumNotFoundException : public LibraryException {
+private:
+    int searchedID;
+public:
+    AlbumNotFoundException(string msg, int id)
+        : LibraryException(msg), searchedID(id) {}
+
+    void display() const {
+        cout << "Album Not Found: " << message << endl;
+        cout << "No album with ID " << searchedID << " exists." << endl;
+    }
+};
+
+class InvalidIDException : public LibraryException {
+private:
+    int invalidID;
+public:
+    InvalidIDException(string msg, int id)
+        : LibraryException(msg), invalidID(id) {}
+
+    void display() const {
+        cout << "Invalid ID: " << message << endl;
+        cout << "ID " << invalidID << " is not valid (must be positive)." << endl;
+    }
+};
+
+struct Album {
+    int id;
+    string title;
+    string artist;
+};
+
+class MusicLibrary {
+private:
+    Album* albums;
+    int count;
+    int capacity;
+
+public:
+    MusicLibrary(int cap) : count(0), capacity(cap) {
+        albums = new Album[capacity];
+    }
+
+    ~MusicLibrary() {
+        delete[] albums;
+    }
+
+    void addAlbum(int id, string title, string artist) {
+        if (id <= 0) {
+            throw InvalidIDException("Album ID must be positive", id);
+        }
+
+        if (count >= capacity) {
+            throw LibraryFullException("Cannot add more albums", capacity);
+        }
+
+        albums[count].id = id;
+        albums[count].title = title;
+        albums[count].artist = artist;
+        count++;
+
+        cout << "✓ Added: \"" << title << "\" by " << artist
+             << " (ID: " << id << ")" << endl;
+    }
+
+    Album findAlbum(int id) {
+        if (id <= 0) {
+            throw InvalidIDException("Search ID must be positive", id);
+        }
+
+        for (int i = 0; i < count; i++) {
+            if (albums[i].id == id) {
+                return albums[i];
+            }
+        }
+
+        throw AlbumNotFoundException("Album not in library", id);
+    }
+
+    void displayLibrary() const {
+        if (count == 0) {
+            cout << "Library is empty." << endl;
+            return;
+        }
+
+        cout << "\n=== Music Library (" << count << "/" << capacity << ") ===" << endl;
+        for (int i = 0; i < count; i++) {
+            cout << "ID " << albums[i].id << ": \"" << albums[i].title
+                 << "\" - " << albums[i].artist << endl;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    MusicLibrary library(5);
+
+    cout << "=== Swift's Music Library ===" << endl;
+    cout << endl;
+
+    try {
+        library.addAlbum(1, "After Hours", "The Weeknd");
+        library.addAlbum(2, "Starboy", "The Weeknd");
+        library.addAlbum(3, "Subliminal", "Maître Gims");
+        library.addAlbum(4, "Gentleman 2.0", "Dadju");
+    }
+    catch (LibraryException& e) {
+        e.display();
+    }
+
+    library.displayLibrary();
+
+    cout << "Searching for album ID 3..." << endl;
+    try {
+        Album found = library.findAlbum(3);
+        cout << "✓ Found: \"" << found.title << "\" by " << found.artist << endl;
+    }
+    catch (LibraryException& e) {
+        e.display();
+    }
+    cout << endl;
+
+    cout << "Attempting to add album with invalid ID (-1)..." << endl;
+    try {
+        library.addAlbum(-1, "25", "Adele");
+    }
+    catch (LibraryException& e) {
+        e.display();
+    }
+    cout << endl;
+
+    cout << "Attempting to add 5th album (library capacity is 5)..." << endl;
+    try {
+        library.addAlbum(5, "Ceinture noire", "Maître Gims");
+    }
+    catch (LibraryException& e) {
+        e.display();
+    }
+
+    library.displayLibrary();
+
+    cout << "Attempting to add 6th album (should fail - library full)..." << endl;
+    try {
+        library.addAlbum(6, "÷ (Divide)", "Ed Sheeran");
+    }
+    catch (LibraryException& e) {
+        e.display();
+    }
+    cout << endl;
+
+    cout << "Searching for non-existent album ID 99..." << endl;
+    try {
+        Album notFound = library.findAlbum(99);
+        cout << "Found: " << notFound.title << endl;
+    }
+    catch (LibraryException& e) {
+        e.display();
+    }
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor5', 'output5')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor5')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output5">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works - Step by Step</h3>
+
+                <p><strong>Exception hierarchy structure:</strong></p>
+                <pre><code class="language-cpp">LibraryException (base class)
+├── LibraryFullException
+├── AlbumNotFoundException
+└── InvalidIDException</code></pre>
+
+                <p>All three derived exceptions inherit from <code>LibraryException</code>, which means we can catch ANY library error with a single <code>catch (LibraryException& e)</code> block. This is polymorphism in action!</p>
+
+                <p><strong>Why use virtual <code>display()</code>?</strong></p>
+                <p>The base class declares <code>display()</code> as <code>virtual</code>, allowing derived classes to override it. When we catch with <code>LibraryException& e</code>, calling <code>e.display()</code> will invoke the CORRECT derived class version based on what was actually thrown (polymorphism).</p>
+
+                <p><strong>Let's trace through adding an album with invalid ID:</strong></p>
+                <ol>
+                    <li>Call <code>addAlbum(-1, "25", "Adele")</code></li>
+                    <li>Check <code>if (id <= 0)</code>: -1 is less than 0, so TRUE</li>
+                    <li>Throw <code>InvalidIDException("Album ID must be positive", -1)</code></li>
+                    <li>Jump to catch block in main()</li>
+                    <li>Catch with <code>LibraryException& e</code> - this catches InvalidIDException because it's a derived class</li>
+                    <li>Call <code>e.display()</code> - polymorphism ensures <code>InvalidIDException::display()</code> runs, not the base class version</li>
+                    <li>Output: "Invalid ID: Album ID must be positive" and "ID -1 is not valid (must be positive)."</li>
+                </ol>
+
+                <p><strong>Let's trace through adding the 6th album (library full):</strong></p>
+                <ol>
+                    <li>Library currently has 5 albums (count = 5, capacity = 5)</li>
+                    <li>Call <code>addAlbum(6, "÷ (Divide)", "Ed Sheeran")</code></li>
+                    <li>Check <code>if (id <= 0)</code>: 6 is positive, so FALSE - skip</li>
+                    <li>Check <code>if (count >= capacity)</code>: 5 >= 5 is TRUE</li>
+                    <li>Throw <code>LibraryFullException("Cannot add more albums", 5)</code></li>
+                    <li>Catch with <code>LibraryException& e</code></li>
+                    <li>Call <code>e.display()</code> which invokes <code>LibraryFullException::display()</code></li>
+                    <li>Output: "Library Full: Cannot add more albums" and "Maximum capacity is 5 albums."</li>
+                </ol>
+
+                <p><strong>Let's trace through searching for album ID 3:</strong></p>
+                <ol>
+                    <li>Call <code>findAlbum(3)</code></li>
+                    <li>Check <code>if (id <= 0)</code>: 3 is positive, so FALSE - skip</li>
+                    <li>Loop through albums array:
+                        <ul>
+                            <li>i=0: albums[0].id = 1, not equal to 3</li>
+                            <li>i=1: albums[1].id = 2, not equal to 3</li>
+                            <li>i=2: albums[2].id = 3, MATCH! Return this album</li>
+                        </ul>
+                    </li>
+                    <li>Back in main(), we successfully got the album without throwing</li>
+                    <li>Print "✓ Found: 'Subliminal' by Maître Gims"</li>
+                </ol>
+
+                <p><strong>Let's trace through searching for non-existent ID 99:</strong></p>
+                <ol>
+                    <li>Call <code>findAlbum(99)</code></li>
+                    <li>Check <code>if (id <= 0)</code>: 99 is positive, so FALSE - skip</li>
+                    <li>Loop through all albums (i = 0 to 4), none have id = 99</li>
+                    <li>Loop completes without finding a match</li>
+                    <li>Throw <code>AlbumNotFoundException("Album not in library", 99)</code></li>
+                    <li>Catch with <code>LibraryException& e</code></li>
+                    <li>Call <code>e.display()</code> which invokes <code>AlbumNotFoundException::display()</code></li>
+                    <li>Output: "Album Not Found: Album not in library" and "No album with ID 99 exists."</li>
+                </ol>
+
+                <p><strong>Why is the base class constructor called in derived classes?</strong></p>
+                <p>Look at line 23: <code>: LibraryException(msg), maxCapacity(capacity)</code>. The derived class constructor explicitly calls the base class constructor to initialize the <code>message</code> member. This is standard inheritance - the base class handles common data (message), and derived classes handle their specific data (maxCapacity, searchedID, etc.).</p>
+
+                <div class="success-box">
+                    <strong>Real-world pattern:</strong> Exception hierarchies like this are used in professional codebases (Java, C#, Python). You can catch broadly (<code>catch (LibraryException& e)</code>) to handle any library error, or catch specifically (<code>catch (InvalidIDException& e)</code>) when you need special handling for certain errors.
+                </div>
+
+                <div class="info-box">
+                    <strong>Challenge accomplished!</strong> You've built a complete system with exception hierarchies, polymorphism, dynamic memory management, and robust error handling. This demonstrates mastery of multiple C++ concepts working together.
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="content-card">
+            <h2>Summary</h2>
+            <p>You've practiced:</p>
+            <ul>
+                <li><strong>Multiple exception classes:</strong> Age validator with three distinct exception types</li>
+                <li><strong>Exception with data members:</strong> Crunchyroll subscription checker storing relevant error information</li>
+                <li><strong>Resource safety:</strong> Finding and fixing memory leaks in exception handling</li>
+                <li><strong>Exception hierarchies:</strong> Music library with polymorphic exception handling and base/derived classes</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>Next step:</strong> Head to Quiz to test your understanding with exam-style questions!
+            </div>
+        </section>
+    </div>
+
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        const editors = {};
+        const originalCode = {};
+
+        ['editor1', 'editor2', 'editor3', 'editor4', 'editor5'].forEach(id => {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        });
+
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                if (answerId.includes('prob') && !answerId.includes('bug')) {
+                    button.textContent = 'Hide Solution';
+                } else if (answerId.includes('bug')) {
+                    button.textContent = 'Hide Bug & Explanation';
+                }
+
+                setTimeout(() => {
+                    answerSection.querySelectorAll('.CodeMirror').forEach(cm => {
+                        if (cm.CodeMirror) {
+                            cm.CodeMirror.refresh();
+                        }
+                    });
+                }, 50);
+            } else {
+                if (answerId.includes('prob3-bugs')) {
+                    button.textContent = 'Show Bug & Explanation';
+                } else if (answerId.includes('prob3')) {
+                    button.textContent = 'Show Buggy Code & Solution';
+                } else {
+                    button.textContent = 'Show Solution';
+                }
+            }
+        }
+
+        async function runCode(editorId, outputId) {
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const button = event.target;
+
+            if (button) button.disabled = true;
+            outputEl.textContent = 'Compiling and running...';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                if (button) button.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            const outputId = editorId.replace('editor', 'output');
+            editors[editorId].setValue(originalCode[editorId]);
+
+            const outputEl = document.getElementById(outputId);
+            outputEl.textContent = 'Click "Run Code" to see the output...';
+            outputEl.className = 'output-text output-placeholder';
+        }
+
+        Prism.highlightAll();
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

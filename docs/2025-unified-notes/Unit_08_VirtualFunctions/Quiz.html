@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 8: Virtual Functions & Polymorphism - Quiz | COS 110</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Primary Colors */
+            --background-primary: #0f172a;
+            --background-secondary: #1e293b;
+            --background-tertiary: #0c1222;
+
+            /* Accent Colors */
+            --accent-blue: #0ea5e9;
+            --accent-green: #10b981;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+
+            /* Text Colors */
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-code: #10b981;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--background-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            padding-bottom: 4rem;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--background-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--accent-blue);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--accent-blue);
+        }
+
+        .nav-menu a.active {
+            background: var(--accent-green);
+            color: var(--background-primary);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--accent-blue);
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: var(--accent-purple);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        code {
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            background: var(--background-tertiary);
+            color: var(--text-code);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: var(--background-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent-purple);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong {
+            color: var(--accent-blue);
+        }
+
+        /* Question Box */
+        .question-box {
+            background: var(--background-secondary);
+            border: 2px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c3aed 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Quiz Reveal Button - Purple Theme */
+        .quiz-reveal-btn {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c3aed 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: white;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        .quiz-answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--accent-purple);
+        }
+
+        .quiz-answer-section.visible {
+            display: block;
+        }
+
+        .quiz-answer-section strong {
+            color: #a78bfa;
+        }
+
+        /* Prism.js Custom Colors */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+    <div class="nav-brand">
+        <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+        <div class="nav-brand-text">
+            <span class="nav-brand-company">Swift Tuition</span>
+            <span class="nav-brand-title">Unit 8: Virtual Functions & Polymorphism</span>
+            <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+        </div>
+    </div>
+    <ul class="nav-menu">
+        <li><a href="Theory.html">Theory</a></li>
+        <li><a href="Examples.html">Examples</a></li>
+        <li><a href="Practice.html">Practice</a></li>
+        <li><a href="Quiz.html" class="active">Quiz</a></li>
+    </ul>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <h1>Quiz: Virtual Functions & Polymorphism</h1>
+
+    <p>This quiz tests your understanding of Unit 8 concepts. Questions are modeled after actual EO2 exam patterns. Try to answer each question before revealing the solution.</p>
+
+    <div class="info-box">
+        <strong>Instructions:</strong> This is a practice quiz (not graded). Answer questions on your own first, then check your understanding with the detailed explanations. Questions cover: virtual functions, pure virtual functions, abstract classes, polymorphism, vtables, virtual destructors, and object slicing.
+    </div>
+
+    <div class="info-box" style="border-left-color: #f59e0b; background: #1f2937; margin-top: 1rem;">
+        <strong style="color: #fbbf24;">⚠️ Known Display Issue:</strong>
+        <p style="margin-top: 0.5rem; color: #d1d5db;">
+            If you click "Show Answer" and the solution appears as a black box or doesn't display properly,
+            just <strong>click anywhere on the screen</strong> (on the page background, scroll bar, or near the answer area).
+            This will trigger the content to fully render. I've tried to fix this rendering bug multiple times,
+            but it persists - so this is the workaround for now! Sorry for the inconvenience.
+        </p>
+    </div>
+
+    <h2>Section 1: Multiple Choice Questions</h2>
+
+    <!-- Question 1 -->
+    <div class="question-box">
+        <span class="question-number">Question 1</span>
+        <h3>Virtual Function Keyword</h3>
+        <p>What does the <code>virtual</code> keyword tell the compiler?</p>
+        <ol type="A">
+            <li>This function must be defined in derived classes</li>
+            <li>Use dynamic binding - decide which function to call at runtime</li>
+            <li>This function cannot be redefined in derived classes</li>
+            <li>This function is private and cannot be inherited</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer1')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer1">
+            <p><strong>Answer:</strong> B - Use dynamic binding - decide which function to call at runtime</p>
+
+            <p><strong>Why B is correct:</strong></p>
+            <p>The <code>virtual</code> keyword enables dynamic (late) binding. When you call a virtual function through a base class pointer or reference, the decision of which version to call is made at runtime based on the actual object type, not the pointer type.</p>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - Regular virtual functions don't have to be redefined. Only PURE virtual functions (<code>= 0</code>) must be implemented in derived classes.</li>
+                <li><strong>C:</strong> Incorrect - Virtual functions can and often are redefined in derived classes. That's the whole point!</li>
+                <li><strong>D:</strong> Incorrect - <code>virtual</code> has nothing to do with access specifiers. Virtual functions are typically public.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 2 -->
+    <div class="question-box">
+        <span class="question-number">Question 2</span>
+        <h3>Pure Virtual Function Syntax</h3>
+        <p>What does <code>= 0</code> mean in a virtual function declaration?</p>
+        <ol type="A">
+            <li>The function returns 0</li>
+            <li>The function has no implementation - derived classes must provide one</li>
+            <li>The function should be called zero times</li>
+            <li>The function is private</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer2')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer2">
+            <p><strong>Answer:</strong> B - The function has no implementation - derived classes must provide one</p>
+
+            <p><strong>Why B is correct:</strong></p>
+            <p>The <code>= 0</code> syntax creates a <strong>pure virtual function</strong>. It means "I'm not providing an implementation in this base class. Every derived class MUST provide its own implementation." This makes the class abstract - you cannot create objects of it.</p>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - <code>= 0</code> has nothing to do with return values. It's about implementation.</li>
+                <li><strong>C:</strong> Incorrect - The function should actually be called normally through polymorphism. <code>= 0</code> doesn't restrict how often it's called.</li>
+                <li><strong>D:</strong> Incorrect - Pure virtual functions are typically public, not private.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 3 -->
+    <div class="question-box">
+        <span class="question-number">Question 3</span>
+        <h3>Abstract Classes</h3>
+        <p>When is a class considered abstract?</p>
+        <ol type="A">
+            <li>When it has at least one private member</li>
+            <li>When it has at least one pure virtual function</li>
+            <li>When it has a virtual destructor</li>
+            <li>When it uses protected inheritance</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer3')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer3">
+            <p><strong>Answer:</strong> B - When it has at least one pure virtual function</p>
+
+            <p><strong>Why B is correct:</strong></p>
+            <p>A class is abstract if it has at least one pure virtual function (<code>= 0</code>). You cannot create objects of an abstract class. The purpose is to create interfaces and force derived classes to implement specific behaviors.</p>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - Private members don't make a class abstract. Almost every class has private members!</li>
+                <li><strong>C:</strong> Incorrect - Virtual destructors are important for polymorphism but don't make a class abstract.</li>
+                <li><strong>D:</strong> Incorrect - Protected inheritance is rare and doesn't relate to abstract classes.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 4 -->
+    <div class="question-box">
+        <span class="question-number">Question 4</span>
+        <h3>Static vs Dynamic Binding</h3>
+        <p>Without the <code>virtual</code> keyword, which binding is used?</p>
+        <ol type="A">
+            <li>Dynamic binding (runtime decision)</li>
+            <li>Static binding (compile-time decision)</li>
+            <li>Late binding</li>
+            <li>No binding occurs</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer4')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer4">
+            <p><strong>Answer:</strong> B - Static binding (compile-time decision)</p>
+
+            <p><strong>Why B is correct:</strong></p>
+            <p>Without <code>virtual</code>, C++ uses static (early) binding. The compiler decides which function to call based on the POINTER TYPE at compile time. If you have <code>Animal* ptr = new Dog();</code>, calling <code>ptr->speak()</code> calls Animal's version, NOT Dog's version (unless speak is virtual).</p>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - Dynamic binding only happens with virtual functions.</li>
+                <li><strong>C:</strong> Incorrect - Late binding is another name for dynamic binding, which requires <code>virtual</code>.</li>
+                <li><strong>D:</strong> Incorrect - Binding always occurs. The question is WHEN it happens (compile-time or runtime).</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 5 -->
+    <div class="question-box">
+        <span class="question-number">Question 5</span>
+        <h3>Virtual Destructors</h3>
+        <p>Why should base class destructors be virtual when using polymorphism?</p>
+        <ol type="A">
+            <li>To make the class abstract</li>
+            <li>To ensure derived class destructors are called when deleting through base pointers</li>
+            <li>To improve performance</li>
+            <li>Virtual destructors are never needed</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer5')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer5">
+            <p><strong>Answer:</strong> B - To ensure derived class destructors are called when deleting through base pointers</p>
+
+            <p><strong>Why B is correct:</strong></p>
+            <p>If you have <code>Animal* ptr = new Dog();</code> and later <code>delete ptr;</code>, without a virtual destructor, only Animal's destructor runs! Dog's destructor never runs, causing memory leaks if Dog allocated resources. Making the destructor virtual ensures BOTH destructors run (Dog's then Animal's).</p>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - Destructors with <code>= 0</code> can make classes abstract, but that's not the main reason for virtual destructors.</li>
+                <li><strong>C:</strong> Incorrect - Virtual functions have a tiny performance overhead (vtable lookup). They're for correctness, not performance.</li>
+                <li><strong>D:</strong> Incorrect - This is dangerous advice! Always use virtual destructors in polymorphic base classes.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 6 -->
+    <div class="question-box">
+        <span class="question-number">Question 6</span>
+        <h3>Object Slicing</h3>
+        <p>What is object slicing?</p>
+        <ol type="A">
+            <li>Deleting part of an object's memory</li>
+            <li>When derived class parts are lost during assignment to base class by value</li>
+            <li>Dividing an object into multiple pieces</li>
+            <li>A memory optimization technique</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer6')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer6">
+            <p><strong>Answer:</strong> B - When derived class parts are lost during assignment to base class by value</p>
+
+            <p><strong>Why B is correct:</strong></p>
+            <p>If you do <code>Animal a = dog;</code> (where <code>dog</code> is a Dog object), the Dog-specific data is "sliced off." Only the Animal part is copied to <code>a</code>. This is why polymorphism requires pointers or references - they don't slice.</p>
+
+            <p><strong>Example:</strong></p>
+<pre><code class="language-cpp">Dog d;
+Animal a = d;  // SLICING! Dog parts lost
+a.speak();     // Calls Animal::speak(), not Dog::speak()
+
+Animal* ptr = &d;  // NO slicing - pointer!
+ptr->speak();      // Calls Dog::speak() if virtual</code></pre>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - It's about copying, not deleting memory.</li>
+                <li><strong>C:</strong> Incorrect - Not about physically dividing objects.</li>
+                <li><strong>D:</strong> Incorrect - It's a problem to avoid, not an optimization!</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 7 -->
+    <div class="question-box">
+        <span class="question-number">Question 7</span>
+        <h3>Polymorphism Requirements</h3>
+        <p>What is required for polymorphism to work in C++?</p>
+        <ol type="A">
+            <li>Virtual functions and base class objects</li>
+            <li>Virtual functions and base class pointers/references</li>
+            <li>Pure virtual functions only</li>
+            <li>Multiple inheritance</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer7')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer7">
+            <p><strong>Answer:</strong> B - Virtual functions and base class pointers/references</p>
+
+            <p><strong>Why B is correct:</strong></p>
+            <p>Polymorphism needs TWO things:</p>
+            <ol>
+                <li><strong>Virtual functions</strong> - enables dynamic binding</li>
+                <li><strong>Base class pointers/references</strong> - allows pointing to derived objects without slicing</li>
+            </ol>
+
+            <p><strong>Example:</strong></p>
+<pre><code class="language-cpp">Animal* ptr = new Dog();  // Pointer to derived object
+ptr->speak();             // Calls Dog::speak() if virtual</code></pre>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - Base class objects cause slicing. You need pointers/references.</li>
+                <li><strong>C:</strong> Incorrect - Regular virtual functions work for polymorphism. Pure virtual isn't required (though common in interfaces).</li>
+                <li><strong>D:</strong> Incorrect - Single inheritance is sufficient for polymorphism.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 8 -->
+    <div class="question-box">
+        <span class="question-number">Question 8</span>
+        <h3>Virtual Table (vtable)</h3>
+        <p>What is a vtable?</p>
+        <ol type="A">
+            <li>A table storing all class member variables</li>
+            <li>A hidden table of function pointers for virtual functions</li>
+            <li>A table of all objects created</li>
+            <li>A debugging feature</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer8')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer8">
+            <p><strong>Answer:</strong> B - A hidden table of function pointers for virtual functions</p>
+
+            <p><strong>Why B is correct:</strong></p>
+            <p>Every class with virtual functions has a vtable (virtual table) - a hidden array of function pointers. Each object has a hidden pointer (vptr) to its class's vtable. When you call a virtual function, the program looks up the correct function in the vtable at runtime.</p>
+
+            <p><strong>How it works:</strong></p>
+            <ol>
+                <li>Create Dog object → vptr points to Dog's vtable</li>
+                <li>Call <code>ptr->speak()</code> → Follow vptr to vtable</li>
+                <li>Look up <code>speak</code> in vtable → Get Dog::speak address</li>
+                <li>Call Dog::speak()</li>
+            </ol>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - vtables store function pointers, not data members.</li>
+                <li><strong>C:</strong> Incorrect - vtables are per-class, not per-object.</li>
+                <li><strong>D:</strong> Incorrect - vtables are how C++ implements polymorphism, not a debugging tool.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 9 -->
+    <div class="question-box">
+        <span class="question-number">Question 9</span>
+        <h3>Can You Instantiate Abstract Classes?</h3>
+        <p>Can you create an object of an abstract class?</p>
+        <ol type="A">
+            <li>Yes, always</li>
+            <li>No, never</li>
+            <li>Only if you provide implementations for pure virtual functions</li>
+            <li>Only with dynamic memory allocation</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer9')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer9">
+            <p><strong>Answer:</strong> B - No, never</p>
+
+            <p><strong>Why B is correct:</strong></p>
+            <p>You CANNOT instantiate an abstract class. The compiler prevents it. Abstract classes exist to define interfaces and common behavior. You can only create objects of CONCRETE (non-abstract) derived classes that implement all pure virtual functions.</p>
+
+            <p><strong>Example:</strong></p>
+<pre><code class="language-cpp">class Animal {  // Abstract
+public:
+    virtual void speak() = 0;  // Pure virtual
+};
+
+class Dog : public Animal {
+public:
+    void speak() { cout << "Woof"; }  // Implementation
+};
+
+int main() {
+    Animal a;    // ERROR! Cannot instantiate abstract class
+    Dog d;       // OK! Dog is concrete
+    Animal* ptr = new Dog();  // OK! Pointer to derived object
+}</code></pre>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - You can never create abstract class objects.</li>
+                <li><strong>C:</strong> Incorrect - If you provide implementations, it's no longer abstract! But you still can't instantiate the base class; you instantiate the derived class.</li>
+                <li><strong>D:</strong> Incorrect - Allocation method doesn't matter. Abstract is abstract.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 10 -->
+    <div class="question-box">
+        <span class="question-number">Question 10</span>
+        <h3>Overriding vs Overloading</h3>
+        <p>What's the difference between overriding and overloading virtual functions?</p>
+        <ol type="A">
+            <li>Overriding is same signature in derived class; overloading is different signatures</li>
+            <li>They are the same thing</li>
+            <li>Overriding is for constructors; overloading is for other functions</li>
+            <li>Overloading requires virtual keyword; overriding doesn't</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer10')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer10">
+            <p><strong>Answer:</strong> A - Overriding is same signature in derived class; overloading is different signatures</p>
+
+            <p><strong>Why A is correct:</strong></p>
+            <p><strong>Overriding:</strong> Derived class provides a new implementation for a virtual function with the SAME signature as the base class. This enables polymorphism.</p>
+            <p><strong>Overloading:</strong> Multiple functions with the same name but DIFFERENT signatures (parameters). Not specific to inheritance.</p>
+
+            <p><strong>Example:</strong></p>
+<pre><code class="language-cpp">class Base {
+public:
+    virtual void show() { }       // Virtual function
+    void print(int x) { }         // Overloaded
+    void print(string s) { }      // Overloaded
+};
+
+class Derived : public Base {
+public:
+    void show() { }               // OVERRIDE (same signature)
+    void show(int x) { }          // OVERLOAD (different signature)
+};</code></pre>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>B:</strong> Incorrect - They're different concepts with different purposes.</li>
+                <li><strong>C:</strong> Incorrect - Both apply to regular functions, not just constructors.</li>
+                <li><strong>D:</strong> Incorrect - Overriding requires virtual in the base class.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 11 -->
+    <div class="question-box">
+        <span class="question-number">Question 11</span>
+        <h3>Default Arguments and Virtual Functions</h3>
+        <p>Can virtual functions have default arguments?</p>
+        <ol type="A">
+            <li>No, virtual functions cannot have default arguments</li>
+            <li>Yes, but the defaults are determined by the pointer type (static binding)</li>
+            <li>Yes, and they use dynamic binding like the function call</li>
+            <li>Only pure virtual functions can have default arguments</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer11')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer11">
+            <p><strong>Answer:</strong> B - Yes, but the defaults are determined by the pointer type (static binding)</p>
+
+            <p><strong>Why B is correct:</strong></p>
+            <p>This is a tricky gotcha! While the FUNCTION CALL uses dynamic binding (runtime decision), the DEFAULT ARGUMENTS use static binding (compile-time decision based on pointer type). This is why it's dangerous to override default arguments - you get confusing behavior.</p>
+
+            <p><strong>Example:</strong></p>
+<pre><code class="language-cpp">class Base {
+public:
+    virtual void print(int x = 5) {
+        cout << "Base: " << x;
+    }
+};
+
+class Derived : public Base {
+public:
+    void print(int x = 10) {
+        cout << "Derived: " << x;
+    }
+};
+
+Base* ptr = new Derived();
+ptr->print();  // Prints: "Derived: 5" (Derived function, Base default!)</code></pre>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - They can have defaults, but it's risky.</li>
+                <li><strong>C:</strong> Incorrect - Only the function uses dynamic binding, not the defaults.</li>
+                <li><strong>D:</strong> Incorrect - Regular virtual functions can also have defaults.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 12 -->
+    <div class="question-box">
+        <span class="question-number">Question 12</span>
+        <h3>Multiple Inheritance and Virtual Functions</h3>
+        <p>Can a class inherit from multiple base classes that both have virtual functions?</p>
+        <ol type="A">
+            <li>No, this causes a compilation error</li>
+            <li>Yes, but you can only override one of them</li>
+            <li>Yes, and you must override all pure virtual functions from all base classes</li>
+            <li>Virtual functions are disabled in multiple inheritance</li>
+        </ol>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer12')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer12">
+            <p><strong>Answer:</strong> C - Yes, and you must override all pure virtual functions from all base classes</p>
+
+            <p><strong>Why C is correct:</strong></p>
+            <p>Multiple inheritance is allowed in C++ (though often avoided due to complexity). If multiple base classes have pure virtual functions, the derived class must implement ALL of them to be concrete. Otherwise, it remains abstract.</p>
+
+            <p><strong>Example:</strong></p>
+<pre><code class="language-cpp">class Printable {
+public:
+    virtual void print() = 0;
+};
+
+class Saveable {
+public:
+    virtual void save() = 0;
+};
+
+class Document : public Printable, public Saveable {
+public:
+    void print() { }  // Must implement
+    void save() { }   // Must implement
+};</code></pre>
+
+            <p><strong>Why other options are wrong:</strong></p>
+            <ul>
+                <li><strong>A:</strong> Incorrect - Multiple inheritance is legal (though complex).</li>
+                <li><strong>B:</strong> Incorrect - You must override all pure virtuals from all bases to be concrete.</li>
+                <li><strong>D:</strong> Incorrect - Virtual functions work normally in multiple inheritance.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>Section 2: Code Tracing Questions</h2>
+
+    <!-- Question 13 -->
+    <div class="question-box">
+        <span class="question-number">Question 13</span>
+        <h3>Basic Virtual Function Call</h3>
+        <p>What is the output of this code?</p>
+
+<pre><code class="language-cpp">class Animal {
+public:
+    virtual void speak() { cout << "Animal"; }
+};
+
+class Dog : public Animal {
+public:
+    void speak() { cout << "Dog"; }
+};
+
+int main() {
+    Animal* ptr = new Dog();
+    ptr->speak();
+    delete ptr;
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer13')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer13">
+            <p><strong>Output:</strong></p>
+            <pre>Dog</pre>
+
+            <p><strong>Explanation:</strong></p>
+            <ol>
+                <li><code>Animal* ptr = new Dog();</code> - Create Dog object, store address in Animal pointer</li>
+                <li><code>ptr->speak();</code> - <code>speak()</code> is virtual, so use dynamic binding</li>
+                <li>Runtime: Check actual object type (Dog), call Dog::speak()</li>
+                <li>Output: "Dog"</li>
+            </ol>
+
+            <p><strong>Key Concept:</strong> Virtual functions use the actual object type (Dog), not the pointer type (Animal*).</p>
+        </div>
+    </div>
+
+    <!-- Question 14 -->
+    <div class="question-box">
+        <span class="question-number">Question 14</span>
+        <h3>Non-Virtual Function Call</h3>
+        <p>What is the output if we remove <code>virtual</code>?</p>
+
+<pre><code class="language-cpp">class Animal {
+public:
+    void speak() { cout << "Animal"; }  // No virtual!
+};
+
+class Dog : public Animal {
+public:
+    void speak() { cout << "Dog"; }
+};
+
+int main() {
+    Animal* ptr = new Dog();
+    ptr->speak();
+    delete ptr;
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer14')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer14">
+            <p><strong>Output:</strong></p>
+            <pre>Animal</pre>
+
+            <p><strong>Explanation:</strong></p>
+            <ol>
+                <li><code>Animal* ptr = new Dog();</code> - Still creates Dog object</li>
+                <li><code>ptr->speak();</code> - <code>speak()</code> is NOT virtual, so use static binding</li>
+                <li>Compile-time: Check pointer type (Animal*), call Animal::speak()</li>
+                <li>Output: "Animal"</li>
+            </ol>
+
+            <p><strong>Key Concept:</strong> Without <code>virtual</code>, the pointer type determines which function is called (static binding), even though the actual object is a Dog.</p>
+        </div>
+    </div>
+
+    <!-- Question 15 -->
+    <div class="question-box">
+        <span class="question-number">Question 15</span>
+        <h3>Pure Virtual Function</h3>
+        <p>Will this code compile? If not, why?</p>
+
+<pre><code class="language-cpp">class Shape {
+public:
+    virtual void draw() = 0;
+};
+
+int main() {
+    Shape s;
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer15')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer15">
+            <p><strong>Answer:</strong> No, compilation error</p>
+
+            <p><strong>Error Message:</strong></p>
+            <pre>error: cannot declare variable 's' to be of abstract type 'Shape'</pre>
+
+            <p><strong>Explanation:</strong></p>
+            <p>Shape has a pure virtual function (<code>draw() = 0</code>), making it abstract. You CANNOT create objects of abstract classes. You can only create pointers/references to abstract classes that point to concrete derived objects.</p>
+
+            <p><strong>Fix:</strong></p>
+<pre><code class="language-cpp">class Circle : public Shape {
+public:
+    void draw() { cout << "Drawing circle"; }
+};
+
+int main() {
+    Circle c;            // OK! Circle is concrete
+    Shape* ptr = &c;     // OK! Pointer to derived object
+    ptr->draw();         // Calls Circle::draw()
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- Question 16 -->
+    <div class="question-box">
+        <span class="question-number">Question 16</span>
+        <h3>Object Slicing Demo</h3>
+        <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Animal {
+public:
+    virtual void speak() { cout << "Animal"; }
+};
+
+class Dog : public Animal {
+public:
+    void speak() { cout << "Dog"; }
+};
+
+int main() {
+    Dog d;
+    Animal a = d;  // Assignment by value!
+    a.speak();
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer16')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer16">
+            <p><strong>Output:</strong></p>
+            <pre>Animal</pre>
+
+            <p><strong>Explanation:</strong></p>
+            <ol>
+                <li><code>Dog d;</code> - Create Dog object</li>
+                <li><code>Animal a = d;</code> - OBJECT SLICING! Copy only Animal part to <code>a</code></li>
+                <li><code>a</code> is a true Animal object, not a Dog</li>
+                <li><code>a.speak();</code> - Calls Animal::speak() because <code>a</code> IS an Animal</li>
+            </ol>
+
+            <p><strong>Key Concept:</strong> Assignment by value causes slicing. Even though speak() is virtual, <code>a</code> is genuinely an Animal object (not a Dog), so Animal::speak() is called. Use pointers/references to avoid slicing!</p>
+
+            <p><strong>Correct approach:</strong></p>
+<pre><code class="language-cpp">Dog d;
+Animal* ptr = &d;  // No slicing!
+ptr->speak();      // Outputs: "Dog"</code></pre>
+        </div>
+    </div>
+
+    <!-- Question 17 -->
+    <div class="question-box">
+        <span class="question-number">Question 17</span>
+        <h3>Virtual Destructor Trace</h3>
+        <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    virtual ~Base() { cout << "~Base"; }
+};
+
+class Derived : public Base {
+public:
+    ~Derived() { cout << "~Derived"; }
+};
+
+int main() {
+    Base* ptr = new Derived();
+    delete ptr;
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer17')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer17">
+            <p><strong>Output:</strong></p>
+            <pre>~Derived~Base</pre>
+
+            <p><strong>Line-by-Line Trace:</strong></p>
+            <ol>
+                <li><code>Base* ptr = new Derived();</code> - Create Derived object</li>
+                <li><code>delete ptr;</code> - Destructor is virtual, so use dynamic binding</li>
+                <li>Runtime: Check actual object type (Derived)</li>
+                <li><strong>Derived destructor runs first:</strong> Prints "~Derived"</li>
+                <li><strong>Base destructor runs automatically:</strong> Prints "~Base"</li>
+                <li>Result: "~Derived~Base"</li>
+            </ol>
+
+            <p><strong>Key Concept:</strong> Virtual destructors ensure both derived and base destructors run, preventing memory leaks. Always make base class destructors virtual when using polymorphism!</p>
+        </div>
+    </div>
+
+    <!-- Question 18 -->
+    <div class="question-box">
+        <span class="question-number">Question 18</span>
+        <h3>Non-Virtual Destructor Problem</h3>
+        <p>What is the output if destructor is NOT virtual?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    ~Base() { cout << "~Base"; }  // NOT virtual!
+};
+
+class Derived : public Base {
+public:
+    ~Derived() { cout << "~Derived"; }
+};
+
+int main() {
+    Base* ptr = new Derived();
+    delete ptr;
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer18')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer18">
+            <p><strong>Output:</strong></p>
+            <pre>~Base</pre>
+
+            <p><strong>Problem:</strong></p>
+            <p>Only Base's destructor runs! Derived's destructor is NEVER called. This is a memory leak if Derived allocated resources.</p>
+
+            <p><strong>Explanation:</strong></p>
+            <ol>
+                <li>Destructor is NOT virtual → static binding</li>
+                <li>Compiler checks pointer type (Base*) at compile time</li>
+                <li>Calls Base::~Base() only</li>
+                <li>Derived::~Derived() never runs → memory leak!</li>
+            </ol>
+
+            <p><strong>Example of the leak:</strong></p>
+<pre><code class="language-cpp">class Derived : public Base {
+    int* data;
+public:
+    Derived() { data = new int[100]; }
+    ~Derived() {
+        delete[] data;  // NEVER CALLED! Memory leak!
+        cout << "~Derived";
+    }
+};</code></pre>
+
+            <p><strong>Solution:</strong> Always make destructors virtual in polymorphic base classes!</p>
+        </div>
+    </div>
+
+    <!-- Question 19 -->
+    <div class="question-box">
+        <span class="question-number">Question 19</span>
+        <h3>Multiple Polymorphic Calls</h3>
+        <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Animal {
+public:
+    virtual void speak() { cout << "A"; }
+};
+
+class Dog : public Animal {
+public:
+    void speak() { cout << "D"; }
+};
+
+class Cat : public Animal {
+public:
+    void speak() { cout << "C"; }
+};
+
+int main() {
+    Animal* arr[3];
+    arr[0] = new Dog();
+    arr[1] = new Cat();
+    arr[2] = new Dog();
+
+    for (int i = 0; i < 3; i++) {
+        arr[i]->speak();
+    }
+
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer19')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer19">
+            <p><strong>Output:</strong></p>
+            <pre>DCD</pre>
+
+            <p><strong>Line-by-Line Trace:</strong></p>
+            <ol>
+                <li><code>arr[0] = new Dog();</code> - arr[0] points to Dog</li>
+                <li><code>arr[1] = new Cat();</code> - arr[1] points to Cat</li>
+                <li><code>arr[2] = new Dog();</code> - arr[2] points to Dog</li>
+                <li><strong>Loop iteration 0:</strong> arr[0]->speak() → Dog::speak() → "D"</li>
+                <li><strong>Loop iteration 1:</strong> arr[1]->speak() → Cat::speak() → "C"</li>
+                <li><strong>Loop iteration 2:</strong> arr[2]->speak() → Dog::speak() → "D"</li>
+                <li>Result: "DCD"</li>
+            </ol>
+
+            <p><strong>Key Concept:</strong> Arrays of base class pointers are powerful! Each pointer knows its actual object type at runtime and calls the correct function. This is polymorphism in action.</p>
+        </div>
+    </div>
+
+    <!-- Question 20 -->
+    <div class="question-box">
+        <span class="question-number">Question 20</span>
+        <h3>Calling Base Version</h3>
+        <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    virtual void show() { cout << "Base"; }
+};
+
+class Derived : public Base {
+public:
+    void show() {
+        Base::show();
+        cout << "Derived";
+    }
+};
+
+int main() {
+    Derived d;
+    d.show();
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer20')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer20">
+            <p><strong>Output:</strong></p>
+            <pre>BaseDerived</pre>
+
+            <p><strong>Explanation:</strong></p>
+            <ol>
+                <li><code>d.show();</code> - Call Derived::show()</li>
+                <li>Inside Derived::show(): <code>Base::show();</code> - Explicitly call base version</li>
+                <li>Base::show() prints "Base"</li>
+                <li>Return to Derived::show(), which prints "Derived"</li>
+                <li>Result: "BaseDerived"</li>
+            </ol>
+
+            <p><strong>Key Concept:</strong> You can explicitly call the base class version using <code>Base::functionName()</code>. This is useful when you want to extend behavior rather than completely replace it.</p>
+        </div>
+    </div>
+
+    <h2>Section 3: Find the Bug</h2>
+
+    <!-- Question 21 -->
+    <div class="question-box">
+        <span class="question-number">Question 21</span>
+        <h3>Find the Bug 1</h3>
+        <p>What's wrong with this code?</p>
+
+<pre><code class="language-cpp">class Shape {
+public:
+    virtual void draw() = 0;
+};
+
+class Circle : public Shape {
+public:
+    void draw() { cout << "Circle"; }
+};
+
+class Square : public Shape {
+    // Forgot to implement draw()!
+};
+
+int main() {
+    Square s;
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer21')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer21">
+            <p><strong>Bug: Square doesn't implement pure virtual function</strong></p>
+
+            <p><strong>Problem:</strong></p>
+            <p>Square inherits from Shape, which has a pure virtual function <code>draw()</code>. Since Square doesn't implement <code>draw()</code>, Square is ALSO abstract! You cannot create objects of abstract classes.</p>
+
+            <p><strong>Compiler Error:</strong></p>
+            <pre>error: cannot declare variable 's' to be of abstract type 'Square'</pre>
+
+            <p><strong>Fix:</strong></p>
+<pre><code class="language-cpp">class Square : public Shape {
+public:
+    void draw() { cout << "Square"; }  // Implement draw()
+};</code></pre>
+
+            <p><strong>Key Lesson:</strong> When inheriting from an abstract class, you MUST implement all pure virtual functions to make your derived class concrete (instantiable).</p>
+        </div>
+    </div>
+
+    <!-- Question 22 -->
+    <div class="question-box">
+        <span class="question-number">Question 22</span>
+        <h3>Find the Bug 2</h3>
+        <p>What's the memory problem here?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    ~Base() { cout << "~Base"; }  // NOT virtual!
+};
+
+class Derived : public Base {
+    int* data;
+public:
+    Derived() {
+        data = new int[1000];
+    }
+
+    ~Derived() {
+        delete[] data;
+        cout << "~Derived";
+    }
+};
+
+int main() {
+    Base* ptr = new Derived();
+    delete ptr;  // Memory leak!
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer22')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer22">
+            <p><strong>Bug: Non-virtual destructor causes memory leak</strong></p>
+
+            <p><strong>Problem:</strong></p>
+            <p>When <code>delete ptr;</code> runs, only Base's destructor is called (static binding). Derived's destructor NEVER runs, so <code>delete[] data;</code> never executes. The 1000-integer array is leaked!</p>
+
+            <p><strong>Output:</strong></p>
+            <pre>~Base</pre>
+            <p>(Notice "~Derived" never prints!)</p>
+
+            <p><strong>Fix: Make destructor virtual</strong></p>
+<pre><code class="language-cpp">class Base {
+public:
+    virtual ~Base() { cout << "~Base"; }  // Add virtual!
+};</code></pre>
+
+            <p><strong>Now the output is:</strong></p>
+            <pre>~Derived~Base</pre>
+            <p>Both destructors run, and memory is properly freed.</p>
+
+            <p><strong>Rule:</strong> Always make base class destructors virtual when using polymorphism!</p>
+        </div>
+    </div>
+
+    <!-- Question 23 -->
+    <div class="question-box">
+        <span class="question-number">Question 23</span>
+        <h3>Find the Bug 3</h3>
+        <p>Why doesn't polymorphism work here?</p>
+
+<pre><code class="language-cpp">class Animal {
+public:
+    virtual void speak() { cout << "Animal"; }
+};
+
+class Dog : public Animal {
+public:
+    void speak(int times) {  // Different signature!
+        for (int i = 0; i < times; i++)
+            cout << "Woof ";
+    }
+};
+
+int main() {
+    Animal* ptr = new Dog();
+    ptr->speak();
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer23')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer23">
+            <p><strong>Output:</strong></p>
+            <pre>Animal</pre>
+
+            <p><strong>Bug: Signature mismatch prevents overriding</strong></p>
+
+            <p><strong>Problem:</strong></p>
+            <p>Dog::speak(int) has a DIFFERENT signature than Animal::speak(). This is NOT overriding - it's overloading! Since Dog doesn't override the no-parameter version, Animal::speak() is called.</p>
+
+            <p><strong>What happened:</strong></p>
+            <ul>
+                <li>Animal has: <code>virtual void speak()</code></li>
+                <li>Dog adds: <code>void speak(int times)</code> - different signature!</li>
+                <li>Dog doesn't override Animal::speak(), so it inherits the base version</li>
+                <li><code>ptr->speak();</code> calls Animal::speak()</li>
+            </ul>
+
+            <p><strong>Fix: Match the signature</strong></p>
+<pre><code class="language-cpp">class Dog : public Animal {
+public:
+    void speak() { cout << "Woof"; }  // Same signature - now it overrides!
+};</code></pre>
+
+            <p><strong>Key Lesson:</strong> For overriding, signatures must match EXACTLY (name, parameters, const-ness).</p>
+        </div>
+    </div>
+
+    <!-- Question 24 -->
+    <div class="question-box">
+        <span class="question-number">Question 24</span>
+        <h3>Find the Bug 4</h3>
+        <p>What's wrong with this pure virtual function?</p>
+
+<pre><code class="language-cpp">class Interface {
+public:
+    void process() = 0;  // Bug: Missing virtual!
+};</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer24')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer24">
+            <p><strong>Bug: <code>= 0</code> without <code>virtual</code></strong></p>
+
+            <p><strong>Compiler Error:</strong></p>
+            <pre>error: 'process' declared as pure virtual function without 'virtual' keyword</pre>
+
+            <p><strong>Problem:</strong></p>
+            <p><code>= 0</code> can only be used with virtual functions. The <code>virtual</code> keyword is REQUIRED when declaring a pure virtual function.</p>
+
+            <p><strong>Fix:</strong></p>
+<pre><code class="language-cpp">class Interface {
+public:
+    virtual void process() = 0;  // Add virtual!
+};</code></pre>
+
+            <p><strong>Key Lesson:</strong> Pure virtual functions must be declared with <code>virtual</code>. The syntax is always <code>virtual ReturnType functionName(params) = 0;</code></p>
+        </div>
+    </div>
+
+    <!-- Question 25 -->
+    <div class="question-box">
+        <span class="question-number">Question 25</span>
+        <h3>Find the Bug 5</h3>
+        <p>Why does this exhibit unexpected behavior?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    virtual void print(int x = 10) {
+        cout << "Base: " << x << endl;
+    }
+};
+
+class Derived : public Base {
+public:
+    void print(int x = 20) {  // Different default!
+        cout << "Derived: " << x << endl;
+    }
+};
+
+int main() {
+    Base* ptr = new Derived();
+    ptr->print();  // What gets printed?
+    return 0;
+}</code></pre>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer25')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer25">
+            <p><strong>Output:</strong></p>
+            <pre>Derived: 10</pre>
+
+            <p><strong>Bug: Confusing mix of dynamic function call and static default argument</strong></p>
+
+            <p><strong>What happened:</strong></p>
+            <ol>
+                <li><code>ptr->print();</code> - No argument provided, use default</li>
+                <li><strong>Default argument (10):</strong> Determined by pointer type (Base*) at compile time - STATIC BINDING</li>
+                <li><strong>Function call:</strong> Determined by object type (Derived) at runtime - DYNAMIC BINDING</li>
+                <li>Result: Call Derived::print(10) - Derived function with Base's default!</li>
+            </ol>
+
+            <p><strong>Why this is confusing:</strong></p>
+            <p>You get a weird mix: Derived's implementation with Base's default value. This violates the principle of least surprise.</p>
+
+            <p><strong>Fix: Don't change default arguments in overrides</strong></p>
+<pre><code class="language-cpp">class Derived : public Base {
+public:
+    void print(int x = 10) {  // Same default as Base
+        cout << "Derived: " << x << endl;
+    }
+};</code></pre>
+
+            <p><strong>Better Fix: Avoid defaults in virtual functions entirely</strong></p>
+<pre><code class="language-cpp">class Base {
+public:
+    virtual void print(int x) {  // No default
+        cout << "Base: " << x << endl;
+    }
+};
+
+// Caller must provide: ptr->print(10);</code></pre>
+
+            <p><strong>Key Lesson:</strong> Default arguments use static binding. Avoid changing them (or using them at all) in virtual function hierarchies.</p>
+        </div>
+    </div>
+
+    <h2>Section 4: True/False</h2>
+
+    <!-- Question 26 -->
+    <div class="question-box">
+        <span class="question-number">Question 26</span>
+        <h3>True or False: Virtual Function Performance</h3>
+        <p><strong>Statement:</strong> Virtual functions have a small performance overhead compared to non-virtual functions due to vtable lookup.</p>
+        <p>True or False? Justify your answer.</p>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer26')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer26">
+            <p><strong>Answer: TRUE</strong></p>
+
+            <p><strong>Justification:</strong></p>
+            <p>Virtual functions do have a small overhead:</p>
+            <ul>
+                <li><strong>Space:</strong> Each object with virtual functions has a hidden vptr (pointer to vtable) - typically 8 bytes on 64-bit systems</li>
+                <li><strong>Time:</strong> Each virtual function call requires a vtable lookup: follow vptr → index into vtable → get function address → call function</li>
+            </ul>
+
+            <p><strong>However:</strong></p>
+            <ul>
+                <li>The overhead is TINY in modern CPUs (nanoseconds per call)</li>
+                <li>It's almost never a performance bottleneck</li>
+                <li>The flexibility of polymorphism is worth it</li>
+                <li>Only use non-virtual when you've profiled and proven it's necessary</li>
+            </ul>
+
+            <p><strong>Conclusion:</strong> Yes, there's overhead, but it's negligible. Use virtual functions where they make sense architecturally.</p>
+        </div>
+    </div>
+
+    <!-- Question 27 -->
+    <div class="question-box">
+        <span class="question-number">Question 27</span>
+        <h3>True or False: Virtual Propagation</h3>
+        <p><strong>Statement:</strong> Once a function is declared virtual in a base class, it remains virtual in all derived classes even if you don't use the <code>virtual</code> keyword again.</p>
+        <p>True or False? Justify your answer.</p>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer27')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer27">
+            <p><strong>Answer: TRUE</strong></p>
+
+            <p><strong>Justification:</strong></p>
+            <p>Once virtual, always virtual! If a base class declares a function as virtual, all overrides in derived classes are automatically virtual, even if you don't write the <code>virtual</code> keyword.</p>
+
+            <p><strong>Example:</strong></p>
+<pre><code class="language-cpp">class Base {
+public:
+    virtual void foo() { }  // Virtual
+};
+
+class Derived : public Base {
+public:
+    void foo() { }  // Still virtual (even without keyword)!
+};
+
+class MoreDerived : public Derived {
+public:
+    void foo() { }  // Still virtual!
+};</code></pre>
+
+            <p><strong>Best Practice:</strong></p>
+            <p>Even though it's automatic, it's good style to include <code>virtual</code> in derived classes too for clarity. C++11 added the <code>override</code> keyword which is even better:</p>
+
+<pre><code class="language-cpp">class Derived : public Base {
+public:
+    void foo() override { }  // C++11: explicitly marks override
+};</code></pre>
+
+            <p><strong>Conclusion:</strong> Virtual is "sticky" - it propagates down the inheritance hierarchy automatically.</p>
+        </div>
+    </div>
+
+    <!-- Question 28 -->
+    <div class="question-box">
+        <span class="question-number">Question 28</span>
+        <h3>True or False: Abstract Class Pointers</h3>
+        <p><strong>Statement:</strong> You can have a pointer to an abstract class, but you cannot have an object of an abstract class.</p>
+        <p>True or False? Justify your answer.</p>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer28')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer28">
+            <p><strong>Answer: TRUE</strong></p>
+
+            <p><strong>Justification:</strong></p>
+            <p>This is absolutely true and is fundamental to how abstract classes work:</p>
+
+            <p><strong>You CANNOT create objects:</strong></p>
+<pre><code class="language-cpp">class Shape {
+public:
+    virtual void draw() = 0;  // Pure virtual - abstract class
+};
+
+Shape s;  // ERROR! Cannot instantiate abstract class</code></pre>
+
+            <p><strong>You CAN create pointers/references:</strong></p>
+<pre><code class="language-cpp">class Circle : public Shape {
+public:
+    void draw() { cout << "Circle"; }
+};
+
+Shape* ptr = new Circle();  // OK! Pointer to abstract type
+Shape& ref = circle;        // OK! Reference to abstract type
+ptr->draw();                // Calls Circle::draw() via polymorphism</code></pre>
+
+            <p><strong>Why this makes sense:</strong></p>
+            <p>Abstract classes define interfaces. You can't have "just an interface" as a real object, but you can have pointers/references that use the interface to interact with concrete implementations. This is the foundation of polymorphism.</p>
+        </div>
+    </div>
+
+    <h2>Section 5: Implementation Tasks</h2>
+
+    <!-- Question 29 -->
+    <div class="question-box">
+        <span class="question-number">Question 29</span>
+        <h3>Implementation: Abstract Shape Hierarchy</h3>
+        <p><strong>Task:</strong> Implement a shape hierarchy with polymorphism.</p>
+
+        <p>Create the following:</p>
+
+        <p><strong>Shape (abstract base class):</strong></p>
+        <ul>
+            <li>Pure virtual function: <code>double getArea() const</code></li>
+            <li>Pure virtual function: <code>void display() const</code></li>
+            <li>Virtual destructor</li>
+        </ul>
+
+        <p><strong>Rectangle (derived from Shape):</strong></p>
+        <ul>
+            <li>Private members: <code>width</code>, <code>height</code></li>
+            <li>Constructor: <code>Rectangle(double w, double h)</code></li>
+            <li>Implement: <code>getArea()</code> returns width × height</li>
+            <li>Implement: <code>display()</code> prints "Rectangle: W x H, Area = A"</li>
+        </ul>
+
+        <p><strong>Circle (derived from Shape):</strong></p>
+        <ul>
+            <li>Private member: <code>radius</code></li>
+            <li>Constructor: <code>Circle(double r)</code></li>
+            <li>Implement: <code>getArea()</code> returns π × r² (use 3.14159)</li>
+            <li>Implement: <code>display()</code> prints "Circle: Radius = R, Area = A"</li>
+        </ul>
+
+        <p><strong>Test in main():</strong></p>
+        <ul>
+            <li>Create array: <code>Shape* shapes[2];</code></li>
+            <li>Store Rectangle(5, 3) and Circle(4)</li>
+            <li>Loop through array calling <code>display()</code> for each</li>
+        </ul>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer29')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer29">
+            <p><strong>Complete Implementation:</strong></p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+// Abstract base class
+class Shape {
+public:
+    virtual double getArea() const = 0;
+    virtual void display() const = 0;
+    virtual ~Shape() { }  // Virtual destructor
+};
+
+class Rectangle : public Shape {
+private:
+    double width;
+    double height;
+
+public:
+    Rectangle(double w, double h) : width(w), height(h) { }
+
+    double getArea() const {
+        return width * height;
+    }
+
+    void display() const {
+        cout << "Rectangle: " << width << " x " << height;
+        cout << ", Area = " << getArea() << endl;
+    }
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+
+public:
+    Circle(double r) : radius(r) { }
+
+    double getArea() const {
+        return 3.14159 * radius * radius;
+    }
+
+    void display() const {
+        cout << "Circle: Radius = " << radius;
+        cout << ", Area = " << getArea() << endl;
+    }
+};
+
+int main() {
+    Shape* shapes[2];
+    shapes[0] = new Rectangle(5, 3);
+    shapes[1] = new Circle(4);
+
+    for (int i = 0; i < 2; i++) {
+        shapes[i]->display();
+    }
+
+    // Clean up
+    for (int i = 0; i < 2; i++) {
+        delete shapes[i];
+    }
+
+    return 0;
+}</code></pre>
+
+            <p><strong>Expected Output:</strong></p>
+<pre>Rectangle: 5 x 3, Area = 15
+Circle: Radius = 4, Area = 50.2654</pre>
+
+            <p><strong>Key Points:</strong></p>
+            <ul>
+                <li>Shape cannot be instantiated (abstract)</li>
+                <li>Both derived classes implement all pure virtual functions</li>
+                <li>Polymorphism: <code>shapes[i]->display()</code> calls correct version</li>
+                <li>Virtual destructor ensures proper cleanup when deleting</li>
+                <li>Array of base class pointers enables treating different shapes uniformly</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Question 30 -->
+    <div class="question-box">
+        <span class="question-number">Question 30</span>
+        <h3>Implementation: Vehicle Hierarchy with Virtual Destructor</h3>
+        <p><strong>Task:</strong> Demonstrate the importance of virtual destructors.</p>
+
+        <p>Create the following:</p>
+
+        <p><strong>Vehicle (base class):</strong></p>
+        <ul>
+            <li>Virtual destructor that prints "~Vehicle"</li>
+            <li>Virtual function: <code>void start()</code> prints "Vehicle starting"</li>
+        </ul>
+
+        <p><strong>Car (derived from Vehicle):</strong></p>
+        <ul>
+            <li>Private member: <code>int* engineData</code></li>
+            <li>Constructor: Allocates <code>new int[100]</code>, prints "Car constructed"</li>
+            <li>Destructor: Deletes <code>engineData</code>, prints "~Car"</li>
+            <li>Override <code>start()</code>: prints "Car engine starting"</li>
+        </ul>
+
+        <p><strong>Test in main():</strong></p>
+        <ul>
+            <li>Create: <code>Vehicle* v = new Car();</code></li>
+            <li>Call: <code>v->start();</code></li>
+            <li>Delete: <code>delete v;</code></li>
+            <li>Observe destructor output</li>
+        </ul>
+
+        <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer30')">Show Answer</button>
+        <div class="quiz-answer-section" id="answer30">
+            <p><strong>Complete Implementation:</strong></p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Vehicle {
+public:
+    virtual void start() {
+        cout << "Vehicle starting" << endl;
+    }
+
+    virtual ~Vehicle() {
+        cout << "~Vehicle" << endl;
+    }
+};
+
+class Car : public Vehicle {
+private:
+    int* engineData;
+
+public:
+    Car() {
+        engineData = new int[100];
+        cout << "Car constructed" << endl;
+    }
+
+    void start() {
+        cout << "Car engine starting" << endl;
+    }
+
+    ~Car() {
+        delete[] engineData;
+        cout << "~Car" << endl;
+    }
+};
+
+int main() {
+    cout << "Creating Car via Vehicle pointer:" << endl;
+    Vehicle* v = new Car();
+
+    cout << "\nCalling start():" << endl;
+    v->start();
+
+    cout << "\nDeleting via Vehicle pointer:" << endl;
+    delete v;
+
+    return 0;
+}</code></pre>
+
+            <p><strong>Expected Output:</strong></p>
+<pre>Creating Car via Vehicle pointer:
+Car constructed
+
+Calling start():
+Car engine starting
+
+Deleting via Vehicle pointer:
+~Car
+~Vehicle</pre>
+
+            <p><strong>Key Points:</strong></p>
+            <ul>
+                <li>Virtual destructor ensures Car's destructor runs first</li>
+                <li>If destructor wasn't virtual, <code>~Car</code> would never run → memory leak!</li>
+                <li>Virtual <code>start()</code> enables polymorphic call</li>
+                <li>Notice destructor order: derived (~Car) then base (~Vehicle)</li>
+            </ul>
+
+            <p><strong>What if destructor wasn't virtual?</strong></p>
+            <p>Change Vehicle destructor to: <code>~Vehicle() { }</code> (remove virtual)</p>
+            <p><strong>Output would be:</strong></p>
+<pre>Creating Car via Vehicle pointer:
+Car constructed
+
+Calling start():
+Car engine starting
+
+Deleting via Vehicle pointer:
+~Vehicle</pre>
+            <p>Notice: <code>~Car</code> never runs! The 100-integer array leaks!</p>
+
+            <p><strong>Golden Rule:</strong> Always make destructors virtual in polymorphic base classes!</p>
+        </div>
+    </div>
+
+    <!-- End of Quiz -->
+    <div class="info-box" style="margin-top: 3rem;">
+        <strong>Quiz Complete!</strong> You've completed all 30 questions on virtual functions and polymorphism. Review any questions you found challenging and make sure you understand the concepts before moving on to the next unit.
+    </div>
+
+</div>
+
+<!-- Prism.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+<script>
+    // Toggle quiz answer sections
+    function toggleQuizAnswer(answerId) {
+        const answerSection = document.getElementById(answerId);
+        const button = event.target;
+
+        answerSection.classList.toggle('visible');
+
+        if (answerSection.classList.contains('visible')) {
+            button.textContent = 'Hide Answer';
+
+            // CRITICAL: Force browser reflow before highlighting
+            void(answerSection.offsetHeight);
+
+            // Re-highlight Prism code blocks after reflow
+            if (typeof Prism !== 'undefined') {
+                // Find all code blocks in this answer section and highlight them individually
+                answerSection.querySelectorAll('pre code').forEach(function(codeBlock) {
+                    Prism.highlightElement(codeBlock);
+                });
+            }
+        } else {
+            button.textContent = 'Show Answer';
+        }
+    }
+</script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

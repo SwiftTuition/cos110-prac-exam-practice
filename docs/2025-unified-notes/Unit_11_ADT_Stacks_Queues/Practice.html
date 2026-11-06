@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 11: ADT - Stacks & Queues - Practice | COS 110</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code,
+        .content-card h3 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .info-box {
+            background: #1f2937;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #142d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        /* CodeMirror Playground */
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #334155;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 11: ADT - Stacks & Queues</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html" class="active">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Practice Problems</h2>
+            <p>Now it's your turn! These problems let you apply what you've learned about stacks and queues. Try solving each problem before revealing the solution.</p>
+            <p><strong>Tip:</strong> Write your solution on paper or in a code editor first, then compare with the provided solution.</p>
+        </section>
+
+        <!-- Problem 1: Check Balanced Parentheses (Generic) -->
+        <section class="content-card">
+            <h2>Problem 1: Check Balanced Parentheses</h2>
+
+            <h3>Task</h3>
+            <p>Write a function that checks if parentheses, brackets, and braces in a string are balanced. For example:</p>
+            <ul>
+                <li><code>"()"</code> → balanced</li>
+                <li><code>"()[]{}"</code> → balanced</li>
+                <li><code>"(]"</code> → not balanced</li>
+                <li><code>"([)]"</code> → not balanced (wrong nesting order)</li>
+                <li><code>"{[]}"</code> → balanced</li>
+            </ul>
+
+            <h3>Why This Matters</h3>
+            <p>Compilers use this exact technique to check if your C++ code has matching braces. When you write <code>if (x > 0) { ... }</code>, the compiler uses a stack to verify every opening brace has a matching closing brace.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('prob1')">Show Solution</button>
+            <div class="answer-section" id="prob1">
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Balanced Parentheses Checker</div>
+                    </div>
+
+                    <textarea id="editor1">
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Node {
+    char data;
+    Node* next;
+};
+
+class Stack {
+private:
+    Node* head;
+
+public:
+    Stack() {
+        head = NULL;
+    }
+
+    ~Stack() {
+        while (!isEmpty()) {
+            pop();
+        }
+    }
+
+    void push(char c) {
+        Node* newNode = new Node;
+        newNode->data = c;
+        newNode->next = head;
+        head = newNode;
+    }
+
+    char pop() {
+        if (isEmpty()) {
+            return '\0';
+        }
+        char c = head->data;
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        return c;
+    }
+
+    char peek() {
+        if (isEmpty()) {
+            return '\0';
+        }
+        return head->data;
+    }
+
+    bool isEmpty() {
+        return head == NULL;
+    }
+};
+
+bool isBalanced(string str) {
+    Stack s;
+
+    for (int i = 0; i < str.length(); i++) {
+        char c = str[i];
+
+        if (c == '(' || c == '[' || c == '{') {
+            s.push(c);
+        }
+        else if (c == ')' || c == ']' || c == '}') {
+            if (s.isEmpty()) {
+                return false;
+            }
+
+            char top = s.pop();
+
+            if ((c == ')' && top != '(') ||
+                (c == ']' && top != '[') ||
+                (c == '}' && top != '{')) {
+                return false;
+            }
+        }
+    }
+
+    return s.isEmpty();
+}
+
+int main() {
+    string test1 = "()";
+    string test2 = "()[]{}";
+    string test3 = "(]";
+    string test4 = "([)]";
+    string test5 = "{[]}";
+
+    cout << "\"" << test1 << "\" -> " << (isBalanced(test1) ? "balanced" : "not balanced") << endl;
+    cout << "\"" << test2 << "\" -> " << (isBalanced(test2) ? "balanced" : "not balanced") << endl;
+    cout << "\"" << test3 << "\" -> " << (isBalanced(test3) ? "balanced" : "not balanced") << endl;
+    cout << "\"" << test4 << "\" -> " << (isBalanced(test4) ? "balanced" : "not balanced") << endl;
+    cout << "\"" << test5 << "\" -> " << (isBalanced(test5) ? "balanced" : "not balanced") << endl;
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor1', 'output1')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output1">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works - Step by Step</h3>
+
+                <p><strong>The basic idea:</strong> When you see an opening bracket, remember it by pushing onto the stack. When you see a closing bracket, check if it matches the most recent opening bracket (which is at the top of the stack).</p>
+
+                <p><strong>Let's trace through <code>"({[]})"</code>:</strong></p>
+                <ol>
+                    <li>Read <code>'('</code> → It's an opening bracket, so push it onto the stack. Stack is now: <code>['(']</code></li>
+                    <li>Read <code>'{'</code> → It's an opening bracket, push it. Stack is now: <code>['(', '{']</code></li>
+                    <li>Read <code>'['</code> → It's an opening bracket, push it. Stack is now: <code>['(', '{', '[']</code></li>
+                    <li>Read <code>']'</code> → It's a closing bracket. Pop the stack (gives us <code>'['</code>). Check if <code>'['</code> matches <code>']'</code> → Yes! Continue. Stack is now: <code>['(', '{']</code></li>
+                    <li>Read <code>'}'</code> → It's a closing bracket. Pop the stack (gives us <code>'{'</code>). Check if <code>'{'</code> matches <code>'}'</code> → Yes! Continue. Stack is now: <code>['(']</code></li>
+                    <li>Read <code>')'</code> → It's a closing bracket. Pop the stack (gives us <code>'('</code>). Check if <code>'('</code> matches <code>')'</code> → Yes! Continue. Stack is now empty: <code>[]</code></li>
+                    <li>We've read all characters and the stack is empty → The string is balanced!</li>
+                </ol>
+
+                <p><strong>Why does <code>"([)]"</code> fail?</strong></p>
+                <ol>
+                    <li>Read <code>'('</code> → Push. Stack: <code>['(']</code></li>
+                    <li>Read <code>'['</code> → Push. Stack: <code>['(', '[']</code></li>
+                    <li>Read <code>')'</code> → Pop gives us <code>'['</code>. Does <code>'['</code> match <code>')'</code>? NO! Return false immediately.</li>
+                </ol>
+
+                <p>The problem is that <code>')'</code> should match with <code>'('</code>, but we have <code>'['</code> in the way. The nesting is wrong.</p>
+
+                <p><strong>Why does <code>"(]"</code> fail?</strong></p>
+                <ol>
+                    <li>Read <code>'('</code> → Push. Stack: <code>['(']</code></li>
+                    <li>Read <code>']'</code> → Pop gives us <code>'('</code>. Does <code>'('</code> match <code>']'</code>? NO! Return false.</li>
+                </ol>
+
+                <p><strong>Edge cases handled:</strong></p>
+                <ul>
+                    <li><strong>Too many closing brackets:</strong> If we see <code>')'</code> but the stack is empty, there's no matching opening bracket. Return false (lines 68-70).</li>
+                    <li><strong>Too many opening brackets:</strong> If we finish reading the string but the stack still has items, there are unmatched opening brackets. Return false (line 81).</li>
+                    <li><strong>Wrong bracket type:</strong> If we pop <code>'['</code> but see <code>')'</code>, they don't match. Return false (lines 74-76).</li>
+                </ul>
+
+                <div class="success-box">
+                    <strong>Time Complexity:</strong> O(n) where n is the length of the string. We visit each character exactly once.<br>
+                    <strong>Space Complexity:</strong> O(n) in the worst case (all opening brackets like <code>"((((("</code>).
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 2: Gintama Episode Binge Queue -->
+        <section class="content-card">
+            <h2>Problem 2: Gintama Binge-Watch Queue</h2>
+
+            <h3>Scenario</h3>
+            <p>Swift just discovered Gintama - a hilarious anime about a lazy samurai who runs an odd-jobs business in alternate-history Japan. The show is known for breaking the fourth wall and has over 300 episodes. Swift wants to binge-watch the Benizakura Arc (a 4-episode mini-arc within the series that his friend recommended).</p>
+
+            <p>The problem: Swift's internet is slow, so he queues up episodes to download overnight. Episodes download in order (FIFO), and he wants to watch them in the same order they were queued.</p>
+
+            <h3>Task</h3>
+            <p>Create a download queue system where:</p>
+            <ul>
+                <li>Episodes are queued for download (added to rear)</li>
+                <li>As each episode finishes downloading, Swift can watch it (removed from front)</li>
+                <li>Swift can see what's currently in the download queue</li>
+            </ul>
+
+            <button class="reveal-btn" onclick="toggleAnswer('prob2')">Show Solution</button>
+            <div class="answer-section" id="prob2">
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Episode Download Queue</div>
+                    </div>
+
+                    <textarea id="editor2">
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Episode {
+    int number;
+    string title;
+};
+
+struct Node {
+    Episode data;
+    Node* next;
+};
+
+class DownloadQueue {
+private:
+    Node* head;
+    Node* tail;
+
+public:
+    DownloadQueue() {
+        head = NULL;
+        tail = NULL;
+    }
+
+    ~DownloadQueue() {
+        while (!isEmpty()) {
+            watchNext();
+        }
+    }
+
+    void queueDownload(int epNum, string title) {
+        Node* newNode = new Node;
+        newNode->data.number = epNum;
+        newNode->data.title = title;
+        newNode->next = NULL;
+
+        if (isEmpty()) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+
+        cout << "Queued for download: Episode " << epNum
+             << " - " << title << endl;
+    }
+
+    void watchNext() {
+        if (isEmpty()) {
+            cout << "No episodes downloaded yet!" << endl;
+            return;
+        }
+
+        Episode ep = head->data;
+        Node* temp = head;
+        head = head->next;
+
+        if (head == NULL) {
+            tail = NULL;
+        }
+
+        delete temp;
+
+        cout << "Now watching: Episode " << ep.number
+             << " - " << ep.title << endl;
+    }
+
+    bool isEmpty() {
+        return head == NULL;
+    }
+
+    void showQueue() {
+        if (isEmpty()) {
+            cout << "Download queue is empty." << endl;
+            return;
+        }
+
+        cout << "\nDownload Queue:" << endl;
+        Node* current = head;
+        int position = 1;
+
+        while (current != NULL) {
+            cout << position << ". Episode " << current->data.number
+                 << " - " << current->data.title << endl;
+            current = current->next;
+            position++;
+        }
+    }
+};
+
+int main() {
+    DownloadQueue queue;
+
+    cout << "=== Gintama Benizakura Arc Binge ===" << endl;
+    cout << endl;
+
+    queue.queueDownload(58, "Benizakura Arc Part 1");
+    queue.queueDownload(59, "Benizakura Arc Part 2");
+    queue.queueDownload(60, "Benizakura Arc Part 3");
+    queue.queueDownload(61, "Benizakura Arc Part 4");
+
+    queue.showQueue();
+
+    cout << "\nFirst episode finished downloading..." << endl;
+    queue.watchNext();
+
+    cout << "\nSecond episode finished downloading..." << endl;
+    queue.watchNext();
+
+    queue.showQueue();
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor2', 'output2')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output2">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works - Step by Step</h3>
+
+                <p><strong>Why we need a queue (FIFO):</strong> Downloads finish in the order they were queued. The first episode Swift queued (Ep 58) should be the first episode he watches. If we used a stack (LIFO), he'd watch Episode 61 first, then 60, 59, 58 - completely backwards!</p>
+
+                <p><strong>Let's trace through the operations:</strong></p>
+
+                <p><strong>Initial state:</strong> Queue is empty. <code>head = NULL</code>, <code>tail = NULL</code></p>
+
+                <p><strong>After <code>queueDownload(58, "Part 1")</code>:</strong></p>
+                <ul>
+                    <li>Create a new node with Episode 58</li>
+                    <li>Since the queue is empty (<code>head == NULL</code>), this is the first node</li>
+                    <li>Set both <code>head</code> and <code>tail</code> to point to this node</li>
+                    <li>Queue now looks like: <code>[Ep 58]</code>, where <code>head → Ep 58 ← tail</code></li>
+                </ul>
+
+                <p><strong>After <code>queueDownload(59, "Part 2")</code>:</strong></p>
+                <ul>
+                    <li>Create a new node with Episode 59</li>
+                    <li>The queue is NOT empty, so we add to the rear</li>
+                    <li>Set <code>tail->next</code> to point to the new node (line 45)</li>
+                    <li>Move <code>tail</code> to point to the new node (line 46)</li>
+                    <li>Queue now looks like: <code>[Ep 58] → [Ep 59]</code>, where <code>head → Ep 58</code> and <code>tail → Ep 59</code></li>
+                </ul>
+
+                <p><strong>After queueing all 4 episodes:</strong></p>
+                <ul>
+                    <li>Queue: <code>[Ep 58] → [Ep 59] → [Ep 60] → [Ep 61]</code></li>
+                    <li><code>head</code> points to Ep 58 (front)</li>
+                    <li><code>tail</code> points to Ep 61 (rear)</li>
+                </ul>
+
+                <p><strong>First <code>watchNext()</code> call:</strong></p>
+                <ul>
+                    <li>Get the episode at <code>head</code> (Ep 58)</li>
+                    <li>Save <code>head</code> in a temporary pointer (line 57)</li>
+                    <li>Move <code>head</code> forward: <code>head = head->next</code> (line 58)</li>
+                    <li>Delete the old head node (line 64)</li>
+                    <li>Queue is now: <code>[Ep 59] → [Ep 60] → [Ep 61]</code></li>
+                    <li><code>head</code> now points to Ep 59</li>
+                </ul>
+
+                <p><strong>Why check <code>if (head == NULL)</code> on line 60?</strong></p>
+                <p>If we just removed the LAST node in the queue, <code>head</code> becomes NULL. But <code>tail</code> still points to the old (now deleted) node. We must also set <code>tail = NULL</code> to keep them in sync, otherwise the next <code>queueDownload()</code> will try to access freed memory and crash.</p>
+
+                <div class="success-box">
+                    <strong>Key takeaway:</strong> Queues are perfect for "first-come, first-served" scenarios like download queues, print queues, or any situation where order matters.
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 3: What's Wrong? - Undo System -->
+        <section class="content-card">
+            <h2>Problem 3: What's Wrong? - Text Editor Undo</h2>
+
+            <h3>Scenario</h3>
+            <p>Thabo is building a simple text editor. He wants an undo feature where each action (typing, deleting, formatting) can be undone by pressing Ctrl+Z. He wrote the following code but it's causing problems.</p>
+
+            <h3>Task</h3>
+            <p>Find and fix the bugs in Thabo's undo system. The code should:</p>
+            <ul>
+                <li>Add actions to an undo stack</li>
+                <li>Undo removes the most recent action (LIFO)</li>
+                <li>Not leak memory</li>
+            </ul>
+
+            <button class="reveal-btn" onclick="toggleAnswer('prob3')">Show Buggy Code & Solution</button>
+            <div class="answer-section" id="prob3">
+                <h3>Buggy Code</h3>
+                <p><strong>Try to find the bugs before running it:</strong></p>
+
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Buggy Undo System</div>
+                    </div>
+
+                    <textarea id="editor3">
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Node {
+    string data;
+    Node* next;
+};
+
+class UndoStack {
+private:
+    Node* head;
+
+public:
+    UndoStack() {
+        head = NULL;
+    }
+
+    void addAction(string action) {
+        Node* newNode = new Node;
+        newNode->data = action;
+        newNode->next = head;
+        head = newNode;
+        cout << "Action: " << action << endl;
+    }
+
+    string undo() {
+        if (head == NULL) {
+            cout << "Nothing to undo!" << endl;
+            return "";
+        }
+
+        string action = head->data;
+        head = head->next;
+
+        cout << "Undoing: " << action << endl;
+        return action;
+    }
+};
+
+int main() {
+    UndoStack editor;
+
+    editor.addAction("Type 'Hello'");
+    editor.addAction("Type 'World'");
+    editor.addAction("Delete 'd'");
+
+    cout << "\nUndoing actions..." << endl;
+    editor.undo();
+    editor.undo();
+    editor.undo();
+    editor.undo();
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor3', 'output3')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output3">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>What's Wrong?</h3>
+                <button class="reveal-btn" onclick="toggleAnswer('prob3-bugs')">Show Bugs & Explanation</button>
+                <div class="answer-section" id="prob3-bugs">
+                    <h3>The Bugs</h3>
+
+                    <p><strong>Bug 1: Memory leak in <code>undo()</code> (line 35)</strong></p>
+                    <p>When we undo an action, we move <code>head</code> to the next node with <code>head = head->next</code>. But we never delete the old node! Each undo leaks memory.</p>
+
+                    <p>Here's what happens:</p>
+                    <ul>
+                        <li>Before undo: <code>head → [Delete 'd'] → [Type 'World'] → [Type 'Hello'] → NULL</code></li>
+                        <li>After <code>head = head->next</code>: <code>head → [Type 'World'] → [Type 'Hello'] → NULL</code></li>
+                        <li>Problem: The <code>[Delete 'd']</code> node is still in memory, but we lost the pointer to it! We can never delete it now. It's leaked.</li>
+                    </ul>
+
+                    <p><strong>Bug 2: No destructor</strong></p>
+                    <p>When the <code>UndoStack</code> object is destroyed (at the end of main), all the remaining nodes leak. We need a destructor that deletes all nodes.</p>
+
+                    <h3>Fixed Version</h3>
+                    <div class="playground">
+                        <div class="playground-header">
+                            <div class="playground-title">🎮 Fixed Undo System</div>
+                        </div>
+
+                        <textarea id="editor4">
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Node {
+    string data;
+    Node* next;
+};
+
+class UndoStack {
+private:
+    Node* head;
+
+public:
+    UndoStack() {
+        head = NULL;
+    }
+
+    ~UndoStack() {
+        while (head != NULL) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
+    void addAction(string action) {
+        Node* newNode = new Node;
+        newNode->data = action;
+        newNode->next = head;
+        head = newNode;
+        cout << "Action: " << action << endl;
+    }
+
+    string undo() {
+        if (head == NULL) {
+            cout << "Nothing to undo!" << endl;
+            return "";
+        }
+
+        string action = head->data;
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+
+        cout << "Undoing: " << action << endl;
+        return action;
+    }
+};
+
+int main() {
+    UndoStack editor;
+
+    editor.addAction("Type 'Hello'");
+    editor.addAction("Type 'World'");
+    editor.addAction("Delete 'd'");
+
+    cout << "\nUndoing actions..." << endl;
+    editor.undo();
+    editor.undo();
+    editor.undo();
+    editor.undo();
+
+    return 0;
+}
+</textarea>
+
+                        <div class="playground-controls">
+                            <button class="run-btn" onclick="runCode('editor4', 'output4')">▶ Run Code</button>
+                            <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                        </div>
+
+                        <div class="output-section">
+                            <div class="output-label">Output:</div>
+                            <div class="output-box" id="output4">
+                                <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>What We Fixed - Step by Step</h3>
+
+                    <p><strong>Fix 1: Proper deletion in <code>undo()</code> (lines 43-45)</strong></p>
+                    <ol>
+                        <li>Save the current head in a temporary pointer: <code>Node* temp = head;</code></li>
+                        <li>Move head forward: <code>head = head->next;</code></li>
+                        <li>Delete the old node using the temp pointer: <code>delete temp;</code></li>
+                    </ol>
+
+                    <p>We MUST use a temp pointer because if we write <code>delete head</code> first, we lose access to <code>head->next</code> (accessing freed memory is undefined behavior).</p>
+
+                    <p><strong>Fix 2: Added destructor (lines 19-25)</strong></p>
+                    <p>The destructor loops through all remaining nodes and deletes them one by one. This prevents memory leaks when the UndoStack object is destroyed.</p>
+
+                    <div class="warning-box">
+                        <strong>Common mistake:</strong> Don't write <code>delete head; head = head->next;</code> - once you delete head, accessing <code>head->next</code> is undefined behavior! Always save <code>head->next</code> in a temp variable BEFORE deleting.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 4: Challenge - Fally Ipupa Playlist Manager -->
+        <section class="content-card">
+            <h2>Problem 4: Challenge - Playlist Manager with History</h2>
+
+            <h3>Scenario</h3>
+            <p>Swift loves Congolese music, especially Fally Ipupa. His favorite Fally songs are "Eloko Oyo", "Amore", "Humanisme", and "Esengo". Swift's music player needs two features:</p>
+            <ul>
+                <li><strong>Play queue:</strong> Songs play in the order they were added (FIFO queue)</li>
+                <li><strong>Recently played:</strong> Track the last 3 songs played so Swift can jump back if he wants to replay something (LIFO stack)</li>
+            </ul>
+
+            <p>When Swift plays the next song, it should be removed from the play queue and added to the "recently played" stack.</p>
+
+            <h3>Task</h3>
+            <p>Build a system that combines both a queue (for upcoming songs) and a stack (for recently played). This is a challenge problem that tests your understanding of both data structures working together.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('prob4')">Show Solution</button>
+            <div class="answer-section" id="prob4">
+                <h3>Solution</h3>
+                <div class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">🎮 Fally Ipupa Playlist Manager</div>
+                    </div>
+
+                    <textarea id="editor5">
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Song {
+    string title;
+    string artist;
+};
+
+struct QNode {
+    Song data;
+    QNode* next;
+};
+
+struct SNode {
+    Song data;
+    SNode* next;
+};
+
+class PlaylistManager {
+private:
+    QNode* qHead;
+    QNode* qTail;
+    SNode* sHead;
+    int historyCount;
+    const int MAX_HISTORY = 3;
+
+public:
+    PlaylistManager() {
+        qHead = NULL;
+        qTail = NULL;
+        sHead = NULL;
+        historyCount = 0;
+    }
+
+    void queueSong(string title, string artist) {
+        QNode* newNode = new QNode;
+        newNode->data.title = title;
+        newNode->data.artist = artist;
+        newNode->next = NULL;
+
+        if (qHead == NULL) {
+            qHead = newNode;
+            qTail = newNode;
+        } else {
+            qTail->next = newNode;
+            qTail = newNode;
+        }
+
+        cout << "Queued: \"" << title << "\" - " << artist << endl;
+    }
+
+    void playNext() {
+        if (qHead == NULL) {
+            cout << "Queue is empty!" << endl;
+            return;
+        }
+
+        Song song = qHead->data;
+        QNode* temp = qHead;
+        qHead = qHead->next;
+
+        if (qHead == NULL) {
+            qTail = NULL;
+        }
+
+        delete temp;
+
+        addToHistory(song);
+
+        cout << "♪ Now playing: \"" << song.title
+             << "\" - " << song.artist << endl;
+    }
+
+    void addToHistory(Song song) {
+        SNode* newNode = new SNode;
+        newNode->data = song;
+        newNode->next = sHead;
+        sHead = newNode;
+        historyCount++;
+
+        if (historyCount > MAX_HISTORY) {
+            SNode* current = sHead;
+            while (current->next->next != NULL) {
+                current = current->next;
+            }
+            SNode* last = current->next;
+            current->next = NULL;
+            delete last;
+            historyCount--;
+        }
+    }
+
+    void showHistory() {
+        if (sHead == NULL) {
+            cout << "No songs played yet." << endl;
+            return;
+        }
+
+        cout << "\nRecently Played (last " << historyCount << "):" << endl;
+        SNode* current = sHead;
+        int pos = 1;
+
+        while (current != NULL) {
+            cout << pos << ". \"" << current->data.title
+                 << "\" - " << current->data.artist << endl;
+            current = current->next;
+            pos++;
+        }
+    }
+
+    void showQueue() {
+        if (qHead == NULL) {
+            cout << "Queue is empty." << endl;
+            return;
+        }
+
+        cout << "\nUp Next:" << endl;
+        QNode* current = qHead;
+        int pos = 1;
+
+        while (current != NULL) {
+            cout << pos << ". \"" << current->data.title
+                 << "\" - " << current->data.artist << endl;
+            current = current->next;
+            pos++;
+        }
+    }
+};
+
+int main() {
+    PlaylistManager player;
+
+    cout << "=== Swift's Fally Ipupa Playlist ===" << endl;
+    cout << endl;
+
+    player.queueSong("Eloko Oyo", "Fally Ipupa");
+    player.queueSong("Amore", "Fally Ipupa");
+    player.queueSong("Humanisme", "Fally Ipupa");
+    player.queueSong("Esengo", "Fally Ipupa");
+
+    player.showQueue();
+
+    cout << "\n--- Listening session starts ---" << endl;
+    player.playNext();
+    player.playNext();
+    player.playNext();
+
+    player.showHistory();
+    player.showQueue();
+
+    cout << "\n--- One more song ---" << endl;
+    player.playNext();
+
+    player.showHistory();
+
+    return 0;
+}
+</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('editor5', 'output5')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor5')">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box" id="output5">
+                            <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>How It Works - Step by Step</h3>
+
+                <p><strong>Why we need BOTH a queue and a stack:</strong></p>
+                <ul>
+                    <li><strong>Queue (play queue):</strong> Songs should play in the order Swift added them. First queued = first played. This is FIFO.</li>
+                    <li><strong>Stack (history):</strong> Recently played songs are tracked with the most recent at the top. If Swift wants to see what he just played, it should be first in the list. This is LIFO.</li>
+                </ul>
+
+                <p><strong>Let's trace through the first 4 songs being queued:</strong></p>
+                <p>After all <code>queueSong()</code> calls, the queue looks like:</p>
+                <p><code>qHead → [Eloko Oyo] → [Amore] → [Humanisme] → [Esengo] ← qTail</code></p>
+
+                <p><strong>First <code>playNext()</code> call:</strong></p>
+                <ol>
+                    <li>Remove "Eloko Oyo" from the front of the queue (lines 59-68)</li>
+                    <li>Queue is now: <code>[Amore] → [Humanisme] → [Esengo]</code></li>
+                    <li>Call <code>addToHistory("Eloko Oyo")</code></li>
+                    <li>Create a new stack node with "Eloko Oyo"</li>
+                    <li>Insert at the HEAD of the stack (LIFO): <code>sHead → [Eloko Oyo]</code></li>
+                    <li>historyCount = 1</li>
+                </ol>
+
+                <p><strong>Second <code>playNext()</code> call:</strong></p>
+                <ol>
+                    <li>Remove "Amore" from queue</li>
+                    <li>Queue: <code>[Humanisme] → [Esengo]</code></li>
+                    <li>Add "Amore" to history stack at the head</li>
+                    <li>Stack: <code>sHead → [Amore] → [Eloko Oyo]</code></li>
+                    <li>historyCount = 2</li>
+                </ol>
+
+                <p><strong>Third <code>playNext()</code> call:</strong></p>
+                <ol>
+                    <li>Remove "Humanisme" from queue</li>
+                    <li>Add "Humanisme" to stack</li>
+                    <li>Stack: <code>sHead → [Humanisme] → [Amore] → [Eloko Oyo]</code></li>
+                    <li>historyCount = 3 (now at MAX_HISTORY)</li>
+                </ol>
+
+                <p><strong>Fourth <code>playNext()</code> call (exceeds max history):</strong></p>
+                <ol>
+                    <li>Remove "Esengo" from queue</li>
+                    <li>Add "Esengo" to stack at the head</li>
+                    <li>Stack temporarily: <code>[Esengo] → [Humanisme] → [Amore] → [Eloko Oyo]</code></li>
+                    <li>historyCount = 4, which exceeds MAX_HISTORY (3)</li>
+                    <li>Remove the OLDEST song from history (the last node): walk to the second-to-last node (lines 86-88), delete the last node (lines 89-91)</li>
+                    <li>Final stack: <code>[Esengo] → [Humanisme] → [Amore]</code></li>
+                    <li>historyCount = 3</li>
+                </ol>
+
+                <p><strong>Why is this useful?</strong></p>
+                <p>Real music players like Spotify work exactly like this! The "Up Next" queue is a FIFO queue, and the "Recently Played" list is essentially a limited-size stack showing your last few songs in reverse chronological order.</p>
+
+                <div class="success-box">
+                    <strong>Challenge accomplished!</strong> You've successfully combined two data structures with different behaviors (FIFO queue + LIFO stack) to solve a real-world problem. This kind of thinking is exactly what you need for complex programming.
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="content-card">
+            <h2>Summary</h2>
+            <p>You've practiced:</p>
+            <ul>
+                <li><strong>Stack application:</strong> Balanced parentheses checker with detailed tracing</li>
+                <li><strong>Queue application:</strong> Episode download queue for binge-watching Gintama</li>
+                <li><strong>Debugging:</strong> Finding memory leaks in an undo system</li>
+                <li><strong>Complex system:</strong> Music playlist combining queue and stack with Fally Ipupa songs</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>Next step:</strong> Head to Quiz to test your understanding with exam-style questions!
+            </div>
+        </section>
+    </div>
+
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        const editors = {};
+        const originalCode = {};
+
+        ['editor1', 'editor2', 'editor3', 'editor4', 'editor5'].forEach(id => {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        });
+
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                if (answerId.includes('prob') && !answerId.includes('bug')) {
+                    button.textContent = 'Hide Solution';
+                } else {
+                    button.textContent = 'Hide Bugs & Explanation';
+                }
+
+                setTimeout(() => {
+                    answerSection.querySelectorAll('.CodeMirror').forEach(cm => {
+                        if (cm.CodeMirror) {
+                            cm.CodeMirror.refresh();
+                        }
+                    });
+                }, 50);
+            } else {
+                if (answerId.includes('prob3-bugs')) {
+                    button.textContent = 'Show Bugs & Explanation';
+                } else if (answerId.includes('prob3')) {
+                    button.textContent = 'Show Buggy Code & Solution';
+                } else {
+                    button.textContent = 'Show Solution';
+                }
+            }
+        }
+
+        async function runCode(editorId, outputId) {
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const button = event.target;
+
+            if (button) button.disabled = true;
+            outputEl.textContent = 'Compiling and running...';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                if (button) button.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            const outputId = editorId.replace('editor', 'output');
+            editors[editorId].setValue(originalCode[editorId]);
+
+            const outputEl = document.getElementById(outputId);
+            outputEl.textContent = 'Click "Run Code" to see the output...';
+            outputEl.className = 'output-text output-placeholder';
+        }
+
+        Prism.highlightAll();
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

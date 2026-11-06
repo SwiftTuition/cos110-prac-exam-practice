@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 13: STL - Practice | COS 110</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- CodeMirror for Interactive Code Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #1e1e1e;
+            --accent-cyan: #0ea5e9;
+            --accent-cyan-hover: #0284c7;
+            --text-primary: #cbd5e1;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #eab308;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background-color: var(--bg-card);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid var(--accent-cyan);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-brand-company {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .nav-brand-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .nav-menu a.active {
+            color: var(--accent-cyan);
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--accent-cyan);
+            margin: 3rem 0 1.5rem 0;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            margin: 2rem 0 1rem 0;
+            font-weight: 600;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            color: var(--accent-cyan);
+            margin: 1.5rem 0 1rem 0;
+            font-weight: 600;
+        }
+
+        p {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--bg-code) !important;
+            border-radius: 0.5rem;
+            padding: 1.5rem !important;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        code[class*="language-"] {
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Custom Prism Theme for Deep Ocean */
+        .token.comment { color: #546e7a; }
+        .token.prolog { color: #546e7a; }
+        .token.doctype { color: #546e7a; }
+        .token.cdata { color: #546e7a; }
+        .token.punctuation { color: #89ddff; }
+        .token.property { color: #80cbc4; }
+        .token.tag { color: #f07178; }
+        .token.boolean { color: #ff5874; }
+        .token.number { color: #f78c6c; }
+        .token.constant { color: #82aaff; }
+        .token.symbol { color: #82aaff; }
+        .token.deleted { color: #f07178; }
+        .token.selector { color: #c3e88d; }
+        .token.attr-name { color: #ffcb6b; }
+        .token.string { color: #c3e88d; }
+        .token.char { color: #c3e88d; }
+        .token.builtin { color: #ffcb6b; }
+        .token.inserted { color: #c3e88d; }
+        .token.operator { color: #89ddff; }
+        .token.entity { color: #f07178; }
+        .token.url { color: #80cbc4; }
+        .token.atrule { color: #c792ea; }
+        .token.attr-value { color: #c3e88d; }
+        .token.keyword { color: #c792ea; }
+        .token.function { color: #82aaff; }
+        .token.class-name { color: #ffcb6b; }
+        .token.regex { color: #f07178; }
+        .token.important { color: #c792ea; }
+        .token.variable { color: #f07178; }
+
+        /* Info Boxes */
+        .info-box, .warning-box, .success-box, .swift-note-box {
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+        }
+
+        .info-box {
+            background-color: rgba(14, 165, 233, 0.1);
+            border-color: var(--accent-cyan);
+        }
+
+        .warning-box {
+            background-color: rgba(234, 179, 8, 0.1);
+            border-color: var(--warning);
+        }
+
+        .success-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+        }
+
+        .swift-note-box {
+            background-color: rgba(147, 51, 234, 0.1);
+            border-color: #9333ea;
+        }
+
+        /* Problem Card */
+        .problem-card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid var(--warning);
+        }
+
+        .problem-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .problem-number {
+            background-color: var(--warning);
+            color: var(--bg-dark);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .problem-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--warning);
+        }
+
+        /* Playground Styles */
+        .playground {
+            background-color: rgba(234, 179, 8, 0.05);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 150px;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+        }
+
+        /* Fix CodeMirror line height - make code more compact */
+        .CodeMirror-line {
+            line-height: 1.4 !important;
+        }
+
+        .CodeMirror pre {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .run-btn, .reset-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn {
+            background-color: var(--accent-cyan);
+            color: white;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            background-color: var(--accent-cyan-hover);
+            transform: translateY(-2px);
+        }
+
+        .run-btn:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background-color: #475569;
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background-color: #64748b;
+            transform: translateY(-2px);
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .output-box {
+            background-color: var(--bg-code);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .loading-indicator {
+            display: none;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .loading-indicator.active {
+            display: block;
+        }
+
+        .output-text {
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder {
+            color: var(--text-secondary);
+        }
+
+        .output-success {
+            color: var(--success);
+        }
+
+        .output-error {
+            color: var(--error);
+        }
+
+        /* Reveal Button */
+        .reveal-btn {
+            background-color: rgba(234, 179, 8, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 1rem 0;
+            font-size: 1rem;
+        }
+
+        .reveal-btn:hover {
+            background-color: rgba(234, 179, 8, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .solution-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background-color: rgba(16, 185, 129, 0.05);
+            border-left: 3px solid var(--success);
+            margin: 1rem 0;
+        }
+
+        .solution-section.visible {
+            max-height: 10000px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Links */
+        a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 13: Standard Template Library</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html" class="active">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>STL Practice Problems</h1>
+
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            Time to test your understanding! Each problem gives you a task to complete. Try solving it yourself first, then click the reveal button to see the solution and explanation.
+        </p>
+
+        <div class="info-box">
+            <strong>How to use this page:</strong>
+            <ol>
+                <li>Read the problem description carefully</li>
+                <li>Try to solve it yourself (write code on paper or in your editor)</li>
+                <li>Click "Show Solution" to see the answer and explanation</li>
+                <li>Run the code to verify it works</li>
+                <li>Compare your solution with the provided one</li>
+            </ol>
+        </div>
+
+        <!-- Problem 1: List Book Management (Generic) -->
+        <div class="problem-card">
+            <div class="problem-header">
+                <div class="problem-number">1</div>
+                <div class="problem-title">List: Library Book Manager</div>
+            </div>
+
+            <p><strong>Problem:</strong></p>
+            <p>
+                You're building a library management system. Use an STL <code>list&lt;string&gt;</code> to store book titles. The system should be able to:
+            </p>
+            <ul>
+                <li>Add books to the front and back of the list</li>
+                <li>Remove a book from the front</li>
+                <li>Display all books</li>
+                <li>Count how many books are in the library</li>
+            </ul>
+
+            <p><strong>Requirements:</strong></p>
+            <ul>
+                <li>Use <code>push_front()</code> to add new arrivals at the start</li>
+                <li>Use <code>push_back()</code> to add regular additions at the end</li>
+                <li>Use <code>pop_front()</code> to check out the first book</li>
+                <li>Use iterators to display all books</li>
+                <li>Use <code>size()</code> to count total books</li>
+            </ul>
+
+            <p><strong>Sample books to add:</strong></p>
+            <ul>
+                <li>New arrivals (front): "1984", "Brave New World"</li>
+                <li>Regular additions (back): "To Kill a Mockingbird", "The Great Gatsby"</li>
+            </ul>
+
+            <button class="reveal-btn" onclick="toggleSolution('solution1')">Show Solution</button>
+
+            <div class="solution-section" id="solution1">
+                <h4 style="color: var(--success);">Solution</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Complete Solution: Library Book Manager</div>
+                    </div>
+
+                    <textarea id="editor1">#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main() {
+    list&lt;string&gt; library;
+
+    // Add new arrivals at the front
+    library.push_front("Brave New World");
+    library.push_front("1984");
+
+    // Add regular books at the back
+    library.push_back("To Kill a Mockingbird");
+    library.push_back("The Great Gatsby");
+
+    cout &lt;&lt; "=== LIBRARY CATALOG ===" &lt;&lt; endl;
+    cout &lt;&lt; "Total books: " &lt;&lt; library.size() &lt;&lt; endl;
+
+    // Display all books using iterator
+    cout &lt;&lt; "\nBooks in library:" &lt;&lt; endl;
+    list&lt;string&gt;::iterator it;
+    int count = 1;
+    for (it = library.begin(); it != library.end(); ++it) {
+        cout &lt;&lt; count++ &lt;&lt; ". " &lt;&lt; *it &lt;&lt; endl;
+    }
+
+    // Check out the first book
+    cout &lt;&lt; "\nChecking out: " &lt;&lt; library.front() &lt;&lt; endl;
+    library.pop_front();
+
+    cout &lt;&lt; "\nAfter checkout, remaining books: " &lt;&lt; library.size() &lt;&lt; endl;
+    for (it = library.begin(); it != library.end(); ++it) {
+        cout &lt;&lt; "- " &lt;&lt; *it &lt;&lt; endl;
+    }
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor1', 1)">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loading1" class="loading-indicator">Running...</div>
+                            <div id="output1" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4 style="color: var(--accent-cyan); margin-top: 2rem;">Explanation</h4>
+                <ul>
+                    <li><strong>Lines 10-11:</strong> <code>push_front()</code> adds books to the beginning. Since we add "Brave New World" first, then "1984", the order will be: 1984, Brave New World.</li>
+                    <li><strong>Lines 14-15:</strong> <code>push_back()</code> adds books to the end in the order they appear.</li>
+                    <li><strong>Line 19:</strong> <code>size()</code> returns total number of elements (4 books).</li>
+                    <li><strong>Lines 23-26:</strong> Standard iterator loop to traverse the list. Lists only have bidirectional iterators (not random access).</li>
+                    <li><strong>Line 30:</strong> <code>front()</code> returns reference to first book without removing it.</li>
+                    <li><strong>Line 31:</strong> <code>pop_front()</code> removes first book. This is efficient with lists (O(1)).</li>
+                </ul>
+
+                <div class="success-box" style="margin-top: 1.5rem;">
+                    <strong>Key Takeaway:</strong> Lists excel at insertion/deletion at both ends. Unlike vectors, <code>push_front()</code> is O(1) for lists but O(n) for vectors (would require shifting all elements).
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 2: Vector + Algorithms - Sort Death Note Characters -->
+        <div class="problem-card">
+            <div class="problem-header">
+                <div class="problem-number">2</div>
+                <div class="problem-title">Vector + Algorithms: Death Note Character Sorter</div>
+            </div>
+
+            <p><strong>Problem:</strong></p>
+            <p>
+                You're organizing character names from Death Note (a psychological thriller anime where a high school student finds a notebook that kills anyone whose name is written in it). Store character names in a <code>vector&lt;string&gt;</code> and use STL algorithms to process them.
+            </p>
+
+            <p><strong>Requirements:</strong></p>
+            <ul>
+                <li>Create a vector with these Death Note characters: "Light Yagami", "L Lawliet", "Ryuk", "Misa Amane", "Near"</li>
+                <li>Sort the names alphabetically using <code>sort()</code></li>
+                <li>Find "Ryuk" (the Shinigami who dropped the Death Note) using <code>find()</code></li>
+                <li>Count how many names contain the letter 'a' (case-insensitive)</li>
+                <li>Display the shortest name using <code>min_element()</code> with a custom comparison</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Death Note is a masterpiece of psychological warfare. Light vs L is one of the best intellectual battles in anime. The name "Ryuk" is the Shinigami (death god) who started everything by dropping his Death Note into the human world out of boredom!
+            </div>
+
+            <button class="reveal-btn" onclick="toggleSolution('solution2')">Show Solution</button>
+
+            <div class="solution-section" id="solution2">
+                <h4 style="color: var(--success);">Solution</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Complete Solution: Death Note Character Sorter</div>
+                    </div>
+
+                    <textarea id="editor2">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+int main() {
+    vector&lt;string&gt; characters;
+    characters.push_back("Light Yagami");
+    characters.push_back("L Lawliet");
+    characters.push_back("Ryuk");
+    characters.push_back("Misa Amane");
+    characters.push_back("Near");
+
+    cout &lt;&lt; "=== DEATH NOTE CHARACTER DATABASE ===" &lt;&lt; endl;
+
+    // Sort alphabetically
+    sort(characters.begin(), characters.end());
+    cout &lt;&lt; "\nSorted characters:" &lt;&lt; endl;
+    for (int i = 0; i &lt; characters.size(); i++) {
+        cout &lt;&lt; i+1 &lt;&lt; ". " &lt;&lt; characters[i] &lt;&lt; endl;
+    }
+
+    // Find Ryuk
+    vector&lt;string&gt;::iterator found;
+    found = find(characters.begin(), characters.end(), "Ryuk");
+    if (found != characters.end()) {
+        cout &lt;&lt; "\nFound Ryuk (the Shinigami) in the database!" &lt;&lt; endl;
+    }
+
+    // Count names with 'a' or 'A'
+    int countA = 0;
+    for (int i = 0; i &lt; characters.size(); i++) {
+        for (int j = 0; j &lt; characters[i].length(); j++) {
+            if (characters[i][j] == 'a' || characters[i][j] == 'A') {
+                countA++;
+                break; // Count each name only once
+            }
+        }
+    }
+    cout &lt;&lt; "\nNames containing 'a': " &lt;&lt; countA &lt;&lt; endl;
+
+    // Find shortest name
+    vector&lt;string&gt;::iterator shortest = characters.begin();
+    for (vector&lt;string&gt;::iterator it = characters.begin();
+         it != characters.end(); ++it) {
+        if (it-&gt;length() &lt; shortest-&gt;length()) {
+            shortest = it;
+        }
+    }
+    cout &lt;&lt; "Shortest name: " &lt;&lt; *shortest
+         &lt;&lt; " (" &lt;&lt; shortest-&gt;length() &lt;&lt; " characters)" &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor2', 2)">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loading2" class="loading-indicator">Running...</div>
+                            <div id="output2" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4 style="color: var(--accent-cyan); margin-top: 2rem;">Explanation</h4>
+                <ul>
+                    <li><strong>Line 19:</strong> <code>sort()</code> works on vectors because they have random-access iterators. Sorts strings alphabetically by default.</li>
+                    <li><strong>Lines 27-30:</strong> <code>find()</code> searches for "Ryuk". Returns iterator to element if found, or <code>end()</code> if not found.</li>
+                    <li><strong>Lines 34-42:</strong> Manual counting loop. We check each character in each name for 'a' or 'A', using <code>break</code> to count each name only once.</li>
+                    <li><strong>Lines 46-52:</strong> Find shortest name by manually iterating and comparing lengths. We use <code>it-&gt;length()</code> to access the string's length through the iterator (arrow operator).</li>
+                    <li><strong>Output order:</strong> After sorting: "L Lawliet", "Light Yagami", "Misa Amane", "Near", "Ryuk" (alphabetically).</li>
+                </ul>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <strong>Note:</strong> In C++98, we don't have lambda functions, so custom comparisons require manual loops or function pointers. That's why we manually find the shortest name instead of using <code>min_element()</code> with a custom comparator (which would be cleaner in C++11+).
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 3: Map - Music Album Tracker -->
+        <div class="problem-card">
+            <div class="problem-header">
+                <div class="problem-number">3</div>
+                <div class="problem-title">Map: Fally Ipupa Album Tracker</div>
+            </div>
+
+            <p><strong>Problem:</strong></p>
+            <p>
+                Create a music collection tracker for Fally Ipupa albums. Fally Ipupa is a Congolese singer-songwriter known for blending Rumba, R&B, and hip-hop. Use a <code>map&lt;string, int&gt;</code> where the key is the album name and the value is the release year.
+            </p>
+
+            <p><strong>Requirements:</strong></p>
+            <ul>
+                <li>Add these albums: "Droit Chemin" (2006), "Arsenal de Belles Mélodies" (2009), "Power Kosa Leka" (2013), "Tokooos" (2017), "Tokooos II" (2020)</li>
+                <li>Display all albums sorted by name (maps auto-sort by key)</li>
+                <li>Look up and display the year for "Tokooos"</li>
+                <li>Count how many albums were released after 2010</li>
+                <li>Find the earliest and latest album</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Fally Ipupa is incredible! "Tokooos" (2017) and its sequel "Tokooos II" (2020) are masterpieces of Congolese Rumba. The word "Tokooos" roughly means "we'll see" in Lingala, one of the languages spoken in the DRC. His music is a perfect blend of African rhythms and modern production!
+            </div>
+
+            <button class="reveal-btn" onclick="toggleSolution('solution3')">Show Solution</button>
+
+            <div class="solution-section" id="solution3">
+                <h4 style="color: var(--success);">Solution</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Complete Solution: Fally Ipupa Album Tracker</div>
+                    </div>
+
+                    <textarea id="editor3">#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main() {
+    map&lt;string, int&gt; albums;
+
+    // Add Fally Ipupa albums
+    albums["Droit Chemin"] = 2006;
+    albums["Arsenal de Belles Melodies"] = 2009;
+    albums["Power Kosa Leka"] = 2013;
+    albums["Tokooos"] = 2017;
+    albums["Tokooos II"] = 2020;
+
+    cout &lt;&lt; "=== FALLY IPUPA DISCOGRAPHY ===" &lt;&lt; endl;
+    cout &lt;&lt; "Total albums: " &lt;&lt; albums.size() &lt;&lt; endl;
+
+    // Display all albums (auto-sorted by album name)
+    cout &lt;&lt; "\nAlbums (alphabetically):" &lt;&lt; endl;
+    map&lt;string, int&gt;::iterator it;
+    for (it = albums.begin(); it != albums.end(); ++it) {
+        cout &lt;&lt; "- " &lt;&lt; it-&gt;first
+             &lt;&lt; " (" &lt;&lt; it-&gt;second &lt;&lt; ")" &lt;&lt; endl;
+    }
+
+    // Look up specific album
+    string searchAlbum = "Tokooos";
+    if (albums.find(searchAlbum) != albums.end()) {
+        cout &lt;&lt; "\n'" &lt;&lt; searchAlbum &lt;&lt; "' was released in "
+             &lt;&lt; albums[searchAlbum] &lt;&lt; endl;
+    }
+
+    // Count albums after 2010
+    int recentCount = 0;
+    for (it = albums.begin(); it != albums.end(); ++it) {
+        if (it-&gt;second &gt; 2010) {
+            recentCount++;
+        }
+    }
+    cout &lt;&lt; "\nAlbums released after 2010: " &lt;&lt; recentCount &lt;&lt; endl;
+
+    // Find earliest and latest albums
+    int earliest = 9999;
+    int latest = 0;
+    string earliestAlbum, latestAlbum;
+
+    for (it = albums.begin(); it != albums.end(); ++it) {
+        if (it-&gt;second &lt; earliest) {
+            earliest = it-&gt;second;
+            earliestAlbum = it-&gt;first;
+        }
+        if (it-&gt;second &gt; latest) {
+            latest = it-&gt;second;
+            latestAlbum = it-&gt;first;
+        }
+    }
+
+    cout &lt;&lt; "\nFirst album: " &lt;&lt; earliestAlbum
+         &lt;&lt; " (" &lt;&lt; earliest &lt;&lt; ")" &lt;&lt; endl;
+    cout &lt;&lt; "Latest album: " &lt;&lt; latestAlbum
+         &lt;&lt; " (" &lt;&lt; latest &lt;&lt; ")" &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor3', 3)">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loading3" class="loading-indicator">Running...</div>
+                            <div id="output3" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4 style="color: var(--accent-cyan); margin-top: 2rem;">Explanation</h4>
+                <ul>
+                    <li><strong>Lines 11-15:</strong> Use <code>map[key] = value</code> syntax to insert entries. Map keys (album names) are automatically sorted alphabetically.</li>
+                    <li><strong>Lines 23-26:</strong> Iterate through map using <code>it-&gt;first</code> (album name) and <code>it-&gt;second</code> (year).</li>
+                    <li><strong>Lines 30-33:</strong> Use <code>find()</code> to check if album exists before accessing with <code>[]</code>. This prevents accidentally creating a new entry.</li>
+                    <li><strong>Lines 37-42:</strong> Count albums where year > 2010. We iterate and check the value (it-&gt;second).</li>
+                    <li><strong>Lines 45-59:</strong> Find min/max years by manually iterating and tracking. We compare years and store both the year and album name.</li>
+                </ul>
+
+                <div class="success-box" style="margin-top: 1.5rem;">
+                    <strong>Key Takeaway:</strong> Maps automatically keep keys sorted. When you iterate, you get entries in alphabetical order of album names, NOT in insertion order or chronological order!
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem 4: What's Wrong - Iterator Invalidation (Generic) -->
+        <div class="problem-card">
+            <div class="problem-header">
+                <div class="problem-number">4</div>
+                <div class="problem-title">What's Wrong? Vector Iterator Invalidation</div>
+            </div>
+
+            <p><strong>Problem:</strong></p>
+            <p>
+                The following code is supposed to remove all even numbers from a vector while iterating through it. However, it has a bug that causes undefined behavior. Can you spot what's wrong?
+            </p>
+
+            <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; numbers;
+    numbers.push_back(1);
+    numbers.push_back(2);
+    numbers.push_back(3);
+    numbers.push_back(4);
+    numbers.push_back(5);
+    numbers.push_back(6);
+
+    // Remove all even numbers
+    vector&lt;int&gt;::iterator it;
+    for (it = numbers.begin(); it != numbers.end(); ++it) {
+        if (*it % 2 == 0) {
+            numbers.erase(it);  // Problem is here!
+        }
+    }
+
+    // Display remaining numbers
+    cout &lt;&lt; "Remaining numbers: ";
+    for (it = numbers.begin(); it != numbers.end(); ++it) {
+        cout &lt;&lt; *it &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+
+            <p><strong>Your task:</strong> Identify the bug and explain why it causes problems. Then provide a corrected version.</p>
+
+            <button class="reveal-btn" onclick="toggleSolution('solution4')">Show Bug Explanation & Fix</button>
+
+            <div class="solution-section" id="solution4">
+                <h4 style="color: var(--error);">The Bug</h4>
+                <p>
+                    <strong>Line 19 is the problem:</strong> <code>numbers.erase(it);</code>
+                </p>
+
+                <p>
+                    <strong>Why it's wrong:</strong> When you call <code>erase()</code> on a vector, it <strong>invalidates all iterators</strong> at and after the erased position. After erasing, the iterator <code>it</code> no longer points to a valid location. When the loop does <code>++it</code>, it's incrementing an invalid iterator - this is undefined behavior!
+                </p>
+
+                <p>
+                    <strong>What happens:</strong> The program might crash, might skip elements, or might appear to work sometimes. Undefined behavior is unpredictable.
+                </p>
+
+                <h4 style="color: var(--success); margin-top: 2rem;">Fixed Code</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Corrected Version</div>
+                    </div>
+
+                    <textarea id="editor4">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; numbers;
+    numbers.push_back(1);
+    numbers.push_back(2);
+    numbers.push_back(3);
+    numbers.push_back(4);
+    numbers.push_back(5);
+    numbers.push_back(6);
+
+    cout &lt;&lt; "Original: ";
+    for (int i = 0; i &lt; numbers.size(); i++) {
+        cout &lt;&lt; numbers[i] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    // CORRECT: erase() returns iterator to next element
+    vector&lt;int&gt;::iterator it = numbers.begin();
+    while (it != numbers.end()) {
+        if (*it % 2 == 0) {
+            // erase() returns iterator to element after erased one
+            it = numbers.erase(it);
+        } else {
+            // Only increment if we didn't erase
+            ++it;
+        }
+    }
+
+    cout &lt;&lt; "After removing evens: ";
+    for (it = numbers.begin(); it != numbers.end(); ++it) {
+        cout &lt;&lt; *it &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor4', 4)">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loading4" class="loading-indicator">Running...</div>
+                            <div id="output4" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4 style="color: var(--accent-cyan); margin-top: 2rem;">Understanding the Fix</h4>
+                <ul>
+                    <li><strong>Line 22:</strong> Use a <code>while</code> loop instead of <code>for</code> because we need control over when to increment.</li>
+                    <li><strong>Line 26:</strong> <code>erase()</code> returns an iterator to the element <strong>after</strong> the erased one. We assign this to <code>it</code>.</li>
+                    <li><strong>Line 28:</strong> Only increment <code>it</code> if we didn't erase. If we erased, <code>it</code> already points to the next element.</li>
+                    <li><strong>Why this works:</strong> By using the return value of <code>erase()</code>, we get a valid iterator to the next element, avoiding the invalidation problem.</li>
+                </ul>
+
+                <div class="warning-box" style="margin-top: 1.5rem;">
+                    <strong>General Rule:</strong> Never increment an iterator after calling <code>erase()</code> on it. Always use the returned iterator or adjust your loop structure accordingly.
+                </div>
+
+                <div class="info-box" style="margin-top: 1rem;">
+                    <strong>Alternative approach:</strong> You could also iterate backwards, or build a new vector with only the elements you want to keep. The backwards approach works because erasing doesn't invalidate iterators before the erased position.
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="success-box" style="margin-top: 3rem;">
+            <h3 style="color: var(--success);">Practice Summary</h3>
+            <p><strong>What we practiced:</strong></p>
+            <ul>
+                <li><strong>Problem 1:</strong> List operations (push_front, push_back, pop_front) with efficient O(1) insertions</li>
+                <li><strong>Problem 2:</strong> Vector with STL algorithms (sort, find) and manual searching</li>
+                <li><strong>Problem 3:</strong> Map for key-value storage with automatic sorting and lookup operations</li>
+                <li><strong>Problem 4:</strong> Iterator invalidation bug - critical concept for safe container modification</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                <strong>Next step:</strong> Head to the <strong>Quiz</strong> page to test your knowledge with exam-style questions!
+            </p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <script>
+        // Store original code for reset functionality
+        const originalCode = {};
+        const editors = {};
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            const textareas = document.querySelectorAll('textarea[id^="editor"]');
+            textareas.forEach(textarea => {
+                const editorId = textarea.id;
+                originalCode[editorId] = textarea.value;
+
+                editors[editorId] = CodeMirror.fromTextArea(textarea, {
+                    mode: 'text/x-c++src',
+                    theme: 'material-ocean',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    indentWithTabs: false,
+                    lineWrapping: true
+                });
+            });
+        }
+
+        // Run code using Piston API
+        async function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = playgroundId.replace('playground', 'output');
+            const loadingId = playgroundId.replace('playground', 'loading');
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = document.querySelector(`#${playgroundId} .run-btn`);
+
+            // Show loading
+            loadingEl.classList.add('active');
+            if (runBtn) runBtn.disabled = true;
+            outputEl.textContent = 'Compiling and running...';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += '=== PROGRAM OUTPUT ===\n';
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                if (runBtn) runBtn.disabled = false;
+            }
+        }
+
+        // Reset code to original
+        function resetCode(editorId, playgroundNum) {
+            if (editors[editorId] && originalCode[editorId]) {
+                editors[editorId].setValue(originalCode[editorId]);
+
+                // Clear output
+                const outputEl = document.getElementById('output' + playgroundNum);
+                if (outputEl) {
+                    outputEl.textContent = 'Click "Run Code" to see the output...';
+                    outputEl.className = 'output-text output-placeholder';
+                }
+            }
+        }
+
+        // Toggle solution visibility with CodeMirror refresh
+        function toggleSolution(solutionId) {
+            const solutionSection = document.getElementById(solutionId);
+            solutionSection.classList.toggle('visible');
+
+            // Refresh CodeMirror editors when revealing
+            if (solutionSection.classList.contains('visible')) {
+                setTimeout(() => {
+                    Object.values(editors).forEach(editor => {
+                        editor.refresh();
+                    });
+                }, 50);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEditors();
+            Prism.highlightAll();
+        });
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

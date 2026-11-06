@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 7: Introduction to Inheritance - Theory | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code,
+        .content-card h1 code,
+        .content-card h2 code,
+        .content-card h3 code,
+        .content-card h4 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+            color: #64748b;
+        }
+
+        .token.punctuation {
+            color: #94a3b8;
+        }
+
+        .token.property,
+        .token.tag,
+        .token.boolean,
+        .token.number,
+        .token.constant,
+        .token.symbol {
+            color: #0ea5e9;
+        }
+
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin {
+            color: #10b981;
+        }
+
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .token.variable {
+            color: #f1f5f9;
+        }
+
+        .token.atrule,
+        .token.attr-value,
+        .token.keyword,
+        .token.class-name {
+            color: #8b5cf6;
+        }
+
+        .token.function {
+            color: #0ea5e9;
+        }
+
+        .token.regex,
+        .token.important {
+            color: #f59e0b;
+        }
+
+        .ascii-diagram {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #10b981;
+        }
+
+        .ascii-diagram pre {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            font-size: inherit;
+            line-height: inherit;
+            color: inherit;
+        }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #1a2d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .swift-note-box {
+            background: #1f1a2e;
+            border-left: 4px solid #a78bfa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .swift-note-box strong { color: #a78bfa; }
+
+        .swift-quiz {
+            background: #1a1f2e;
+            border: 2px solid #eab308;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .swift-quiz-header {
+            color: #eab308;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .swift-quiz-question {
+            color: #cbd5e1;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .swift-quiz-answer {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eab308;
+            color: #10b981;
+        }
+
+        .swift-quiz-answer.visible {
+            display: block;
+        }
+
+        .quiz-toggle-btn {
+            background: #eab308;
+            color: #0f172a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .quiz-toggle-btn:hover {
+            background: #ca8a04;
+            transform: translateY(-1px);
+        }
+
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 7: Introduction to Inheritance</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html" class="active">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Opening -->
+        <section class="content-card">
+            <p style="font-size: 1.2rem; color: #0ea5e9; font-weight: 600; margin-bottom: 1.5rem;">
+                Good day, good people!
+            </p>
+
+            <h2>Welcome to Inheritance</h2>
+
+            <p>
+                You've written classes. You've mastered constructors, destructors, and operator overloading. Now we're going to supercharge your classes with one of the most important features in object-oriented programming: <strong>inheritance</strong>.
+            </p>
+
+            <p>
+                Inheritance lets you create new classes based on existing ones. Instead of copying and pasting code between similar classes, you can say "this new class is just like that existing class, but with a few extras." This is code reuse at its finest.
+            </p>
+
+            <h3>Prerequisites</h3>
+            <p>
+                Before you start this unit, make sure you're comfortable with:
+            </p>
+            <ul>
+                <li>Classes and objects (member variables and functions)</li>
+                <li>Access specifiers (<code>public</code> and <code>private</code>)</li>
+                <li>Constructors (default, parameterized, and the member initializer list)</li>
+                <li>Destructors and memory management</li>
+                <li>The <code>this</code> pointer</li>
+            </ul>
+
+            <p>
+                If any of these feel shaky, go back to Units 3-4 and review. Inheritance builds directly on these fundamentals.
+            </p>
+        </section>
+
+        <!-- Section 1: What is Inheritance? -->
+        <section class="content-card">
+            <h2>1. What is Inheritance?</h2>
+
+            <p>
+                Inheritance is the mechanism by which a new class (the <strong>derived class</strong> or <strong>child class</strong>) is created from an existing class (the <strong>base class</strong> or <strong>parent class</strong>). The derived class automatically gets all the members of the base class and can add its own.
+            </p>
+
+            <h3>The "Is-A" Relationship</h3>
+            <p>
+                Inheritance models what we call an "is-a" relationship:
+            </p>
+
+            <ul>
+                <li>An <code>HourlyEmployee</code> <strong>is an</strong> <code>Employee</code></li>
+                <li>A <code>Car</code> <strong>is a</strong> <code>Vehicle</code></li>
+                <li>A <code>Circle</code> <strong>is a</strong> <code>Shape</code></li>
+                <li>A <code>CheckingAccount</code> <strong>is an</strong> <code>Account</code></li>
+            </ul>
+
+            <p>
+                When you can say "X is a Y," you've found a good candidate for inheritance. The derived class is a more specific version of the base class.
+            </p>
+
+            <h3>Why Do We Need This?</h3>
+            <p>
+                Suppose you're building a payroll system. You have two types of employees:
+            </p>
+
+            <ul>
+                <li><strong>Hourly employees:</strong> Paid based on hours worked and an hourly wage rate</li>
+                <li><strong>Salaried employees:</strong> Paid a fixed salary each pay period</li>
+            </ul>
+
+            <p>
+                Both types have a name and a social security number. Without inheritance, you'd write:
+            </p>
+
+<pre><code class="language-cpp">class HourlyEmployee {
+private:
+    string name;       // Duplicate code
+    string ssn;        // Duplicate code
+    double wageRate;
+    double hours;
+};
+
+class SalariedEmployee {
+private:
+    string name;       // Duplicate code again!
+    string ssn;        // Duplicate code again!
+    double salary;
+};</code></pre>
+
+            <p>
+                Notice the duplication? You're writing the same code for <code>name</code> and <code>ssn</code> twice. If you need to change how names work, you have to change it in multiple places. This is error-prone and wastes time.
+            </p>
+
+            <p>
+                Inheritance solves this by letting us create a general <code>Employee</code> class with the common features. Then both <code>HourlyEmployee</code> and <code>SalariedEmployee</code> can <strong>inherit</strong> from <code>Employee</code> and just add their specific features:
+            </p>
+
+<pre><code class="language-cpp">class Employee {
+protected:
+    string name;
+    string ssn;
+public:
+    // Common functions for all employees
+};
+
+class HourlyEmployee : public Employee {
+    // Inherits name and ssn, adds:
+private:
+    double wageRate;
+    double hours;
+};
+
+class SalariedEmployee : public Employee {
+    // Inherits name and ssn, adds:
+private:
+    double salary;
+};</code></pre>
+
+            <div class="success-box">
+                <strong>Benefits of Inheritance:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Code reuse:</strong> Write common code once in the base class</li>
+                    <li><strong>Easier maintenance:</strong> Fix a bug in one place, not many</li>
+                    <li><strong>Logical organization:</strong> Clear hierarchy of relationships</li>
+                    <li><strong>Extensibility:</strong> Easy to add new derived types later</li>
+                </ul>
+            </div>
+
+            <h3>Basic Syntax</h3>
+            <p>
+                To create a derived class, use a colon (<code>:</code>) followed by <code>public</code> and the base class name:
+            </p>
+
+<pre><code class="language-cpp">// Define the base class
+class BaseClassName {
+    // ... members ...
+};
+
+// Define a derived class
+class DerivedClassName : public BaseClassName {
+    // ... new members for the derived class ...
+};</code></pre>
+
+            <p>
+                The <code>public</code> keyword before the base class name means we're using <strong>public inheritance</strong>. This is the most common type and is what we'll use throughout this unit. It preserves the access levels of inherited members.
+            </p>
+
+            <div class="ascii-diagram"><pre>
+Class Hierarchy Example:
+
+           +------------------+
+           |    Employee      |
+           |------------------|
+           | - name: string   |
+           | - ssn: string    |
+           +------------------+
+                   ^
+                   |
+         +---------+---------+
+         |                   |
++-------------------+  +---------------------+
+| HourlyEmployee    |  | SalariedEmployee    |
+|-------------------|  |---------------------|
+| - wageRate: double|  | - salary: double    |
+| - hours: double   |  +---------------------+
++-------------------+</pre></div>
+
+            <div class="info-box">
+                <strong>Key Concept:</strong> An object of a derived class contains all the members of the base class plus its own members. When you create an <code>HourlyEmployee</code> object, it has <code>name</code>, <code>ssn</code>, <code>wageRate</code>, and <code>hours</code>.
+            </div>
+        </section>
+
+        <!-- Swift Quiz 1 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> If you have a <code>Car</code> class that inherits from a <code>Vehicle</code> class, which is the base class and which is the derived class?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz1')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz1">
+                <strong>Answer:</strong> <code>Vehicle</code> is the base class (parent), and <code>Car</code> is the derived class (child). A Car <em>is a</em> Vehicle, so it inherits from Vehicle and adds car-specific features.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 1 -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 1: Your First Inheritance</div>
+            </div>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This playground shows a simple <code>Vehicle</code> base class and a <code>Car</code> derived class. Notice how <code>Car</code> can use <code>make</code> and <code>model</code> inherited from <code>Vehicle</code>.
+            </p>
+
+            <textarea id="editor1">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// BASE CLASS
+class Vehicle {
+public:
+    Vehicle(string m, string mod) : make(m), model(mod) {}
+
+    string getMake() const { return make; }
+    string getModel() const { return model; }
+
+protected:
+    string make;
+    string model;
+};
+
+// DERIVED CLASS
+class Car : public Vehicle {
+public:
+    Car(string m, string mod, int d)
+        : Vehicle(m, mod), doors(d) {}
+
+    int getDoors() const { return doors; }
+
+    void displayInfo() const {
+        cout << make << " " << model;  // Can access protected members
+        cout << " with " << doors << " doors" << endl;
+    }
+
+private:
+    int doors;
+};
+
+int main() {
+    Car myCar("Toyota", "Camry", 4);
+
+    // Call inherited functions
+    cout << "Make: " << myCar.getMake() << endl;
+    cout << "Model: " << myCar.getModel() << endl;
+
+    // Call derived function
+    cout << "Doors: " << myCar.getDoors() << endl;
+
+    // Call function that uses both inherited and new members
+    myCar.displayInfo();
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading1" class="loading-indicator">Running...</div>
+                    <div id="output1" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: What Gets Inherited? -->
+        <section class="content-card">
+            <h2>2. What Does a Derived Class Inherit?</h2>
+
+            <p>
+                When you create a derived class, it inherits:
+            </p>
+
+            <ul>
+                <li><strong>All member variables</strong> from the base class (both <code>public</code> and <code>private</code>)</li>
+                <li><strong>All member functions</strong> from the base class (both <code>public</code> and <code>private</code>)</li>
+            </ul>
+
+            <p>
+                However, there's a critical distinction between <strong>inheriting</strong> something and being able to <strong>access</strong> it.
+            </p>
+
+            <h3>Access Rules for Inherited Members</h3>
+            <p>
+                Just because a derived class inherits something doesn't mean it can access it directly:
+            </p>
+
+            <ul>
+                <li><code>public</code> members of the base class → accessible from derived class</li>
+                <li><code>private</code> members of the base class → inherited but <strong>not directly accessible</strong> from derived class</li>
+            </ul>
+
+            <p>
+                This is where many students get confused. Let's look at an example:
+            </p>
+
+<pre><code class="language-cpp">class Employee {
+public:
+    string getName() const { return name; }
+    void setName(string n) { name = n; }
+private:
+    string name;  // Private member
+};
+
+class HourlyEmployee : public Employee {
+public:
+    void printInfo() {
+        // cout << name;  // ERROR! name is private in Employee
+        cout << getName(); // CORRECT! Use the public function
+    }
+};</code></pre>
+
+            <p>
+                Why does this restriction exist? <strong>Encapsulation.</strong> The base class's <code>private</code> members are an implementation detail. If derived classes could access them directly, any change to those private members would break all derived classes. By forcing derived classes to use the public interface, we maintain flexibility.
+            </p>
+
+            <div class="warning-box">
+                <strong>Common Mistake:</strong> Trying to access private base class members directly from a derived class. This code won't compile:
+<pre style="margin-top: 0.5rem;"><code class="language-cpp">class Derived : public Base {
+public:
+    void badFunction() {
+        cout << basePrivateMember;  // ERROR: Can't access private members!
+    }
+};</code></pre>
+                <strong>Solution:</strong> Use public accessor functions from the base class.
+            </div>
+
+            <h3>What Is NOT Inherited?</h3>
+            <p>
+                There are a few things that are <strong>not inherited</strong> by derived classes:
+            </p>
+
+            <ul>
+                <li><strong>Constructors:</strong> Each class must define its own constructors</li>
+                <li><strong>Destructors:</strong> Each class must define its own destructor (if needed)</li>
+                <li><strong>Assignment operator:</strong> Each class must define its own if needed</li>
+            </ul>
+
+            <p>
+                Why? Because these special functions need to handle class-specific initialization and cleanup. A derived class has additional members that the base class doesn't know about, so it needs its own constructor to initialize them.
+            </p>
+        </section>
+
+        <!-- Swift Quiz 2 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> An <code>HourlyEmployee</code> object inherits a <code>private</code> member variable <code>name</code> from the <code>Employee</code> base class. Can an <code>HourlyEmployee</code> member function access <code>name</code> directly?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz2')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz2">
+                <strong>Answer:</strong> No. <code>private</code> members are inherited but not directly accessible from derived classes. The <code>HourlyEmployee</code> member function must use public getter/setter functions (like <code>getName()</code>) to access <code>name</code>.
+            </div>
+        </section>
+
+        <!-- Section 3: The protected Access Specifier -->
+        <section class="content-card">
+            <h2>3. The <code>protected</code> Access Specifier</h2>
+
+            <p>
+                We've seen <code>public</code> (accessible everywhere) and <code>private</code> (accessible only within the class). Now meet <code>protected</code>: the middle ground.
+            </p>
+
+            <h3>What is <code>protected</code>?</h3>
+            <p>
+                <code>protected</code> members are:
+            </p>
+
+            <ul>
+                <li>Accessible from within the base class (like <code>private</code>)</li>
+                <li>Accessible from within any derived class (unlike <code>private</code>)</li>
+                <li>Not accessible from outside the class hierarchy (like <code>private</code>)</li>
+            </ul>
+
+            <p>
+                In other words, <code>protected</code> says "this is for family only" - the base class and all its children can access it, but outsiders cannot.
+            </p>
+
+            <h3>Access Specifier Summary Table</h3>
+            <div class="ascii-diagram"><pre>
++------------+----------------------+------------------------+
+| Specifier  | Accessible from      | Accessible from        |
+|            | same class?          | derived class?         |
++------------+----------------------+------------------------+
+| public     | Yes                  | Yes                    |
+| protected  | Yes                  | Yes                    |
+| private    | Yes                  | No                     |
++------------+----------------------+------------------------+
+
++------------+------------------------+
+| Specifier  | Accessible from        |
+|            | main() or elsewhere?   |
++------------+------------------------+
+| public     | Yes                    |
+| protected  | No                     |
+| private    | No                     |
++------------+------------------------+</pre></div>
+
+            <h3>When Should You Use <code>protected</code>?</h3>
+            <p>
+                Use <code>protected</code> when you want derived classes to have direct access to a member, but you still want to hide it from the general public.
+            </p>
+
+<pre><code class="language-cpp">class Employee {
+public:
+    Employee(string n, string s) : name(n), ssn(s) {}
+    string getName() const { return name; }
+
+protected:
+    // Derived classes can access these directly
+    string name;
+    string ssn;
+};
+
+class HourlyEmployee : public Employee {
+public:
+    HourlyEmployee(string n, string s, double rate)
+        : Employee(n, s), wageRate(rate) {}
+
+    void printCheck() const {
+        // Can access name directly because it's protected
+        cout << "Pay to: " << name << endl;
+        cout << "SSN: " << ssn << endl;
+    }
+
+private:
+    double wageRate;
+};</code></pre>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> While <code>protected</code> can be convenient, many programmers prefer to keep all data members <code>private</code> and provide <code>protected</code> accessor functions instead. This maintains better encapsulation - if you change the data representation in the base class, derived classes that use accessor functions won't break.
+            </div>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Even though <code>protected</code> members are accessible from derived classes, they're still <strong>not accessible from <code>main()</code></strong> or any other outside code. This is good - it maintains encapsulation while giving derived classes flexibility.
+            </div>
+        </section>
+
+        <!-- Swift Quiz 3 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> If a base class has a <code>protected</code> member variable, can you access it from <code>main()</code>?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz3')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz3">
+                <strong>Answer:</strong> No. <code>protected</code> members are only accessible from within the class itself and its derived classes. They are <code>private</code> to the rest of the world, including <code>main()</code>.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 2 -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 2: protected in Action</div>
+            </div>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This playground demonstrates the <code>protected</code> access specifier. Notice how the derived class can access <code>health</code> directly, but <code>main()</code> cannot.
+            </p>
+
+            <textarea id="editor2">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Character {
+public:
+    Character(string n, int h) : name(n), health(h) {}
+
+    void displayBasicInfo() const {
+        cout << "Name: " << name << endl;
+        cout << "Health: " << health << endl;
+    }
+
+protected:
+    // Protected: accessible by Character and its derived classes
+    string name;
+    int health;
+};
+
+class Warrior : public Character {
+public:
+    Warrior(string n, int h, int str)
+        : Character(n, h), strength(str) {}
+
+    void displayFullInfo() const {
+        // Can access name and health directly (they're protected)
+        cout << "=== Warrior Info ===" << endl;
+        cout << "Name: " << name << endl;
+        cout << "Health: " << health << endl;
+        cout << "Strength: " << strength << endl;
+    }
+
+    void takeDamage(int damage) {
+        // Can modify protected members
+        health -= damage;
+        cout << name << " took " << damage << " damage!" << endl;
+        cout << "Remaining health: " << health << endl;
+    }
+
+private:
+    int strength;
+};
+
+int main() {
+    Warrior knight("Sir Bongani", 100, 45);
+
+    knight.displayFullInfo();
+    knight.takeDamage(30);
+
+    // cout << knight.health;  // ERROR if uncommented: health is protected
+    // Must use public functions to access from main()
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading2" class="loading-indicator">Running...</div>
+                    <div id="output2" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Constructors in Derived Classes -->
+        <section class="content-card">
+            <h2>4. Constructors in Derived Classes</h2>
+
+            <p>
+                Constructors are not inherited. Each class must define its own. But here's the challenge: a derived class object contains base class members. How do we initialize them?
+            </p>
+
+            <h3>Constructor Chaining</h3>
+            <p>
+                When you create a derived class object, C++ automatically calls a base class constructor first, then the derived class constructor. This is called <strong>constructor chaining</strong>.
+            </p>
+
+            <div class="ascii-diagram"><pre>
+Creating a HourlyEmployee object:
+
+Step 1: Call Employee constructor  ← Initialize name, ssn
+Step 2: Call HourlyEmployee constructor  ← Initialize wageRate, hours
+
+The base class part is built first, then the derived part is added.</pre></div>
+
+            <h3>How to Call the Base Class Constructor</h3>
+            <p>
+                Use the <strong>member initializer list</strong> to explicitly call the base class constructor:
+            </p>
+
+<pre><code class="language-cpp">class Employee {
+public:
+    Employee(string n, string s) : name(n), ssn(s) {}
+protected:
+    string name;
+    string ssn;
+};
+
+class HourlyEmployee : public Employee {
+public:
+    // Call Employee constructor via initializer list
+    HourlyEmployee(string n, string s, double rate, double hrs)
+        : Employee(n, s),    // Call base constructor
+          wageRate(rate),    // Initialize own members
+          hours(hrs)
+    {
+        // Constructor body (often empty)
+    }
+
+private:
+    double wageRate;
+    double hours;
+};</code></pre>
+
+            <p>
+                The syntax is:
+            </p>
+
+<pre><code class="language-cpp">DerivedConstructor(parameters)
+    : BaseConstructor(arguments),
+      member1(value1),
+      member2(value2)
+{
+    // Constructor body
+}</code></pre>
+
+            <h3>What If You Don't Call the Base Constructor?</h3>
+            <p>
+                If you don't explicitly call a base class constructor, C++ will automatically try to call the base class's <strong>default constructor</strong> (the one with no parameters).
+            </p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    Base() { cout << "Base default constructor" << endl; }
+};
+
+class Derived : public Base {
+public:
+    Derived() {
+        // Base() is called automatically before this runs
+        cout << "Derived constructor" << endl;
+    }
+};</code></pre>
+
+            <p>
+                This is fine if the base class has a default constructor. But if it doesn't, you'll get a compiler error. You <strong>must</strong> explicitly call a base class constructor in that case.
+            </p>
+
+            <div class="warning-box">
+                <strong>Common Mistake:</strong> Trying to initialize base class members in the derived class constructor body:
+<pre style="margin-top: 0.5rem;"><code class="language-cpp">// WRONG!
+HourlyEmployee::HourlyEmployee(string n, string s, double rate)
+{
+    name = n;  // ERROR if name is private!
+    ssn = s;   // Can't access private members
+    wageRate = rate;
+}</code></pre>
+                <strong>Correct Approach:</strong> Call the base constructor via the initializer list.
+            </div>
+
+            <h3>Constructor Execution Order</h3>
+            <p>
+                When a derived class object is created:
+            </p>
+
+            <ol>
+                <li>Base class constructor executes <strong>first</strong></li>
+                <li>Member variables of the derived class are initialized</li>
+                <li>Derived class constructor body executes</li>
+            </ol>
+
+            <p>
+                This order makes sense: you need a complete base object before you can build the derived parts on top of it.
+            </p>
+        </section>
+
+        <!-- Swift Quiz 4 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> When a <code>Car</code> object is created (where <code>Car</code> inherits from <code>Vehicle</code>), which constructor runs first: <code>Vehicle</code> or <code>Car</code>?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz4')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz4">
+                <strong>Answer:</strong> The <code>Vehicle</code> constructor runs first. The base class must be fully constructed before the derived class can add its parts. This ensures that all inherited members are properly initialized before the derived class constructor runs.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 3 -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 3: Constructor Chaining</div>
+            </div>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This playground demonstrates constructor chaining. Watch the order of output to see when each constructor executes.
+            </p>
+
+            <textarea id="editor3">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Employee {
+public:
+    Employee(string n, string s) : name(n), ssn(s) {
+        cout << "Employee constructor called for: " << name << endl;
+    }
+
+    string getName() const { return name; }
+
+protected:
+    string name;
+    string ssn;
+};
+
+class HourlyEmployee : public Employee {
+public:
+    HourlyEmployee(string n, string s, double rate, double hrs)
+        : Employee(n, s),  // Call base constructor FIRST
+          wageRate(rate),
+          hours(hrs)
+    {
+        cout << "HourlyEmployee constructor called" << endl;
+        cout << "Wage rate: $" << wageRate << "/hour" << endl;
+    }
+
+    double calculatePay() const {
+        return wageRate * hours;
+    }
+
+private:
+    double wageRate;
+    double hours;
+};
+
+int main() {
+    cout << "Creating an HourlyEmployee object:" << endl;
+    cout << "-----------------------------------" << endl;
+
+    HourlyEmployee emp("Themba Nkosi", "123-45-6789", 20.50, 40);
+
+    cout << "\nCalculating pay..." << endl;
+    cout << "Weekly pay: $" << emp.calculatePay() << endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading3" class="loading-indicator">Running...</div>
+                    <div id="output3" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Destructors in Derived Classes -->
+        <section class="content-card">
+            <h2>5. Destructors in Derived Classes</h2>
+
+            <p>
+                Like constructors, destructors are not inherited. But unlike constructors, you rarely need to explicitly call the base class destructor - C++ handles it automatically.
+            </p>
+
+            <h3>Automatic Destructor Chaining</h3>
+            <p>
+                When a derived class object is destroyed:
+            </p>
+
+            <ol>
+                <li>Derived class destructor executes <strong>first</strong></li>
+                <li>Base class destructor executes <strong>second</strong></li>
+            </ol>
+
+            <p>
+                This is the <strong>opposite order</strong> of construction. It makes sense: you need to tear down the derived parts before you can safely tear down the base parts.
+            </p>
+
+            <div class="ascii-diagram"><pre>
+Destroying a HourlyEmployee object:
+
+Step 1: Call ~HourlyEmployee() ← Clean up derived class members
+Step 2: Call ~Employee()  ← Clean up base class members (automatic)
+
+The derived part is destroyed first, then the base part.</pre></div>
+
+            <h3>What Does the Derived Destructor Need to Do?</h3>
+            <p>
+                The derived class destructor only needs to clean up its own members (delete any dynamic memory it allocated, close files it opened, etc.). The base class destructor will automatically handle cleaning up base class members.
+            </p>
+
+<pre><code class="language-cpp">class Employee {
+public:
+    ~Employee() {
+        cout << "Employee destructor called" << endl;
+        // Clean up Employee-specific resources
+    }
+};
+
+class HourlyEmployee : public Employee {
+public:
+    ~HourlyEmployee() {
+        cout << "HourlyEmployee destructor called" << endl;
+        // Clean up HourlyEmployee-specific resources
+        // NO NEED to call ~Employee() - happens automatically
+    }
+};</code></pre>
+
+            <h3>Example with Dynamic Memory</h3>
+            <p>
+                If the derived class allocates dynamic memory, its destructor must free it:
+            </p>
+
+<pre><code class="language-cpp">class Employee {
+public:
+    Employee() {
+        name = new char[50];
+    }
+    ~Employee() {
+        delete[] name;  // Employee cleans up its memory
+    }
+private:
+    char* name;
+};
+
+class HourlyEmployee : public Employee {
+public:
+    HourlyEmployee() {
+        timecard = new int[365];
+    }
+    ~HourlyEmployee() {
+        delete[] timecard;  // HourlyEmployee cleans up its memory
+        // ~Employee() called automatically next
+    }
+private:
+    int* timecard;
+};</code></pre>
+
+            <div class="success-box">
+                <strong>Key Rule:</strong> Each class is responsible for cleaning up only the resources it allocated. The derived class destructor cleans up derived class resources. The base class destructor (called automatically) cleans up base class resources.
+            </div>
+        </section>
+
+        <!-- Swift Quiz 5 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> When a derived class object is destroyed, which destructor runs first: the base class's or the derived class's?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz5')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz5">
+                <strong>Answer:</strong> The derived class's destructor runs first. This is the opposite of construction. You must tear down the derived parts before tearing down the base parts. After the derived destructor finishes, C++ automatically calls the base class destructor.
+            </div>
+        </section>
+
+        <!-- Section 6: Function Redefinition -->
+        <section class="content-card">
+            <h2>6. Function Redefinition</h2>
+
+            <p>
+                Sometimes the behavior you inherit from a base class isn't quite right for your derived class. You can provide a new version of an inherited function - this is called <strong>function redefinition</strong>.
+            </p>
+
+            <h3>What is Function Redefinition?</h3>
+            <p>
+                When a derived class provides its own implementation of a function that exists in the base class, and the function signatures are <strong>identical</strong> (same name, same parameters, same const status), that's redefinition.
+            </p>
+
+<pre><code class="language-cpp">class Employee {
+public:
+    void printCheck() const {
+        cout << "Generic employee check" << endl;
+    }
+};
+
+class HourlyEmployee : public Employee {
+public:
+    // Redefine printCheck for hourly employees
+    void printCheck() const {
+        cout << "Hourly employee check" << endl;
+        cout << "Pay: $" << (wageRate * hours) << endl;
+    }
+private:
+    double wageRate;
+    double hours;
+};</code></pre>
+
+            <p>
+                When you call <code>printCheck()</code> on an <code>HourlyEmployee</code> object, the derived class version runs. When you call it on an <code>Employee</code> object, the base class version runs.
+            </p>
+
+            <h3>Redefinition vs Overloading</h3>
+            <p>
+                Don't confuse these two concepts:
+            </p>
+
+            <ul>
+                <li><strong>Overloading:</strong> Same name, different parameter lists (signatures differ)</li>
+                <li><strong>Redefinition:</strong> Same name, same parameter list (signatures identical)</li>
+            </ul>
+
+<pre><code class="language-cpp">class Base {
+public:
+    void func(int x);  // Original function
+};
+
+class Derived : public Base {
+public:
+    void func(int x);      // REDEFINITION (same signature)
+    void func(double x);   // OVERLOAD (different parameter)
+};</code></pre>
+
+            <div class="warning-box">
+                <strong>Important:</strong> For redefinition, the signatures must match <strong>exactly</strong>. If they don't match, you've created an overload instead, and both versions will exist. This can lead to unexpected behavior if you thought you were redefining but actually overloaded.
+            </div>
+
+            <h3>Calling the Base Class Version</h3>
+            <p>
+                Sometimes you want to redefine a function but still use the base class version as part of your implementation. Use the scope resolution operator:
+            </p>
+
+<pre><code class="language-cpp">class HourlyEmployee : public Employee {
+public:
+    void printCheck() const {
+        Employee::printCheck();  // Call base class version first
+        cout << "Additional hourly employee info" << endl;
+    }
+};</code></pre>
+        </section>
+
+        <!-- Interactive Playground 4 -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 4: Function Redefinition</div>
+            </div>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This playground shows function redefinition with an <code>Account</code> base class and derived <code>CheckingAccount</code> and <code>SavingsAccount</code> classes. Each redefines <code>displayInfo()</code> to show account-specific details.
+            </p>
+
+            <textarea id="editor4">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Account {
+public:
+    Account(string own, double bal) : owner(own), balance(bal) {}
+
+    void displayInfo() const {
+        cout << "Account Owner: " << owner << endl;
+        cout << "Balance: $" << balance << endl;
+    }
+
+protected:
+    string owner;
+    double balance;
+};
+
+class CheckingAccount : public Account {
+public:
+    CheckingAccount(string own, double bal, int checks)
+        : Account(own, bal), checksRemaining(checks) {}
+
+    // Redefine displayInfo for checking accounts
+    void displayInfo() const {
+        cout << "=== Checking Account ===" << endl;
+        Account::displayInfo();  // Call base version
+        cout << "Checks Remaining: " << checksRemaining << endl;
+    }
+
+private:
+    int checksRemaining;
+};
+
+class SavingsAccount : public Account {
+public:
+    SavingsAccount(string own, double bal, double rate)
+        : Account(own, bal), interestRate(rate) {}
+
+    // Redefine displayInfo for savings accounts
+    void displayInfo() const {
+        cout << "=== Savings Account ===" << endl;
+        Account::displayInfo();  // Call base version
+        cout << "Interest Rate: " << (interestRate * 100) << "%" << endl;
+    }
+
+private:
+    double interestRate;
+};
+
+int main() {
+    CheckingAccount checking("Sipho Dlamini", 1500.00, 50);
+    SavingsAccount savings("Lerato Molefe", 5000.00, 0.025);
+
+    checking.displayInfo();
+    cout << endl;
+    savings.displayInfo();
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading4" class="loading-indicator">Running...</div>
+                    <div id="output4" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Common Mistakes -->
+        <section class="content-card">
+            <h2>7. Common Mistakes to Avoid</h2>
+
+            <h3>Mistake #1: Forgetting to Call the Base Constructor</h3>
+<pre><code class="language-cpp">// WRONG
+class HourlyEmployee : public Employee {
+public:
+    HourlyEmployee(string n, double rate) {
+        // name = n;  // ERROR: can't access private members
+        wageRate = rate;
+    }
+};
+
+// CORRECT
+class HourlyEmployee : public Employee {
+public:
+    HourlyEmployee(string n, string s, double rate)
+        : Employee(n, s),  // Call base constructor
+          wageRate(rate)
+    {
+    }
+};</code></pre>
+
+            <h3>Mistake #2: Trying to Access Private Base Members</h3>
+<pre><code class="language-cpp">class Base {
+private:
+    int secret;
+};
+
+class Derived : public Base {
+public:
+    void bad() {
+        secret = 10;  // ERROR: secret is private in Base
+    }
+
+    void good() {
+        // Use public/protected interface instead
+    }
+};</code></pre>
+
+            <h3>Mistake #3: Confusing Redefinition with Overloading</h3>
+<pre><code class="language-cpp">class Base {
+public:
+    void func(int x);
+};
+
+class Derived : public Base {
+public:
+    // Intended to redefine, but accidentally overloaded
+    void func(double x);  // Different parameter type!
+};
+
+// Now both func(int) and func(double) exist
+// Base::func(int) is still inherited</code></pre>
+
+            <h3>Mistake #4: Not Understanding Constructor Order</h3>
+<pre><code class="language-cpp">// This won't work as expected
+class Derived : public Base {
+public:
+    Derived() {
+        // Trying to use base class members before they're initialized
+        // But base constructor hasn't run yet in this body!
+        // (It runs BEFORE this body, via initializer list)
+    }
+};</code></pre>
+        </section>
+
+        <!-- Summary -->
+        <section class="content-card">
+            <h2>8. Summary</h2>
+
+            <div class="success-box">
+                <strong>Key Concepts:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Inheritance creates an "is-a" relationship between classes</li>
+                    <li>Derived classes inherit all members but can only access public/protected ones</li>
+                    <li><code>protected</code> members are accessible to derived classes but not outsiders</li>
+                    <li>Constructors: base constructor runs first, use initializer list to call it</li>
+                    <li>Destructors: derived destructor runs first, base called automatically</li>
+                    <li>Function redefinition: same signature, different implementation</li>
+                </ul>
+            </div>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Quick Reference
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Syntax:</strong> <code>class Derived : public Base { };</code></li>
+                    <li><strong>Call base constructor:</strong> <code>Derived() : Base(args) { }</code></li>
+                    <li><strong>Access protected members:</strong> Use directly in derived class</li>
+                    <li><strong>Redefine function:</strong> Match signature exactly</li>
+                    <li><strong>Call base version:</strong> <code>Base::function()</code></li>
+                </ul>
+            </div>
+
+            <h3>What's Next?</h3>
+            <p>
+                Head to the Examples section to see complete, working implementations. Then try the Practice problems to build your own inheritance hierarchies. Finally, test yourself with Quiz questions modeled after EO1 exam formats.
+            </p>
+
+            <p>
+                You've learned the fundamentals of inheritance - one of the most important tools in object-oriented programming. Use it wisely to create well-organized, maintainable code!
+            </p>
+        </section>
+
+    </div>
+
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script>
+        const editors = {};
+        const originalCode = {};
+
+        function initEditor(id) {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initEditor('editor1');
+            initEditor('editor2');
+            initEditor('editor3');
+            initEditor('editor4');
+            Prism.highlightAll();
+        });
+
+        function toggleQuiz(quizId) {
+            const answerSection = document.getElementById(quizId);
+            answerSection.classList.toggle('visible');
+
+            const button = event.target;
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+
+        async function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = playgroundId.replace('playground', 'output');
+            const loadingId = playgroundId.replace('playground', 'loading');
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = event.target;
+
+            loadingEl.classList.add('active');
+            if (runBtn) runBtn.disabled = true;
+            outputEl.textContent = '';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                if (runBtn) runBtn.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            const outputId = editorId.replace('editor', 'output');
+            editors[editorId].setValue(originalCode[editorId]);
+
+            const outputEl = document.getElementById(outputId);
+            outputEl.textContent = 'Click "Run Code" to see the output...';
+            outputEl.className = 'output-text output-placeholder';
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

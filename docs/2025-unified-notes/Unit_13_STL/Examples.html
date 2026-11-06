@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 13: STL - Examples | COS 110</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- CodeMirror for Interactive Code Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #1e1e1e;
+            --accent-cyan: #0ea5e9;
+            --accent-cyan-hover: #0284c7;
+            --text-primary: #cbd5e1;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #eab308;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background-color: var(--bg-card);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid var(--accent-cyan);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-brand-company {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .nav-brand-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .nav-menu a.active {
+            color: var(--accent-cyan);
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--accent-cyan);
+            margin: 3rem 0 1.5rem 0;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            margin: 2rem 0 1rem 0;
+            font-weight: 600;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            color: var(--accent-cyan);
+            margin: 1.5rem 0 1rem 0;
+            font-weight: 600;
+        }
+
+        p {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--bg-code) !important;
+            border-radius: 0.5rem;
+            padding: 1.5rem !important;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        code[class*="language-"] {
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Custom Prism Theme for Deep Ocean */
+        .token.comment { color: #546e7a; }
+        .token.prolog { color: #546e7a; }
+        .token.doctype { color: #546e7a; }
+        .token.cdata { color: #546e7a; }
+        .token.punctuation { color: #89ddff; }
+        .token.property { color: #80cbc4; }
+        .token.tag { color: #f07178; }
+        .token.boolean { color: #ff5874; }
+        .token.number { color: #f78c6c; }
+        .token.constant { color: #82aaff; }
+        .token.symbol { color: #82aaff; }
+        .token.deleted { color: #f07178; }
+        .token.selector { color: #c3e88d; }
+        .token.attr-name { color: #ffcb6b; }
+        .token.string { color: #c3e88d; }
+        .token.char { color: #c3e88d; }
+        .token.builtin { color: #ffcb6b; }
+        .token.inserted { color: #c3e88d; }
+        .token.operator { color: #89ddff; }
+        .token.entity { color: #f07178; }
+        .token.url { color: #80cbc4; }
+        .token.atrule { color: #c792ea; }
+        .token.attr-value { color: #c3e88d; }
+        .token.keyword { color: #c792ea; }
+        .token.function { color: #82aaff; }
+        .token.class-name { color: #ffcb6b; }
+        .token.regex { color: #f07178; }
+        .token.important { color: #c792ea; }
+        .token.variable { color: #f07178; }
+
+        /* Info Boxes */
+        .info-box, .warning-box, .success-box, .swift-note-box {
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+        }
+
+        .info-box {
+            background-color: rgba(14, 165, 233, 0.1);
+            border-color: var(--accent-cyan);
+        }
+
+        .warning-box {
+            background-color: rgba(234, 179, 8, 0.1);
+            border-color: var(--warning);
+        }
+
+        .success-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+        }
+
+        .swift-note-box {
+            background-color: rgba(147, 51, 234, 0.1);
+            border-color: #9333ea;
+        }
+
+        /* Example Card */
+        .example-card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .example-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .example-number {
+            background-color: var(--accent-cyan);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .example-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        /* Playground Styles */
+        .playground {
+            background-color: rgba(14, 165, 233, 0.05);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 150px;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+        }
+
+        /* Fix CodeMirror line height - make code more compact */
+        .CodeMirror-line {
+            line-height: 1.4 !important;
+        }
+
+        .CodeMirror pre {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .run-btn, .reset-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn {
+            background-color: var(--accent-cyan);
+            color: white;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            background-color: var(--accent-cyan-hover);
+            transform: translateY(-2px);
+        }
+
+        .run-btn:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background-color: #475569;
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background-color: #64748b;
+            transform: translateY(-2px);
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .output-box {
+            background-color: var(--bg-code);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .loading-indicator {
+            display: none;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .loading-indicator.active {
+            display: block;
+        }
+
+        .output-text {
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder {
+            color: var(--text-secondary);
+        }
+
+        .output-success {
+            color: var(--success);
+        }
+
+        .output-error {
+            color: var(--error);
+        }
+
+        /* Walkthrough Section */
+        .walkthrough {
+            background-color: rgba(16, 185, 129, 0.05);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--success);
+        }
+
+        .walkthrough-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .walkthrough-step {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .step-number {
+            display: inline-block;
+            background-color: var(--success);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+        }
+
+        /* Reveal Button */
+        .reveal-btn {
+            background-color: rgba(14, 165, 233, 0.2);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 1rem 0;
+        }
+
+        .reveal-btn:hover {
+            background-color: rgba(14, 165, 233, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .answer-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background-color: rgba(14, 165, 233, 0.05);
+            border-left: 3px solid var(--accent-cyan);
+            margin: 1rem 0;
+        }
+
+        .answer-section.visible {
+            max-height: 8000px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Links */
+        a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Bug Example Styles */
+        .bug-example {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 2px solid var(--error);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .bug-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bug-icon {
+            font-size: 2rem;
+        }
+
+        .bug-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--error);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 13: Standard Template Library</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>STL Examples - Worked Solutions</h1>
+
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            This page contains complete, worked examples showing how to use STL containers and algorithms in real programs. Each example includes a full code walkthrough and explanation.
+        </p>
+
+        <!-- Example 1: Vector - Anime Watch List -->
+        <div class="example-card">
+            <div class="example-header">
+                <div class="example-number">1</div>
+                <div class="example-title">Vector: Managing a Cowboy Bebop Watch List</div>
+            </div>
+
+            <p>
+                <strong>Problem:</strong> Create a program to track which episodes of Cowboy Bebop you've watched. Cowboy Bebop is a legendary space western anime from 1998 with 26 episodes. The show follows a group of bounty hunters traveling through space. Each episode is called a "Session."
+            </p>
+
+            <p>
+                <strong>Requirements:</strong>
+            </p>
+            <ul>
+                <li>Store session numbers in a vector</li>
+                <li>Add watched sessions</li>
+                <li>Display all watched sessions</li>
+                <li>Check if a specific session was watched</li>
+                <li>Calculate completion percentage</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Cowboy Bebop is one of the greatest anime ever made. Its soundtrack is phenomenal (composed by Yoko Kanno), mixing jazz, blues, and rock. The show's episodic structure makes it perfect for a watch list example - each Session is a standalone story!
+            </div>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Full Program: Cowboy Bebop Watch Tracker</div>
+                </div>
+
+                <textarea id="editor1">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; watchedSessions;
+    const int TOTAL_SESSIONS = 26;
+
+    // Add some sessions we've watched
+    watchedSessions.push_back(1);   // Asteroid Blues
+    watchedSessions.push_back(5);   // Ballad of Fallen Angels
+    watchedSessions.push_back(20);  // Pierrot Le Fou
+    watchedSessions.push_back(24);  // Hard Luck Woman
+    watchedSessions.push_back(13);  // Jupiter Jazz (Part 1)
+
+    cout &lt;&lt; "=== COWBOY BEBOP WATCH TRACKER ===" &lt;&lt; endl;
+    cout &lt;&lt; "Sessions watched: " &lt;&lt; watchedSessions.size() &lt;&lt; endl;
+
+    // Sort the sessions for easier viewing
+    sort(watchedSessions.begin(), watchedSessions.end());
+
+    cout &lt;&lt; "\nWatched sessions (sorted): ";
+    for (int i = 0; i &lt; watchedSessions.size(); i++) {
+        cout &lt;&lt; "Session " &lt;&lt; watchedSessions[i] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    // Check if a specific session was watched
+    int checkSession = 5;
+    vector&lt;int&gt;::iterator found;
+    found = find(watchedSessions.begin(), watchedSessions.end(), checkSession);
+
+    if (found != watchedSessions.end()) {
+        cout &lt;&lt; "\nYou've watched Session " &lt;&lt; checkSession;
+        cout &lt;&lt; " (Ballad of Fallen Angels - Epic!)" &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "\nSession " &lt;&lt; checkSession &lt;&lt; " not watched yet." &lt;&lt; endl;
+    }
+
+    // Calculate completion percentage
+    double percentage = (watchedSessions.size() * 100.0) / TOTAL_SESSIONS;
+    cout &lt;&lt; "\nCompletion: " &lt;&lt; percentage &lt;&lt; "%" &lt;&lt; endl;
+
+    if (percentage &lt; 50) {
+        cout &lt;&lt; "Keep watching! You're gonna carry that weight..." &lt;&lt; endl;
+    } else if (percentage &lt; 100) {
+        cout &lt;&lt; "More than halfway! See you, space cowboy..." &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "You've watched all sessions! Tank! is playing..." &lt;&lt; endl;
+    }
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor1', 1)">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading1" class="loading-indicator">Running...</div>
+                        <div id="output1" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="walkthrough">
+                <div class="walkthrough-title">📖 Step-by-Step Walkthrough</div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">1</span><strong>Line 6-7:</strong> Declare a <code>vector&lt;int&gt;</code> to store session numbers and a constant for total sessions (26).</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">2</span><strong>Lines 10-14:</strong> Use <code>push_back()</code> to add watched sessions. We add them in random order (1, 5, 20, 24, 13) to show that vectors don't enforce ordering.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">3</span><strong>Line 19:</strong> Call <code>sort()</code> from <code>&lt;algorithm&gt;</code>. This requires random access iterators, which vector provides. Now sessions are in order: 1, 5, 13, 20, 24.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">4</span><strong>Lines 21-25:</strong> Loop through the vector using array notation <code>[]</code>. We could also use iterators, but this is simpler for sequential access.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">5</span><strong>Lines 29-30:</strong> Use the <code>find()</code> algorithm to search for Session 5. It returns an iterator to the element if found, or <code>end()</code> if not found.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">6</span><strong>Lines 32-37:</strong> Check if <code>found != end()</code>. If true, the session exists in our vector.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">7</span><strong>Line 40:</strong> Calculate percentage as <code>(count * 100.0) / total</code>. The <code>.0</code> forces floating-point division instead of integer division.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">8</span><strong>Lines 43-49:</strong> Use if-else chains to give different messages based on completion percentage. The references ("carry that weight", "See you, space cowboy") are iconic Cowboy Bebop phrases!</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Key Takeaways:</strong>
+                <ul>
+                    <li>Vectors grow dynamically - no need to know size in advance</li>
+                    <li><code>sort()</code> works on vectors because they have random access iterators</li>
+                    <li><code>find()</code> returns an iterator, not a boolean</li>
+                    <li>Always compare iterators to <code>end()</code> to check validity</li>
+                    <li>Use <code>.0</code> in calculations to force floating-point division</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Example 2: Map - Student Grade Tracker -->
+        <div class="example-card">
+            <div class="example-header">
+                <div class="example-number">2</div>
+                <div class="example-title">Map: COS 110 Student Grade Database</div>
+            </div>
+
+            <p>
+                <strong>Problem:</strong> Build a grade management system for COS 110 students. Store student numbers (keys) mapped to their final marks (values). Perform operations like adding grades, looking up marks, and finding the highest/lowest scores.
+            </p>
+
+            <p>
+                <strong>Requirements:</strong>
+            </p>
+            <ul>
+                <li>Map student numbers (int) to marks (int)</li>
+                <li>Add several student records</li>
+                <li>Look up a specific student's mark</li>
+                <li>Display all students with marks</li>
+                <li>Find highest and lowest marks using STL algorithms</li>
+            </ul>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Full Program: COS 110 Grade Database</div>
+                </div>
+
+                <textarea id="editor2">#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+int main() {
+    map&lt;int, int&gt; grades;
+
+    // Add student records (student number -&gt; mark)
+    grades[21001234] = 85;  // Refentse
+    grades[21002456] = 92;  // Dian
+    grades[21003678] = 78;  // Themba
+    grades[21004890] = 88;  // Lerato
+    grades[21005123] = 95;  // Sipho
+
+    cout &lt;&lt; "=== COS 110 GRADE DATABASE ===" &lt;&lt; endl;
+    cout &lt;&lt; "Total students: " &lt;&lt; grades.size() &lt;&lt; endl;
+
+    // Look up a specific student
+    int lookupStudent = 21002456;
+    if (grades.find(lookupStudent) != grades.end()) {
+        cout &lt;&lt; "\nStudent " &lt;&lt; lookupStudent &lt;&lt; ": "
+             &lt;&lt; grades[lookupStudent] &lt;&lt; "%" &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "\nStudent not found!" &lt;&lt; endl;
+    }
+
+    // Display all students (sorted by student number automatically)
+    cout &lt;&lt; "\n=== ALL STUDENT GRADES ===" &lt;&lt; endl;
+    map&lt;int, int&gt;::iterator it;
+    for (it = grades.begin(); it != grades.end(); ++it) {
+        cout &lt;&lt; "Student " &lt;&lt; it-&gt;first
+             &lt;&lt; ": " &lt;&lt; it-&gt;second &lt;&lt; "%" &lt;&lt; endl;
+    }
+
+    // Find highest mark (need to extract values)
+    int maxMark = 0;
+    int topStudent = 0;
+    for (it = grades.begin(); it != grades.end(); ++it) {
+        if (it-&gt;second &gt; maxMark) {
+            maxMark = it-&gt;second;
+            topStudent = it-&gt;first;
+        }
+    }
+
+    cout &lt;&lt; "\n=== TOP PERFORMER ===" &lt;&lt; endl;
+    cout &lt;&lt; "Student " &lt;&lt; topStudent &lt;&lt; " with " &lt;&lt; maxMark &lt;&lt; "%" &lt;&lt; endl;
+
+    // Calculate class average
+    int total = 0;
+    for (it = grades.begin(); it != grades.end(); ++it) {
+        total += it-&gt;second;
+    }
+    double average = total / (double)grades.size();
+    cout &lt;&lt; "\nClass average: " &lt;&lt; average &lt;&lt; "%" &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor2', 2)">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading2" class="loading-indicator">Running...</div>
+                        <div id="output2" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="walkthrough">
+                <div class="walkthrough-title">📖 Step-by-Step Walkthrough</div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">1</span><strong>Line 8:</strong> Declare <code>map&lt;int, int&gt;</code> where first int is student number (key) and second int is mark (value).</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">2</span><strong>Lines 11-15:</strong> Use <code>map[key] = value</code> syntax to insert/update entries. We add five students: Refentse, Dian, Themba, Lerato, and Sipho.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">3</span><strong>Lines 22-27:</strong> Use <code>find()</code> to check if key exists BEFORE accessing. This prevents accidentally creating a new entry with default value 0.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">4</span><strong>Lines 31-35:</strong> Iterate using <code>map::iterator</code>. Use <code>it-&gt;first</code> for key and <code>it-&gt;second</code> for value. Maps automatically keep keys sorted!</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">5</span><strong>Lines 38-46:</strong> Find maximum mark by iterating through all entries and tracking the highest <code>it-&gt;second</code> (value). We also track which student has this mark.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">6</span><strong>Lines 52-55:</strong> Calculate average by summing all marks and dividing by count. Cast to <code>double</code> to avoid integer division.</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Key Takeaways:</strong>
+                <ul>
+                    <li>Use <code>find()</code> before accessing to avoid creating unwanted entries</li>
+                    <li>Iterator dereference on map gives you a <code>pair</code> with <code>first</code> (key) and <code>second</code> (value)</li>
+                    <li>Maps automatically keep keys sorted (here: by student number)</li>
+                    <li>Keys must be unique - assigning to same key overwrites the old value</li>
+                    <li>To find max/min of values, you need to manually iterate (can't use <code>max_element</code> directly on map)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Example 3: Set - Unique Song Collection -->
+        <div class="example-card">
+            <div class="example-header">
+                <div class="example-number">3</div>
+                <div class="example-title">Set: Unique Music Genre Collection</div>
+            </div>
+
+            <p>
+                <strong>Problem:</strong> You're building a music library that tracks which genres you listen to. Each song has a genre, but you want to maintain a collection of <strong>unique genres only</strong> (no duplicates). Use a set to automatically handle this.
+            </p>
+
+            <p>
+                <strong>Requirements:</strong>
+            </p>
+            <ul>
+                <li>Store genre names in a set</li>
+                <li>Add genres from various songs (including duplicates)</li>
+                <li>Display all unique genres (alphabetically sorted)</li>
+                <li>Check if a specific genre is in your collection</li>
+                <li>Count how many unique genres you have</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> This example uses a mix of music genres. I listen to a lot of French-Congolese music (Fally Ipupa, Gims, Dadju), but also enjoy other genres. Sets are perfect here because if we add "R&B" multiple times, it only stores one copy!
+            </div>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Full Program: Music Genre Tracker</div>
+                </div>
+
+                <textarea id="editor3">#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main() {
+    set&lt;string&gt; genres;
+
+    // Add genres from various songs (some repeats!)
+    genres.insert("Rumba");           // Fally Ipupa style
+    genres.insert("R&B");             // Dadju, Gims
+    genres.insert("Hip-Hop");         // Gims
+    genres.insert("R&B");             // Duplicate - will be ignored!
+    genres.insert("Afrobeat");        // Wizkid, Burna Boy
+    genres.insert("Jazz");            // Cowboy Bebop soundtrack
+    genres.insert("Hip-Hop");         // Another duplicate - ignored!
+    genres.insert("Rock");            // Death Note opening
+    genres.insert("Rumba");           // Another duplicate - ignored!
+
+    cout &lt;&lt; "=== MUSIC GENRE COLLECTION ===" &lt;&lt; endl;
+    cout &lt;&lt; "Unique genres: " &lt;&lt; genres.size() &lt;&lt; endl;
+
+    // Display all genres (automatically sorted alphabetically)
+    cout &lt;&lt; "\nGenres in my library:" &lt;&lt; endl;
+    set&lt;string&gt;::iterator it;
+    int count = 1;
+    for (it = genres.begin(); it != genres.end(); ++it) {
+        cout &lt;&lt; count++ &lt;&lt; ". " &lt;&lt; *it &lt;&lt; endl;
+    }
+
+    // Check if a specific genre exists
+    string checkGenre = "Jazz";
+    if (genres.count(checkGenre) &gt; 0) {
+        cout &lt;&lt; "\n'" &lt;&lt; checkGenre &lt;&lt; "' is in your collection!" &lt;&lt; endl;
+        cout &lt;&lt; "(Cowboy Bebop has the best jazz soundtrack!)" &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "\n'" &lt;&lt; checkGenre &lt;&lt; "' not found." &lt;&lt; endl;
+    }
+
+    // Try to add a genre that already exists
+    pair&lt;set&lt;string&gt;::iterator, bool&gt; result = genres.insert("Jazz");
+    if (result.second) {
+        cout &lt;&lt; "\nSuccessfully added 'Jazz'." &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "\n'Jazz' already exists - not added again." &lt;&lt; endl;
+    }
+
+    // Remove a genre
+    genres.erase("Rock");
+    cout &lt;&lt; "\nAfter removing 'Rock': " &lt;&lt; genres.size()
+         &lt;&lt; " genres remain." &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor3', 3)">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading3" class="loading-indicator">Running...</div>
+                        <div id="output3" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="walkthrough">
+                <div class="walkthrough-title">📖 Step-by-Step Walkthrough</div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">1</span><strong>Line 8:</strong> Declare <code>set&lt;string&gt;</code> to store genre names. Sets automatically maintain unique elements and keep them sorted.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">2</span><strong>Lines 11-19:</strong> Use <code>insert()</code> to add genres. Notice we try to insert "R&B" twice, "Hip-Hop" twice, and "Rumba" twice. The set ignores duplicates, so only one of each is stored.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">3</span><strong>Line 22:</strong> Call <code>size()</code> to get count. Even though we called <code>insert()</code> 9 times, only 6 unique genres were added.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">4</span><strong>Lines 26-30:</strong> Iterate using <code>set::iterator</code>. Sets keep elements sorted alphabetically (for strings) or numerically (for numbers). Output will be: Afrobeat, Hip-Hop, Jazz, R&B, Rock, Rumba.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">5</span><strong>Lines 33-39:</strong> Use <code>count()</code> to check if element exists. For sets, <code>count()</code> returns either 0 (not found) or 1 (found), since sets don't allow duplicates.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">6</span><strong>Lines 42-47:</strong> <code>insert()</code> returns a <code>pair</code>. The <code>second</code> member is a bool: <code>true</code> if insertion happened, <code>false</code> if element already existed. This lets us know if the insertion succeeded.</p>
+                </div>
+
+                <div class="walkthrough-step">
+                    <p><span class="step-number">7</span><strong>Lines 50-52:</strong> Use <code>erase()</code> to remove an element by value. After removing "Rock", we have 5 genres left.</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Key Takeaways:</strong>
+                <ul>
+                    <li>Sets automatically remove duplicates - perfect for "unique items" scenarios</li>
+                    <li>Sets keep elements sorted (strings alphabetically, numbers numerically)</li>
+                    <li><code>count()</code> on sets returns 0 or 1 (can't have duplicates)</li>
+                    <li><code>insert()</code> returns a <code>pair&lt;iterator, bool&gt;</code> - the bool tells you if insertion succeeded</li>
+                    <li><code>erase()</code> can take a value or an iterator</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Example 4: Find the Bug - Stack Iterator Invalidation -->
+        <div class="example-card">
+            <div class="example-header">
+                <div class="example-number">4</div>
+                <div class="example-title">🐛 Find the Bug: Misusing Stack Operations</div>
+            </div>
+
+            <p>
+                <strong>Problem:</strong> The following program tries to process a stack of exam scores, but it has a bug that prevents it from compiling. Can you find what's wrong?
+            </p>
+
+            <div class="bug-example">
+                <div class="bug-header">
+                    <span class="bug-icon">🐛</span>
+                    <div class="bug-title">Buggy Code - This Won't Compile!</div>
+                </div>
+
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;stack&gt;
+
+using namespace std;
+
+int main() {
+    stack&lt;int&gt; examScores;
+
+    // Push exam scores onto stack
+    examScores.push(85);
+    examScores.push(92);
+    examScores.push(78);
+    examScores.push(95);
+
+    cout &lt;&lt; "Processing exam scores..." &lt;&lt; endl;
+
+    // Process all scores
+    while (!examScores.empty()) {
+        // Get and remove the top score
+        int score = examScores.pop();
+        cout &lt;&lt; "Score: " &lt;&lt; score &lt;&lt; endl;
+    }
+
+    return 0;
+}</code></pre>
+            </div>
+
+            <p style="margin-top: 1.5rem;">
+                <strong>Your task:</strong> Find the bug and understand why it doesn't work. Then click the reveal button to see the explanation and fixed code.
+            </p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('bug_solution')">Show Bug Explanation & Fix</button>
+
+            <div class="answer-section" id="bug_solution">
+                <h4 style="color: var(--error);">🔍 The Bug</h4>
+                <p>
+                    <strong>Line 20 is the problem:</strong>
+                </p>
+                <pre><code class="language-cpp">int score = examScores.pop();  // COMPILE ERROR!</code></pre>
+
+                <p>
+                    <strong>Why it doesn't work:</strong> The <code>pop()</code> function in STL's <code>stack</code> does <strong>NOT return a value</strong>! It has return type <code>void</code>. This is a deliberate design decision in the STL.
+                </p>
+
+                <p>
+                    <strong>Why is pop() void?</strong> For exception safety. If <code>pop()</code> both removed AND returned the value, what happens if the copy constructor throws an exception? The element would be removed from the stack but the caller wouldn't receive it - data loss!
+                </p>
+
+                <p>
+                    <strong>The correct approach:</strong> Use <code>top()</code> to get the value, then <code>pop()</code> to remove it:
+                </p>
+
+                <h4 style="color: var(--success); margin-top: 2rem;">✅ Fixed Code</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Corrected Program</div>
+                    </div>
+
+                    <textarea id="editor4">#include &lt;iostream&gt;
+#include &lt;stack&gt;
+
+using namespace std;
+
+int main() {
+    stack&lt;int&gt; examScores;
+
+    // Push exam scores onto stack
+    examScores.push(85);
+    examScores.push(92);
+    examScores.push(78);
+    examScores.push(95);
+
+    cout &lt;&lt; "Processing exam scores (LIFO order):" &lt;&lt; endl;
+
+    // Process all scores - CORRECT WAY
+    while (!examScores.empty()) {
+        // STEP 1: Get the top value
+        int score = examScores.top();
+
+        // STEP 2: Remove it from stack
+        examScores.pop();
+
+        // STEP 3: Use the value
+        cout &lt;&lt; "Score: " &lt;&lt; score &lt;&lt; endl;
+    }
+
+    cout &lt;&lt; "\nAll scores processed!" &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor4', 4)">↺ Reset</button>
+                    </div>
+
+                    <div class="output-section">
+                        <div class="output-label">Output:</div>
+                        <div class="output-box">
+                            <div id="loading4" class="loading-indicator">Running...</div>
+                            <div id="output4" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="walkthrough" style="margin-top: 2rem;">
+                    <div class="walkthrough-title">📖 Understanding the Fix</div>
+
+                    <div class="walkthrough-step">
+                        <p><span class="step-number">1</span><strong>Line 20:</strong> Call <code>top()</code> to GET the value at the top of the stack. This returns a reference to the element without removing it.</p>
+                    </div>
+
+                    <div class="walkthrough-step">
+                        <p><span class="step-number">2</span><strong>Line 23:</strong> Call <code>pop()</code> to REMOVE the top element. This returns nothing (void), so we can't assign it to a variable.</p>
+                    </div>
+
+                    <div class="walkthrough-step">
+                        <p><span class="step-number">3</span><strong>Why two steps?</strong> This separation ensures exception safety. If copying the value fails, the element is still on the stack. If we had a combined "pop and return" operation, a copy failure would lose the data.</p>
+                    </div>
+
+                    <div class="walkthrough-step">
+                        <p><span class="step-number">4</span><strong>LIFO order:</strong> Stack is Last-In-First-Out. We pushed 85, 92, 78, 95 in that order. So we process them in reverse: 95, 78, 92, 85.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box" style="margin-top: 2rem;">
+                    <strong>Common Mistake - Don't Do This:</strong>
+                    <pre><code class="language-cpp">// WRONG - pop() doesn't return anything!
+int value = myStack.pop();
+
+// ALSO WRONG - using pop() result in cout
+cout &lt;&lt; myStack.pop();  // Compile error!
+
+// CORRECT - two-step process
+int value = myStack.top();
+myStack.pop();</code></pre>
+                </div>
+
+                <div class="success-box" style="margin-top: 1rem;">
+                    <strong>Remember:</strong> This same pattern applies to <code>queue</code>! Use <code>front()</code> to get the value, then <code>pop()</code> to remove it. Never try to use <code>pop()</code>'s return value - it doesn't have one!
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="success-box" style="margin-top: 3rem;">
+            <h3 style="color: var(--success);">Examples Summary</h3>
+            <p><strong>What we covered:</strong></p>
+            <ul>
+                <li><strong>Vector:</strong> Dynamic array for anime watch lists with sorting and searching</li>
+                <li><strong>Map:</strong> Key-value pairs for student grade database with lookup and statistics</li>
+                <li><strong>Set:</strong> Unique elements for music genre collection with automatic sorting</li>
+                <li><strong>Stack Bug:</strong> Understanding <code>top()</code> vs <code>pop()</code> and why they're separate</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                <strong>Next step:</strong> Head to the <strong>Practice</strong> page to try solving problems on your own!
+            </p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <script>
+        // Store original code for reset functionality
+        const originalCode = {};
+        const editors = {};
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            const textareas = document.querySelectorAll('textarea[id^="editor"]');
+            textareas.forEach(textarea => {
+                const editorId = textarea.id;
+                originalCode[editorId] = textarea.value;
+
+                editors[editorId] = CodeMirror.fromTextArea(textarea, {
+                    mode: 'text/x-c++src',
+                    theme: 'material-ocean',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    indentWithTabs: false,
+                    lineWrapping: true
+                });
+            });
+        }
+
+        // Run code using Piston API
+        async function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = playgroundId.replace('playground', 'output');
+            const loadingId = playgroundId.replace('playground', 'loading');
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = document.querySelector(`#${playgroundId} .run-btn`);
+
+            // Show loading
+            loadingEl.classList.add('active');
+            if (runBtn) runBtn.disabled = true;
+            outputEl.textContent = 'Compiling and running...';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += '=== PROGRAM OUTPUT ===\n';
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                if (runBtn) runBtn.disabled = false;
+            }
+        }
+
+        // Reset code to original
+        function resetCode(editorId, playgroundNum) {
+            if (editors[editorId] && originalCode[editorId]) {
+                editors[editorId].setValue(originalCode[editorId]);
+
+                // Clear output
+                const outputEl = document.getElementById('output' + playgroundNum);
+                if (outputEl) {
+                    outputEl.textContent = 'Click "Run Code" to see the output...';
+                    outputEl.className = 'output-text output-placeholder';
+                }
+            }
+        }
+
+        // Toggle answer visibility with CodeMirror refresh
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+
+            // Refresh CodeMirror editors when revealing
+            if (answerSection.classList.contains('visible')) {
+                setTimeout(() => {
+                    Object.values(editors).forEach(editor => {
+                        editor.refresh();
+                    });
+                }, 50);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEditors();
+            Prism.highlightAll();
+        });
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

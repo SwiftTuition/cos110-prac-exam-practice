@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 13: STL - Theory | COS 110</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- CodeMirror for Interactive Code Editor -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #1e1e1e;
+            --accent-cyan: #0ea5e9;
+            --accent-cyan-hover: #0284c7;
+            --text-primary: #cbd5e1;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #eab308;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background-color: var(--bg-card);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid var(--accent-cyan);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-brand-company {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .nav-brand-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .nav-menu a.active {
+            color: var(--accent-cyan);
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--accent-cyan);
+            margin: 3rem 0 1.5rem 0;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            margin: 2rem 0 1rem 0;
+            font-weight: 600;
+        }
+
+        p {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--bg-code) !important;
+            border-radius: 0.5rem;
+            padding: 1.5rem !important;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        code[class*="language-"] {
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Custom Prism Theme for Deep Ocean */
+        .token.comment { color: #546e7a; }
+        .token.prolog { color: #546e7a; }
+        .token.doctype { color: #546e7a; }
+        .token.cdata { color: #546e7a; }
+        .token.punctuation { color: #89ddff; }
+        .token.property { color: #80cbc4; }
+        .token.tag { color: #f07178; }
+        .token.boolean { color: #ff5874; }
+        .token.number { color: #f78c6c; }
+        .token.constant { color: #82aaff; }
+        .token.symbol { color: #82aaff; }
+        .token.deleted { color: #f07178; }
+        .token.selector { color: #c3e88d; }
+        .token.attr-name { color: #ffcb6b; }
+        .token.string { color: #c3e88d; }
+        .token.char { color: #c3e88d; }
+        .token.builtin { color: #ffcb6b; }
+        .token.inserted { color: #c3e88d; }
+        .token.operator { color: #89ddff; }
+        .token.entity { color: #f07178; }
+        .token.url { color: #80cbc4; }
+        .token.atrule { color: #c792ea; }
+        .token.attr-value { color: #c3e88d; }
+        .token.keyword { color: #c792ea; }
+        .token.function { color: #82aaff; }
+        .token.class-name { color: #ffcb6b; }
+        .token.regex { color: #f07178; }
+        .token.important { color: #c792ea; }
+        .token.variable { color: #f07178; }
+
+        /* Info Boxes */
+        .info-box, .warning-box, .success-box, .swift-note-box {
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+        }
+
+        .info-box {
+            background-color: rgba(14, 165, 233, 0.1);
+            border-color: var(--accent-cyan);
+        }
+
+        .warning-box {
+            background-color: rgba(234, 179, 8, 0.1);
+            border-color: var(--warning);
+        }
+
+        .success-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+        }
+
+        .swift-note-box {
+            background-color: rgba(147, 51, 234, 0.1);
+            border-color: #9333ea;
+        }
+
+        /* Playground Styles */
+        .playground {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 150px;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+        }
+
+        /* Fix CodeMirror line height - make code more compact */
+        .CodeMirror-line {
+            line-height: 1.4 !important;
+        }
+
+        .CodeMirror pre {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .run-btn, .reset-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn {
+            background-color: var(--accent-cyan);
+            color: white;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            background-color: var(--accent-cyan-hover);
+            transform: translateY(-2px);
+        }
+
+        .run-btn:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background-color: #475569;
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background-color: #64748b;
+            transform: translateY(-2px);
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .output-box {
+            background-color: var(--bg-code);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .loading-indicator {
+            display: none;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .loading-indicator.active {
+            display: block;
+        }
+
+        .output-text {
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder {
+            color: var(--text-secondary);
+        }
+
+        .output-success {
+            color: var(--success);
+        }
+
+        .output-error {
+            color: var(--error);
+        }
+
+        /* Reveal Button */
+        .reveal-btn {
+            background-color: rgba(14, 165, 233, 0.2);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 1rem 0;
+        }
+
+        .reveal-btn:hover {
+            background-color: rgba(14, 165, 233, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .answer-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background-color: rgba(14, 165, 233, 0.05);
+            border-left: 3px solid var(--accent-cyan);
+            margin: 1rem 0;
+        }
+
+        .answer-section.visible {
+            max-height: 5000px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        /* Swift Quiz */
+        .swift-quiz {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(147, 51, 234, 0.1));
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .swift-quiz-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .swift-quiz-question {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .quiz-toggle-btn {
+            background-color: var(--accent-cyan);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-toggle-btn:hover {
+            background-color: var(--accent-cyan-hover);
+            transform: translateY(-2px);
+        }
+
+        .swift-quiz-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .swift-quiz-answer.visible {
+            max-height: 2000px;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--accent-cyan);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Links */
+        a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 13: Standard Template Library</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html" class="active">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Opening Greeting -->
+        <p style="font-size: 1.2rem; color: #0ea5e9; font-weight: 600; margin-bottom: 1.5rem;">
+            Good day, good people!
+        </p>
+
+        <h1>Unit 13: Standard Template Library (STL)</h1>
+
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            Welcome to Unit 13! This week (Week 15), we're exploring the <strong>Standard Template Library</strong> - a collection of pre-built data structures and algorithms that make C++ programming way more efficient. Think of it like having a toolbox where someone already built the hammer, screwdriver, and wrench for you. You just need to learn how to use them.
+        </p>
+
+        <div class="info-box">
+            <strong>Prerequisites:</strong> This unit builds on <strong>Unit 9 (Templates)</strong>. The entire STL is built using templates, so you need to understand how template classes work. If you're fuzzy on templates, go back and review that unit first!
+        </div>
+
+        <!-- Section 1: Introduction to STL -->
+        <h2>1. Introduction to the STL</h2>
+
+        <p>
+            Before the STL existed, programmers had to write their own dynamic arrays, linked lists, and search algorithms for <em>every single project</em>. Imagine building a linked list from scratch every time you needed one. That's tedious and error-prone.
+        </p>
+
+        <p>
+            The Standard Template Library solves this by giving us three core components:
+        </p>
+
+        <ul>
+            <li><strong>Containers:</strong> Data structures that store collections of objects (like <code>vector</code>, <code>list</code>, <code>map</code>)</li>
+            <li><strong>Iterators:</strong> Smart pointers that let us access elements in containers in a uniform way</li>
+            <li><strong>Algorithms:</strong> Functions that perform operations on containers (like <code>sort</code>, <code>find</code>, <code>count</code>)</li>
+        </ul>
+
+        <p>
+            The genius of the STL is that these components are <strong>decoupled</strong>. Algorithms don't know about specific containers - they just know how to use iterators. This means you can use the same <code>sort</code> algorithm on a <code>vector</code>, a <code>deque</code>, or any other compatible container without changing the algorithm's code.
+        </p>
+
+        <div class="swift-note-box">
+            <strong>Swift Note:</strong> The STL is like the ultimate reusable code library. Instead of reinventing the wheel every time, we use battle-tested, optimized data structures. This is what separates beginner programmers from professionals - knowing when to use what already exists.
+        </div>
+
+        <h3>1.1 Why Use the STL?</h3>
+
+        <ul>
+            <li><strong>Save time:</strong> Don't rebuild data structures from scratch</li>
+            <li><strong>Fewer bugs:</strong> STL code is heavily tested and optimized</li>
+            <li><strong>Industry standard:</strong> Every C++ developer uses the STL</li>
+            <li><strong>Performance:</strong> STL implementations are highly optimized</li>
+        </ul>
+
+        <!-- Playground 1: Basic Vector Usage -->
+        <section class="playground" id="playground1">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 1: Your First STL Container - vector</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                Let's start with the most commonly used STL container: <strong>vector</strong>. A vector is like a dynamic array that can grow and shrink. This example shows basic vector operations.
+            </p>
+
+            <textarea id="editor1">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+int main() {
+    // Create a vector to hold integers
+    vector&lt;int&gt; numbers;
+
+    // Add elements using push_back
+    numbers.push_back(10);
+    numbers.push_back(20);
+    numbers.push_back(30);
+    numbers.push_back(40);
+
+    // Vector knows its own size!
+    cout &lt;&lt; "Size: " &lt;&lt; numbers.size() &lt;&lt; endl;
+
+    // Access elements using array notation
+    cout &lt;&lt; "First element: " &lt;&lt; numbers[0] &lt;&lt; endl;
+    cout &lt;&lt; "Last element: " &lt;&lt; numbers[3] &lt;&lt; endl;
+
+    // Remove the last element
+    numbers.pop_back();
+    cout &lt;&lt; "Size after pop_back: " &lt;&lt; numbers.size() &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor1', 1)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading1" class="loading-indicator">Running...</div>
+                    <div id="output1" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <p style="color: #cbd5e1; margin-top: 1.5rem;">
+            <strong>Experiment 1:</strong> What happens if you try to access <code>numbers[10]</code> when the vector only has 3 elements after <code>pop_back()</code>?
+        </p>
+        <button class="reveal-btn" onclick="toggleAnswer('exp1_1')">Show Explanation</button>
+        <div class="answer-section" id="exp1_1">
+            <p><strong>What happens:</strong> Accessing <code>numbers[10]</code> is <strong>undefined behavior</strong>. The program might crash, might give you garbage values, or might seem to work (but still be wrong).</p>
+            <p><strong>Why:</strong> The <code>[]</code> operator does NOT check if the index is valid. It just accesses memory at that location. If you go beyond the vector's size, you're accessing memory you shouldn't.</p>
+            <p><strong>Safe alternative:</strong> Use the <code>.at()</code> function instead, which throws an exception if the index is out of bounds:</p>
+            <pre><code class="language-cpp">try {
+    cout &lt;&lt; numbers.at(10);  // Throws exception
+} catch (out_of_range&amp; e) {
+    cout &lt;&lt; "Error: " &lt;&lt; e.what() &lt;&lt; endl;
+}</code></pre>
+        </div>
+
+        <!-- Section 2: Iterators -->
+        <h2>2. Iterators - The Great Unifier</h2>
+
+        <p>
+            An <strong>iterator</strong> is an object that acts like a pointer. It provides a way to access elements in a container sequentially, regardless of how the container is implemented internally.
+        </p>
+
+        <h3>2.1 Why Do We Need Iterators?</h3>
+
+        <p>
+            Think about it: a <code>vector</code> stores elements contiguously in memory (like an array), while a <code>list</code> stores elements in separate nodes connected by pointers. How do we write code that works for both?
+        </p>
+
+        <p>
+            <strong>Iterators</strong> solve this problem. They give us a uniform interface:
+        </p>
+
+        <ul>
+            <li><code>*it</code> - Get the element the iterator points to (dereference)</li>
+            <li><code>++it</code> - Move to the next element</li>
+            <li><code>it == other</code> - Check if two iterators point to the same place</li>
+        </ul>
+
+        <h3>2.2 The begin() and end() Functions</h3>
+
+        <p>
+            Every container provides two essential functions:
+        </p>
+
+        <ul>
+            <li><code>container.begin()</code> - Returns an iterator pointing to the <strong>first element</strong></li>
+            <li><code>container.end()</code> - Returns an iterator pointing <strong>one past the last element</strong></li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>Important:</strong> The <code>end()</code> iterator is a <strong>sentinel</strong> - it marks the end, but doesn't point to a valid element. <strong>Never dereference</strong> <code>end()</code>! It's like <code>NULL</code> for linked lists.
+        </div>
+
+        <p>
+            The standard iterator loop pattern looks like this:
+        </p>
+
+        <pre><code class="language-cpp">vector&lt;int&gt;::iterator it;
+for (it = container.begin(); it != container.end(); ++it) {
+    cout &lt;&lt; *it &lt;&lt; " ";  // Dereference to get the value
+}</code></pre>
+
+        <!-- Playground 2: Iterator Basics -->
+        <section class="playground" id="playground2">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 2: Iterators in Action</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This example shows how to use iterators to traverse a vector and print all elements.
+            </p>
+
+            <textarea id="editor2">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; container;
+
+    // Fill container with values 1, 2, 3, 4
+    for (int i = 1; i &lt;= 4; i++) {
+        container.push_back(i);
+    }
+
+    cout &lt;&lt; "Here is what is in the container:" &lt;&lt; endl;
+
+    // Declare an iterator
+    vector&lt;int&gt;::iterator p;
+
+    // Loop through using iterator
+    for (p = container.begin(); p != container.end(); p++) {
+        cout &lt;&lt; *p &lt;&lt; " ";  // Dereference to get value
+    }
+    cout &lt;&lt; endl;
+
+    cout &lt;&lt; "Setting all entries to 0:" &lt;&lt; endl;
+
+    // Use iterator to modify values
+    for (p = container.begin(); p != container.end(); p++) {
+        *p = 0;  // Modify through dereferenced iterator
+    }
+
+    cout &lt;&lt; "Container now contains:" &lt;&lt; endl;
+    for (p = container.begin(); p != container.end(); p++) {
+        cout &lt;&lt; *p &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor2', 2)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading2" class="loading-indicator">Running...</div>
+                    <div id="output2" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <h3>2.3 C++98 vs C++11: The auto Keyword</h3>
+
+        <p>
+            In C++98, iterator declarations are verbose:
+        </p>
+
+        <pre><code class="language-cpp">// C++98 way - have to spell out the full type
+vector&lt;int&gt;::iterator p = container.begin();</code></pre>
+
+        <p>
+            In C++11 and later, you can use the <code>auto</code> keyword to let the compiler figure out the type:
+        </p>
+
+        <pre><code class="language-cpp">// C++11 way - compiler deduces the type automatically
+auto p = container.begin();  // Much cleaner!</code></pre>
+
+        <div class="info-box">
+            <strong>How auto works:</strong> The compiler looks at the right side of the <code>=</code> and figures out what type <code>container.begin()</code> returns. It then makes <code>p</code> that exact type. This is called <strong>type inference</strong>.
+        </div>
+
+        <p>
+            For this course, we're sticking to C++98, so you'll need to write out the full iterator type. But it's good to know about <code>auto</code> for when you see modern C++ code!
+        </p>
+
+        <h3>2.4 Const Iterators</h3>
+
+        <p>
+            Sometimes you want to read data from a container but not modify it. That's what <strong>const iterators</strong> are for:
+        </p>
+
+        <ul>
+            <li><code>container::iterator</code> - Read and write access</li>
+            <li><code>container::const_iterator</code> - Read-only access</li>
+        </ul>
+
+        <!-- Playground 3: Const Iterator -->
+        <section class="playground" id="playground3">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 3: Const vs Mutable Iterators</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This example demonstrates the difference between regular iterators (can modify) and const iterators (read-only).
+            </p>
+
+            <textarea id="editor3">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; vect;
+    for (int i = 1; i &lt; 6; i++) vect.push_back(i);
+
+    cout &lt;&lt; "Using const_iterator (read-only):" &lt;&lt; endl;
+    vector&lt;int&gt;::const_iterator cit;
+    for (cit = vect.begin(); cit != vect.end(); cit++) {
+        cout &lt;&lt; *cit &lt;&lt; " ";
+        // *cit = 100;  // This would cause a COMPILE ERROR!
+    }
+    cout &lt;&lt; endl;
+
+    cout &lt;&lt; "Using regular iterator (read-write):" &lt;&lt; endl;
+    vector&lt;int&gt;::iterator it;
+    for (it = vect.begin(); it != vect.end(); it++) {
+        *it = *it + 10;  // This is fine - we can modify
+    }
+
+    cout &lt;&lt; "After adding 10 to each element:" &lt;&lt; endl;
+    for (cit = vect.begin(); cit != vect.end(); cit++) {
+        cout &lt;&lt; *cit &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor3', 3)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading3" class="loading-indicator">Running...</div>
+                    <div id="output3" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <h3>2.5 Iterator Categories</h3>
+
+        <p>
+            Not all iterators have the same capabilities. The STL classifies iterators into categories based on what operations they support:
+        </p>
+
+        <ul>
+            <li><strong>Forward Iterators:</strong> Can move forward with <code>++</code>. Can read/write with <code>*</code>.</li>
+            <li><strong>Bidirectional Iterators:</strong> Everything forward can do, PLUS can move backward with <code>--</code>.</li>
+            <li><strong>Random Access Iterators:</strong> Everything bidirectional can do, PLUS can jump to any position with <code>+</code>, <code>-</code>, and <code>[]</code>.</li>
+        </ul>
+
+        <div class="info-box">
+            <strong>Container capabilities:</strong><br>
+            • <code>vector</code> and <code>deque</code>: Random access iterators<br>
+            • <code>list</code>: Bidirectional iterators only<br>
+            • <code>set</code> and <code>map</code>: Bidirectional iterators only
+        </div>
+
+        <h3>2.6 Reverse Iterators</h3>
+
+        <p>
+            Sometimes you need to iterate backward through a container. That's what <strong>reverse iterators</strong> are for:
+        </p>
+
+        <ul>
+            <li><code>container.rbegin()</code> - Points to the <strong>last element</strong></li>
+            <li><code>container.rend()</code> - Points to <strong>before the first element</strong></li>
+            <li>When you <code>++</code> a reverse iterator, it moves <strong>backward</strong> through the container</li>
+        </ul>
+
+        <!-- Playground 4: Reverse Iteration -->
+        <section class="playground" id="playground4">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 4: Reverse Iteration</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This example shows how to use reverse iterators to traverse a container backward.
+            </p>
+
+            <textarea id="editor4">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+int main() {
+    vector&lt;char&gt; container;
+    container.push_back('A');
+    container.push_back('B');
+    container.push_back('C');
+    container.push_back('D');
+
+    cout &lt;&lt; "Forward iteration:" &lt;&lt; endl;
+    vector&lt;char&gt;::iterator it;
+    for (it = container.begin(); it != container.end(); ++it) {
+        cout &lt;&lt; *it &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    cout &lt;&lt; "Reverse iteration:" &lt;&lt; endl;
+    vector&lt;char&gt;::reverse_iterator rit;
+    for (rit = container.rbegin(); rit != container.rend(); ++rit) {
+        cout &lt;&lt; *rit &lt;&lt; " ";  // Prints D C B A
+    }
+    cout &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor4', 4)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading4" class="loading-indicator">Running...</div>
+                    <div id="output4" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 1 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz #1</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> If you have a <code>list&lt;int&gt;</code> and an iterator <code>it</code> pointing to an element, can you do <code>it + 5</code> to jump 5 elements ahead?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz1')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz1">
+                <strong>Answer:</strong> <strong>No!</strong> You cannot do <code>it + 5</code> on a list iterator.
+                <p style="margin-top: 0.5rem;"><strong>Why:</strong> A <code>list</code> is a linked list, and its iterators are only <strong>bidirectional</strong>, not random access. To move 5 elements ahead, you'd have to do <code>++it</code> five times manually. The <code>+</code> operator only works with random access iterators (like those from <code>vector</code> or <code>deque</code>).</p>
+                <p>If you need to jump around frequently, use a <code>vector</code> instead of a <code>list</code>!</p>
+            </div>
+        </section>
+
+        <!-- Section 3: Vector Container -->
+        <h2>3. The Vector Container</h2>
+
+        <p>
+            A <code>vector</code> is essentially a <strong>dynamic array</strong> - an array that can grow and shrink as needed. Unlike regular arrays, you don't need to know the size in advance.
+        </p>
+
+        <h3>3.1 Key Vector Operations</h3>
+
+        <ul>
+            <li><code>push_back(value)</code> - Add element to the end</li>
+            <li><code>pop_back()</code> - Remove last element</li>
+            <li><code>size()</code> - Get number of elements</li>
+            <li><code>[index]</code> - Access element (no bounds checking!)</li>
+            <li><code>at(index)</code> - Access element (throws exception if out of bounds)</li>
+            <li><code>clear()</code> - Remove all elements</li>
+            <li><code>empty()</code> - Check if vector is empty</li>
+        </ul>
+
+        <h3>3.2 Example: Anime Episode Tracker</h3>
+
+        <p>
+            Let's build an anime episode tracker! Death Note is a psychological thriller anime about a high school student who finds a notebook that can kill anyone whose name is written in it. It has 37 episodes. Let's track which ones we've watched using a vector.
+        </p>
+
+        <!-- Playground 5: Anime Episode Tracker -->
+        <section class="playground" id="playground5">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 5: Death Note Episode Tracker</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This program tracks which Death Note episodes you've watched using a vector to store episode numbers.
+            </p>
+
+            <textarea id="editor5">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+int main() {
+    // Vector to track watched episodes
+    vector&lt;int&gt; watchedEpisodes;
+
+    // Add some episodes we've watched
+    watchedEpisodes.push_back(1);   // Rebirth
+    watchedEpisodes.push_back(2);   // Confrontation
+    watchedEpisodes.push_back(3);   // Dealings
+    watchedEpisodes.push_back(7);   // Overcast
+    watchedEpisodes.push_back(25);  // Silence
+
+    cout &lt;&lt; "Death Note Episodes Watched: " &lt;&lt; watchedEpisodes.size() &lt;&lt; endl;
+
+    cout &lt;&lt; "Episode numbers: ";
+    for (int i = 0; i &lt; watchedEpisodes.size(); i++) {
+        cout &lt;&lt; watchedEpisodes[i] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    // Check if vector is empty
+    if (watchedEpisodes.empty()) {
+        cout &lt;&lt; "Haven't watched any episodes yet!" &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "First episode watched: " &lt;&lt; watchedEpisodes[0] &lt;&lt; endl;
+        cout &lt;&lt; "Most recent: " &lt;&lt; watchedEpisodes[watchedEpisodes.size()-1] &lt;&lt; endl;
+    }
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground5')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor5', 5)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading5" class="loading-indicator">Running...</div>
+                    <div id="output5" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="swift-note-box">
+            <strong>Swift Note:</strong> Death Note is one of my favorite psychological thrillers. The cat-and-mouse game between Light and L is fascinating. The vector here lets us track episodes dynamically - we can add more as we watch them, unlike a fixed array where we'd need to know the total count upfront.
+        </div>
+
+        <h3>3.3 Capacity vs Size</h3>
+
+        <p>
+            Vectors have two related but different concepts:
+        </p>
+
+        <ul>
+            <li><strong>Size:</strong> How many elements are currently in the vector (<code>size()</code>)</li>
+            <li><strong>Capacity:</strong> How much space is allocated (<code>capacity()</code>)</li>
+        </ul>
+
+        <p>
+            When a vector runs out of space, it allocates a larger block of memory (usually double), copies all elements, and deletes the old block. This is why adding elements to a vector is generally fast, but occasionally slow (when reallocation happens).
+        </p>
+
+        <!-- Playground 6: Size vs Capacity -->
+        <section class="playground" id="playground6">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 6: Understanding Size vs Capacity</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                Watch how capacity grows as we add elements to a vector.
+            </p>
+
+            <textarea id="editor6">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v;
+
+    cout &lt;&lt; "Initial - Size: " &lt;&lt; v.size()
+         &lt;&lt; ", Capacity: " &lt;&lt; v.capacity() &lt;&lt; endl;
+
+    for (int i = 1; i &lt;= 10; i++) {
+        v.push_back(i);
+        cout &lt;&lt; "After adding " &lt;&lt; i &lt;&lt; " - Size: " &lt;&lt; v.size()
+             &lt;&lt; ", Capacity: " &lt;&lt; v.capacity() &lt;&lt; endl;
+    }
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground6')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor6', 6)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading6" class="loading-indicator">Running...</div>
+                    <div id="output6" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <p style="color: #cbd5e1; margin-top: 1.5rem;">
+            <strong>Experiment 2:</strong> What happens to capacity as we add more elements? Does it increase by 1 each time?
+        </p>
+        <button class="reveal-btn" onclick="toggleAnswer('exp3_1')">Show Explanation</button>
+        <div class="answer-section" id="exp3_1">
+            <p><strong>What happens:</strong> Capacity doesn't increase by 1 - it typically <strong>doubles</strong> each time it needs to grow (though the exact growth factor is implementation-defined).</p>
+            <p><strong>Why:</strong> If capacity grew by 1 each time, we'd need to reallocate and copy all elements for every single <code>push_back</code>. That would be O(n²) total time. By doubling, we amortize the cost - most <code>push_back</code> operations are O(1), and only occasional ones are O(n).</p>
+            <p><strong>Amortized analysis:</strong> If you add n elements, you'll do roughly log₂(n) reallocations, not n reallocations. This makes vector very efficient!</p>
+        </div>
+
+        <!-- Swift Quiz 2 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz #2</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> You have a <code>vector&lt;int&gt; v</code> with 5 elements. What's the difference between <code>v[10]</code> and <code>v.at(10)</code>?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz2')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz2">
+                <strong>Answer:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li><code>v[10]</code> - <strong>Undefined behavior</strong>. No bounds checking. Might crash, might return garbage, might seem to work (but is still wrong).</li>
+                    <li><code>v.at(10)</code> - <strong>Throws <code>out_of_range</code> exception</strong>. Safe because it checks if index is valid before accessing.</li>
+                </ul>
+                <p style="margin-top: 0.5rem;"><strong>Rule of thumb:</strong> Use <code>[]</code> when you're certain the index is valid (like in a loop with <code>i &lt; v.size()</code>). Use <code>.at()</code> when you need safety (like user input).</p>
+            </div>
+        </section>
+
+        <!-- Section 4: List Container -->
+        <h2>4. The List Container</h2>
+
+        <p>
+            A <code>list</code> is the STL's implementation of a <strong>doubly linked list</strong>. Remember Unit 10? Same concept, but pre-built and optimized for you!
+        </p>
+
+        <h3>4.1 When to Use List vs Vector</h3>
+
+        <p><strong>Use vector when:</strong></p>
+        <ul>
+            <li>You need fast random access (accessing elements by index)</li>
+            <li>You mostly add/remove at the end</li>
+            <li>You want cache-friendly memory layout (better performance)</li>
+        </ul>
+
+        <p><strong>Use list when:</strong></p>
+        <ul>
+            <li>You frequently insert/delete in the middle</li>
+            <li>You don't need random access</li>
+            <li>You want iterators that stay valid even after insertions/deletions</li>
+        </ul>
+
+        <h3>4.2 Key List Operations</h3>
+
+        <ul>
+            <li><code>push_back(value)</code> - Add to end</li>
+            <li><code>push_front(value)</code> - Add to beginning (vector doesn't have this!)</li>
+            <li><code>pop_back()</code> - Remove from end</li>
+            <li><code>pop_front()</code> - Remove from beginning</li>
+            <li><code>insert(iterator, value)</code> - Insert before the iterator position</li>
+            <li><code>erase(iterator)</code> - Remove element at iterator position</li>
+        </ul>
+
+        <!-- Playground 7: List Operations -->
+        <section class="playground" id="playground7">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 7: List Operations</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This example demonstrates list-specific operations, especially efficient insertion/deletion.
+            </p>
+
+            <textarea id="editor7">#include &lt;iostream&gt;
+#include &lt;list&gt;
+
+using namespace std;
+
+int main() {
+    list&lt;int&gt; myList;
+
+    // Add elements at back
+    myList.push_back(20);
+    myList.push_back(30);
+
+    // Add element at front (efficient with list!)
+    myList.push_front(10);
+
+    cout &lt;&lt; "List after push_front and push_back: ";
+    list&lt;int&gt;::iterator it;
+    for (it = myList.begin(); it != myList.end(); ++it) {
+        cout &lt;&lt; *it &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    // Remove from front
+    myList.pop_front();
+
+    cout &lt;&lt; "After pop_front: ";
+    for (it = myList.begin(); it != myList.end(); ++it) {
+        cout &lt;&lt; *it &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    cout &lt;&lt; "List size: " &lt;&lt; myList.size() &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground7')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor7', 7)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading7" class="loading-indicator">Running...</div>
+                    <div id="output7" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <h3>4.3 Example: COS 110 Student Records</h3>
+
+        <p>
+            Let's use a list to manage student records with students named Bongani, Themba, and Lerato.
+        </p>
+
+        <!-- Playground 8: Student Records with List -->
+        <section class="playground" id="playground8">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 8: Student Records with List</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                Managing COS 110 student records using a list. We can efficiently add new students at the front when they join late.
+            </p>
+
+            <textarea id="editor8">#include &lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main() {
+    list&lt;string&gt; students;
+
+    // Add initial students
+    students.push_back("Themba");
+    students.push_back("Lerato");
+    students.push_back("Sipho");
+
+    cout &lt;&lt; "Initial class list:" &lt;&lt; endl;
+    list&lt;string&gt;::iterator it;
+    int count = 1;
+    for (it = students.begin(); it != students.end(); ++it) {
+        cout &lt;&lt; count++ &lt;&lt; ". " &lt;&lt; *it &lt;&lt; endl;
+    }
+
+    // Late registration - add at front
+    students.push_front("Bongani");
+
+    cout &lt;&lt; "\nAfter late registration:" &lt;&lt; endl;
+    count = 1;
+    for (it = students.begin(); it != students.end(); ++it) {
+        cout &lt;&lt; count++ &lt;&lt; ". " &lt;&lt; *it &lt;&lt; endl;
+    }
+
+    cout &lt;&lt; "\nTotal students: " &lt;&lt; students.size() &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground8')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor8', 8)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading8" class="loading-indicator">Running...</div>
+                    <div id="output8" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 3 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz #3</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> You need to store 1000 student records and frequently access them by index (like <code>students[500]</code>). Should you use a <code>vector</code> or a <code>list</code>?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz3')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz3">
+                <strong>Answer:</strong> Use a <code>vector</code>!
+                <p style="margin-top: 0.5rem;"><strong>Why:</strong> To access <code>students[500]</code> in a vector is O(1) - instant. To access the 500th element in a list requires traversing 500 nodes, which is O(n) - slow.</p>
+                <p>Only use <code>list</code> if you're frequently inserting/deleting in the middle AND you don't need random access. For most use cases, <code>vector</code> is the better choice.</p>
+            </div>
+        </section>
+
+        <!-- Section 5: Map Container -->
+        <h2>5. The Map Container</h2>
+
+        <p>
+            A <code>map</code> stores <strong>key-value pairs</strong> where each key is unique. Keys are automatically sorted. Think of it like a dictionary: you look up a word (key) to get its definition (value).
+        </p>
+
+        <h3>5.1 Key Map Operations</h3>
+
+        <ul>
+            <li><code>map[key] = value</code> - Insert or update a key-value pair</li>
+            <li><code>map[key]</code> - Access value by key (creates entry if key doesn't exist!)</li>
+            <li><code>map.find(key)</code> - Returns iterator to element, or <code>end()</code> if not found</li>
+            <li><code>map.erase(key)</code> - Remove key-value pair</li>
+            <li><code>map.count(key)</code> - Returns 1 if key exists, 0 otherwise</li>
+        </ul>
+
+        <h3>5.2 Iterating Through a Map</h3>
+
+        <p>
+            Map iterators point to <code>pair</code> objects. Each pair has two members:
+        </p>
+
+        <ul>
+            <li><code>it-&gt;first</code> - The key</li>
+            <li><code>it-&gt;second</code> - The value</li>
+        </ul>
+
+        <!-- Playground 9: Map Basics -->
+        <section class="playground" id="playground9">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 9: Map Basics</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This example shows basic map operations with key-value pairs.
+            </p>
+
+            <textarea id="editor9">#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main() {
+    map&lt;int, string&gt; groceries;
+
+    // Insert key-value pairs
+    groceries[1] = "banana";
+    groceries[2] = "milk";
+    groceries[10] = "bread";
+    groceries[5] = "banana";  // Values can repeat
+
+    // Accessing
+    cout &lt;&lt; "Item 2: " &lt;&lt; groceries[2] &lt;&lt; endl;
+
+    // Overwrite existing key
+    groceries[2] = "muesli";  // Keys are unique!
+
+    cout &lt;&lt; "\nAll groceries (sorted by key):" &lt;&lt; endl;
+    map&lt;int, string&gt;::iterator it;
+    for (it = groceries.begin(); it != groceries.end(); ++it) {
+        cout &lt;&lt; "Key " &lt;&lt; it-&gt;first
+             &lt;&lt; " = " &lt;&lt; it-&gt;second &lt;&lt; endl;
+    }
+
+    // Check if key exists
+    if (groceries.count(10) &gt; 0) {
+        cout &lt;&lt; "\nKey 10 exists!" &lt;&lt; endl;
+    }
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground9')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor9', 9)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading9" class="loading-indicator">Running...</div>
+                    <div id="output9" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <h3>5.3 Example: Student Number to Name Mapping</h3>
+
+        <p>
+            Let's create a student database that maps student numbers to names.
+        </p>
+
+        <!-- Playground 10: Student Number Mapping -->
+        <section class="playground" id="playground10">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 10: Student Database with Map</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                Using a map to store COS 110 student records - student number (key) to name (value).
+            </p>
+
+            <textarea id="editor10">#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main() {
+    map&lt;int, string&gt; students;
+
+    // Add students
+    students[21001234] = "Bongani";
+    students[21005678] = "Themba";
+    students[21003456] = "Lerato";
+    students[21007890] = "Sipho";
+
+    // Look up a student
+    int lookupNumber = 21003456;
+    cout &lt;&lt; "Student " &lt;&lt; lookupNumber &lt;&lt; ": "
+         &lt;&lt; students[lookupNumber] &lt;&lt; endl;
+
+    cout &lt;&lt; "\nAll registered students:" &lt;&lt; endl;
+    map&lt;int, string&gt;::iterator it;
+    for (it = students.begin(); it != students.end(); ++it) {
+        cout &lt;&lt; it-&gt;first &lt;&lt; " - " &lt;&lt; it-&gt;second &lt;&lt; endl;
+    }
+
+    // Check if student exists
+    if (students.find(21009999) == students.end()) {
+        cout &lt;&lt; "\nStudent 21009999 not found!" &lt;&lt; endl;
+    }
+
+    cout &lt;&lt; "Total students: " &lt;&lt; students.size() &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground10')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor10', 10)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading10" class="loading-indicator">Running...</div>
+                    <div id="output10" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="warning-box">
+            <strong>Important Map Behavior:</strong> Using <code>map[key]</code> when the key doesn't exist will <strong>create</strong> that key with a default value (0 for int, "" for string, etc.). If you want to check existence without creating, use <code>find()</code> or <code>count()</code>!
+        </div>
+
+        <p style="color: #cbd5e1; margin-top: 1.5rem;">
+            <strong>Experiment 3:</strong> What happens if you access <code>students[99999999]</code> (a student number that doesn't exist)?
+        </p>
+        <button class="reveal-btn" onclick="toggleAnswer('exp5_1')">Show Explanation</button>
+        <div class="answer-section" id="exp5_1">
+            <p><strong>What happens:</strong> The map will <strong>create a new entry</strong> with key <code>99999999</code> and value <code>""</code> (empty string, the default for string type).</p>
+            <p><strong>Why:</strong> The <code>[]</code> operator is designed to always give you a reference to a value. If the key doesn't exist, it creates it with the default value for that type.</p>
+            <p><strong>To avoid this:</strong> Use <code>find()</code> to check if a key exists:</p>
+            <pre><code class="language-cpp">map&lt;int, string&gt;::iterator found = students.find(99999999);
+if (found != students.end()) {
+    cout &lt;&lt; found-&gt;second;  // Only access if it exists
+} else {
+    cout &lt;&lt; "Student not found!";
+}</code></pre>
+        </div>
+
+        <!-- Section 6: Set Container -->
+        <h2>6. The Set Container</h2>
+
+        <p>
+            A <code>set</code> stores <strong>unique elements</strong> in sorted order. It's like a mathematical set - no duplicates allowed!
+        </p>
+
+        <h3>6.1 Key Set Operations</h3>
+
+        <ul>
+            <li><code>insert(value)</code> - Add element (ignored if already exists)</li>
+            <li><code>erase(value)</code> - Remove element</li>
+            <li><code>find(value)</code> - Returns iterator to element, or <code>end()</code> if not found</li>
+            <li><code>count(value)</code> - Returns 1 if element exists, 0 otherwise</li>
+            <li><code>size()</code> - Number of elements</li>
+        </ul>
+
+        <!-- Playground 11: Set for Unique Songs -->
+        <section class="playground" id="playground11">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 11: Music Playlist with Set</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                Let's build a playlist that automatically removes duplicate songs. We'll use songs from Fally Ipupa, a Congolese musician.
+            </p>
+
+            <textarea id="editor11">#include &lt;iostream&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main() {
+    set&lt;string&gt; playlist;
+
+    // Add songs (duplicates are automatically ignored)
+    playlist.insert("Chaise Electrique");
+    playlist.insert("Eloko Oyo");
+    playlist.insert("Bad Boy");
+    playlist.insert("Eloko Oyo");  // Duplicate - will be ignored!
+    playlist.insert("Aime-moi");
+
+    cout &lt;&lt; "Unique songs in playlist: " &lt;&lt; playlist.size() &lt;&lt; endl;
+
+    cout &lt;&lt; "\nSongs (alphabetically sorted):" &lt;&lt; endl;
+    set&lt;string&gt;::iterator it;
+    int count = 1;
+    for (it = playlist.begin(); it != playlist.end(); ++it) {
+        cout &lt;&lt; count++ &lt;&lt; ". " &lt;&lt; *it &lt;&lt; endl;
+    }
+
+    // Check if a song exists
+    if (playlist.count("Bad Boy") &gt; 0) {
+        cout &lt;&lt; "\n'Bad Boy' is in the playlist!" &lt;&lt; endl;
+    }
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground11')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor11', 11)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading11" class="loading-indicator">Running...</div>
+                    <div id="output11" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="swift-note-box">
+            <strong>Swift Note:</strong> Fally Ipupa is an amazing Congolese artist. His music blends Rumba, R&B, and hip-hop. The songs in this example are from his "Tokooos" album (2017). Sets are perfect for playlists because they prevent duplicate songs and keep everything alphabetically sorted!
+        </div>
+
+        <!-- Swift Quiz 4 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz #4</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> If you insert the same element into a set 10 times, how many elements will be in the set?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz4')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz4">
+                <strong>Answer:</strong> Just <strong>1 element</strong>!
+                <p style="margin-top: 0.5rem;"><strong>Why:</strong> Sets only store unique elements. When you try to insert an element that already exists, the set ignores the operation. This is the whole point of using a set - automatic duplicate removal!</p>
+                <p>If you need to store duplicates, use <code>multiset</code> instead (allows duplicate keys).</p>
+            </div>
+        </section>
+
+        <!-- Section 7: STL Algorithms -->
+        <h2>7. STL Algorithms</h2>
+
+        <p>
+            The STL provides a library of algorithms that work on containers using iterators. These algorithms are in the <code>&lt;algorithm&gt;</code> header.
+        </p>
+
+        <h3>7.1 Common Algorithms</h3>
+
+        <ul>
+            <li><code>sort(begin, end)</code> - Sort elements in range</li>
+            <li><code>find(begin, end, value)</code> - Find element, returns iterator</li>
+            <li><code>count(begin, end, value)</code> - Count occurrences</li>
+            <li><code>min_element(begin, end)</code> - Find minimum</li>
+            <li><code>max_element(begin, end)</code> - Find maximum</li>
+            <li><code>reverse(begin, end)</code> - Reverse order</li>
+            <li><code>binary_search(begin, end, value)</code> - Search in sorted range</li>
+        </ul>
+
+        <div class="info-box">
+            <strong>Important:</strong> Most algorithms work with iterators, not containers directly. You pass <code>container.begin()</code> and <code>container.end()</code> to define the range.
+        </div>
+
+        <!-- Playground 12: Sorting and Searching -->
+        <section class="playground" id="playground12">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 12: STL Algorithms - Sort and Find</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                Using STL algorithms to sort and search through data.
+            </p>
+
+            <textarea id="editor12">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; scores;
+    scores.push_back(85);
+    scores.push_back(92);
+    scores.push_back(78);
+    scores.push_back(95);
+    scores.push_back(88);
+
+    cout &lt;&lt; "Original scores: ";
+    for (int i = 0; i &lt; scores.size(); i++) {
+        cout &lt;&lt; scores[i] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    // Sort the vector
+    sort(scores.begin(), scores.end());
+
+    cout &lt;&lt; "Sorted scores: ";
+    for (int i = 0; i &lt; scores.size(); i++) {
+        cout &lt;&lt; scores[i] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    // Find min and max
+    vector&lt;int&gt;::iterator minIt = min_element(scores.begin(), scores.end());
+    vector&lt;int&gt;::iterator maxIt = max_element(scores.begin(), scores.end());
+
+    cout &lt;&lt; "Lowest score: " &lt;&lt; *minIt &lt;&lt; endl;
+    cout &lt;&lt; "Highest score: " &lt;&lt; *maxIt &lt;&lt; endl;
+
+    // Count how many scored 88
+    int count88 = count(scores.begin(), scores.end(), 88);
+    cout &lt;&lt; "Number of 88s: " &lt;&lt; count88 &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground12')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor12', 12)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading12" class="loading-indicator">Running...</div>
+                    <div id="output12" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <h3>7.2 Why Algorithms Need Specific Iterator Types</h3>
+
+        <p>
+            Not all algorithms work with all containers! Here's why:
+        </p>
+
+        <ul>
+            <li><code>sort()</code> needs <strong>random access iterators</strong> (works with vector/deque, NOT list)</li>
+            <li><code>find()</code> only needs <strong>forward iterators</strong> (works with any container)</li>
+        </ul>
+
+        <pre><code class="language-cpp">// This works - vector has random access iterators
+vector&lt;int&gt; v = {5, 2, 8, 1};
+sort(v.begin(), v.end());
+
+// This DOES NOT compile - list only has bidirectional iterators
+list&lt;int&gt; l = {5, 2, 8, 1};
+// sort(l.begin(), l.end());  // COMPILE ERROR!
+
+// List has its own sort member function instead:
+l.sort();  // This works!</code></pre>
+
+        <!-- Playground 13: Binary Search -->
+        <section class="playground" id="playground13">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 13: Binary Search Algorithm</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                Binary search requires a <strong>sorted</strong> container and returns true/false.
+            </p>
+
+            <textarea id="editor13">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; numbers;
+    numbers.push_back(10);
+    numbers.push_back(25);
+    numbers.push_back(30);
+    numbers.push_back(42);
+    numbers.push_back(55);
+    // Vector is already sorted!
+
+    cout &lt;&lt; "Sorted vector: ";
+    for (int i = 0; i &lt; numbers.size(); i++) {
+        cout &lt;&lt; numbers[i] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    // Binary search for 30
+    if (binary_search(numbers.begin(), numbers.end(), 30)) {
+        cout &lt;&lt; "Found 30!" &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "30 not found" &lt;&lt; endl;
+    }
+
+    // Binary search for 100
+    if (binary_search(numbers.begin(), numbers.end(), 100)) {
+        cout &lt;&lt; "Found 100!" &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "100 not found" &lt;&lt; endl;
+    }
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground13')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor13', 13)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading13" class="loading-indicator">Running...</div>
+                    <div id="output13" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <p style="color: #cbd5e1; margin-top: 1.5rem;">
+            <strong>Experiment 4:</strong> What happens if you try <code>binary_search()</code> on an unsorted vector?
+        </p>
+        <button class="reveal-btn" onclick="toggleAnswer('exp7_1')">Show Explanation</button>
+        <div class="answer-section" id="exp7_1">
+            <p><strong>What happens:</strong> <code>binary_search()</code> will give you <strong>wrong results</strong>. It might say an element exists when it doesn't, or say it doesn't exist when it does.</p>
+            <p><strong>Why:</strong> Binary search assumes the data is sorted. It works by repeatedly dividing the search space in half. If the data isn't sorted, the assumptions it makes are invalid.</p>
+            <p><strong>Solution:</strong> Always <code>sort()</code> your container before using <code>binary_search()</code>!</p>
+        </div>
+
+        <!-- Section 8: Container Adapters (Stack/Queue) -->
+        <h2>8. Container Adapters: Stack and Queue</h2>
+
+        <p>
+            Container adapters are special containers that provide a restricted interface to other containers. Think of them as wrappers.
+        </p>
+
+        <h3>8.1 Stack (LIFO - Last In, First Out)</h3>
+
+        <p>
+            A <code>stack</code> is like a stack of plates - you can only add or remove from the top.
+        </p>
+
+        <ul>
+            <li><code>push(value)</code> - Add to top</li>
+            <li><code>pop()</code> - Remove from top (doesn't return value!)</li>
+            <li><code>top()</code> - Look at top element</li>
+            <li><code>empty()</code> - Check if stack is empty</li>
+            <li><code>size()</code> - Number of elements</li>
+        </ul>
+
+        <div class="info-box">
+            <strong>Inner Container:</strong> By default, <code>stack</code> uses <code>deque</code> internally. You can specify a different container: <code>stack&lt;int, vector&lt;int&gt; &gt; s;</code> (note the space before the closing <code>&gt;&gt;</code> - required in C++98!)
+        </div>
+
+        <!-- Playground 14: Stack Example -->
+        <section class="playground" id="playground14">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 14: Stack Operations (EO3 2018 Style)</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This example is similar to EO3 2018 Question 1.1. Understanding stack behavior is crucial for the exam!
+            </p>
+
+            <textarea id="editor14">#include &lt;iostream&gt;
+#include &lt;stack&gt;
+
+using namespace std;
+
+int main() {
+    stack&lt;char&gt; charStack;
+
+    // Push characters w, x, y, z
+    for (char c = 'w'; c &lt;= 'z'; c++) {
+        charStack.push(c);
+    }
+
+    cout &lt;&lt; "Stack size after pushing w-z: " &lt;&lt; charStack.size() &lt;&lt; endl;
+
+    // Get top and pop
+    char x = charStack.top();
+    charStack.pop();
+
+    char y = 'a';
+
+    cout &lt;&lt; "Processing stack:" &lt;&lt; endl;
+    while (!charStack.empty()) {
+        cout &lt;&lt; charStack.top() &lt;&lt; endl;
+        charStack.pop();
+
+        if (!charStack.empty()) {
+            charStack.pop();
+            charStack.push(y++);
+        }
+    }
+
+    cout &lt;&lt; x &lt;&lt; endl;
+    cout &lt;&lt; y &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground14')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor14', 14)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading14" class="loading-indicator">Running...</div>
+                    <div id="output14" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="warning-box">
+            <strong>Common Stack Mistake:</strong> The <code>pop()</code> function does NOT return the value! You must use <code>top()</code> to get the value, then <code>pop()</code> to remove it. Doing <code>char c = stack.pop();</code> will cause a compile error.
+        </div>
+
+        <h3>8.2 Queue (FIFO - First In, First Out)</h3>
+
+        <p>
+            A <code>queue</code> is like a line at a store - first person in line gets served first.
+        </p>
+
+        <ul>
+            <li><code>push(value)</code> - Add to back</li>
+            <li><code>pop()</code> - Remove from front (doesn't return value!)</li>
+            <li><code>front()</code> - Look at front element</li>
+            <li><code>back()</code> - Look at back element</li>
+            <li><code>empty()</code> - Check if queue is empty</li>
+        </ul>
+
+        <!-- Playground 15: Queue Example -->
+        <section class="playground" id="playground15">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 15: Queue (Print Job Queue)</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                Simulating a print queue - documents are printed in the order they're submitted.
+            </p>
+
+            <textarea id="editor15">#include &lt;iostream&gt;
+#include &lt;queue&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+int main() {
+    queue&lt;string&gt; printQueue;
+
+    // Add print jobs
+    printQueue.push("Assignment1.pdf");
+    printQueue.push("Notes.docx");
+    printQueue.push("Quiz.pdf");
+
+    cout &lt;&lt; "Print queue size: " &lt;&lt; printQueue.size() &lt;&lt; endl;
+    cout &lt;&lt; "Next document: " &lt;&lt; printQueue.front() &lt;&lt; endl;
+
+    cout &lt;&lt; "\nProcessing print queue:" &lt;&lt; endl;
+    while (!printQueue.empty()) {
+        cout &lt;&lt; "Printing: " &lt;&lt; printQueue.front() &lt;&lt; endl;
+        printQueue.pop();
+    }
+
+    cout &lt;&lt; "\nQueue is now empty!" &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground15')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor15', 15)">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading15" class="loading-indicator">Running...</div>
+                    <div id="output15" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 9: When to Use STL vs Custom Implementation -->
+        <h2>9. When to Use STL vs Custom Implementation</h2>
+
+        <h3>9.1 Use STL When:</h3>
+
+        <ul>
+            <li>You need a standard data structure (vector, list, map, etc.)</li>
+            <li>Performance is important (STL is highly optimized)</li>
+            <li>You want to write less code and have fewer bugs</li>
+            <li>You're working with a team (everyone knows STL)</li>
+        </ul>
+
+        <h3>9.2 Write Custom Code When:</h3>
+
+        <ul>
+            <li>You need a specialized data structure not in STL</li>
+            <li>You're learning</li>
+            <li>You have very specific performance requirements the STL doesn't meet</li>
+            <li>You need full control over memory management</li>
+        </ul>
+
+        <div class="success-box">
+            <strong>Remember:</strong> Earlier, we've built linked lists, stacks, and queues from scratch in previous units. The STL gives us these for free! Understanding how they work under the hood (Unit 10, 11) makes you appreciate the STL and helps you choose the right container.
+        </div>
+
+        <!-- Summary -->
+        <h2>Summary</h2>
+
+        <p>
+            You've now explored the Standard Template Library! Here's what we covered:
+        </p>
+
+        <ul>
+            <li><strong>Three Components:</strong> Containers (store data), Iterators (access data), Algorithms (process data)</li>
+            <li><strong>Containers:</strong>
+                <ul>
+                    <li><code>vector</code> - Dynamic array, random access, fast at end</li>
+                    <li><code>list</code> - Doubly linked list, efficient insertion/deletion anywhere</li>
+                    <li><code>deque</code> - Double-ended queue, fast at both ends</li>
+                    <li><code>map</code> - Key-value pairs, unique keys, sorted by key</li>
+                    <li><code>set</code> - Unique elements, sorted</li>
+                    <li><code>stack</code> - LIFO adapter</li>
+                    <li><code>queue</code> - FIFO adapter</li>
+                </ul>
+            </li>
+            <li><strong>Iterators:</strong> Uniform interface, categories (forward/bidirectional/random access), const vs mutable</li>
+            <li><strong>Algorithms:</strong> <code>sort</code>, <code>find</code>, <code>count</code>, <code>min_element</code>, <code>max_element</code>, etc.</li>
+        </ul>
+
+        <div class="swift-note-box">
+            <strong>Swift Note:</strong> The STL is one of the most powerful features of C++. Practice choosing the right container for each problem.
+        </div>
+
+        <div class="info-box">
+            <strong>Next Steps:</strong> Head over to the <strong>Examples</strong> page to see complete programs using STL containers, then practice with the <strong>Practice</strong> problems, and finally test yourself with the <strong>Quiz</strong>!
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <script>
+        // Store original code for reset functionality
+        const originalCode = {};
+        const editors = {};
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            const textareas = document.querySelectorAll('textarea[id^="editor"]');
+            textareas.forEach(textarea => {
+                const editorId = textarea.id;
+                originalCode[editorId] = textarea.value;
+
+                editors[editorId] = CodeMirror.fromTextArea(textarea, {
+                    mode: 'text/x-c++src',
+                    theme: 'material-ocean',
+                    lineNumbers: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    indentWithTabs: false,
+                    lineWrapping: true
+                });
+            });
+        }
+
+        // Run code using Piston API
+        async function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = playgroundId.replace('playground', 'output');
+            const loadingId = playgroundId.replace('playground', 'loading');
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = document.querySelector(`#${playgroundId} .run-btn`);
+
+            // Show loading
+            loadingEl.classList.add('active');
+            if (runBtn) runBtn.disabled = true;
+            outputEl.textContent = 'Compiling and running...';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += '=== PROGRAM OUTPUT ===\n';
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                if (runBtn) runBtn.disabled = false;
+            }
+        }
+
+        // Reset code to original
+        function resetCode(editorId, playgroundNum) {
+            if (editors[editorId] && originalCode[editorId]) {
+                editors[editorId].setValue(originalCode[editorId]);
+
+                // Clear output
+                const outputEl = document.getElementById('output' + playgroundNum);
+                if (outputEl) {
+                    outputEl.textContent = 'Click "Run Code" to see the output...';
+                    outputEl.className = 'output-text output-placeholder';
+                }
+            }
+        }
+
+        // Toggle answer visibility
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+        }
+
+        // Toggle quiz answer
+        function toggleQuiz(quizId) {
+            const quizAnswer = document.getElementById(quizId);
+            quizAnswer.classList.toggle('visible');
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEditors();
+
+            // Syntax highlighting for static code blocks
+            Prism.highlightAll();
+        });
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

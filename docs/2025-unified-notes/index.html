@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COS 110: Unified Learning Hub (Units 1 - 14) | Swift Tuition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --burgundy: #6b2737;
+            --burgundy-light: #8a3a4e;
+            --amber: #c4893b;
+            --amber-light: #e4a85a;
+            --navy: #1a1a2e;
+            --cream: #fffdf9;
+            --cream-shade: #f6f1e7;
+            --paper: #f5f0e8;
+            --teal: #2a7f7a;
+            --ink: #2a1f24;
+            --muted: #7a6b6e;
+            --card-border: #e0d5c5;
+            
+            --link-theory: #2d6a4f;
+            --link-examples: #1d4ed8;
+            --link-practice: #c4893b;
+            --link-quiz: #b33a3a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--cream);
+            color: var(--navy);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Leather binding bar on top */
+        .header-top-bar {
+            width: 100%;
+            height: 6px;
+            background: repeating-linear-gradient(90deg, var(--burgundy) 0px, var(--burgundy) 20px, #8a3a4a 20px, #8a3a4a 22px);
+        }
+
+        header {
+            width: 100%;
+            padding: 3.5rem 2rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, var(--paper) 0%, var(--cream) 100%);
+            border-bottom: 2px solid var(--card-border);
+            position: relative;
+        }
+
+        .header-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 0.75rem;
+        }
+
+        .header-brand img {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .brand-text {
+            font-family: 'Caveat', cursive;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--burgundy);
+            line-height: 1;
+        }
+
+        h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 3.8rem;
+            font-weight: 700;
+            color: var(--burgundy);
+            margin: 0.2rem 0;
+            line-height: 1.1;
+            text-shadow: 1px 1px 0px rgba(196, 137, 59, 0.2);
+        }
+
+        p.subtitle {
+            font-size: 1.15rem;
+            color: var(--muted);
+            font-style: italic;
+            margin-top: 0.25rem;
+        }
+
+        /* SEARCH / FILTER SECTION */
+        .search-container {
+            max-width: 600px;
+            width: 100%;
+            margin: 2rem auto 0;
+            padding: 0 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.85rem 1.25rem;
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 1rem;
+            background: var(--cream);
+            border: 2px solid var(--card-border);
+            border-radius: 30px;
+            color: var(--navy);
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--amber);
+            box-shadow: 0 4px 14px rgba(196, 137, 59, 0.2);
+        }
+
+        /* MAIN HUB GRID */
+        .hub-container {
+            max-width: 1280px;
+            width: 100%;
+            padding: 3rem 2rem 5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.25rem;
+        }
+
+        .unit-card {
+            background: var(--cream);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 1.75rem;
+            box-shadow: 2px 4px 12px rgba(26, 26, 46, 0.05);
+            background-image: repeating-linear-gradient(transparent, transparent 31px, #e8e0d4 31px, #e8e0d4 32px);
+            background-position: 0 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .unit-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 5px;
+            background: var(--burgundy);
+            transition: background 0.3s ease;
+        }
+
+        .unit-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 4px 12px 24px rgba(26, 26, 46, 0.12);
+            border-color: var(--amber);
+        }
+
+        .unit-card:hover::before {
+            background: var(--amber);
+        }
+
+        .unit-card-header {
+            margin-bottom: 1.25rem;
+        }
+
+        .unit-badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.6rem;
+        }
+
+        .unit-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #fff;
+            background: var(--burgundy);
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .lecture-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .unit-title {
+            font-family: 'Caveat', cursive;
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: var(--burgundy);
+            line-height: 1.25;
+            margin-bottom: 0.5rem;
+        }
+
+        .unit-topics {
+            font-size: 0.92rem;
+            color: #4a4238;
+            margin-bottom: 1.5rem;
+            list-style: none;
+            padding: 0;
+        }
+
+        .unit-topics li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 4px;
+        }
+
+        .unit-topics li::before {
+            content: "\2022";
+            color: var(--amber);
+            font-weight: bold;
+            position: absolute;
+            left: 4px;
+        }
+
+        /* NAVIGATION BUTTONS GRID */
+        .links-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .link-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0.7rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background: #fffdf9;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        .link-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+
+        .link-theory { color: var(--link-theory); border-color: rgba(45, 106, 79, 0.3); }
+        .link-examples { color: var(--link-examples); border-color: rgba(29, 78, 216, 0.3); }
+        .link-practice { color: var(--link-practice); border-color: rgba(196, 137, 59, 0.4); }
+        .link-quiz { color: var(--link-quiz); border-color: rgba(179, 58, 58, 0.3); }
+
+        .link-theory:hover { background: rgba(45, 106, 79, 0.08); }
+        .link-examples:hover { background: rgba(29, 78, 216, 0.08); }
+        .link-practice:hover { background: rgba(196, 137, 59, 0.08); }
+        .link-quiz:hover { background: rgba(179, 58, 58, 0.08); }
+
+        footer {
+            width: 100%;
+            padding: 2.5rem;
+            text-align: center;
+            background: var(--paper);
+            border-top: 1px solid var(--card-border);
+            font-size: 0.95rem;
+            color: var(--muted);
+            margin-top: auto;
+        }
+
+        footer strong {
+            color: var(--burgundy);
+            font-family: 'Caveat', cursive;
+            font-size: 1.25rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.8rem; }
+            .hub-container { grid-template-columns: 1fr; padding: 1.5rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-top-bar"></div>
+
+    <header>
+        <div class="header-brand">
+            <img src="https://ezycourse.b-cdn.net/4009/cmfq4efvr0496dp9nbr9nfago.png" alt="Swift Tuition Logo">
+            <span class="brand-text">Swift Tuition</span>
+        </div>
+        <h1>COS 110: Program Design</h1>
+        <p class="subtitle">Unified Learning &amp; Study Hub &bull; Units 1 to 14</p>
+
+        <div class="search-container">
+            <input type="text" id="unitSearch" class="search-input" placeholder="Search topics, units, or concepts (e.g. Pointers, Inheritance, Recursion, STL)..." onkeyup="filterUnits()">
+        </div>
+    </header>
+
+    <main class="hub-container" id="unitGrid">
+
+        <!-- UNIT 01 -->
+        <div class="unit-card" data-search="unit 01 pointers dynamic memory heap stack new delete dereference address of">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 01</span>
+                    <span class="lecture-tag">Memory Management</span>
+                </div>
+                <h2 class="unit-title">Pointers &amp; Dynamic Memory</h2>
+                <ul class="unit-topics">
+                    <li>Pointer syntax, address-of (`&amp;`) &amp; dereference (`*`)</li>
+                    <li>Dynamic memory allocation (`new` / `delete`)</li>
+                    <li>Dynamic arrays &amp; memory leak prevention</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_01_Pointers_DynamicMemory/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_01_Pointers_DynamicMemory/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_01_Pointers_DynamicMemory/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_01_Pointers_DynamicMemory/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 02 -->
+        <div class="unit-card" data-search="unit 02 makefiles function overloading compilation separate build targets headers">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 02</span>
+                    <span class="lecture-tag">Build Systems &amp; Functions</span>
+                </div>
+                <h2 class="unit-title">Makefiles &amp; Overloading</h2>
+                <ul class="unit-topics">
+                    <li>Separate compilation &amp; header files (`.h` / `.cpp`)</li>
+                    <li>Writing Makefiles (targets, dependencies, rules)</li>
+                    <li>Function overloading &amp; default arguments</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_02_Makefiles_FunctionOverloading/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_02_Makefiles_FunctionOverloading/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_02_Makefiles_FunctionOverloading/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_02_Makefiles_FunctionOverloading/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 03 -->
+        <div class="unit-card" data-search="unit 03 classes constructors oop encapsulation public private member functions">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 03</span>
+                    <span class="lecture-tag">OOP Fundamentals</span>
+                </div>
+                <h2 class="unit-title">Classes &amp; Constructors</h2>
+                <ul class="unit-topics">
+                    <li>Object-Oriented Programming &amp; Encapsulation</li>
+                    <li>Member variables &amp; functions (`public`/`private`)</li>
+                    <li>Default, parameterized &amp; initializer list constructors</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_03_Classes_Constructors/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_03_Classes_Constructors/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_03_Classes_Constructors/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_03_Classes_Constructors/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 04 -->
+        <div class="unit-card" data-search="unit 04 copy constructors destructors rule of three deep copy shallow copy memory">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 04</span>
+                    <span class="lecture-tag">Resource Management</span>
+                </div>
+                <h2 class="unit-title">Copying &amp; Destructors</h2>
+                <ul class="unit-topics">
+                    <li>The Rule of Three in C++</li>
+                    <li>Deep copy vs. Shallow copy mechanics</li>
+                    <li>Copy constructors (`Class(const Class&amp;)`) &amp; Destructors</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_04_CopyConstructors_Destructors/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_04_CopyConstructors_Destructors/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_04_CopyConstructors_Destructors/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_04_CopyConstructors_Destructors/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 05 -->
+        <div class="unit-card" data-search="unit 05 operator overloading arithmetic assignment streams friend functions">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 05</span>
+                    <span class="lecture-tag">Operator Syntax</span>
+                </div>
+                <h2 class="unit-title">Operator Overloading</h2>
+                <ul class="unit-topics">
+                    <li>Overloading arithmetic (`+`, `-`), assignment (`=`), comparison (`==`)</li>
+                    <li>Stream insertion (`&lt;&lt;`) &amp; extraction (`&gt;&gt;`) operators</li>
+                    <li>Friend functions &amp; member operator functions</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_05_OperatorOverloading/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_05_OperatorOverloading/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_05_OperatorOverloading/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_05_OperatorOverloading/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 06 -->
+        <div class="unit-card" data-search="unit 06 complete class design makefiles const correctness robust class architecture">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 06</span>
+                    <span class="lecture-tag">Class Architecture</span>
+                </div>
+                <h2 class="unit-title">Complete Class Design</h2>
+                <ul class="unit-topics">
+                    <li>Designing production-grade complete classes</li>
+                    <li>Advanced Makefile dependency tracking (`make clean`)</li>
+                    <li>Const correctness &amp; const member functions</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_06_CompleteClass_Makefile/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_06_CompleteClass_Makefile/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_06_CompleteClass_Makefile/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_06_CompleteClass_Makefile/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 07 -->
+        <div class="unit-card" data-search="unit 07 inheritance base derived public protected private constructors execution order">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 07</span>
+                    <span class="lecture-tag">Class Hierarchies</span>
+                </div>
+                <h2 class="unit-title">Inheritance</h2>
+                <ul class="unit-topics">
+                    <li>Base classes &amp; Derived classes</li>
+                    <li>Access specifiers: `public`, `protected`, `private`</li>
+                    <li>Constructor/destructor execution order in hierarchies</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_07_Inheritance/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_07_Inheritance/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_07_Inheritance/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_07_Inheritance/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 08 -->
+        <div class="unit-card" data-search="unit 08 virtual functions polymorphism dynamic binding abstract base classes pure virtual vtables">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 08</span>
+                    <span class="lecture-tag">Dynamic Binding</span>
+                </div>
+                <h2 class="unit-title">Virtual Functions &amp; Polymorphism</h2>
+                <ul class="unit-topics">
+                    <li>Dynamic binding &amp; Virtual functions</li>
+                    <li>Abstract Base Classes (ABCs) &amp; Pure virtual (`= 0`)</li>
+                    <li>Virtual destructors &amp; Vtable mechanics</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_08_VirtualFunctions/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_08_VirtualFunctions/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_08_VirtualFunctions/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_08_VirtualFunctions/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 09 -->
+        <div class="unit-card" data-search="unit 09 templates generic programming class templates function templates instantiation">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 09</span>
+                    <span class="lecture-tag">Generic Programming</span>
+                </div>
+                <h2 class="unit-title">Templates</h2>
+                <ul class="unit-topics">
+                    <li>Function templates (`template <typename T>`)</li>
+                    <li>Class templates &amp; generic instantiation</li>
+                    <li>Template header implementation patterns (`.tpp` / `.h`)</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_09_Templates/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_09_Templates/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_09_Templates/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_09_Templates/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 10 -->
+        <div class="unit-card" data-search="unit 10 adt linked lists nodes singly doubly pointers traversal insertion deletion">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 10</span>
+                    <span class="lecture-tag">Linear Data Structures</span>
+                </div>
+                <h2 class="unit-title">ADT &amp; Linked Lists</h2>
+                <ul class="unit-topics">
+                    <li>Abstract Data Types (ADTs) &amp; Node structures</li>
+                    <li>Singly &amp; Doubly Linked Lists</li>
+                    <li>Insertion, deletion, traversal &amp; deep copy</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_10_ADT_LinkedLists/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_10_ADT_LinkedLists/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_10_ADT_LinkedLists/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_10_ADT_LinkedLists/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 11 -->
+        <div class="unit-card" data-search="unit 11 adt stacks queues lifo fifo push pop top enqueue dequeue array linked list">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 11</span>
+                    <span class="lecture-tag">LIFO &amp; FIFO ADTs</span>
+                </div>
+                <h2 class="unit-title">Stacks &amp; Queues</h2>
+                <ul class="unit-topics">
+                    <li>Stack ADT (LIFO: `push`, `pop`, `top`)</li>
+                    <li>Queue ADT (FIFO: `enqueue`, `dequeue`, `front`)</li>
+                    <li>Array-based &amp; Linked-list-based implementations</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_11_ADT_Stacks_Queues/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_11_ADT_Stacks_Queues/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_11_ADT_Stacks_Queues/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_11_ADT_Stacks_Queues/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 12 -->
+        <div class="unit-card" data-search="unit 12 exception handling try throw catch runtime error exception safety stack unwinding">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 12</span>
+                    <span class="lecture-tag">Error Handling</span>
+                </div>
+                <h2 class="unit-title">Exception Handling</h2>
+                <ul class="unit-topics">
+                    <li>Exception mechanics: `try`, `throw`, `catch`</li>
+                    <li>Standard exception hierarchy (`std::runtime_error`)</li>
+                    <li>Exception safety &amp; stack unwinding</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_12_Exception_Handling/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_12_Exception_Handling/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_12_Exception_Handling/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_12_Exception_Handling/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 13 -->
+        <div class="unit-card" data-search="unit 13 stl standard template library vector list map iterators algorithms sort find">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 13</span>
+                    <span class="lecture-tag">Standard Library</span>
+                </div>
+                <h2 class="unit-title">Standard Template Library (STL)</h2>
+                <ul class="unit-topics">
+                    <li>Containers (`std::vector`, `std::list`, `std::map`)</li>
+                    <li>Iterators &amp; traversal loops</li>
+                    <li>Standard algorithms (`std::sort`, `std::find`)</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_13_STL/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_13_STL/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_13_STL/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_13_STL/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+        <!-- UNIT 14 -->
+        <div class="unit-card" data-search="unit 14 recursion call stack base case recursive steps data structures call frames">
+            <div class="unit-card-header">
+                <div class="unit-badge-row">
+                    <span class="unit-badge">Unit 14</span>
+                    <span class="lecture-tag">Advanced Control Flow</span>
+                </div>
+                <h2 class="unit-title">Recursion</h2>
+                <ul class="unit-topics">
+                    <li>Recursive definitions &amp; Base cases</li>
+                    <li>Call stack tracing &amp; recursion unwinding</li>
+                    <li>Recursive data structure traversal (Lists &amp; Trees)</li>
+                </ul>
+            </div>
+            <div class="links-grid">
+                <a href="Unit_14_Recursion/Theory.html" class="link-button link-theory"><span>&#128218; Theory</span></a>
+                <a href="Unit_14_Recursion/Examples.html" class="link-button link-examples"><span>&#128196; Examples</span></a>
+                <a href="Unit_14_Recursion/Practice.html" class="link-button link-practice"><span>&#9998; Practice</span></a>
+                <a href="Unit_14_Recursion/Quiz.html" class="link-button link-quiz"><span>&#10003; Quiz</span></a>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Prepared for <strong>Swift Tuition &bull; COS 110</strong> &bull; University of Pretoria</p>
+    </footer>
+
+    <script>
+        function filterUnits() {
+            const query = document.getElementById('unitSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.unit-card');
+            
+            cards.forEach(card => {
+                const searchText = card.getAttribute('data-search').toLowerCase();
+                const cardTitle = card.querySelector('.unit-title').textContent.toLowerCase();
+                if (searchText.includes(query) || cardTitle.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

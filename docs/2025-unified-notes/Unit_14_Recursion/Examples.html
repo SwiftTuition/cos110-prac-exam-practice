@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 14: Recursion - Examples | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code,
+        .content-card h1 code,
+        .content-card h2 code,
+        .content-card h3 code,
+        .content-card h4 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        .step-box {
+            background: #0c1222;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .step-box h4 {
+            color: #0ea5e9;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ascii-diagram {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #10b981;
+        }
+
+        .ascii-diagram pre {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            font-size: inherit;
+            line-height: inherit;
+            color: inherit;
+        }
+
+        .info-box {
+            background: #1f2937;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #142d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .complexity-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+
+        .time-badge {
+            background: #1e3a5f;
+            color: #60a5fa;
+            border: 1px solid #3b82f6;
+        }
+
+        .space-badge {
+            background: #1e3a3a;
+            color: #34d399;
+            border: 1px solid #10b981;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .solution-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .solution-section.visible {
+            display: block;
+        }
+
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 14: Recursion</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Opening -->
+        <section class="content-card">
+            <p style="font-size: 1.2rem; color: #0ea5e9; font-weight: 600; margin-bottom: 1.5rem;">
+                Good day, good people!
+            </p>
+
+            <h2>Worked Examples</h2>
+
+            <p>
+                This section contains complete, step-by-step worked examples showing recursion in action. Each example includes detailed explanations, call stack traces, and interactive code you can run.
+            </p>
+
+            <p>
+                We'll cover five examples:
+            </p>
+            <ol>
+                <li><strong>Factorial with Call Stack Trace</strong> - See exactly how the stack builds and unwinds</li>
+                <li><strong>Fibonacci Sequence Analysis</strong> - Understanding tree recursion and efficiency</li>
+                <li><strong>Timeline Navigator</strong> - Recursive linked list traversal (personalized)</li>
+                <li><strong>Find the Bug: Missing Base Case</strong> - Debugging exercise</li>
+                <li><strong>Array Maximum Finder</strong> - Divide-and-conquer approach</li>
+            </ol>
+        </section>
+
+        <!-- Example 1: Factorial with Call Stack Trace -->
+        <section class="content-card">
+            <h2>Example 1: Factorial with Call Stack Trace</h2>
+
+            <p>
+                Let's calculate 5! (5 factorial) and trace every step of how the recursion builds up and unwinds.
+            </p>
+
+            <h3>The Problem</h3>
+            <p>Calculate 5! = 5 × 4 × 3 × 2 × 1 = 120 using recursion.</p>
+
+            <h3>The Code</h3>
+<pre><code class="language-cpp">int factorial(int n) {
+    if (n <= 1) {
+        return 1;  // Base case
+    }
+    return n * factorial(n - 1);  // Recursive case
+}</code></pre>
+
+            <h3>Step-by-Step Trace</h3>
+
+            <div class="step-box">
+                <h4>Step 1: Initial Call - factorial(5)</h4>
+                <p>• n = 5</p>
+                <p>• Check: Is n <= 1? No</p>
+                <p>• Execute: <code>return 5 * factorial(4)</code></p>
+                <p>• <strong>Wait here</strong> until factorial(4) returns</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: factorial(4) is called</h4>
+                <p>• n = 4</p>
+                <p>• Check: Is n <= 1? No</p>
+                <p>• Execute: <code>return 4 * factorial(3)</code></p>
+                <p>• <strong>Wait here</strong> until factorial(3) returns</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: factorial(3) is called</h4>
+                <p>• n = 3</p>
+                <p>• Check: Is n <= 1? No</p>
+                <p>• Execute: <code>return 3 * factorial(2)</code></p>
+                <p>• <strong>Wait here</strong> until factorial(2) returns</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 4: factorial(2) is called</h4>
+                <p>• n = 2</p>
+                <p>• Check: Is n <= 1? No</p>
+                <p>• Execute: <code>return 2 * factorial(1)</code></p>
+                <p>• <strong>Wait here</strong> until factorial(1) returns</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 5: factorial(1) is called - BASE CASE!</h4>
+                <p>• n = 1</p>
+                <p>• Check: Is n <= 1? <strong>YES!</strong></p>
+                <p>• Execute: <code>return 1</code></p>
+                <p>• <strong>Returns 1 immediately</strong> (no more recursion)</p>
+            </div>
+
+            <div class="ascii-diagram"><pre>Call Stack at Maximum Depth (before unwinding):
+
+┌──────────────────┐
+│ factorial(1)     │ ← Returns 1 (base case)
+├──────────────────┤
+│ factorial(2)     │ ← Waiting for factorial(1)
+├──────────────────┤
+│ factorial(3)     │ ← Waiting for factorial(2)
+├──────────────────┤
+│ factorial(4)     │ ← Waiting for factorial(3)
+├──────────────────┤
+│ factorial(5)     │ ← Waiting for factorial(4)
+└──────────────────┘</pre></div>
+
+            <h3>The Unwinding Phase</h3>
+
+            <div class="step-box">
+                <h4>Step 6: factorial(2) completes</h4>
+                <p>• Receives 1 from factorial(1)</p>
+                <p>• Calculates: <code>2 * 1 = 2</code></p>
+                <p>• <strong>Returns 2</strong> to factorial(3)</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 7: factorial(3) completes</h4>
+                <p>• Receives 2 from factorial(2)</p>
+                <p>• Calculates: <code>3 * 2 = 6</code></p>
+                <p>• <strong>Returns 6</strong> to factorial(4)</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 8: factorial(4) completes</h4>
+                <p>• Receives 6 from factorial(3)</p>
+                <p>• Calculates: <code>4 * 6 = 24</code></p>
+                <p>• <strong>Returns 24</strong> to factorial(5)</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 9: factorial(5) completes</h4>
+                <p>• Receives 24 from factorial(4)</p>
+                <p>• Calculates: <code>5 * 24 = 120</code></p>
+                <p>• <strong>Returns 120</strong> to main()</p>
+            </div>
+
+            <div class="success-box">
+                <strong>Final Result:</strong> 5! = 120
+                <p style="margin-top: 0.5rem;">The call stack is now empty. All function calls have returned.</p>
+            </div>
+
+            <h3>Complexity Analysis</h3>
+            <div>
+                <span class="complexity-badge time-badge">Time: O(n)</span>
+                <span class="complexity-badge space-badge">Space: O(n)</span>
+            </div>
+            <p style="margin-top: 0.5rem;">
+                <strong>Time:</strong> We make n recursive calls (one for each value from n down to 1).
+                <br>
+                <strong>Space:</strong> The call stack grows to depth n (n stack frames at maximum depth).
+            </p>
+
+            <h3>Try It Yourself!</h3>
+
+            <div class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Interactive Playground: Factorial</div>
+                </div>
+
+                <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                    Try running factorial with different values. What happens with factorial(10)? factorial(0)?
+                </p>
+
+                <textarea id="editor_factorial">#include &lt;iostream&gt;
+using namespace std;
+
+int factorial(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}
+
+int main() {
+    cout << "factorial(5) = " << factorial(5) << endl;
+    cout << "factorial(7) = " << factorial(7) << endl;
+    cout << "factorial(0) = " << factorial(0) << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground_factorial')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor_factorial')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading_factorial" class="loading-indicator">Running...</div>
+                        <div id="output_factorial" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 2: Fibonacci Analysis -->
+        <section class="content-card">
+            <h2>Example 2: Fibonacci Sequence - The Problem with Naive Recursion</h2>
+
+            <p>
+                Let's calculate fibonacci(5) and see why the naive recursive approach is slow.
+            </p>
+
+            <h3>The Problem</h3>
+            <p>Calculate the 5th Fibonacci number: 0, 1, 1, 2, 3, <strong>5</strong></p>
+
+            <h3>The Code</h3>
+<pre><code class="language-cpp">int fibonacci(int n) {
+    if (n <= 0) return 0;
+    if (n == 1) return 1;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}</code></pre>
+
+            <h3>The Problem: Redundant Calculations</h3>
+            <p>
+                Here's the full tree of recursive calls for fibonacci(5):
+            </p>
+
+            <div class="ascii-diagram"><pre>                        fib(5)
+                       /      \
+                  fib(4)      fib(3)
+                 /     \      /     \
+            fib(3)  fib(2) fib(2) fib(1)
+            /    \   /  \   /  \
+       fib(2) fib(1) f(1) f(0) f(1) f(0)
+       /    \
+   fib(1) fib(0)
+
+Count the calls:
+fib(5): 1 time
+fib(4): 1 time
+fib(3): 2 times  ← Calculated twice!
+fib(2): 3 times  ← Calculated three times!
+fib(1): 5 times  ← Calculated five times!
+fib(0): 3 times  ← Calculated three times!
+
+Total function calls: 15 calls to calculate fib(5)!</pre></div>
+
+            <h3>Manual Calculation</h3>
+
+            <div class="step-box">
+                <h4>Working from the bottom up:</h4>
+                <p>• fib(0) = 0 (base case)</p>
+                <p>• fib(1) = 1 (base case)</p>
+                <p>• fib(2) = fib(1) + fib(0) = 1 + 0 = 1</p>
+                <p>• fib(3) = fib(2) + fib(1) = 1 + 1 = 2</p>
+                <p>• fib(4) = fib(3) + fib(2) = 2 + 1 = 3</p>
+                <p>• fib(5) = fib(4) + fib(3) = 3 + 2 = 5</p>
+            </div>
+
+            <div class="success-box">
+                <strong>Result:</strong> fibonacci(5) = 5
+            </div>
+
+            <h3>Why Is This Slow?</h3>
+            <p>
+                Look at how many times we calculate fib(3): <strong>twice</strong>. For fib(2): <strong>three times</strong>. This redundancy grows exponentially.
+            </p>
+
+            <div class="warning-box">
+                <strong>The Problem:</strong> For fibonacci(40), we make over <strong>330 million</strong> function calls! Most are redundant calculations.
+            </div>
+
+            <h3>The Better Approach: Iteration</h3>
+            <p>
+                Instead of recursion, use a loop to calculate Fibonacci numbers from the bottom up:
+            </p>
+
+<pre><code class="language-cpp">int fibonacciIterative(int n) {
+    if (n <= 0) return 0;
+    if (n == 1) return 1;
+
+    int prev = 0, curr = 1;
+    for (int i = 2; i <= n; i++) {
+        int next = prev + curr;
+        prev = curr;
+        curr = next;
+    }
+    return curr;
+}</code></pre>
+
+            <div class="step-box">
+                <h4>Iterative Trace for fibonacci(5):</h4>
+                <p>• Start: prev = 0, curr = 1</p>
+                <p>• i = 2: next = 0 + 1 = 1, prev = 1, curr = 1</p>
+                <p>• i = 3: next = 1 + 1 = 2, prev = 1, curr = 2</p>
+                <p>• i = 4: next = 1 + 2 = 3, prev = 2, curr = 3</p>
+                <p>• i = 5: next = 2 + 3 = 5, prev = 3, curr = 5</p>
+                <p>• <strong>Return 5</strong></p>
+            </div>
+
+            <h3>Complexity Comparison</h3>
+            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <thead>
+                    <tr style="background: #0c1222; border-bottom: 2px solid #0ea5e9;">
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Approach</th>
+                        <th style="padding: 0.75rem; text-align: center; color: #0ea5e9;">Time</th>
+                        <th style="padding: 0.75rem; text-align: center; color: #0ea5e9;">Space</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Calls for fib(5)</th>
+                    </tr>
+                </thead>
+                <tbody style="color: #cbd5e1;">
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Recursive</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(2^n)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                        <td style="padding: 0.75rem;">15 calls</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.75rem;">Iterative</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                        <td style="padding: 0.75rem;">1 call (just the function), n-1 loop iterations</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong>Lesson:</strong> Recursion isn't always the answer. When recursion creates redundant calculations (like Fibonacci), iteration is usually better. Use recursion when it makes the problem clearer, not when it makes it slower.
+            </div>
+
+            <h3>Try Both Approaches!</h3>
+
+            <div class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Interactive Playground: Recursive vs Iterative Fibonacci</div>
+                </div>
+
+                <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                    Compare both implementations. Try fibonacci(10) with each - which finishes faster?
+                </p>
+
+                <textarea id="editor_fibonacci">#include &lt;iostream&gt;
+using namespace std;
+
+// Recursive version (slow)
+int fibonacciRecursive(int n) {
+    if (n <= 0) return 0;
+    if (n == 1) return 1;
+    return fibonacciRecursive(n - 1) + fibonacciRecursive(n - 2);
+}
+
+// Iterative version (fast)
+int fibonacciIterative(int n) {
+    if (n <= 0) return 0;
+    if (n == 1) return 1;
+
+    int prev = 0, curr = 1;
+    for (int i = 2; i <= n; i++) {
+        int next = prev + curr;
+        prev = curr;
+        curr = next;
+    }
+    return curr;
+}
+
+int main() {
+    int n = 10;
+
+    cout << "Fibonacci(" << n << ") using recursion: "
+         << fibonacciRecursive(n) << endl;
+
+    cout << "Fibonacci(" << n << ") using iteration: "
+         << fibonacciIterative(n) << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground_fibonacci')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor_fibonacci')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading_fibonacci" class="loading-indicator">Running...</div>
+                        <div id="output_fibonacci" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Example 3: Timeline Navigator (Personalized - Linked List) -->
+        <section class="content-card">
+            <h2>Example 3: Timeline Navigator - Recursive Linked List Traversal</h2>
+
+            <p>
+                Swift's been watching Link Click - a Chinese anime where characters can dive into photos to experience past events. Each photo links to the next moment in time, forming a timeline. Let's use recursion to navigate this photo timeline!
+            </p>
+
+            <div class="info-box">
+                <strong>Link Click Context:</strong> The protagonists can "dive" into photographs to witness or change past events. Each photo captures a specific moment in time, and these moments are linked together chronologically - perfect for a linked list structure!
+            </div>
+
+            <h3>The Problem</h3>
+            <p>
+                Given a linked list of photo moments, we want to:
+            </p>
+            <ol>
+                <li>Print all moments in order (forward traversal)</li>
+                <li>Print all moments in reverse order (backward traversal)</li>
+                <li>Find a specific moment by description</li>
+            </ol>
+
+            <h3>The Data Structure</h3>
+<pre><code class="language-cpp">struct PhotoMoment {
+    string description;
+    int timestamp;  // Seconds from start of timeline
+    PhotoMoment* next;
+};</code></pre>
+
+            <h3>Forward Traversal (Print in Order)</h3>
+<pre><code class="language-cpp">void printTimeline(PhotoMoment* current) {
+    if (current == NULL) {
+        return;  // Base case: end of timeline
+    }
+
+    // Print current moment
+    cout << "[" << current->timestamp << "s] "
+         << current->description << endl;
+
+    // Recursively print rest of timeline
+    printTimeline(current->next);
+}</code></pre>
+
+            <div class="step-box">
+                <h4>How it works:</h4>
+                <p>• <strong>Base case:</strong> If current is NULL, we've reached the end - stop</p>
+                <p>• <strong>Recursive case:</strong> Print current moment, then recursively print the rest</p>
+                <p>• Because we print BEFORE recursing, moments appear in forward order</p>
+            </div>
+
+            <h3>Reverse Traversal (Print Backwards)</h3>
+<pre><code class="language-cpp">void printTimelineReverse(PhotoMoment* current) {
+    if (current == NULL) {
+        return;  // Base case: end of timeline
+    }
+
+    // Recursively print rest of timeline FIRST
+    printTimelineReverse(current->next);
+
+    // THEN print current moment
+    cout << "[" << current->timestamp << "s] "
+         << current->description << endl;
+}</code></pre>
+
+            <div class="step-box">
+                <h4>How it works:</h4>
+                <p>• <strong>Base case:</strong> Same as forward - NULL means stop</p>
+                <p>• <strong>Recursive case:</strong> Go to the end FIRST (recurse), then print on the way back</p>
+                <p>• Because we print AFTER recursing, moments appear in reverse order</p>
+            </div>
+
+            <h3>Call Stack Visualization for Reverse</h3>
+            <p>Given timeline: Moment1 → Moment2 → Moment3 → NULL</p>
+
+            <div class="ascii-diagram"><pre>Going down (recursion):
+printTimelineReverse(Moment1)
+    printTimelineReverse(Moment2)
+        printTimelineReverse(Moment3)
+            printTimelineReverse(NULL)  ← Returns immediately
+
+Coming back up (unwinding - THIS is when we print):
+            [prints Moment3]  ← Printed first (last in, first out)
+        [prints Moment2]      ← Printed second
+    [prints Moment1]          ← Printed last
+
+Output order: Moment3, Moment2, Moment1 (REVERSED!)</pre></div>
+
+            <h3>Search for a Specific Moment</h3>
+<pre><code class="language-cpp">PhotoMoment* findMoment(PhotoMoment* current, string target) {
+    if (current == NULL) {
+        return NULL;  // Base case: not found
+    }
+
+    if (current->description == target) {
+        return current;  // Found it!
+    }
+
+    // Search in rest of timeline
+    return findMoment(current->next, target);
+}</code></pre>
+
+            <div class="step-box">
+                <h4>How it works:</h4>
+                <p>• <strong>Base case 1:</strong> If current is NULL, we searched the whole timeline and didn't find it - return NULL</p>
+                <p>• <strong>Base case 2:</strong> If current moment matches target, we found it - return pointer to it</p>
+                <p>• <strong>Recursive case:</strong> Search the rest of the timeline</p>
+            </div>
+
+            <h3>Complete Example</h3>
+
+            <div class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Interactive Playground: Photo Timeline Navigator</div>
+                </div>
+
+                <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                    This code creates a photo timeline and demonstrates all three recursive operations.
+                </p>
+
+                <textarea id="editor1">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct PhotoMoment {
+    string description;
+    int timestamp;
+    PhotoMoment* next;
+};
+
+void printTimeline(PhotoMoment* current) {
+    if (current == NULL) return;
+    cout << "[" << current->timestamp << "s] " << current->description << endl;
+    printTimeline(current->next);
+}
+
+void printTimelineReverse(PhotoMoment* current) {
+    if (current == NULL) return;
+    printTimelineReverse(current->next);
+    cout << "[" << current->timestamp << "s] " << current->description << endl;
+}
+
+PhotoMoment* findMoment(PhotoMoment* current, string target) {
+    if (current == NULL) return NULL;
+    if (current->description == target) return current;
+    return findMoment(current->next, target);
+}
+
+int main() {
+    // Create timeline: Photo1 -> Photo2 -> Photo3
+    PhotoMoment* timeline = new PhotoMoment{"Client arrives at studio", 0, NULL};
+    timeline->next = new PhotoMoment{"Photo session begins", 120, NULL};
+    timeline->next->next = new PhotoMoment{"Client receives photos", 300, NULL};
+
+    cout << "=== Timeline (Forward) ===" << endl;
+    printTimeline(timeline);
+
+    cout << "\n=== Timeline (Reverse) ===" << endl;
+    printTimelineReverse(timeline);
+
+    cout << "\n=== Search for specific moment ===" << endl;
+    PhotoMoment* found = findMoment(timeline, "Photo session begins");
+    if (found != NULL) {
+        cout << "Found: [" << found->timestamp << "s] " << found->description << endl;
+    }
+
+    // Clean up
+    delete timeline->next->next;
+    delete timeline->next;
+    delete timeline;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading1" class="loading-indicator">Running...</div>
+                        <div id="output1" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Expected Output</h3>
+<pre><code class="language-plaintext">=== Timeline (Forward) ===
+[0s] Client arrives at studio
+[120s] Photo session begins
+[300s] Client receives photos
+
+=== Timeline (Reverse) ===
+[300s] Client receives photos
+[120s] Photo session begins
+[0s] Client arrives at studio
+
+=== Search for specific moment ===
+Found: [120s] Photo session begins</code></pre>
+
+            <h3>Complexity Analysis</h3>
+            <div>
+                <span class="complexity-badge time-badge">Time: O(n)</span>
+                <span class="complexity-badge space-badge">Space: O(n)</span>
+            </div>
+            <p style="margin-top: 0.5rem;">
+                <strong>Time:</strong> We visit each node exactly once.
+                <br>
+                <strong>Space:</strong> Call stack depth equals the number of nodes (one stack frame per node).
+            </p>
+
+            <div class="info-box">
+                <strong>Why use recursion here?</strong> Reversing a linked list is elegant with recursion - just print after the recursive call instead of before. The call stack automatically handles the reversal!
+            </div>
+        </section>
+
+        <!-- Example 4: Find the Bug -->
+        <section class="content-card">
+            <h2>Example 4: Find the Bug - Missing Base Case</h2>
+
+            <p>
+                One of Swift's students, Kayana, wrote a recursive function to sum numbers from 1 to n. But when she runs it, the program crashes with a stack overflow. Can you spot the bug?
+            </p>
+
+            <h3>Kayana's Code</h3>
+<pre><code class="language-cpp">int sumToN(int n) {
+    if (n == 1) {
+        return 1;
+    }
+    return n + sumToN(n - 1);
+}
+
+int main() {
+    cout << sumToN(5) << endl;   // Should print 15
+    cout << sumToN(0) << endl;   // What happens here?
+    return 0;
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>The Bug:</strong> When you call <code>sumToN(0)</code>, the program crashes!
+            </div>
+
+            <h3>Why Does It Crash?</h3>
+
+            <div class="step-box">
+                <h4>Trace sumToN(0):</h4>
+                <p>• n = 0</p>
+                <p>• Is n == 1? No</p>
+                <p>• Call sumToN(-1)</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Trace sumToN(-1):</h4>
+                <p>• n = -1</p>
+                <p>• Is n == 1? No</p>
+                <p>• Call sumToN(-2)</p>
+            </div>
+
+            <div class="step-box">
+                <h4>Trace sumToN(-2):</h4>
+                <p>• n = -2</p>
+                <p>• Is n == 1? No</p>
+                <p>• Call sumToN(-3)</p>
+            </div>
+
+            <p>
+                ...and so on, forever! The base case <code>n == 1</code> is never reached when n starts at 0 or below.
+            </p>
+
+            <div class="ascii-diagram"><pre>Call stack grows infinitely:
+
+sumToN(0)
+    sumToN(-1)
+        sumToN(-2)
+            sumToN(-3)
+                sumToN(-4)
+                    sumToN(-5)
+                        ...
+                        (Eventually: STACK OVERFLOW!)</pre></div>
+
+            <h3>The Fix</h3>
+            <p>
+                The base case should handle ALL stopping conditions, including n <= 0:
+            </p>
+
+<pre><code class="language-cpp">int sumToN(int n) {
+    if (n <= 1) {        // Changed from n == 1
+        return (n == 1) ? 1 : 0;  // Return 0 for n <= 0
+    }
+    return n + sumToN(n - 1);
+}</code></pre>
+
+            <p>Or, more clearly:</p>
+
+<pre><code class="language-cpp">int sumToN(int n) {
+    if (n <= 0) {
+        return 0;  // Base case for 0 or negative
+    }
+    if (n == 1) {
+        return 1;  // Base case for 1
+    }
+    return n + sumToN(n - 1);
+}</code></pre>
+
+            <h3>Testing the Fix</h3>
+
+            <div class="step-box">
+                <h4>Now sumToN(0) works:</h4>
+                <p>• n = 0</p>
+                <p>• Is n <= 0? YES</p>
+                <p>• Return 0 immediately (no recursion)</p>
+            </div>
+
+            <div class="step-box">
+                <h4>And sumToN(5) still works:</h4>
+                <p>• sumToN(5) = 5 + sumToN(4)</p>
+                <p>• sumToN(4) = 4 + sumToN(3)</p>
+                <p>• sumToN(3) = 3 + sumToN(2)</p>
+                <p>• sumToN(2) = 2 + sumToN(1)</p>
+                <p>• sumToN(1) = 1 (base case)</p>
+                <p>• Result: 5 + 4 + 3 + 2 + 1 = 15 ✓</p>
+            </div>
+
+            <div class="success-box">
+                <strong>Lesson Learned:</strong> Always think about edge cases for your base case:
+                <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                    <li>What if n is 0?</li>
+                    <li>What if n is negative?</li>
+                    <li>What if the list is empty (NULL)?</li>
+                </ul>
+                <p style="margin-top: 0.5rem;">Your base case must handle ALL possible stopping conditions, not just the "normal" one.</p>
+            </div>
+
+            <h3>Try Debugging It Yourself!</h3>
+
+            <div class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Interactive Playground: Fix the Bug</div>
+                </div>
+
+                <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                    This code has the buggy version. Can you fix the base case to handle all edge cases?
+                </p>
+
+                <textarea id="editor_debug">#include &lt;iostream&gt;
+using namespace std;
+
+// BUGGY VERSION - Fix the base case!
+int sumToN(int n) {
+    if (n == 1) {        // BUG: What about n <= 0?
+        return 1;
+    }
+    return n + sumToN(n - 1);
+}
+
+int main() {
+    cout << "sumToN(5) = " << sumToN(5) << endl;
+    // cout << "sumToN(0) = " << sumToN(0) << endl;  // Uncomment to see crash!
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground_debug')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor_debug')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading_debug" class="loading-indicator">Running...</div>
+                        <div id="output_debug" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+
+                <p style="color: #cbd5e1; margin-top: 1rem;">
+                    <strong>Hint:</strong> Change the base case to <code>if (n <= 0)</code> and return appropriate values!
+                </p>
+            </div>
+        </section>
+
+        <!-- Example 5: Array Maximum Finder -->
+        <section class="content-card">
+            <h2>Example 5: Finding Maximum in Array - Divide and Conquer</h2>
+
+            <p>
+                Let's find the maximum value in an array using a divide-and-conquer approach with recursion.
+            </p>
+
+            <h3>The Problem</h3>
+            <p>
+                Given array <code>{15, 42, 8, 23, 67, 19}</code>, find the maximum value (67).
+            </p>
+
+            <h3>The Approach</h3>
+            <p>
+                Instead of comparing every element, we:
+            </p>
+            <ol>
+                <li>Split the problem in half</li>
+                <li>Find the max of each half (recursively)</li>
+                <li>Return the larger of the two maxes</li>
+            </ol>
+
+            <h3>The Code</h3>
+<pre><code class="language-cpp">int findMax(int arr[], int left, int right) {
+    // Base case: only one element
+    if (left == right) {
+        return arr[left];
+    }
+
+    // Base case: two elements
+    if (right - left == 1) {
+        return (arr[left] > arr[right]) ? arr[left] : arr[right];
+    }
+
+    // Recursive case: divide and conquer
+    int mid = (left + right) / 2;
+    int leftMax = findMax(arr, left, mid);
+    int rightMax = findMax(arr, mid + 1, right);
+
+    return (leftMax > rightMax) ? leftMax : rightMax;
+}</code></pre>
+
+            <h3>Step-by-Step Trace</h3>
+            <p>For array: <code>{15, 42, 8, 23, 67, 19}</code> (indices 0-5)</p>
+
+            <div class="ascii-diagram"><pre>findMax(arr, 0, 5)                           [15, 42, 8, 23, 67, 19]
+    mid = 2
+    leftMax = findMax(arr, 0, 2)             [15, 42, 8]
+        mid = 1
+        leftMax = findMax(arr, 0, 1)         [15, 42]
+            Base case: max(15, 42) = 42
+        rightMax = findMax(arr, 2, 2)        [8]
+            Base case: return 8
+        return max(42, 8) = 42
+
+    rightMax = findMax(arr, 3, 5)            [23, 67, 19]
+        mid = 4
+        leftMax = findMax(arr, 3, 4)         [23, 67]
+            Base case: max(23, 67) = 67
+        rightMax = findMax(arr, 5, 5)        [19]
+            Base case: return 19
+        return max(67, 19) = 67
+
+    return max(42, 67) = 67  ← Final answer!</pre></div>
+
+            <h3>Visual Tree Representation</h3>
+            <div class="ascii-diagram"><pre>                    [15,42,8,23,67,19]
+                           |
+                    max(42, 67) = 67
+                     /              \
+            [15,42,8]              [23,67,19]
+                |                      |
+            max(42,8)=42          max(67,19)=67
+             /      \              /         \
+        [15,42]    [8]        [23,67]       [19]
+          |         |           |             |
+         42         8          67            19</pre></div>
+
+            <h3>Why Use This Approach?</h3>
+            <p>
+                You might be thinking: "Why not just loop through the array?" Good question! Here's the comparison:
+            </p>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <thead>
+                    <tr style="background: #0c1222; border-bottom: 2px solid #0ea5e9;">
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Approach</th>
+                        <th style="padding: 0.75rem; text-align: center; color: #0ea5e9;">Time</th>
+                        <th style="padding: 0.75rem; text-align: center; color: #0ea5e9;">Space</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Pros</th>
+                    </tr>
+                </thead>
+                <tbody style="color: #cbd5e1;">
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Iterative loop</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(1)</td>
+                        <td style="padding: 0.75rem;">Simple, uses minimal memory</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.75rem;">Divide & conquer</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(n)</td>
+                        <td style="padding: 0.75rem; text-align: center;">O(log n)</td>
+                        <td style="padding: 0.75rem;">Can be parallelized, foundation for more complex algorithms</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong>When to use divide-and-conquer:</strong>
+                <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                    <li>When the problem can be split into independent subproblems</li>
+                    <li>When you can parallelize the work (each half can be processed separately)</li>
+                    <li>As a foundation for more advanced algorithms (merge sort, quick sort)</li>
+                </ul>
+                <p style="margin-top: 0.5rem;">For simple max-finding, a loop is better. But divide-and-conquer teaches a valuable problem-solving pattern!</p>
+            </div>
+
+            <h3>Complexity Analysis</h3>
+            <div>
+                <span class="complexity-badge time-badge">Time: O(n)</span>
+                <span class="complexity-badge space-badge">Space: O(log n)</span>
+            </div>
+            <p style="margin-top: 0.5rem;">
+                <strong>Time:</strong> We visit each element once (n comparisons total across all recursive calls).
+                <br>
+                <strong>Space:</strong> Call stack depth is O(log n) because we split the problem in half each time.
+            </p>
+
+            <h3>Try It Yourself!</h3>
+
+            <div class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Interactive Playground: Divide and Conquer Max</div>
+                </div>
+
+                <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                    Try this divide-and-conquer approach. Modify the array to see how it finds the maximum.
+                </p>
+
+                <textarea id="editor_maxfinder">#include &lt;iostream&gt;
+using namespace std;
+
+int findMax(int arr[], int left, int right) {
+    // Base case: only one element
+    if (left == right) {
+        return arr[left];
+    }
+
+    // Base case: two elements
+    if (right - left == 1) {
+        return (arr[left] > arr[right]) ? arr[left] : arr[right];
+    }
+
+    // Recursive case: divide and conquer
+    int mid = (left + right) / 2;
+    int leftMax = findMax(arr, left, mid);
+    int rightMax = findMax(arr, mid + 1, right);
+
+    return (leftMax > rightMax) ? leftMax : rightMax;
+}
+
+int main() {
+    int arr[] = {15, 42, 8, 23, 67, 19};
+    int size = 6;
+
+    cout << "Array: ";
+    for (int i = 0; i < size; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+
+    int max = findMax(arr, 0, size - 1);
+    cout << "Maximum value: " << max << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground_maxfinder')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor_maxfinder')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading_maxfinder" class="loading-indicator">Running...</div>
+                        <div id="output_maxfinder" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="content-card">
+            <h2>Summary</h2>
+
+            <p>You've seen five complete examples of recursion in action:</p>
+
+            <ol>
+                <li><strong>Factorial:</strong> Classic linear recursion with detailed call stack trace</li>
+                <li><strong>Fibonacci:</strong> Tree recursion showing the problem with redundant calculations</li>
+                <li><strong>Photo Timeline:</strong> Recursive linked list traversal (forward and reverse)</li>
+                <li><strong>Bug Hunting:</strong> Debugging a missing/incomplete base case</li>
+                <li><strong>Array Maximum:</strong> Divide-and-conquer approach</li>
+            </ol>
+
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li><strong>Always trace your recursion:</strong> Draw the call stack to understand what happens</li>
+                <li><strong>Watch for redundant work:</strong> Tree recursion can recalculate the same values many times</li>
+                <li><strong>Test edge cases:</strong> Make sure your base case handles 0, negative numbers, NULL, empty arrays, etc.</li>
+                <li><strong>Consider alternatives:</strong> Sometimes iteration is clearer and faster</li>
+                <li><strong>Recursion shines for:</strong> Trees, linked lists, divide-and-conquer, backtracking</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>Ready for practice?</strong> Head to the Practice page to try writing recursive functions yourself!
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        // Initialize CodeMirror editors
+        const editors = {};
+        const originalCode = {};
+
+        ['editor1', 'editor_factorial', 'editor_fibonacci', 'editor_debug', 'editor_maxfinder'].forEach(id => {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        });
+
+        function resetCode(editorId) {
+            editors[editorId].setValue(originalCode[editorId]);
+        }
+
+        async function runCode(playgroundId) {
+            const playgroundNum = playgroundId.replace('playground', '');
+            const editorId = 'editor' + playgroundNum;
+            const outputId = 'output' + playgroundNum;
+            const loadingId = 'loading' + playgroundNum;
+
+            const code = editors[editorId].getValue();
+            const outputDiv = document.getElementById(outputId);
+            const loadingDiv = document.getElementById(loadingId);
+            const runBtn = event.target;
+
+            // Show loading, disable button
+            loadingDiv.classList.add('active');
+            outputDiv.textContent = '';
+            runBtn.disabled = true;
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            content: code
+                        }]
+                    })
+                });
+
+                const result = await response.json();
+
+                loadingDiv.classList.remove('active');
+                runBtn.disabled = false;
+
+                if (result.run && result.run.output) {
+                    outputDiv.textContent = result.run.output;
+                    outputDiv.className = 'output-text output-success';
+                } else if (result.run && result.run.stderr) {
+                    outputDiv.textContent = result.run.stderr;
+                    outputDiv.className = 'output-text output-error';
+                } else {
+                    outputDiv.textContent = 'No output';
+                    outputDiv.className = 'output-text output-placeholder';
+                }
+            } catch (error) {
+                loadingDiv.classList.remove('active');
+                runBtn.disabled = false;
+                outputDiv.textContent = 'Error: Could not execute code. Please check your internet connection.';
+                outputDiv.className = 'output-text output-error';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

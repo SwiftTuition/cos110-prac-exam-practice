@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 11: ADT - Stacks & Queues - Theory | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Only style inline code - not code blocks */
+        .content-card p code,
+        .content-card li code,
+        .content-card h1 code,
+        .content-card h2 code,
+        .content-card h3 code,
+        .content-card h4 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        /* Let Prism.js handle code block syntax highlighting */
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        /* Custom Prism syntax highlighting */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        /* ASCII Diagram */
+        .ascii-diagram {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #10b981;
+        }
+
+        .ascii-diagram pre {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            font-size: inherit;
+            line-height: inherit;
+            color: inherit;
+        }
+
+        /* Swift Note Box */
+        .swift-note-box {
+            background: #1f1a2e;
+            border-left: 4px solid #a78bfa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .swift-note-box strong { color: #a78bfa; }
+
+        /* Info boxes */
+        .info-box {
+            background: #1f2937;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #142d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        /* Swift Quiz Box */
+        .swift-quiz {
+            background: #1a1f2e;
+            border: 2px solid #eab308;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .swift-quiz-header {
+            color: #eab308;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .swift-quiz-question {
+            color: #cbd5e1;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .swift-quiz-answer {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eab308;
+            color: #10b981;
+        }
+
+        .swift-quiz-answer.visible {
+            display: block;
+        }
+
+        .quiz-toggle-btn {
+            background: #eab308;
+            color: #0f172a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .quiz-toggle-btn:hover {
+            background: #ca8a04;
+            transform: translateY(-1px);
+        }
+
+        /* Reveal button */
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        /* Interactive playground */
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #334155;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 11: ADT - Stacks & Queues</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html" class="active">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Opening -->
+        <section class="content-card">
+            <p style="font-size: 1.2rem; color: #0ea5e9; font-weight: 600; margin-bottom: 1.5rem;">
+                Good day, good people!
+            </p>
+
+            <h2>Welcome to Stacks & Queues</h2>
+            <p>You've already worked with linked lists, which let you build dynamic data structures. Now we're going to look at two specific ways to organize data: <strong>stacks</strong> and <strong>queues</strong>.</p>
+
+            <p>These are both <strong>Abstract Data Types (ADTs)</strong>, which means they're defined by what they do, not how they're built. You can implement both stacks and queues using arrays or linked lists.</p>
+
+            <p>The difference between stacks and queues comes down to how you add and remove items:</p>
+            <ul>
+                <li><strong>Stack (LIFO):</strong> Last In, First Out - like a stack of plates</li>
+                <li><strong>Queue (FIFO):</strong> First In, First Out - like a line at the bank</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Prerequisites from Unit 10:</strong> You should be comfortable with:
+                <ul style="margin-top: 0.5rem;">
+                    <li>Pointers and dynamic memory (<code>new</code> and <code>delete</code>)</li>
+                    <li>Linked list nodes (struct with data and next pointer)</li>
+                    <li>Inserting and removing nodes</li>
+                    <li>Arrays and indexing</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 1: Introduction to Stacks (LIFO) -->
+        <section class="content-card">
+            <h2>Section 1: Introduction to Stacks (LIFO)</h2>
+
+            <h3>What is a Stack?</h3>
+            <p>A stack is a data structure where you can only add or remove items from one end, called the <strong>top</strong>. Think of it like a stack of plates in a cafeteria: you add plates to the top, and you take plates from the top.</p>
+
+            <p>This means the last item you add is the first item you remove. That's why stacks are called <strong>LIFO</strong> (Last In, First Out).</p>
+
+            <div class="ascii-diagram"><pre>
+Stack visualization (LIFO):
+
+    Push 30 →  [30]  ← Pop 30 (most recent)
+               [20]
+               [10]  ← Bottom (first item added)
+               ----
+               Top
+</pre></div>
+
+            <h3>Stack Operations</h3>
+            <p>Every stack needs these basic operations:</p>
+            <ul>
+                <li><strong>push(item):</strong> Add an item to the top of the stack</li>
+                <li><strong>pop():</strong> Remove and return the item at the top</li>
+                <li><strong>peek() or top():</strong> Look at the top item without removing it</li>
+                <li><strong>isEmpty():</strong> Check if the stack has any items</li>
+                <li><strong>isFull():</strong> Check if the stack is full (only for array-based stacks)</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> All stack operations work on the <strong>top</strong> only. You never access items in the middle or at the bottom. This restriction is what makes stacks useful for specific problems.
+            </div>
+
+            <h3>Real-World Examples</h3>
+            <p>Stacks are everywhere in programming:</p>
+            <ul>
+                <li><strong>Browser back button:</strong> Each page you visit goes on a stack. Click back, and you pop the most recent page.</li>
+                <li><strong>Undo feature:</strong> Every action you take goes on a stack. Press undo, and you pop the last action.</li>
+                <li><strong>Function calls:</strong> When you call a function, the computer pushes the return address onto a stack. When the function finishes, it pops that address to know where to continue.</li>
+                <li><strong>Checking balanced parentheses:</strong> As you read characters, push opening brackets onto a stack. When you see a closing bracket, pop and check if it matches.</li>
+            </ul>
+
+            <h3>Time Complexity</h3>
+            <p>Stack operations are extremely fast:</p>
+            <ul>
+                <li><strong>push():</strong> O(1) - constant time</li>
+                <li><strong>pop():</strong> O(1) - constant time</li>
+                <li><strong>peek():</strong> O(1) - constant time</li>
+            </ul>
+            <p>Because you only work with the top, you never need to search through the stack.</p>
+        </section>
+
+        <!-- Section 2: Array-Based Stack Implementation -->
+        <section class="content-card">
+            <h2>Section 2: Array-Based Stack Implementation</h2>
+
+            <p>The simplest way to build a stack is with an array. You use an integer variable called <code>top</code> to track where the top of the stack is.</p>
+
+            <h3>How It Works</h3>
+            <p>Here's the basic idea:</p>
+            <ul>
+                <li>Start with <code>top = -1</code> (empty stack)</li>
+                <li>To push: increment <code>top</code>, then put the item at <code>arr[top]</code></li>
+                <li>To pop: get the item at <code>arr[top]</code>, then decrement <code>top</code></li>
+            </ul>
+
+            <div class="ascii-diagram"><pre>
+Array-based stack with top = 2:
+
+Index:  [0] [1] [2] [3] [4]
+Array:  [10][20][30][ ][ ]
+                 ↑
+                top
+</pre></div>
+
+            <h3>Overflow and Underflow</h3>
+            <p>Because arrays have a fixed size, you need to handle two error conditions:</p>
+            <ul>
+                <li><strong>Overflow:</strong> Trying to push when the stack is full (<code>top == size - 1</code>)</li>
+                <li><strong>Underflow:</strong> Trying to pop when the stack is empty (<code>top == -1</code>)</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>Common Mistake:</strong> Forgetting to check if the stack is full before pushing, or empty before popping. Always validate before operations!
+            </div>
+
+            <!-- Playground 1: Array-Based Stack -->
+            <div class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">🎮 Playground 1: Array-Based Stack</div>
+                </div>
+
+                <textarea id="editor1">
+#include <iostream>
+using namespace std;
+
+class Stack {
+private:
+    int* arr;
+    int top;
+    int capacity;
+
+public:
+    Stack(int size) {
+        arr = new int[size];
+        capacity = size;
+        top = -1;  // Empty stack
+    }
+
+    ~Stack() {
+        delete[] arr;
+    }
+
+    void push(int value) {
+        if (top == capacity - 1) {
+            cout << "Stack overflow! Cannot push " << value << endl;
+            return;
+        }
+        top++;
+        arr[top] = value;
+        cout << "Pushed " << value << " onto stack" << endl;
+    }
+
+    int pop() {
+        if (top == -1) {
+            cout << "Stack underflow! Cannot pop from empty stack" << endl;
+            return -1;
+        }
+        int value = arr[top];
+        top--;
+        cout << "Popped " << value << " from stack" << endl;
+        return value;
+    }
+
+    int peek() {
+        if (top == -1) {
+            cout << "Stack is empty!" << endl;
+            return -1;
+        }
+        return arr[top];
+    }
+
+    bool isEmpty() {
+        return top == -1;
+    }
+
+    bool isFull() {
+        return top == capacity - 1;
+    }
+
+    void display() {
+        if (isEmpty()) {
+            cout << "Stack is empty" << endl;
+            return;
+        }
+        cout << "Stack (top to bottom): ";
+        for (int i = top; i >= 0; i--) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    Stack s(5);
+
+    s.push(10);
+    s.push(20);
+    s.push(30);
+    s.display();
+
+    cout << "Top element: " << s.peek() << endl;
+
+    s.pop();
+    s.pop();
+    s.display();
+
+    s.push(40);
+    s.display();
+
+    return 0;
+}
+</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('editor1', 'output1')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box" id="output1">
+                        <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>Experiment:</strong> What happens if you push 6 items into a stack with capacity 5? What if you pop from an empty stack?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1')">Show Explanation</button>
+            <div class="answer-section" id="exp1">
+                <p><strong>Overflow:</strong> When you try to push onto a full stack, the <code>isFull()</code> check catches it and prints an error. The item is not added.</p>
+                <p><strong>Underflow:</strong> When you try to pop from an empty stack, the <code>isEmpty()</code> check catches it and prints an error. We return -1 as a sentinel value.</p>
+                <p><strong>Why this matters:</strong> Without these checks, you'd write to memory you don't own (overflow) or read garbage data (underflow). Both cause bugs!</p>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 1 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz Checkpoint #1</div>
+            <div class="swift-quiz-question">
+                <strong>Question:</strong> You have an empty stack with capacity 3. You push 5, push 10, pop, push 15, push 20. What does <code>peek()</code> return?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuizAnswer('quiz1')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz1">
+                <strong>Answer: 20</strong><br>
+                Step by step:
+                <ul>
+                    <li>Push 5: Stack = [5], top = 0</li>
+                    <li>Push 10: Stack = [5, 10], top = 1</li>
+                    <li>Pop: Remove 10, Stack = [5], top = 0</li>
+                    <li>Push 15: Stack = [5, 15], top = 1</li>
+                    <li>Push 20: Stack = [5, 15, 20], top = 2</li>
+                    <li>Peek returns arr[top] = arr[2] = 20</li>
+                </ul>
+                Remember: LIFO means the last item pushed (20) is at the top!
+            </div>
+        </div>
+
+        <!-- Section 3: Linked-List-Based Stack Implementation -->
+        <section class="content-card">
+            <h2>Section 3: Linked-List-Based Stack Implementation</h2>
+
+            <p>You can also build a stack using a linked list. This gives you a huge advantage: <strong>no fixed size</strong>. You can push as many items as you want (until you run out of memory).</p>
+
+            <h3>How It Works</h3>
+            <p>The key insight: treat the <strong>head of the linked list</strong> as the <strong>top of the stack</strong>.</p>
+            <ul>
+                <li><strong>Push:</strong> Insert a new node at the head (O(1))</li>
+                <li><strong>Pop:</strong> Delete the head node and return its value (O(1))</li>
+                <li><strong>Peek:</strong> Return the head node's value without deleting it (O(1))</li>
+            </ul>
+
+            <div class="ascii-diagram"><pre>
+Linked-list stack (head is top):
+
+Push 30:
+head → [30|•] → [20|•] → [10|X]
+       (top)             (bottom)
+
+Pop:
+head → [20|•] → [10|X]
+       (top)    (bottom)
+</pre></div>
+
+            <h3>No Overflow!</h3>
+            <p>Since linked lists grow dynamically, you don't need to check for overflow. You only need to check for underflow (popping from an empty stack).</p>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Linked-list stacks are better when you don't know the maximum size ahead of time. Array-based stacks are faster (no <code>new</code>/<code>delete</code> overhead) when you know the size.
+            </div>
+
+            <!-- Playground 2: Linked-List Stack -->
+            <div class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">🎮 Playground 2: Linked-List Stack</div>
+                </div>
+
+                <textarea id="editor2">
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+class Stack {
+private:
+    Node* head;  // Top of stack
+
+public:
+    Stack() {
+        head = NULL;
+    }
+
+    ~Stack() {
+        while (!isEmpty()) {
+            pop();
+        }
+    }
+
+    void push(int value) {
+        Node* newNode = new Node;
+        newNode->data = value;
+        newNode->next = head;
+        head = newNode;
+        cout << "Pushed " << value << " onto stack" << endl;
+    }
+
+    int pop() {
+        if (isEmpty()) {
+            cout << "Stack underflow! Cannot pop from empty stack" << endl;
+            return -1;
+        }
+        Node* temp = head;
+        int value = head->data;
+        head = head->next;
+        delete temp;
+        cout << "Popped " << value << " from stack" << endl;
+        return value;
+    }
+
+    int peek() {
+        if (isEmpty()) {
+            cout << "Stack is empty!" << endl;
+            return -1;
+        }
+        return head->data;
+    }
+
+    bool isEmpty() {
+        return head == NULL;
+    }
+
+    void display() {
+        if (isEmpty()) {
+            cout << "Stack is empty" << endl;
+            return;
+        }
+        cout << "Stack (top to bottom): ";
+        Node* current = head;
+        while (current != NULL) {
+            cout << current->data << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    Stack s;
+
+    s.push(10);
+    s.push(20);
+    s.push(30);
+    s.display();
+
+    cout << "Top element: " << s.peek() << endl;
+
+    s.pop();
+    s.pop();
+    s.display();
+
+    // No size limit!
+    s.push(40);
+    s.push(50);
+    s.push(60);
+    s.display();
+
+    return 0;
+}
+</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('editor2', 'output2')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box" id="output2">
+                        <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>Experiment:</strong> Look at the destructor. Why does it call <code>pop()</code> in a loop instead of just deleting <code>head</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2')">Show Explanation</button>
+            <div class="answer-section" id="exp2">
+                <p><strong>Memory leak prevention:</strong> If you only delete <code>head</code>, you free the first node but lose access to all the other nodes. They stay in memory forever (memory leak).</p>
+                <p>By calling <code>pop()</code> repeatedly, you delete each node one by one, moving <code>head</code> forward each time. When <code>head</code> becomes NULL, all nodes are freed.</p>
+                <p><strong>Alternative:</strong> You could write a manual loop with <code>delete</code>, but calling <code>pop()</code> reuses code and ensures the same cleanup logic.</p>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 2 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz Checkpoint #2</div>
+            <div class="swift-quiz-question">
+                <strong>Question:</strong> In a linked-list stack, why do we insert at the head instead of the tail?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuizAnswer('quiz2')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz2">
+                <strong>Answer: O(1) vs O(n) performance</strong><br><br>
+                Inserting at the head is O(1):
+                <ul>
+                    <li>Create new node</li>
+                    <li>Set new node's next to current head</li>
+                    <li>Update head to new node</li>
+                    <li>Done! Just 3 steps, no loops.</li>
+                </ul>
+                Inserting at the tail is O(n):
+                <ul>
+                    <li>Start at head</li>
+                    <li>Walk through entire list to find the last node</li>
+                    <li>Insert after last node</li>
+                    <li>Requires looping through all n nodes!</li>
+                </ul>
+                Stack operations must be O(1), so we insert at the head.
+            </div>
+        </div>
+
+        <!-- Section 4: Introduction to Queues (FIFO) -->
+        <section class="content-card">
+            <h2>Section 4: Introduction to Queues (FIFO)</h2>
+
+            <h3>What is a Queue?</h3>
+            <p>A queue is a data structure where you add items at one end (the <strong>rear</strong>) and remove items from the other end (the <strong>front</strong>). Think of it like a line at the bank: people join at the back and leave from the front.</p>
+
+            <p>This means the first item you add is the first item you remove. That's why queues are called <strong>FIFO</strong> (First In, First Out).</p>
+
+            <div class="ascii-diagram"><pre>
+Queue visualization (FIFO):
+
+Enqueue →  [10][20][30]  → Dequeue
+          front      rear
+
+Add to rear, remove from front
+</pre></div>
+
+            <h3>Queue Operations</h3>
+            <p>Every queue needs these basic operations:</p>
+            <ul>
+                <li><strong>enqueue(item):</strong> Add an item to the rear of the queue</li>
+                <li><strong>dequeue():</strong> Remove and return the item at the front</li>
+                <li><strong>front() or peek():</strong> Look at the front item without removing it</li>
+                <li><strong>isEmpty():</strong> Check if the queue has any items</li>
+                <li><strong>isFull():</strong> Check if the queue is full (only for array-based queues)</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Queues are the opposite of stacks. With a stack, the newest item leaves first. With a queue, the oldest item leaves first. This makes queues perfect for "fair" systems.
+            </div>
+
+            <h3>Real-World Examples</h3>
+            <p>Queues are used for fair ordering and scheduling:</p>
+            <ul>
+                <li><strong>Print queue:</strong> Documents print in the order they were sent</li>
+                <li><strong>Customer service:</strong> Customers are helped in the order they arrived</li>
+                <li><strong>Breadth-first search:</strong> Explore nodes level by level in a tree or graph</li>
+                <li><strong>Task scheduling:</strong> Operating systems use queues to manage tasks waiting for the CPU</li>
+            </ul>
+
+            <h3>Time Complexity</h3>
+            <p>Like stacks, queue operations are fast:</p>
+            <ul>
+                <li><strong>enqueue():</strong> O(1) - constant time</li>
+                <li><strong>dequeue():</strong> O(1) - constant time</li>
+                <li><strong>front():</strong> O(1) - constant time</li>
+            </ul>
+        </section>
+
+        <!-- Section 5: Array-Based Queue (Linear Queue) -->
+        <section class="content-card">
+            <h2>Section 5: Array-Based Queue (Linear Queue)</h2>
+
+            <p>The simplest way to build a queue is with an array. You use two integer variables: <code>front</code> (where items leave) and <code>rear</code> (where items enter).</p>
+
+            <h3>How It Works</h3>
+            <p>Here's the basic idea:</p>
+            <ul>
+                <li>Start with <code>front = 0</code> and <code>rear = -1</code> (empty queue)</li>
+                <li>To enqueue: increment <code>rear</code>, then put the item at <code>arr[rear]</code></li>
+                <li>To dequeue: get the item at <code>arr[front]</code>, then increment <code>front</code></li>
+            </ul>
+
+            <div class="ascii-diagram"><pre>
+Linear queue after some operations:
+
+Index:  [0] [1] [2] [3] [4]
+Array:  [ ] [20][30][40][ ]
+             ↑       ↑
+           front   rear
+
+Problem: Index 0 is wasted space!
+</pre></div>
+
+            <h3>The Wasted Space Problem</h3>
+            <p>Linear queues have a serious flaw. After several enqueue/dequeue operations, <code>front</code> moves forward, leaving empty spaces at the beginning of the array. You can't reuse those spaces!</p>
+
+            <div class="warning-box">
+                <strong>Problem:</strong> Even if there's space at the front, once <code>rear</code> reaches the end of the array, the queue appears full. This wastes memory and limits capacity.
+            </div>
+
+            <p>We'll solve this problem with <strong>circular queues</strong> in the next section.</p>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Linear queues are rarely used in practice because of the wasted space problem. They're useful for understanding queue basics before moving to circular queues.
+            </div>
+        </section>
+
+        <!-- Section 6: Circular Queue Implementation -->
+        <section class="content-card">
+            <h2>Section 6: Circular Queue Implementation</h2>
+
+            <p>A circular queue solves the wasted space problem by treating the array as circular. When you reach the end, you wrap around to the beginning using the modulo operator (<code>%</code>).</p>
+
+            <h3>How It Works</h3>
+            <p>Instead of incrementing indices normally, you use modulo:</p>
+            <ul>
+                <li>To enqueue: <code>rear = (rear + 1) % capacity</code>, then put item at <code>arr[rear]</code></li>
+                <li>To dequeue: get item at <code>arr[front]</code>, then <code>front = (front + 1) % capacity</code></li>
+            </ul>
+
+            <div class="ascii-diagram"><pre>
+Circular queue wrapping around:
+
+Index:  [0] [1] [2] [3] [4]
+Array:  [50][ ] [30][40][   ]
+         ↑           ↑
+       rear        front
+
+When rear = 4, next enqueue wraps to index 0!
+</pre></div>
+
+            <h3>Full vs Empty Detection</h3>
+            <p>There's a tricky problem: when the queue is empty, <code>front == rear</code>. But when the queue is full and wraps around, <code>front == rear</code> again! How do you tell them apart?</p>
+
+            <p><strong>Solution 1:</strong> Keep a counter of items in the queue</p>
+            <p><strong>Solution 2:</strong> Keep one space empty. The queue is full when <code>(rear + 1) % capacity == front</code></p>
+
+            <p>We'll use Solution 2 because it doesn't require an extra variable.</p>
+
+            <!-- Playground 3: Circular Queue -->
+            <div class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">🎮 Playground 3: Circular Queue</div>
+                </div>
+
+                <textarea id="editor3">
+#include <iostream>
+using namespace std;
+
+class CircularQueue {
+private:
+    int* arr;
+    int front;
+    int rear;
+    int capacity;
+
+public:
+    CircularQueue(int size) {
+        capacity = size + 1;  // One extra space for full detection
+        arr = new int[capacity];
+        front = 0;
+        rear = 0;
+    }
+
+    ~CircularQueue() {
+        delete[] arr;
+    }
+
+    void enqueue(int value) {
+        if (isFull()) {
+            cout << "Queue overflow! Cannot enqueue " << value << endl;
+            return;
+        }
+        arr[rear] = value;
+        rear = (rear + 1) % capacity;  // Wrap around
+        cout << "Enqueued " << value << endl;
+    }
+
+    int dequeue() {
+        if (isEmpty()) {
+            cout << "Queue underflow! Cannot dequeue from empty queue" << endl;
+            return -1;
+        }
+        int value = arr[front];
+        front = (front + 1) % capacity;  // Wrap around
+        cout << "Dequeued " << value << endl;
+        return value;
+    }
+
+    int getFront() {
+        if (isEmpty()) {
+            cout << "Queue is empty!" << endl;
+            return -1;
+        }
+        return arr[front];
+    }
+
+    bool isEmpty() {
+        return front == rear;
+    }
+
+    bool isFull() {
+        return (rear + 1) % capacity == front;
+    }
+
+    void display() {
+        if (isEmpty()) {
+            cout << "Queue is empty" << endl;
+            return;
+        }
+        cout << "Queue (front to rear): ";
+        int i = front;
+        while (i != rear) {
+            cout << arr[i] << " ";
+            i = (i + 1) % capacity;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    CircularQueue q(5);
+
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+    q.display();
+
+    q.dequeue();
+    q.dequeue();
+    q.display();
+
+    // This wraps around to the front!
+    q.enqueue(40);
+    q.enqueue(50);
+    q.enqueue(60);
+    q.display();
+
+    cout << "Front element: " << q.getFront() << endl;
+
+    return 0;
+}
+</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('editor3', 'output3')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box" id="output3">
+                        <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>Experiment:</strong> Why do we use <code>capacity = size + 1</code> in the constructor? What happens if we use <code>capacity = size</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3')">Show Explanation</button>
+            <div class="answer-section" id="exp3">
+                <p><strong>The one-space-empty trick:</strong> We keep one space always empty so we can tell the difference between full and empty.</p>
+                <p>If we used <code>capacity = size</code> exactly:</p>
+                <ul>
+                    <li>Empty: <code>front == rear</code></li>
+                    <li>Full after wrapping: <code>front == rear</code> again!</li>
+                    <li>Can't tell them apart without an extra variable</li>
+                </ul>
+                <p>By using <code>capacity = size + 1</code>:</p>
+                <ul>
+                    <li>Empty: <code>front == rear</code></li>
+                    <li>Full: <code>(rear + 1) % capacity == front</code></li>
+                    <li>Different conditions! No ambiguity.</li>
+                </ul>
+                <p>The trade-off: We waste one array space, but we avoid needing a counter variable. For a queue of size 5, we allocate an array of size 6 but only use 5 spaces maximum.</p>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 3 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz Checkpoint #3</div>
+            <div class="swift-quiz-question">
+                <strong>Question:</strong> You have a circular queue with capacity 4 (array size 5). Starting empty, you enqueue 1, 2, 3, dequeue twice, then enqueue 4, 5, 6. What are the values of <code>front</code> and <code>rear</code>?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuizAnswer('quiz3')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz3">
+                <strong>Answer: front = 2, rear = 1</strong><br><br>
+                Step by step (capacity = 5):
+                <ul>
+                    <li>Start: front = 0, rear = 0 (empty)</li>
+                    <li>Enqueue 1: arr[0] = 1, rear = 1</li>
+                    <li>Enqueue 2: arr[1] = 2, rear = 2</li>
+                    <li>Enqueue 3: arr[2] = 3, rear = 3</li>
+                    <li>Dequeue: front = 1 (removed 1)</li>
+                    <li>Dequeue: front = 2 (removed 2)</li>
+                    <li>Enqueue 4: arr[3] = 4, rear = 4</li>
+                    <li>Enqueue 5: arr[4] = 5, rear = (4+1) % 5 = 0 (wraps!)</li>
+                    <li>Enqueue 6: arr[0] = 6, rear = (0+1) % 5 = 1</li>
+                </ul>
+                Final: front = 2, rear = 1. Queue contains [3, 4, 5, 6].
+            </div>
+        </div>
+
+        <!-- Section 7: Linked-List-Based Queue Implementation -->
+        <section class="content-card">
+            <h2>Section 7: Linked-List-Based Queue Implementation</h2>
+
+            <p>You can also build a queue using a linked list. Like the linked-list stack, this gives you dynamic sizing with no fixed capacity.</p>
+
+            <h3>How It Works</h3>
+            <p>You need to keep track of both ends of the list:</p>
+            <ul>
+                <li><strong>head (front):</strong> Where you dequeue from</li>
+                <li><strong>tail (rear):</strong> Where you enqueue to</li>
+            </ul>
+
+            <p>Operations:</p>
+            <ul>
+                <li><strong>Enqueue:</strong> Insert at the tail (O(1) because we keep a tail pointer)</li>
+                <li><strong>Dequeue:</strong> Delete from the head (O(1))</li>
+            </ul>
+
+            <div class="ascii-diagram"><pre>
+Linked-list queue:
+
+head → [10|•] → [20|•] → [30|X] ← tail
+      (front)          (rear)
+
+Dequeue from head, enqueue at tail
+</pre></div>
+
+            <h3>Why We Need Both Pointers</h3>
+            <p>Without a <code>tail</code> pointer, enqueuing would require walking through the entire list to find the end (O(n)). By keeping <code>tail</code>, we can enqueue in O(1).</p>
+
+            <div class="warning-box">
+                <strong>Edge Case:</strong> When the queue becomes empty after a dequeue, you need to set <code>tail = NULL</code> as well, not just <code>head = NULL</code>. Otherwise <code>tail</code> points to freed memory!
+            </div>
+
+            <!-- Playground 4: Linked-List Queue -->
+            <div class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">🎮 Playground 4: Linked-List Queue</div>
+                </div>
+
+                <textarea id="editor4">
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+class Queue {
+private:
+    Node* head;  // Front of queue
+    Node* tail;  // Rear of queue
+
+public:
+    Queue() {
+        head = NULL;
+        tail = NULL;
+    }
+
+    ~Queue() {
+        while (!isEmpty()) {
+            dequeue();
+        }
+    }
+
+    void enqueue(int value) {
+        Node* newNode = new Node;
+        newNode->data = value;
+        newNode->next = NULL;
+
+        if (isEmpty()) {
+            // First node in queue
+            head = newNode;
+            tail = newNode;
+        } else {
+            // Add to rear
+            tail->next = newNode;
+            tail = newNode;
+        }
+        cout << "Enqueued " << value << endl;
+    }
+
+    int dequeue() {
+        if (isEmpty()) {
+            cout << "Queue underflow! Cannot dequeue from empty queue" << endl;
+            return -1;
+        }
+        Node* temp = head;
+        int value = head->data;
+        head = head->next;
+
+        // If queue is now empty, update tail too!
+        if (head == NULL) {
+            tail = NULL;
+        }
+
+        delete temp;
+        cout << "Dequeued " << value << endl;
+        return value;
+    }
+
+    int front() {
+        if (isEmpty()) {
+            cout << "Queue is empty!" << endl;
+            return -1;
+        }
+        return head->data;
+    }
+
+    bool isEmpty() {
+        return head == NULL;
+    }
+
+    void display() {
+        if (isEmpty()) {
+            cout << "Queue is empty" << endl;
+            return;
+        }
+        cout << "Queue (front to rear): ";
+        Node* current = head;
+        while (current != NULL) {
+            cout << current->data << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    Queue q;
+
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+    q.display();
+
+    cout << "Front element: " << q.front() << endl;
+
+    q.dequeue();
+    q.dequeue();
+    q.display();
+
+    // No size limit!
+    q.enqueue(40);
+    q.enqueue(50);
+    q.enqueue(60);
+    q.enqueue(70);
+    q.display();
+
+    return 0;
+}
+</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('editor4', 'output4')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box" id="output4">
+                        <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>Experiment:</strong> In the <code>dequeue()</code> function, why do we check if <code>head == NULL</code> after updating <code>head</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4')">Show Explanation</button>
+            <div class="answer-section" id="exp4">
+                <p><strong>Handling the last element:</strong> When you dequeue the last element in the queue, <code>head</code> becomes NULL. But <code>tail</code> still points to the old node (which we just deleted).</p>
+                <p>If we don't set <code>tail = NULL</code>, the next enqueue will try to access <code>tail->next</code>, which is a dangling pointer pointing to freed memory. This causes a crash or corruption!</p>
+                <p>By checking <code>if (head == NULL)</code>, we know the queue is now empty, so we also set <code>tail = NULL</code> to keep both pointers in sync.</p>
+                <p><strong>General rule:</strong> Whenever you modify head or tail, think about whether the other pointer needs updating too.</p>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 4 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz Checkpoint #4</div>
+            <div class="swift-quiz-question">
+                <strong>Question:</strong> Why can't we use the linked-list stack approach (insert/delete at head only) for a queue?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuizAnswer('quiz4')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz4">
+                <strong>Answer: It would break FIFO ordering</strong><br><br>
+                Stack approach (head only):
+                <ul>
+                    <li>Push (insert at head): O(1) ✓</li>
+                    <li>Pop (delete from head): O(1) ✓</li>
+                    <li>Result: LIFO (last in, first out)</li>
+                </ul>
+                Queue needs FIFO:
+                <ul>
+                    <li>Enqueue at one end (tail): O(1) ✓</li>
+                    <li>Dequeue from other end (head): O(1) ✓</li>
+                    <li>Result: FIFO (first in, first out)</li>
+                </ul>
+                If we used head only for both operations, we'd get a stack, not a queue! The first item enqueued would be the last item dequeued, which violates the definition of a queue.
+            </div>
+        </div>
+
+        <!-- Section 8: Applications of Stacks and Queues -->
+        <section class="content-card">
+            <h2>Section 8: Applications of Stacks and Queues</h2>
+
+            <h3>When to Use a Stack (LIFO)</h3>
+            <p>Use a stack when you need to process things in reverse order, or when you need to "undo" operations:</p>
+            <ul>
+                <li><strong>Function call stack:</strong> When a function calls another function, the return address is pushed onto the stack. When the inner function returns, the address is popped.</li>
+                <li><strong>Undo/Redo:</strong> Each action is pushed onto a stack. Undo pops the most recent action.</li>
+                <li><strong>Balanced parentheses:</strong> Push opening brackets, pop when you see closing brackets. If they match, the expression is balanced.</li>
+                <li><strong>Depth-First Search (DFS):</strong> Explore a tree or graph by going as deep as possible before backtracking.</li>
+                <li><strong>Expression evaluation:</strong> Convert infix to postfix, then evaluate using a stack.</li>
+            </ul>
+
+            <h3>When to Use a Queue (FIFO)</h3>
+            <p>Use a queue when you need to process things in the order they arrived, or when you need fair scheduling:</p>
+            <ul>
+                <li><strong>Print queue:</strong> Documents are printed in the order they were submitted.</li>
+                <li><strong>Breadth-First Search (BFS):</strong> Explore a tree or graph level by level.</li>
+                <li><strong>Task scheduling:</strong> Operating systems use queues to manage processes waiting for CPU time.</li>
+                <li><strong>Buffering:</strong> Streaming video uses a queue to buffer incoming data.</li>
+                <li><strong>Handling requests:</strong> Web servers use queues to handle incoming requests in order.</li>
+            </ul>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> The key question is: "Does order matter, and if so, should I process the newest or the oldest first?" Newest → Stack. Oldest → Queue.
+            </div>
+
+            <!-- Playground 5: Clash Royale Card Rotation (Queue) -->
+            <div class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">🎮 Playground 5: Clash Royale Card Rotation</div>
+                </div>
+
+                <textarea id="editor5">
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Swift plays Clash Royale - a mobile strategy game where you have
+// a deck of 8 cards and a hand of 4 cards. When you play a card,
+// the next card from your deck cycles into your hand. This is a
+// perfect example of a queue (FIFO - first in, first out)!
+
+struct Card {
+    string name;
+    int elixir_cost;
+};
+
+struct Node {
+    Card data;
+    Node* next;
+};
+
+class CardQueue {
+private:
+    Node* head;  // Front of queue (next card to play)
+    Node* tail;  // Rear of queue
+
+public:
+    CardQueue() {
+        head = NULL;
+        tail = NULL;
+    }
+
+    void enqueue(Card card) {
+        Node* newNode = new Node;
+        newNode->data = card;
+        newNode->next = NULL;
+
+        if (head == NULL) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    Card dequeue() {
+        Card playedCard = head->data;
+        Node* temp = head;
+        head = head->next;
+        if (head == NULL) tail = NULL;
+        delete temp;
+        return playedCard;
+    }
+
+    void display() {
+        cout << "Current hand: ";
+        Node* current = head;
+        while (current != NULL) {
+            cout << current->data.name << " (" << current->data.elixir_cost << ") ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    CardQueue hand;
+
+    // Starting hand (4 cards from 8-card deck)
+    hand.enqueue({"Hog Rider", 4});
+    hand.enqueue({"Fireball", 4});
+    hand.enqueue({"Ice Spirit", 1});
+    hand.enqueue({"Cannon", 3});
+
+    cout << "=== Clash Royale Card Rotation ===" << endl;
+    hand.display();
+
+    // Play a card (dequeue) and next card cycles in (enqueue)
+    Card played = hand.dequeue();
+    cout << "\nPlayed: " << played.name << " (Cost: " << played.elixir_cost << " elixir)" << endl;
+    hand.enqueue({"Log", 2});  // Next card from deck
+    hand.display();
+
+    played = hand.dequeue();
+    cout << "\nPlayed: " << played.name << " (Cost: " << played.elixir_cost << " elixir)" << endl;
+    hand.enqueue({"Knight", 3});
+    hand.display();
+
+    cout << "\nFIFO in action: Cards are played in the order they appear!" << endl;
+
+    return 0;
+}
+</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('editor5', 'output5')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor5')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box" id="output5">
+                        <div class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 9: Common Mistakes -->
+        <section class="content-card">
+            <h2>Section 9: Common Mistakes</h2>
+
+            <h3>1. Off-by-One Errors in Array Implementations</h3>
+            <p>Getting the indices wrong is extremely common. Here's a buggy stack implementation:</p>
+
+            <pre><code class="language-cpp">void push(int value) {
+    if (top == capacity) {
+        cout << "Overflow!" << endl;
+        return;
+    }
+    arr[top] = value;
+    top++;
+}
+
+int pop() {
+    if (top == -1) {
+        cout << "Underflow!" << endl;
+        return -1;
+    }
+    top--;
+    return arr[top];
+}</code></pre>
+
+            <p><strong>Can you spot the bugs?</strong> There are two issues in this code.</p>
+            <button class="reveal-btn" onclick="toggleAnswer('bug1')">Show Bugs</button>
+            <div class="answer-section" id="bug1">
+                <p><strong>Bug 1 (line 2):</strong> Should be <code>top == capacity - 1</code>. If capacity is 5, valid indices are 0-4, so top can be at most 4.</p>
+                <p><strong>Bug 2 (line 14):</strong> Should return <code>arr[top]</code> BEFORE decrementing top, not after. As written, we decrement first then return, which gives us the wrong element.</p>
+            </div>
+
+            <h3>2. Forgetting to Update Both Pointers in Linked-List Queue</h3>
+            <p>When dequeuing the last element, you must update both <code>head</code> and <code>tail</code>:</p>
+
+            <pre><code class="language-cpp">int dequeue() {
+    if (isEmpty()) return -1;
+
+    int value = head->data;
+    Node* temp = head;
+    head = head->next;
+    delete temp;
+    return value;
+}</code></pre>
+
+            <p><strong>What's wrong here?</strong> This code has a subtle but serious bug.</p>
+            <button class="reveal-btn" onclick="toggleAnswer('bug2')">Show Bug</button>
+            <div class="answer-section" id="bug2">
+                <p><strong>The bug:</strong> When the queue becomes empty (<code>head == NULL</code>), <code>tail</code> still points to the freed node. The next enqueue will crash.</p>
+                <p><strong>Fix:</strong> Add <code>if (head == NULL) tail = NULL;</code> after updating head.</p>
+            </div>
+
+            <h3>3. Using <code>==</code> Instead of Modulo in Circular Queue</h3>
+            <p>Forgetting to wrap indices causes out-of-bounds errors:</p>
+
+            <pre><code class="language-cpp">void enqueue(int value) {
+    if (isFull()) return;
+    arr[rear] = value;
+    rear++;
+}</code></pre>
+
+            <p><strong>What's the problem?</strong> This looks reasonable, but has a critical flaw.</p>
+            <button class="reveal-btn" onclick="toggleAnswer('bug3')">Show Bug</button>
+            <div class="answer-section" id="bug3">
+                <p><strong>The bug:</strong> When <code>rear</code> reaches the end of the array, incrementing it goes out of bounds. You must use <code>rear = (rear + 1) % capacity</code> to wrap around.</p>
+                <p><strong>Why it matters:</strong> Without modulo, you'll write past the end of the array, corrupting memory and causing crashes.</p>
+            </div>
+
+            <h3>4. Confusing Front and Rear</h3>
+            <p>In a queue, items are added at the <strong>rear</strong> and removed from the <strong>front</strong>. Don't mix them up!</p>
+
+            <pre><code class="language-cpp">void enqueue(int value) {
+    arr[front] = value;
+    front = (front + 1) % capacity;
+}
+
+int dequeue() {
+    int value = arr[rear];
+    rear = (rear + 1) % capacity;
+    return value;
+}</code></pre>
+
+            <p><strong>Try to spot the error:</strong> This code compiles and runs, but doesn't behave like a queue.</p>
+            <button class="reveal-btn" onclick="toggleAnswer('bug4')">Show Bug</button>
+            <div class="answer-section" id="bug4">
+                <p><strong>The bug:</strong> This adds to the front and removes from the rear, which is backwards. The result is LIFO (a stack), not FIFO (a queue).</p>
+                <p><strong>How to remember:</strong> Think of a real queue (line at a store). People join at the <strong>rear</strong> (back of line) and leave from the <strong>front</strong>.</p>
+            </div>
+
+            <h3>5. Memory Leaks in Destructors</h3>
+            <p>Forgetting to free all nodes in a linked-list destructor causes memory leaks:</p>
+
+            <pre><code class="language-cpp">~Stack() {
+    delete head;
+}</code></pre>
+
+            <p><strong>Is this correct?</strong> This looks like it cleans up the stack, but it doesn't.</p>
+            <button class="reveal-btn" onclick="toggleAnswer('bug5')">Show Bug</button>
+            <div class="answer-section" id="bug5">
+                <p><strong>The bug:</strong> Deleting <code>head</code> only frees the first node. All other nodes stay in memory forever (memory leak).</p>
+                <p><strong>Why:</strong> When you <code>delete head</code>, you free that node but lose access to <code>head->next</code>. All remaining nodes are unreachable and can't be freed.</p>
+                <p><strong>Fix:</strong> Loop through and delete all nodes, or call <code>pop()</code> until empty.</p>
+            </div>
+
+            <div class="warning-box">
+                <strong>Debugging Tip:</strong> When your stack or queue behaves weirdly, print the values of <code>top</code>/<code>front</code>/<code>rear</code> after each operation. This helps you spot off-by-one errors immediately.
+            </div>
+        </section>
+
+        <!-- Swift Quiz 5 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz Checkpoint #5</div>
+            <div class="swift-quiz-question">
+                <strong>Question:</strong> What's the time complexity of searching for a specific value in a stack or queue?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuizAnswer('quiz5')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz5">
+                <strong>Answer: O(n) - linear time</strong><br><br>
+                Even though push/pop/enqueue/dequeue are O(1), searching is O(n):
+                <ul>
+                    <li>You can only access the top of a stack or front of a queue</li>
+                    <li>To find a value, you must pop/dequeue items one by one until you find it</li>
+                    <li>In the worst case, the value is at the bottom, so you check all n items</li>
+                </ul>
+                This is why stacks and queues are NOT good for searching! If you need fast search, use a different data structure (like a hash table or binary search tree).
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <section class="content-card">
+            <h2>Summary</h2>
+
+            <h3>Stacks (LIFO)</h3>
+            <ul>
+                <li>Last In, First Out - like a stack of plates</li>
+                <li>Operations: push, pop, peek, isEmpty, isFull</li>
+                <li>Array implementation: Use <code>top</code> index, check for overflow/underflow</li>
+                <li>Linked-list implementation: Insert/delete at head, no overflow</li>
+                <li>Use for: Undo, function calls, balanced parentheses, DFS</li>
+                <li>All operations are O(1)</li>
+            </ul>
+
+            <h3>Queues (FIFO)</h3>
+            <ul>
+                <li>First In, First Out - like a line at the bank</li>
+                <li>Operations: enqueue, dequeue, front, isEmpty, isFull</li>
+                <li>Linear array: Simple but wastes space</li>
+                <li>Circular array: Uses modulo to wrap around, efficient</li>
+                <li>Linked-list implementation: Use head (front) and tail (rear), no overflow</li>
+                <li>Use for: Print queue, BFS, task scheduling, buffering</li>
+                <li>All operations are O(1)</li>
+            </ul>
+
+            <h3>Key Differences</h3>
+            <ul>
+                <li><strong>Stack:</strong> One access point (top), LIFO, process newest first</li>
+                <li><strong>Queue:</strong> Two access points (front and rear), FIFO, process oldest first</li>
+            </ul>
+
+            <h3>Common Mistakes to Avoid</h3>
+            <ul>
+                <li>Off-by-one errors in array indices</li>
+                <li>Forgetting to update tail when dequeuing last element</li>
+                <li>Not using modulo in circular queue</li>
+                <li>Confusing front and rear in queue operations</li>
+                <li>Memory leaks from incomplete destructors</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>You're ready!</strong> You now understand both stacks and queues, and can implement them using arrays or linked lists. Practice the examples and problems to build fluency. Good luck on EO3!
+            </div>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        // Initialize CodeMirror editors
+        const editors = {};
+        const originalCode = {};
+
+        ['editor1', 'editor2', 'editor3', 'editor4', 'editor5'].forEach(id => {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        });
+
+        function toggleQuizAnswer(quizId) {
+            const answerSection = document.getElementById(quizId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Explanation';
+                // CRITICAL: Refresh CodeMirror when revealing hidden sections
+                setTimeout(() => {
+                    answerSection.querySelectorAll('.CodeMirror').forEach(cm => {
+                        if (cm.CodeMirror) {
+                            cm.CodeMirror.refresh();
+                        }
+                    });
+                }, 50);
+            } else {
+                button.textContent = 'Show Explanation';
+            }
+        }
+
+        async function runCode(editorId, outputId) {
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const button = event.target;
+
+            // Show loading state
+            if (button) button.disabled = true;
+            outputEl.textContent = 'Compiling and running...';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                if (button) button.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            const outputId = editorId.replace('editor', 'output');
+            editors[editorId].setValue(originalCode[editorId]);
+
+            const outputEl = document.getElementById(outputId);
+            outputEl.textContent = 'Click "Run Code" to see the output...';
+            outputEl.className = 'output-text output-placeholder';
+        }
+
+        // Apply Prism.js syntax highlighting to static code blocks
+        Prism.highlightAll();
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

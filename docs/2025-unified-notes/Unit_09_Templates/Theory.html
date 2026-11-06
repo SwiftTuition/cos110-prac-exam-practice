@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 9: Templates - Theory | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- CodeMirror for interactive playground -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <style>
+        /* DEEP OCEAN THEME */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0ea5e9;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        /* Hamburger menu button (hidden on desktop) */
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: #f1f5f9;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-hamburger:hover {
+            color: #0ea5e9;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #10b981;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card ul {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Swift Quiz */
+        .swift-quiz {
+            background: #1f2415;
+            border-left: 5px solid #eab308;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 10px rgba(234, 179, 8, 0.15);
+        }
+
+        .swift-quiz-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #eab308;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .swift-quiz-question {
+            color: #cbd5e1;
+            margin-bottom: 0.75rem;
+        }
+
+        .swift-quiz-toggle {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 0.8rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .swift-quiz-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .swift-quiz-answer {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eab308;
+        }
+
+        .swift-quiz-answer.visible {
+            display: block;
+        }
+
+        .swift-quiz-answer strong {
+            color: #eab308;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0c1222;
+            border: 2px solid #1e3a5f;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-block pre {
+            color: #f1f5f9;
+            margin: 0;
+        }
+
+        .code-block code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* Custom Prism syntax highlighting for Deep Ocean theme */
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+            color: #64748b;
+        }
+
+        .token.punctuation {
+            color: #94a3b8;
+        }
+
+        .token.property,
+        .token.tag,
+        .token.boolean,
+        .token.number,
+        .token.constant,
+        .token.symbol {
+            color: #0ea5e9;
+        }
+
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin {
+            color: #10b981;
+        }
+
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .token.variable {
+            color: #f1f5f9;
+        }
+
+        .token.atrule,
+        .token.attr-value,
+        .token.keyword,
+        .token.class-name {
+            color: #8b5cf6;
+        }
+
+        .token.function {
+            color: #0ea5e9;
+        }
+
+        .token.regex,
+        .token.important {
+            color: #f59e0b;
+        }
+
+        /* ASCII Diagram */
+        .ascii-diagram {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #10b981;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        /* Important callout */
+        .callout-warning {
+            background: #2d1414;
+            border-left: 5px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-warning strong {
+            color: #ef4444;
+        }
+
+        /* Success/Info callout (green) */
+        .callout-success {
+            background: #142d1f;
+            border-left: 5px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-success strong {
+            color: #10b981;
+        }
+
+        /* Swift Note callout (blue) */
+        .callout-note {
+            background: #0c1e2d;
+            border-left: 5px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-note strong {
+            color: #0ea5e9;
+        }
+
+        /* ============================================
+           CUSTOM CODE PLAYGROUND COMPONENT
+           ============================================ */
+
+        .code-playground {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .playground-header {
+            background: #0f172a;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .playground-title::before {
+            content: "⚡";
+            font-size: 1.2rem;
+        }
+
+        .playground-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .run-btn::before {
+            content: "▶";
+            font-size: 1rem;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .loading-indicator {
+            color: #eab308;
+            font-size: 0.85rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading-indicator.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #475569;
+            border-top-color: #eab308;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .playground-editor {
+            background: #1e293b;
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 300px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            background: #1e293b !important;
+        }
+
+        .CodeMirror-gutters {
+            background: #0f172a !important;
+            border-right: 1px solid #334155;
+        }
+
+        .playground-output {
+            background: #0f172a;
+            border-top: 1px solid #334155;
+        }
+
+        .output-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .output-header::before {
+            content: "▶";
+            color: #10b981;
+        }
+
+        .output-content {
+            padding: 1.5rem;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .output-text {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .output-success {
+            color: #10b981;
+        }
+
+        .output-error {
+            color: #ef4444;
+        }
+
+        .output-info {
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        /* Compact version */
+        .code-playground.compact .CodeMirror {
+            min-height: 200px;
+        }
+
+        .code-playground.compact .output-content {
+            min-height: 100px;
+            max-height: 250px;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-wrap: wrap;
+            }
+
+            .nav-brand {
+                gap: 0.75rem;
+            }
+
+            .nav-logo {
+                height: 38px;
+                width: 38px;
+            }
+
+            .nav-brand-company {
+                font-size: 0.6rem;
+            }
+
+            .nav-brand-title {
+                font-size: 0.9rem;
+            }
+
+            .nav-brand-subtitle {
+                font-size: 0.6rem;
+            }
+
+            .nav-hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0;
+                margin-top: 1rem;
+                background: #1e293b;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu li {
+                width: 100%;
+                border-bottom: 1px solid #334155;
+            }
+
+            .nav-menu li:last-child {
+                border-bottom: none;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: 1rem;
+                border-bottom: none !important;
+            }
+
+            .nav-menu a:hover,
+            .nav-menu a.active {
+                background: #0f172a;
+            }
+
+            /* Playground mobile styles */
+            .playground-header {
+                padding: 0.875rem 1rem;
+            }
+
+            .playground-title {
+                font-size: 0.875rem;
+            }
+
+            .run-btn, .reset-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .CodeMirror {
+                font-size: 13px;
+            }
+
+            .output-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 9: Templates</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+            ☰
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="Theory.html" class="active">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Opening Greeting -->
+        <p style="font-size: 1.2rem; color: #0ea5e9; font-weight: 600; margin-bottom: 1.5rem;">
+            Good day, good people!
+        </p>
+
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Welcome to Templates</h2>
+            <p>
+                This unit covers one of C++'s most powerful features: templates. Templates let you write code that works with any data type, without copying and pasting the same logic over and over.
+            </p>
+            <p>
+                By the end of this unit, you'll be able to create generic functions and classes that work with integers, doubles, strings, or even your own custom types. You'll write less code, fix fewer bugs, and build more flexible programs.
+            </p>
+
+            <div class="callout-note">
+                <strong>Swift Note:</strong> Templates are how the C++ Standard Library works. Every time you use <code>vector&lt;int&gt;</code> or <code>vector&lt;string&gt;</code>, you're using a class template. Now you'll learn to build these yourself!
+            </div>
+
+            <h3>Prerequisites</h3>
+            <p>Before starting this unit, you should be comfortable with:</p>
+            <ul>
+                <li><strong>Classes and Objects:</strong> Constructors, member functions, public/private access (Units 3-6)</li>
+                <li><strong>Inheritance:</strong> Base and derived classes (Unit 7)</li>
+                <li><strong>Virtual Functions:</strong> Polymorphism and dynamic binding (Unit 8)</li>
+            </ul>
+        </section>
+
+        <!-- Section 1: Function Templates -->
+        <section class="content-card">
+            <h2>Function Templates</h2>
+
+            <h3>The Problem: Code Duplication</h3>
+            <p>
+                You need a function to swap two variables. For integers, you write:
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">void swapValues(int&amp; a, int&amp; b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}</code></pre>
+            </div>
+
+            <p>
+                Now you need to swap two doubles. So you write the same function again, just changing the type:
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">void swapValues(double&amp; a, double&amp; b) {
+    double temp = a;
+    a = b;
+    b = temp;
+}</code></pre>
+            </div>
+
+            <p>
+                Then you need it for strings. Then for custom objects. The logic is identical each time, but you're stuck rewriting it. This wastes time, creates maintenance headaches, and clutters your code.
+            </p>
+
+            <h3>The Solution: Function Templates</h3>
+            <p>
+                A function template is a blueprint. You write the logic once, using a placeholder for the type. The compiler then generates the specific versions you need automatically.
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">template&lt;class T&gt;
+void swapValues(T&amp; a, T&amp; b) {
+    T temp = a;
+    a = b;
+    b = temp;
+}</code></pre>
+            </div>
+
+            <p>
+                That's it! Now you can call <code>swapValues</code> with any type, and the compiler creates the right version behind the scenes.
+            </p>
+
+            <div class="ascii-diagram">
+Template Instantiation Process:
+
+You write this once:
+┌─────────────────────────────┐
+│ template&lt;class T&gt;           │
+│ void swapValues(T&amp; a, T&amp; b) │
+│ { /* swap logic */ }        │
+└─────────────────────────────┘
+                │
+                │ Compiler sees different calls
+                ├────────────────┬────────────────┬──────────────
+                ▼                ▼                ▼
+    swapValues(int&amp;, int&amp;)   swapValues(double&amp;, double&amp;)   swapValues(string&amp;, string&amp;)
+
+    Compiler generates each version automatically!
+            </div>
+
+            <h3>Template Syntax Breakdown</h3>
+            <p>Let's look at each part of the template syntax:</p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">template&lt;class T&gt;
+T maximum(T x, T y) {
+    if (x &gt; y) {
+        return x;
+    }
+    return y;
+}</code></pre>
+            </div>
+
+            <ul>
+                <li><code>template</code> — C++ keyword that starts a template definition</li>
+                <li><code>&lt;class T&gt;</code> — Declares <code>T</code> as a type parameter (placeholder for any type)</li>
+                <li><code>T</code> — Used in place of <code>int</code>, <code>double</code>, etc. throughout the function</li>
+                <li><code>class T</code> — Don't let "class" confuse you! It just means "type" here. You can also write <code>typename T</code></li>
+            </ul>
+
+            <div class="callout-note">
+                <strong>Swift Note:</strong> The compiler only creates the code for types you actually use. If you never call <code>swapValues</code> with <code>char</code>, the <code>char</code> version is never generated. This saves space!
+            </div>
+        </section>
+
+        <!-- Interactive Playground 1: Function Template -->
+        <div class="code-playground" id="playground1">
+            <div class="playground-header">
+                <div class="playground-title">Experiment: Function Template for Maximum</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground1')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground1')">Reset</button>
+                    <div class="loading-indicator" id="loading1">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor1">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+template&lt;class T&gt;
+T maximum(T x, T y) {
+    if (x &gt; y) {
+        return x;
+    }
+    return y;
+}
+
+int main() {
+    // Works with integers
+    int a = 10, b = 20;
+    cout &lt;&lt; "Max of " &lt;&lt; a &lt;&lt; " and " &lt;&lt; b &lt;&lt; ": "
+         &lt;&lt; maximum(a, b) &lt;&lt; endl;
+
+    // Works with doubles
+    double x = 5.7, y = 3.2;
+    cout &lt;&lt; "Max of " &lt;&lt; x &lt;&lt; " and " &lt;&lt; y &lt;&lt; ": "
+         &lt;&lt; maximum(x, y) &lt;&lt; endl;
+
+    // Works with strings (lexicographic comparison)
+    string s1 = "apple", s2 = "banana";
+    cout &lt;&lt; "Max of '" &lt;&lt; s1 &lt;&lt; "' and '" &lt;&lt; s2 &lt;&lt; "': "
+         &lt;&lt; maximum(s1, s2) &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout-success">
+            <strong>Try this:</strong> Change the values being compared. Add a comparison with <code>char</code> values like <code>'A'</code> and <code>'Z'</code>. The same template works for all types that support the <code>&gt;</code> operator!
+        </div>
+
+        <!-- Swift Quiz 1 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-title">
+                💡 Swift Quiz: Template Syntax
+            </div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> What's the difference between <code>template&lt;class T&gt;</code> and <code>template&lt;typename T&gt;</code>?
+            </div>
+            <button class="swift-quiz-toggle" onclick="toggleAnswer(this)">Show Answer ▼</button>
+            <div class="swift-quiz-answer">
+                <strong>Answer:</strong> There's no difference! Both mean exactly the same thing: <code>T</code> is a placeholder for any data type. <code>class</code> is the traditional syntax from earlier C++ versions. <code>typename</code> was added later and is often considered clearer (since templates work with built-in types like <code>int</code>, not just classes). You can use either one.
+            </div>
+        </div>
+
+        <!-- Section 2: Type Requirements -->
+        <section class="content-card">
+            <h2>What Can Templates Do?</h2>
+            <p>
+                Templates aren't magic. The type you use must support whatever operations your template performs. Here's what that means:
+            </p>
+
+            <h3>Example: Sorting Template</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">template&lt;class T&gt;
+void bubbleSort(T arr[], int size) {
+    for (int i = 0; i &lt; size - 1; i++) {
+        for (int j = 0; j &lt; size - i - 1; j++) {
+            if (arr[j] &gt; arr[j + 1]) {
+                T temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}</code></pre>
+            </div>
+
+            <p>
+                This template requires type <code>T</code> to support:
+            </p>
+            <ul>
+                <li><code>operator&gt;</code> (comparison)</li>
+                <li><code>operator=</code> (assignment)</li>
+            </ul>
+
+            <p>
+                If your custom class doesn't have these operators overloaded, the template won't work with it. The compiler will give you an error when it tries to instantiate the template.
+            </p>
+
+            <div class="callout-warning">
+                <strong>⚠️ Important:</strong> The template code must be valid for ALL types it's used with. If you write <code>if (x &gt; y)</code> in your template, then every type you use must support <code>operator&gt;</code>. The compiler checks this when it generates each specific version.
+            </div>
+        </section>
+
+        <!-- Section 3: Class Templates -->
+        <section class="content-card">
+            <h2>Class Templates</h2>
+
+            <h3>From Function Templates to Class Templates</h3>
+            <p>
+                Just like function templates let you write generic functions, class templates let you write generic classes. This is how containers like <code>vector</code>, <code>stack</code>, and <code>queue</code> work.
+            </p>
+
+            <h3>Example: A Pair Class</h3>
+            <p>
+                You want a class that stores two values. Without templates, you'd need separate classes for every combination:
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">// Pair of integers
+class IntPair {
+    int first;
+    int second;
+    // ... member functions ...
+};
+
+// Pair of doubles
+class DoublePair {
+    double first;
+    double second;
+    // ... same member functions, different type ...
+};</code></pre>
+            </div>
+
+            <p>
+                This is the same duplication problem. Class templates solve it:
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">template&lt;class T&gt;
+class Pair {
+public:
+    Pair(T firstVal, T secondVal);
+    void setFirst(T newVal);
+    void setSecond(T newVal);
+    T getFirst() const;
+    T getSecond() const;
+private:
+    T first;
+    T second;
+};</code></pre>
+            </div>
+
+            <p>
+                Now you can create pairs of any type:
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">Pair&lt;int&gt; scores(95, 88);
+Pair&lt;double&gt; prices(19.99, 24.99);
+Pair&lt;string&gt; names("John", "Doe");</code></pre>
+            </div>
+
+            <h3>Key Difference: You Must Specify the Type</h3>
+            <p>
+                Unlike function templates, the compiler can't figure out the type for class templates. You must tell it explicitly using angle brackets:
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">// CORRECT
+Pair&lt;int&gt; myPair(10, 20);
+
+// WRONG - compiler doesn't know what T should be
+Pair myPair(10, 20);  // Error!</code></pre>
+            </div>
+
+            <div class="ascii-diagram">
+Class Template Specialization:
+
+Template Definition (one blueprint):
+┌──────────────────────────┐
+│ template&lt;class T&gt;        │
+│ class Pair {             │
+│   T first;               │
+│   T second;              │
+│ };                       │
+└──────────────────────────┘
+                │
+                │ You explicitly specify types
+                ├──────────────┬──────────────┬──────────────
+                ▼              ▼              ▼
+        Pair&lt;int&gt;       Pair&lt;double&gt;    Pair&lt;string&gt;
+        (int members)   (double members) (string members)
+
+        Compiler creates separate classes for each type!
+            </div>
+        </section>
+
+        <!-- Interactive Playground 2: Class Template -->
+        <div class="code-playground" id="playground2">
+            <div class="playground-header">
+                <div class="playground-title">Experiment: A Simple Stack Template</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground2')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground2')">Reset</button>
+                    <div class="loading-indicator" id="loading2">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor2">#include &lt;iostream&gt;
+using namespace std;
+
+template&lt;class T&gt;
+class Stack {
+public:
+    Stack() : top(-1) {}
+
+    void push(T item) {
+        if (top &lt; 99) {
+            data[++top] = item;
+        }
+    }
+
+    T pop() {
+        if (top &gt;= 0) {
+            return data[top--];
+        }
+        return T();
+    }
+
+    bool isEmpty() const {
+        return top == -1;
+    }
+
+private:
+    T data[100];
+    int top;
+};
+
+int main() {
+    // Stack of integers
+    Stack&lt;int&gt; intStack;
+    intStack.push(10);
+    intStack.push(20);
+    intStack.push(30);
+
+    cout &lt;&lt; "Int stack: ";
+    while (!intStack.isEmpty()) {
+        cout &lt;&lt; intStack.pop() &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    // Stack of doubles - same template, different type!
+    Stack&lt;double&gt; doubleStack;
+    doubleStack.push(1.1);
+    doubleStack.push(2.2);
+    doubleStack.push(3.3);
+
+    cout &lt;&lt; "Double stack: ";
+    while (!doubleStack.isEmpty()) {
+        cout &lt;&lt; doubleStack.pop() &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout-success">
+            <strong>Try this:</strong> Create a <code>Stack&lt;char&gt;</code> and push some letters onto it. Notice how the same code works perfectly with characters, integers, and doubles!
+        </div>
+
+        <!-- Swift Quiz 2 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-title">
+                💡 Swift Quiz: Class Template Syntax
+            </div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> If you declare <code>Stack&lt;int&gt; s1;</code> and <code>Stack&lt;double&gt; s2;</code>, are these the same class?
+            </div>
+            <button class="swift-quiz-toggle" onclick="toggleAnswer(this)">Show Answer ▼</button>
+            <div class="swift-quiz-answer">
+                <strong>Answer:</strong> No! They are two completely different classes generated by the compiler. <code>Stack&lt;int&gt;</code> has <code>int data[100]</code> inside, while <code>Stack&lt;double&gt;</code> has <code>double data[100]</code>. They have different member variables and are incompatible types. You can't assign <code>s1 = s2</code> because they're different classes, just like you can't assign an <code>int</code> to a <code>Car</code> object.
+            </div>
+        </div>
+
+        <!-- Section 4: Defining Member Functions Outside the Class -->
+        <section class="content-card">
+            <h2>Defining Member Functions Outside the Class</h2>
+            <p>
+                When you define member functions outside a class template, you must follow a specific syntax. This trips up many students at first.
+            </p>
+
+            <h3>The Syntax</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">// Class definition
+template&lt;class T&gt;
+class Pair {
+public:
+    Pair(T firstVal, T secondVal);
+    T getFirst() const;
+private:
+    T first;
+    T second;
+};
+
+// Member function definition - OUTSIDE the class
+template&lt;class T&gt;
+Pair&lt;T&gt;::Pair(T firstVal, T secondVal) {
+    first = firstVal;
+    second = secondVal;
+}
+
+template&lt;class T&gt;
+T Pair&lt;T&gt;::getFirst() const {
+    return first;
+}</code></pre>
+            </div>
+
+            <p>
+                Notice three important things:
+            </p>
+            <ul>
+                <li>You must repeat <code>template&lt;class T&gt;</code> before each member function definition</li>
+                <li>The class name becomes <code>Pair&lt;T&gt;</code> (not just <code>Pair</code>)</li>
+                <li>The constructor name is still just <code>Pair</code> (not <code>Pair&lt;T&gt;</code>)</li>
+            </ul>
+
+            <div class="callout-warning">
+                <strong>⚠️ Common Mistake:</strong> Forgetting the <code>&lt;T&gt;</code> after the class name:
+                <pre style="margin-top: 0.5rem;"><code>template&lt;class T&gt;
+void Pair::setFirst(T val) { ... }  // WRONG! Should be Pair&lt;T&gt;</code></pre>
+                This will give you a confusing compiler error.
+            </div>
+        </section>
+
+        <!-- Section 5: Template Files Must Be in Headers -->
+        <section class="content-card">
+            <h2>Where to Put Template Code</h2>
+            <p>
+                This is one of the most confusing aspects of templates for beginners. The usual approach of separating declarations (<code>.h</code> files) from definitions (<code>.cpp</code> files) doesn't work with templates.
+            </p>
+
+            <h3>The Problem</h3>
+            <p>
+                The compiler needs to see the full template definition (not just the declaration) to generate code for a specific type. If the definition is in a <code>.cpp</code> file that's compiled separately, the linker can't find the code.
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">// WRONG APPROACH - This will cause linker errors!
+
+// Stack.h
+template&lt;class T&gt;
+class Stack {
+public:
+    void push(T item);  // Declaration only
+    // ...
+};
+
+// Stack.cpp
+#include "Stack.h"
+template&lt;class T&gt;
+void Stack&lt;T&gt;::push(T item) {
+    // Definition
+}
+
+// main.cpp
+#include "Stack.h"
+int main() {
+    Stack&lt;int&gt; s;
+    s.push(10);  // Linker error: undefined reference to Stack&lt;int&gt;::push
+}</code></pre>
+            </div>
+
+            <h3>The Solution: Put Everything in the Header</h3>
+            <p>
+                There are two common approaches:
+            </p>
+
+            <h3>Approach 1: Include .cpp at end of .h (Recommended)</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">// Stack.h
+template&lt;class T&gt;
+class Stack {
+public:
+    void push(T item);
+    // ... declarations ...
+};
+
+#include "Stack.cpp"  // Include the definitions!
+
+// Stack.cpp
+template&lt;class T&gt;
+void Stack&lt;T&gt;::push(T item) {
+    // ... implementation ...
+}
+
+// main.cpp
+#include "Stack.h"  // This brings in both declaration and definition
+int main() {
+    Stack&lt;int&gt; s;
+    s.push(10);  // Works!
+}</code></pre>
+            </div>
+
+            <h3>Approach 2: Define Everything Inline</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">// Stack.h
+template&lt;class T&gt;
+class Stack {
+public:
+    void push(T item) {
+        // Definition right here in the class
+    }
+    // ... all definitions inline ...
+};</code></pre>
+            </div>
+
+            <div class="callout-note">
+                <strong>Swift Note:</strong> This is why the C++ Standard Library header files are so large. They contain both declarations and definitions because they're templates. When you <code>#include &lt;vector&gt;</code>, you're including all the template code!
+            </div>
+        </section>
+
+        <!-- Interactive Playground 3: Anime Tracker Template -->
+        <div class="code-playground" id="playground3">
+            <div class="playground-header">
+                <div class="playground-title">Real-World Example: Anime Episode Tracker</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground3')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground3')">Reset</button>
+                    <div class="loading-indicator" id="loading3">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor3">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+template&lt;class T&gt;
+class WatchList {
+public:
+    WatchList() : count(0) {}
+
+    void add(T item) {
+        if (count &lt; 50) {
+            items[count++] = item;
+        }
+    }
+
+    void display() const {
+        for (int i = 0; i &lt; count; i++) {
+            cout &lt;&lt; (i + 1) &lt;&lt; ". " &lt;&lt; items[i] &lt;&lt; endl;
+        }
+    }
+
+    int size() const { return count; }
+
+private:
+    T items[50];
+    int count;
+};
+
+int main() {
+    // Track anime by name
+    WatchList&lt;string&gt; animeList;
+    animeList.add("Attack on Titan");
+    animeList.add("Death Note");
+    animeList.add("One Piece");
+
+    cout &lt;&lt; "My Anime Watchlist:" &lt;&lt; endl;
+    animeList.display();
+
+    cout &lt;&lt; endl;
+
+    // Track episode numbers watched
+    WatchList&lt;int&gt; episodesWatched;
+    episodesWatched.add(75);
+    episodesWatched.add(37);
+    episodesWatched.add(1050);
+
+    cout &lt;&lt; "Episodes Watched:" &lt;&lt; endl;
+    episodesWatched.display();
+
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout-success">
+            <strong>Try this:</strong> Create a <code>WatchList&lt;double&gt;</code> to track ratings (like 8.5, 9.2, etc.). Add a few ratings and display them. One template, unlimited uses!
+        </div>
+
+        <!-- Swift Quiz 3 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-title">
+                💡 Swift Quiz: Template File Organization
+            </div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> Why can't you compile a template <code>.cpp</code> file separately like you do with regular classes?
+            </div>
+            <button class="swift-quiz-toggle" onclick="toggleAnswer(this)">Show Answer ▼</button>
+            <div class="swift-quiz-answer">
+                <strong>Answer:</strong> When the compiler processes a template <code>.cpp</code> file on its own, it doesn't see any specific types being used (like <code>Stack&lt;int&gt;</code> or <code>Stack&lt;double&gt;</code>). Without knowing which types to generate code for, it can't create any actual functions. Later, when the linker tries to connect <code>main.cpp</code> (which uses <code>Stack&lt;int&gt;</code>) to the template code, it finds nothing because no <code>Stack&lt;int&gt;</code> version was ever generated. That's why you need the full template definition visible wherever the template is used.
+            </div>
+        </div>
+
+        <!-- Section 6: Templates with Inheritance -->
+        <section class="content-card">
+            <h2>Templates and Inheritance</h2>
+
+            <h3>Combining Two Powerful Features</h3>
+            <p>
+                You can create template classes that inherit from other template classes. This lets you build hierarchies of generic containers and extend their functionality.
+            </p>
+
+            <h3>The Syntax</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">// Base template class
+template&lt;class T&gt;
+class Container {
+protected:
+    T data[100];
+    int size;
+public:
+    Container() : size(0) {}
+    void add(T item) { data[size++] = item; }
+};
+
+// Derived template class
+template&lt;class T&gt;
+class SortedContainer : public Container&lt;T&gt; {
+public:
+    void sort() {
+        // Sort the inherited data array
+    }
+};</code></pre>
+            </div>
+
+            <p>
+                Key points:
+            </p>
+            <ul>
+                <li>Both base and derived must be templates</li>
+                <li>Use <code>Container&lt;T&gt;</code> (not just <code>Container</code>) in the inheritance list</li>
+                <li>The type parameter <code>T</code> is passed from derived to base</li>
+            </ul>
+
+            <div class="ascii-diagram">
+Template Inheritance:
+
+template&lt;class T&gt;                template&lt;class T&gt;
+class Base { ... }     ←─────   class Derived : public Base&lt;T&gt; { ... }
+                                                         ↑
+                                                    Pass T to base!
+
+When you create Derived&lt;int&gt;:
+  - Derived class gets T = int
+  - Base class ALSO gets T = int
+  - Both specialized for the same type
+            </div>
+
+            <h3>Accessing Inherited Members</h3>
+            <p>
+                When accessing inherited members in a derived template class, you should use <code>this-&gt;</code> to be safe:
+            </p>
+
+            <div class="code-block">
+<pre><code class="language-cpp">template&lt;class T&gt;
+class Derived : public Base&lt;T&gt; {
+public:
+    void process() {
+        // CORRECT - explicitly show it's inherited
+        this-&gt;data[0] = someValue;
+        this-&gt;size++;
+
+        // Also works, but this-&gt; is clearer
+        data[0] = someValue;
+    }
+};</code></pre>
+            </div>
+
+            <div class="callout-note">
+                <strong>Swift Note:</strong> The <code>this-&gt;</code> makes it clear to both the compiler and human readers that you're accessing an inherited member. Some compilers require it for template base classes due to how name lookup works.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 4: Template Inheritance -->
+        <div class="code-playground" id="playground4">
+            <div class="playground-header">
+                <div class="playground-title">Experiment: Template Inheritance with Backup Feature</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground4')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground4')">Reset</button>
+                    <div class="loading-indicator" id="loading4">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor4">#include &lt;iostream&gt;
+using namespace std;
+
+template&lt;class T&gt;
+class SimpleArray {
+protected:
+    T data[10];
+    int used;
+public:
+    SimpleArray() : used(0) {}
+
+    void add(T item) {
+        if (used &lt; 10) {
+            data[used++] = item;
+        }
+    }
+
+    void display() const {
+        for (int i = 0; i &lt; used; i++) {
+            cout &lt;&lt; data[i] &lt;&lt; " ";
+        }
+        cout &lt;&lt; endl;
+    }
+
+    int getUsed() const { return used; }
+};
+
+template&lt;class T&gt;
+class ArrayWithBackup : public SimpleArray&lt;T&gt; {
+private:
+    T backup[10];
+    int backupUsed;
+
+public:
+    ArrayWithBackup() : backupUsed(0) {}
+
+    void saveBackup() {
+        backupUsed = this-&gt;used;
+        for (int i = 0; i &lt; backupUsed; i++) {
+            backup[i] = this-&gt;data[i];
+        }
+        cout &lt;&lt; "Backup saved!" &lt;&lt; endl;
+    }
+
+    void restoreBackup() {
+        this-&gt;used = backupUsed;
+        for (int i = 0; i &lt; this-&gt;used; i++) {
+            this-&gt;data[i] = backup[i];
+        }
+        cout &lt;&lt; "Backup restored!" &lt;&lt; endl;
+    }
+};
+
+int main() {
+    ArrayWithBackup&lt;int&gt; numbers;
+
+    numbers.add(10);
+    numbers.add(20);
+    numbers.add(30);
+
+    cout &lt;&lt; "Original: ";
+    numbers.display();
+
+    numbers.saveBackup();
+
+    numbers.add(40);
+    numbers.add(50);
+    cout &lt;&lt; "After adding more: ";
+    numbers.display();
+
+    numbers.restoreBackup();
+    cout &lt;&lt; "After restore: ";
+    numbers.display();
+
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout-success">
+            <strong>Try this:</strong> Change <code>ArrayWithBackup&lt;int&gt;</code> to <code>ArrayWithBackup&lt;double&gt;</code> and use decimal numbers. The inheritance works for any type!
+        </div>
+
+        <!-- Swift Quiz 4 -->
+        <div class="swift-quiz">
+            <div class="swift-quiz-title">
+                💡 Swift Quiz: Template Inheritance
+            </div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> If you write <code>class Derived : public Base&lt;T&gt;</code>, what happens if someone creates <code>Derived&lt;double&gt; d;</code>?
+            </div>
+            <button class="swift-quiz-toggle" onclick="toggleAnswer(this)">Show Answer ▼</button>
+            <div class="swift-quiz-answer">
+                <strong>Answer:</strong> The compiler creates a <code>Derived&lt;double&gt;</code> class that inherits from <code>Base&lt;double&gt;</code>. Both the derived and base portions use <code>double</code> for the type parameter <code>T</code>. This means if the base class has <code>T data[100]</code>, it becomes <code>double data[100]</code>. The whole inheritance chain specializes to the same type.
+            </div>
+        </div>
+
+        <!-- Section 7: Common Mistakes -->
+        <section class="content-card">
+            <h2>Common Mistakes with Templates</h2>
+            <p>
+                Here are the most frequent errors students make when learning templates, with buggy code examples. See if you can spot what's wrong!
+            </p>
+
+            <h3>Mistake 1: Missing Template Keyword</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">class T {
+public:
+    T maximum(T x, T y) {
+        if (x &gt; y) return x;
+        return y;
+    }
+};</code></pre>
+            </div>
+            <p>
+                What's wrong? The code tries to create a generic function but forgets the template syntax entirely. <code>T</code> is being used as a regular class name, not a type parameter.
+            </p>
+
+            <h3>Mistake 2: Wrong Member Function Syntax</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">template&lt;class T&gt;
+class Box {
+public:
+    T getValue() const;
+private:
+    T value;
+};
+
+template&lt;class T&gt;
+T Box::getValue() const {
+    return value;
+}</code></pre>
+            </div>
+            <p>
+                What's wrong? When defining <code>getValue()</code> outside the class, it needs <code>Box&lt;T&gt;::</code> not just <code>Box::</code>.
+            </p>
+
+            <h3>Mistake 3: Template in .cpp File</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">// Container.h
+template&lt;class T&gt;
+class Container {
+public:
+    void add(T item);
+};
+
+// Container.cpp
+template&lt;class T&gt;
+void Container&lt;T&gt;::add(T item) {
+    // implementation
+}
+
+// main.cpp
+#include "Container.h"
+int main() {
+    Container&lt;int&gt; c;
+    c.add(5);
+}</code></pre>
+            </div>
+            <p>
+                What's wrong? The template definition is in <code>Container.cpp</code> which isn't included in <code>main.cpp</code>. The linker won't find <code>Container&lt;int&gt;::add</code> because it was never generated.
+            </p>
+
+            <h3>Mistake 4: Forgetting Type in Declaration</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">template&lt;class T&gt;
+class Stack {
+    // ...
+};
+
+int main() {
+    Stack myStack;
+    myStack.push(10);
+}</code></pre>
+            </div>
+            <p>
+                What's wrong? Class templates require explicit type specification. Should be <code>Stack&lt;int&gt; myStack;</code>
+            </p>
+
+            <h3>Mistake 5: Constructor Name with &lt;T&gt;</h3>
+            <div class="code-block">
+<pre><code class="language-cpp">template&lt;class T&gt;
+class Pair {
+public:
+    Pair(T a, T b);
+};
+
+template&lt;class T&gt;
+Pair&lt;T&gt;::Pair&lt;T&gt;(T a, T b) {
+    // implementation
+}</code></pre>
+            </div>
+            <p>
+                What's wrong? The constructor name shouldn't have <code>&lt;T&gt;</code> after it. Should be <code>Pair&lt;T&gt;::Pair(T a, T b)</code>.
+            </p>
+        </section>
+
+        <!-- Interactive Playground 5: Find the Bug -->
+        <div class="code-playground" id="playground5">
+            <div class="playground-header">
+                <div class="playground-title">Debug Challenge: Fix This Template Code</div>
+                <div class="playground-actions">
+                    <button class="run-btn" onclick="runCode('playground5')">Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('playground5')">Reset</button>
+                    <div class="loading-indicator" id="loading5">
+                        <div class="spinner"></div>
+                        <span>Compiling...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="playground-editor">
+                <textarea id="editor5">#include &lt;iostream&gt;
+using namespace std;
+
+template&lt;class T&gt;
+class Calculator {
+public:
+    T add(T a, T b);
+    T multiply(T a, T b);
+};
+
+template&lt;class T&gt;
+T Calculator::add(T a, T b) {
+    return a + b;
+}
+
+template&lt;class T&gt;
+T Calculator::multiply(T a, T b) {
+    return a * b;
+}
+
+int main() {
+    Calculator calc;
+    cout &lt;&lt; "5 + 3 = " &lt;&lt; calc.add(5, 3) &lt;&lt; endl;
+    cout &lt;&lt; "5 * 3 = " &lt;&lt; calc.multiply(5, 3) &lt;&lt; endl;
+    return 0;
+}</textarea>
+            </div>
+            <div class="playground-output">
+                <div class="output-header">Output:</div>
+                <div class="output-content">
+                    <div class="output-text output-placeholder">Click "Run Code" to compile and execute...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout-success">
+            <strong>Hint:</strong> There are TWO errors in this code! One is in the member function definitions, and one is in <code>main()</code>. Can you find and fix both?
+        </div>
+
+        <!-- Summary Section -->
+        <section class="content-card">
+            <h2>Summary</h2>
+            <p>
+                You've now learned how to write generic, reusable code with templates. Here are the key points to remember:
+            </p>
+
+            <h3>Function Templates</h3>
+            <ul>
+                <li>Use <code>template&lt;class T&gt;</code> before the function to create a generic version</li>
+                <li>The compiler generates specific versions automatically based on the types you use</li>
+                <li>The type must support whatever operations your template performs</li>
+                <li><code>class T</code> and <code>typename T</code> mean the same thing</li>
+            </ul>
+
+            <h3>Class Templates</h3>
+            <ul>
+                <li>Create generic classes like containers that work with any type</li>
+                <li>You must explicitly specify the type: <code>Stack&lt;int&gt;</code>, not just <code>Stack</code></li>
+                <li>Each instantiation (<code>Stack&lt;int&gt;</code>, <code>Stack&lt;double&gt;</code>) is a separate class</li>
+                <li>Member functions defined outside the class need <code>template&lt;class T&gt;</code> and <code>ClassName&lt;T&gt;::</code></li>
+            </ul>
+
+            <h3>Template File Organization</h3>
+            <ul>
+                <li>Template definitions must be in header files, not separate <code>.cpp</code> files</li>
+                <li>Common approach: include the <code>.cpp</code> at the end of the <code>.h</code> file</li>
+                <li>The compiler needs the full definition to generate code for each type</li>
+            </ul>
+
+            <h3>Templates with Inheritance</h3>
+            <ul>
+                <li>Template classes can inherit from other template classes</li>
+                <li>Use <code>BaseClass&lt;T&gt;</code> in the inheritance list to pass the type parameter</li>
+                <li>Use <code>this-&gt;</code> to access inherited members in derived templates</li>
+                <li>Both base and derived specialize to the same type</li>
+            </ul>
+
+            <h3>Next Steps</h3>
+            <p>
+                Now that you understand the theory, move on to <strong>Examples</strong> to see templates in real-world scenarios like music playlist managers and anime rating systems. Then test yourself with <strong>Practice</strong> problems and the <strong>Quiz</strong>!
+            </p>
+        </section>
+
+    </div>
+
+    <script>
+        // Toggle Swift Quiz answers
+        function toggleAnswer(button) {
+            const quiz = button.closest('.swift-quiz');
+            const answer = quiz.querySelector('.swift-quiz-answer');
+
+            if (answer.classList.contains('visible')) {
+                answer.classList.remove('visible');
+                button.textContent = 'Show Answer ▼';
+            } else {
+                answer.classList.add('visible');
+                button.textContent = 'Hide Answer ▲';
+            }
+        }
+
+        // Toggle mobile navigation menu
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                const menu = document.getElementById('navMenu');
+                menu.classList.remove('active');
+            });
+        });
+
+        // ============================================
+        // CUSTOM CODE PLAYGROUND FUNCTIONS
+        // ============================================
+
+        // Store CodeMirror instances and original code
+        const editors = {};
+        const originalCode = {};
+
+        // Initialize CodeMirror editors
+        function initEditor(id, textareaId) {
+            const textarea = document.getElementById(textareaId);
+            if (!textarea) return null;
+
+            originalCode[id] = textarea.value;
+
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+
+            editors[id] = editor;
+            return editor;
+        }
+
+        // Initialize all editors on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            initEditor('playground1', 'editor1');
+            initEditor('playground2', 'editor2');
+            initEditor('playground3', 'editor3');
+            initEditor('playground4', 'editor4');
+            initEditor('playground5', 'editor5');
+        });
+
+        // Run code via Piston API
+        async function runCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const code = editor.getValue();
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+            const runBtn = document.querySelector(`#${playgroundId} .run-btn`);
+            const loadingIndicator = document.getElementById(`loading${playgroundId.replace('playground', '')}`);
+
+            // Show loading state
+            runBtn.disabled = true;
+            loadingIndicator.classList.add('active');
+            outputDiv.className = 'output-text output-info';
+            outputDiv.textContent = 'Compiling and executing your code...';
+
+            try {
+                // Call Piston API
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        stdin: '',
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                // Display results
+                if (result.compile && result.compile.code !== 0) {
+                    // Compilation error
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.innerHTML = `<div class="output-info">❌ Compilation Error:</div>${escapeHtml(result.compile.stderr || result.compile.output)}`;
+                } else if (result.run) {
+                    // Execution output
+                    if (result.run.code === 0) {
+                        // Success
+                        outputDiv.className = 'output-text output-success';
+                        const output = result.run.stdout || result.run.output || '(no output)';
+                        outputDiv.innerHTML = `<div class="output-info">✅ Executed successfully:</div>${escapeHtml(output)}`;
+                    } else {
+                        // Runtime error
+                        outputDiv.className = 'output-text output-error';
+                        const error = result.run.stderr || result.run.output || 'Runtime error';
+                        outputDiv.innerHTML = `<div class="output-info">❌ Runtime Error (exit code ${result.run.code}):</div>${escapeHtml(error)}`;
+                    }
+                } else {
+                    // Unknown error
+                    outputDiv.className = 'output-text output-error';
+                    outputDiv.textContent = 'Error: Unable to execute code. Please try again.';
+                }
+
+            } catch (error) {
+                // Network or API error
+                outputDiv.className = 'output-text output-error';
+                outputDiv.innerHTML = `<div class="output-info">❌ Error:</div>Failed to connect to compilation service. Please check your internet connection and try again.`;
+                console.error('Piston API error:', error);
+            } finally {
+                // Hide loading state
+                runBtn.disabled = false;
+                loadingIndicator.classList.remove('active');
+            }
+        }
+
+        // Reset code to original
+        function resetCode(playgroundId) {
+            const editor = editors[playgroundId];
+            const outputDiv = document.querySelector(`#${playgroundId} .output-text`);
+
+            editor.setValue(originalCode[playgroundId]);
+            outputDiv.className = 'output-text output-placeholder';
+            outputDiv.textContent = 'Click "Run Code" to compile and execute...';
+        }
+
+        // Escape HTML for safe display
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

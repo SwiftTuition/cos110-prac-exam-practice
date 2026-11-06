@@ -1,0 +1,2187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 12 Quiz: Exception Handling | Swift Tuition</title>
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #0ea5e9;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #0ea5e9;
+            object-fit: cover;
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-brand-company {
+            font-size: 0.9rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-brand-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #f1f5f9;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .nav-menu a.active {
+            color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.15);
+            border-bottom: 2px solid #0ea5e9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 1rem;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            text-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+        }
+
+        .quiz-intro {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #0ea5e9;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-intro h2 {
+            color: #0ea5e9;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-intro ul {
+            margin-left: 2rem;
+            color: #cbd5e1;
+        }
+
+        .quiz-intro li {
+            margin-bottom: 0.5rem;
+        }
+
+        .question-block {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .question-block:hover {
+            border-color: rgba(14, 165, 233, 0.4);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .question-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0ea5e9;
+        }
+
+        .question-marks {
+            background: rgba(14, 165, 233, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #e2e8f0;
+            line-height: 1.8;
+        }
+
+        .options {
+            margin: 1.5rem 0;
+        }
+
+        .option {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(15, 23, 42, 0.8);
+            border-color: #0ea5e9;
+            transform: translateX(5px);
+        }
+
+        .code-block {
+            background: #1e293b;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            background: transparent !important;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            border-left: 4px solid #10b981;
+        }
+
+        .answer-section.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .answer-section h3 {
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .correct-answer {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .explanation {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .explanation p {
+            margin-bottom: 1rem;
+        }
+
+        .explanation ul, .explanation ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .explanation li {
+            margin-bottom: 0.5rem;
+        }
+
+        .explanation strong {
+            color: #0ea5e9;
+        }
+
+        .citation {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.3rem;
+        }
+
+        .citation-label {
+            color: #f59e0b;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .note {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid #8b5cf6;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.3rem;
+        }
+
+        .note-label {
+            color: #8b5cf6;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .question-block {
+                padding: 1.5rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+        }
+
+        /* Prism token styling */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 12: Exception Handling</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html" class="active">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>📝 Unit 12 Assessment Quiz</h1>
+            <p>Test your understanding of Exception Handling</p>
+        </div>
+
+        <div class="quiz-intro">
+            <h2>Quiz Information</h2>
+            <ul>
+                <li><strong>Total Questions:</strong> 25 questions</li>
+                <li><strong>Question Types:</strong> Multiple choice, True/False, Code tracing, Implementation tasks</li>
+                <li><strong>Format:</strong> Modeled after COS 110 EO1 & EO2 examination papers</li>
+                <li><strong>Difficulty:</strong> Assessment-level (exam preparation)</li>
+            </ul>
+        </div>
+
+        <!-- SECTION 1: CONCEPTUAL UNDERSTANDING -->
+
+        <!-- Question 1 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 1</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                Which of the following best describes exception handling in C++?
+            </div>
+            <div class="options">
+                <div class="option">a) A mechanism to prevent compilation errors</div>
+                <div class="option">b) A way to handle runtime errors by transferring control to error-handling code</div>
+                <div class="option">c) A technique to optimize program performance</div>
+                <div class="option">d) A method to validate user input at compile time</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q1')">Show Answer</button>
+            <div class="answer-section" id="q1">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) A way to handle runtime errors by transferring control to error-handling code</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Exception handling is a runtime mechanism that allows a program to respond to exceptional circumstances (like runtime errors) by transferring control from one part of the program to another.</p>
+                    <p>When an exception is thrown, the normal flow of execution stops and control is transferred to the nearest matching catch block.</p>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> Exceptions handle runtime errors, not compilation errors. The compiler doesn't execute exception handling.</li>
+                        <li><strong>c)</strong> Exception handling is for error management, not performance optimization. In fact, it can slightly decrease performance.</li>
+                        <li><strong>d)</strong> Input validation can use exceptions, but they're evaluated at runtime, not compile time.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 2</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                What happens when an exception is thrown but there is no matching catch block?
+            </div>
+            <div class="options">
+                <div class="option">a) The exception is silently ignored</div>
+                <div class="option">b) The program terminates (calls std::terminate)</div>
+                <div class="option">c) The exception is automatically converted to a return value</div>
+                <div class="option">d) The program continues execution from where the exception was thrown</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q2')">Show Answer</button>
+            <div class="answer-section" id="q2">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) The program terminates (calls std::terminate)</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>If an exception is thrown and there is no matching catch block in the entire call stack, C++ will call <code>std::terminate()</code>, which by default calls <code>std::abort()</code> to end the program abnormally.</p>
+                    <p>This is why it's critical to have appropriate catch blocks for exceptions you might throw, or use a catch-all <code>catch (...)</code> block to prevent unexpected termination.</p>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> Exceptions are never silently ignored - that would defeat their purpose</li>
+                        <li><strong>c)</strong> There is no automatic conversion to return values</li>
+                        <li><strong>d)</strong> Execution does NOT continue from the throw point - control is transferred away permanently</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 3</span>
+                <span class="question-marks">1 mark</span>
+            </div>
+            <div class="question-text">
+                True or False: A catch block can catch exceptions of the specified type AND any types derived from it.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q3')">Show Answer</button>
+            <div class="answer-section" id="q3">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>True</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This statement is <strong>true</strong>. When you catch by reference (e.g., <code>catch (BaseException& e)</code>), the catch block will match exceptions of type <code>BaseException</code> and any classes derived from it.</p>
+                    <p>This is polymorphism in action - a base class reference can refer to derived class objects.</p>
+                    <p>Example:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class BaseException { };
+class DerivedException : public BaseException { };
+
+try {
+    throw DerivedException();
+}
+catch (BaseException& e) {
+    // This WILL catch DerivedException
+}</code></pre>
+                    </div>
+                    <p>This is why you should order catch blocks from most specific to most general - the first matching catch block is executed.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 4</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                What is the purpose of catching exceptions by reference (e.g., <code>catch (Exception& e)</code>) rather than by value?
+            </div>
+            <div class="options">
+                <div class="option">a) It's required by C++ syntax</div>
+                <div class="option">b) To avoid object slicing and enable polymorphism</div>
+                <div class="option">c) To make the program run faster</div>
+                <div class="option">d) To prevent the exception from being caught</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q4')">Show Answer</button>
+            <div class="answer-section" id="q4">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) To avoid object slicing and enable polymorphism</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Catching by reference is important for two reasons:</p>
+                    <ol>
+                        <li><strong>Avoid object slicing:</strong> If you catch by value and throw a derived exception, only the base class part is copied - you lose the derived class data.</li>
+                        <li><strong>Enable polymorphism:</strong> With references, virtual functions work correctly, so calling a virtual method on the caught exception will invoke the correct derived class version.</li>
+                    </ol>
+                    <p>Example of the problem with catching by value:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class Base {
+public:
+    virtual void show() { cout << "Base"; }
+};
+
+class Derived : public Base {
+public:
+    void show() { cout << "Derived"; }
+};
+
+try {
+    throw Derived();
+}
+catch (Base e) {  // BY VALUE - BAD!
+    e.show();     // Prints "Base" due to slicing
+}
+
+catch (Base& e) {  // BY REFERENCE - GOOD!
+    e.show();      // Prints "Derived" - polymorphism works
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 5</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                In the following code, which catch block will execute when <code>divide(10, 0)</code> is called?
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">class MathException { };
+class DivisionException : public MathException { };
+
+int divide(int a, int b) {
+    if (b == 0) {
+        throw DivisionException();
+    }
+    return a / b;
+}
+
+try {
+    divide(10, 0);
+}
+catch (DivisionException& e) {
+    cout << "Caught DivisionException";
+}
+catch (MathException& e) {
+    cout << "Caught MathException";
+}</code></pre>
+            </div>
+            <div class="options">
+                <div class="option">a) The DivisionException catch block</div>
+                <div class="option">b) The MathException catch block</div>
+                <div class="option">c) Both catch blocks</div>
+                <div class="option">d) Neither - the program terminates</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q5')">Show Answer</button>
+            <div class="answer-section" id="q5">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>a) The DivisionException catch block</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>When an exception is thrown, C++ searches for a matching catch block from top to bottom. The <strong>first</strong> matching catch block is executed, then control exits the try-catch structure.</p>
+                    <p>In this case:</p>
+                    <ol>
+                        <li><code>DivisionException()</code> is thrown</li>
+                        <li>First catch block checks: Is it <code>DivisionException</code>? YES - exact match!</li>
+                        <li>Execute this catch block and print "Caught DivisionException"</li>
+                        <li>Exit the try-catch structure (the second catch is never evaluated)</li>
+                    </ol>
+                    <p><strong>Important:</strong> Even though <code>DivisionException</code> inherits from <code>MathException</code> (so the second catch would also match), only the FIRST matching catch is executed.</p>
+                    <p><strong>Best practice:</strong> Order catch blocks from most specific to most general:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">catch (DivisionException& e) { }  // Most specific first
+catch (MathException& e) { }      // More general second
+catch (...) { }                   // Catch-all last</code></pre>
+                    </div>
+                    <p>If you reverse the order (general first), the specific catch blocks will never execute because the general one catches everything.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 6</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                What will the following code output?
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">class FileException {
+private:
+    int errorCode;
+public:
+    FileException(int code) : errorCode(code) {}
+    int getCode() const { return errorCode; }
+};
+
+void openFile(bool success) {
+    if (!success) {
+        throw FileException(404);
+    }
+    cout << "File opened" << endl;
+}
+
+int main() {
+    try {
+        openFile(false);
+        cout << "After openFile" << endl;
+    }
+    catch (FileException& e) {
+        cout << "Error code: " << e.getCode() << endl;
+    }
+    cout << "Program continues" << endl;
+    return 0;
+}</code></pre>
+            </div>
+            <div class="options">
+                <div class="option">a) File opened<br>After openFile<br>Program continues</div>
+                <div class="option">b) Error code: 404<br>Program continues</div>
+                <div class="option">c) File opened<br>Error code: 404<br>Program continues</div>
+                <div class="option">d) Error code: 404<br>After openFile<br>Program continues</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q6')">Show Answer</button>
+            <div class="answer-section" id="q6">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) Error code: 404<br>Program continues</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation - Line by line trace:</strong></p>
+                    <ol>
+                        <li>Enter <code>main()</code>, start try block</li>
+                        <li>Call <code>openFile(false)</code></li>
+                        <li>In <code>openFile()</code>: <code>success</code> is false, so <code>!success</code> is true</li>
+                        <li>Throw <code>FileException(404)</code></li>
+                        <li><strong>Control immediately jumps to catch block</strong> - the rest of <code>openFile()</code> is skipped</li>
+                        <li>"File opened" is NEVER printed because we threw before reaching that line</li>
+                        <li>Back in <code>main()</code>, the line <code>cout << "After openFile"</code> is SKIPPED because we jumped to the catch block</li>
+                        <li>Catch block executes: prints "Error code: 404"</li>
+                        <li>After catch block, execution continues normally</li>
+                        <li>Print "Program continues"</li>
+                    </ol>
+                    <p><strong>Key insight:</strong> When an exception is thrown, execution NEVER returns to the point after the throw. All code between the throw and the catch is skipped.</p>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> "File opened" never prints because we throw before reaching it</li>
+                        <li><strong>c)</strong> Same reason - can't print "File opened" after throwing</li>
+                        <li><strong>d)</strong> "After openFile" is skipped because the exception transfers control directly to the catch block</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 7</span>
+                <span class="question-marks">1 mark</span>
+            </div>
+            <div class="question-text">
+                True or False: The <code>catch (...)</code> block catches ALL types of exceptions, including built-in types and custom exception classes.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q7')">Show Answer</button>
+            <div class="answer-section" id="q7">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>True</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This statement is <strong>true</strong>. The catch-all syntax <code>catch (...)</code> (three dots, called an ellipsis) will catch ANY exception thrown, regardless of its type.</p>
+                    <p>This includes:</p>
+                    <ul>
+                        <li>Custom exception classes</li>
+                        <li>Built-in types thrown as exceptions (int, string, etc.)</li>
+                        <li>Standard library exceptions (std::exception and derived)</li>
+                        <li>Anything else thrown with <code>throw</code></li>
+                    </ul>
+                    <p>Example:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">try {
+    throw 42;  // Throwing an int
+    // or throw "error";  // Throwing a string
+    // or throw MyException();  // Custom class
+}
+catch (int e) {
+    cout << "Caught int: " << e;
+}
+catch (...) {
+    cout << "Caught something else!";
+    // This catches ALL other types
+}</code></pre>
+                    </div>
+                    <p><strong>Important:</strong> The catch-all should always be LAST, because it matches everything - any catch blocks after it would be unreachable.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 8</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                Which of the following is the BEST practice for resource cleanup with exceptions?
+            </div>
+            <div class="options">
+                <div class="option">a) Always use catch (...) and manually clean up resources</div>
+                <div class="option">b) Validate all inputs to prevent exceptions from being thrown</div>
+                <div class="option">c) Acquire resources after validation, use try-catch for cleanup, and rethrow if needed</div>
+                <div class="option">d) Disable exception handling to avoid cleanup issues</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q8')">Show Answer</button>
+            <div class="answer-section" id="q8">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>c) Acquire resources after validation, use try-catch for cleanup, and rethrow if needed</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>The best practice for exception-safe resource management follows this pattern:</p>
+                    <ol>
+                        <li><strong>Validate BEFORE allocating:</strong> Check inputs before acquiring resources (memory, files, etc.)</li>
+                        <li><strong>Acquire resources:</strong> Only allocate after validation passes</li>
+                        <li><strong>Use try-catch for cleanup:</strong> Wrap risky operations in try, catch exceptions, clean up resources in catch, then rethrow</li>
+                        <li><strong>Rethrow if needed:</strong> Use <code>throw;</code> to propagate the exception after cleanup</li>
+                    </ol>
+                    <p>Example:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">void processFile(int size) {
+    if (size <= 0) {
+        throw InvalidSizeException();  // Validate FIRST
+    }
+
+    int* buffer = new int[size];  // Allocate AFTER validation
+
+    try {
+        riskyOperation(buffer, size);
+    }
+    catch (...) {
+        delete[] buffer;  // Cleanup
+        throw;            // Rethrow to caller
+    }
+
+    delete[] buffer;  // Normal cleanup
+}</code></pre>
+                    </div>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> Relying only on catch-all is risky - you might not know what exception occurred</li>
+                        <li><strong>b)</strong> While validation is good, you can't prevent ALL exceptions (e.g., out of memory, hardware failures)</li>
+                        <li><strong>d)</strong> Disabling exceptions removes a powerful error-handling mechanism</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 9</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                What is the purpose of rethrowing an exception using <code>throw;</code> (with no argument)?
+            </div>
+            <div class="options">
+                <div class="option">a) To throw a new exception of the same type</div>
+                <div class="option">b) To propagate the current exception to the next outer catch block</div>
+                <div class="option">c) To reset the exception state</div>
+                <div class="option">d) To convert the exception to a return value</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q9')">Show Answer</button>
+            <div class="answer-section" id="q9">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) To propagate the current exception to the next outer catch block</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>The syntax <code>throw;</code> (with no argument) can only be used inside a catch block. It rethrows the EXACT SAME exception object that was caught, propagating it to the next outer exception handler.</p>
+                    <p>This is useful when you want to:</p>
+                    <ul>
+                        <li>Perform partial error handling (like logging or cleanup)</li>
+                        <li>Let outer code also handle the exception</li>
+                        <li>Preserve the original exception object (including derived class info)</li>
+                    </ul>
+                    <p>Example:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">void innerFunction() {
+    int* ptr = new int[100];
+    try {
+        riskyOperation(ptr);
+    }
+    catch (...) {
+        delete[] ptr;  // Cleanup locally
+        throw;         // Rethrow to caller
+    }
+}
+
+void outerFunction() {
+    try {
+        innerFunction();
+    }
+    catch (MyException& e) {
+        cout << "Outer caught: " << e.getMessage();
+    }
+}</code></pre>
+                    </div>
+                    <p>The inner function cleans up its resources, then rethrows. The outer function catches and handles the exception.</p>
+                    <p><strong>Important difference:</strong></p>
+                    <ul>
+                        <li><code>throw;</code> - Rethrows the SAME exception object (preserves type, polymorphism)</li>
+                        <li><code>throw e;</code> - Throws a COPY of e (may cause object slicing if e is a base reference to derived object)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 10</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                Given the following exception hierarchy, what will be the output?
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">class Exception {
+public:
+    virtual void display() { cout << "Exception"; }
+};
+
+class NetworkError : public Exception {
+public:
+    void display() { cout << "NetworkError"; }
+};
+
+class TimeoutError : public NetworkError {
+public:
+    void display() { cout << "TimeoutError"; }
+};
+
+int main() {
+    try {
+        throw TimeoutError();
+    }
+    catch (Exception& e) {
+        e.display();
+    }
+    return 0;
+}</code></pre>
+            </div>
+            <div class="options">
+                <div class="option">a) Exception</div>
+                <div class="option">b) NetworkError</div>
+                <div class="option">c) TimeoutError</div>
+                <div class="option">d) Compilation error</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q10')">Show Answer</button>
+            <div class="answer-section" id="q10">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>c) TimeoutError</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This question tests your understanding of polymorphism with exceptions.</p>
+                    <p>Here's what happens:</p>
+                    <ol>
+                        <li>We throw a <code>TimeoutError</code> object</li>
+                        <li>We catch it with <code>Exception& e</code> (base class reference)</li>
+                        <li>Because <code>display()</code> is declared <code>virtual</code> in the base class, C++ uses dynamic binding</li>
+                        <li>When we call <code>e.display()</code>, it invokes the DERIVED class version (<code>TimeoutError::display()</code>)</li>
+                        <li>Output: "TimeoutError"</li>
+                    </ol>
+                    <p><strong>Inheritance chain:</strong></p>
+                    <pre>Exception (base)
+    ↑
+NetworkError (derived from Exception)
+    ↑
+TimeoutError (derived from NetworkError)</pre>
+                    <p><strong>Why polymorphism works here:</strong></p>
+                    <ul>
+                        <li>We catch by REFERENCE: <code>Exception& e</code></li>
+                        <li><code>display()</code> is VIRTUAL in the base class</li>
+                        <li>Therefore, the actual type (<code>TimeoutError</code>) determines which <code>display()</code> is called</li>
+                    </ul>
+                    <p><strong>If we caught by VALUE instead:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">catch (Exception e) {  // BY VALUE - slicing occurs
+    e.display();       // Would print "Exception"
+}</code></pre>
+                    </div>
+                    <p>Catching by value would cause object slicing - only the <code>Exception</code> part would be copied, and we'd lose the derived class information.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 11</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                When should you use exception handling instead of return codes?
+            </div>
+            <div class="options">
+                <div class="option">a) Always - exceptions are better in every case</div>
+                <div class="option">b) When errors are rare and exceptional, not part of normal flow</div>
+                <div class="option">c) Only for file I/O operations</div>
+                <div class="option">d) Never - return codes are always more efficient</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q11')">Show Answer</button>
+            <div class="answer-section" id="q11">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) When errors are rare and exceptional, not part of normal flow</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Exception handling is best used for truly exceptional conditions - situations that are:</p>
+                    <ul>
+                        <li><strong>Rare:</strong> Don't happen during normal execution</li>
+                        <li><strong>Unexpected:</strong> Invalid inputs, resource failures, programming errors</li>
+                        <li><strong>Require special handling:</strong> Can't be handled locally</li>
+                    </ul>
+                    <p><strong>Use exceptions for:</strong></p>
+                    <ul>
+                        <li>Out of memory errors</li>
+                        <li>File not found</li>
+                        <li>Network connection failures</li>
+                        <li>Invalid array indices</li>
+                        <li>Division by zero</li>
+                    </ul>
+                    <p><strong>Use return codes for:</strong></p>
+                    <ul>
+                        <li>Expected failures (e.g., user enters wrong password - this is normal, not exceptional)</li>
+                        <li>Frequent checks (e.g., checking if a value is in a list)</li>
+                        <li>Performance-critical code paths</li>
+                    </ul>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> Exceptions have overhead - using them for normal control flow (like "end of file") is inefficient</li>
+                        <li><strong>c)</strong> Exceptions are useful for many types of errors, not just file I/O</li>
+                        <li><strong>d)</strong> Sometimes exceptions are clearer and lead to cleaner code separation</li>
+                    </ul>
+                    <p><strong>Rule of thumb:</strong> If something happens frequently and is part of normal operation, use return codes. If it's rare and exceptional, use exceptions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 12</span>
+                <span class="question-marks">1 mark</span>
+            </div>
+            <div class="question-text">
+                True or False: It is valid C++ syntax to throw an integer as an exception.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q12')">Show Answer</button>
+            <div class="answer-section" id="q12">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>True</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This statement is <strong>true</strong>. C++ allows you to throw ANY type as an exception, including:</p>
+                    <ul>
+                        <li>Built-in types: <code>int</code>, <code>double</code>, <code>char</code>, etc.</li>
+                        <li>Pointers: <code>char*</code>, <code>int*</code></li>
+                        <li>Custom classes</li>
+                        <li>Standard library types: <code>string</code>, <code>std::exception</code></li>
+                    </ul>
+                    <p>Example:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">try {
+    throw 404;  // Throwing an int
+}
+catch (int errorCode) {
+    cout << "Error: " << errorCode;
+}</code></pre>
+                    </div>
+                    <p><strong>However:</strong> Just because you CAN throw any type doesn't mean you SHOULD. Best practice is to use descriptive exception classes that carry meaningful information about the error.</p>
+                    <p><strong>Why classes are better than primitive types:</strong></p>
+                    <ul>
+                        <li>More descriptive (class names explain what went wrong)</li>
+                        <li>Can store multiple pieces of information (error message, error code, context)</li>
+                        <li>Support inheritance hierarchies for organized error handling</li>
+                        <li>Can have methods to format error messages</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 13 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 13</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                What is wrong with the following code?
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">int* allocateArray(int size) {
+    int* arr = new int[size];
+
+    if (size <= 0) {
+        throw "Invalid size";
+    }
+
+    for (int i = 0; i < size; i++) {
+        arr[i] = 0;
+    }
+
+    return arr;
+}</code></pre>
+            </div>
+            <div class="options">
+                <div class="option">a) You cannot throw string literals</div>
+                <div class="option">b) Memory is allocated before validation, causing a leak when exception is thrown</div>
+                <div class="option">c) The array should be allocated with malloc, not new</div>
+                <div class="option">d) Nothing is wrong with this code</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q13')">Show Answer</button>
+            <div class="answer-section" id="q13">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) Memory is allocated before validation, causing a leak when exception is thrown</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This code has a critical memory leak bug. Here's the problem sequence:</p>
+                    <ol>
+                        <li>Line 2: Allocate memory with <code>new int[size]</code></li>
+                        <li>Line 4-6: Check if size is invalid</li>
+                        <li>If size is invalid (≤ 0), throw an exception</li>
+                        <li><strong>Problem:</strong> When we throw, we jump to the catch block, skipping the rest of the function</li>
+                        <li>The <code>delete[]</code> is never called, so the allocated memory leaks</li>
+                    </ol>
+                    <p><strong>Let's trace what happens with <code>allocateArray(-5)</code>:</strong></p>
+                    <ol>
+                        <li>Allocate memory for -5 elements (undefined behavior, but let's assume it allocates something)</li>
+                        <li>Check: is -5 ≤ 0? YES</li>
+                        <li>Throw exception</li>
+                        <li>The pointer <code>arr</code> is lost when we throw - we can NEVER free this memory</li>
+                        <li>Memory leak!</li>
+                    </ol>
+                    <p><strong>The fix: Validate BEFORE allocating</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">int* allocateArray(int size) {
+    if (size <= 0) {
+        throw "Invalid size";  // Throw BEFORE allocating
+    }
+
+    int* arr = new int[size];  // Only allocate if valid
+
+    for (int i = 0; i < size; i++) {
+        arr[i] = 0;
+    }
+
+    return arr;
+}</code></pre>
+                    </div>
+                    <p>Now if validation fails, we throw BEFORE allocating memory - no leak!</p>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> You CAN throw string literals in C++ (though it's not best practice)</li>
+                        <li><strong>c)</strong> <code>new</code> is the correct C++ way to allocate (malloc is C-style)</li>
+                        <li><strong>d)</strong> There is definitely a bug - the memory leak</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 14</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                What is the correct order for catch blocks when you have an exception hierarchy?
+            </div>
+            <div class="options">
+                <div class="option">a) Base class first, then derived classes</div>
+                <div class="option">b) Derived classes first, then base class</div>
+                <div class="option">c) Order doesn't matter</div>
+                <div class="option">d) Alphabetically by class name</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q14')">Show Answer</button>
+            <div class="answer-section" id="q14">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) Derived classes first, then base class</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>When catching exceptions from a hierarchy, you MUST order catch blocks from most specific (derived) to most general (base). This is because C++ checks catch blocks from top to bottom and uses the FIRST match.</p>
+                    <p><strong>Correct order:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">try {
+    // ...
+}
+catch (VerySpecificException& e) {
+    // Most specific first
+}
+catch (SpecificException& e) {
+    // Less specific
+}
+catch (GeneralException& e) {
+    // More general (base class)
+}
+catch (...) {
+    // Catch-all ALWAYS last
+}</code></pre>
+                    </div>
+                    <p><strong>Why this order matters:</strong></p>
+                    <p>If you put the base class first, it will catch ALL derived exceptions too (because derived IS-A base), so the derived catch blocks would NEVER execute.</p>
+                    <p><strong>Wrong order example:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class Base { };
+class Derived : public Base { };
+
+try {
+    throw Derived();
+}
+catch (Base& e) {          // BAD - Base first
+    cout << "Caught Base";
+}
+catch (Derived& e) {       // This will NEVER execute!
+    cout << "Caught Derived";
+}
+
+// Output: "Caught Base"
+// The Derived catch is unreachable!</code></pre>
+                    </div>
+                    <p>The compiler may warn you about unreachable catch blocks, but it's legal C++ (just useless).</p>
+                    <p><strong>Best practice summary:</strong></p>
+                    <ol>
+                        <li>Most specific (most derived) exceptions first</li>
+                        <li>Less specific in the middle</li>
+                        <li>Most general (base class) near the end</li>
+                        <li><code>catch (...)</code> absolutely last</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 15 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 15</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                Identify all the problems with this exception class design:
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">class FileException {
+    string message;
+    int errorCode;
+
+public:
+    FileException(string msg, int code) {
+        message = msg;
+        errorCode = code;
+    }
+
+    string getMessage() {
+        return message;
+    }
+};</code></pre>
+            </div>
+            <div class="options">
+                <div class="option">a) No problems - this is well-designed</div>
+                <div class="option">b) getMessage() should be const, and initialization should use initializer list</div>
+                <div class="option">c) The class should inherit from std::exception</div>
+                <div class="option">d) Exception classes cannot have multiple data members</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q15')">Show Answer</button>
+            <div class="answer-section" id="q15">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) getMessage() should be const, and initialization should use initializer list</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This exception class has two design issues:</p>
+
+                    <p><strong>Problem 1: getMessage() should be const</strong></p>
+                    <p>When we catch exceptions by const reference (which is common), we can only call const member functions. <code>getMessage()</code> doesn't modify the object, so it should be marked const:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">string getMessage() const {  // Add const
+    return message;
+}</code></pre>
+                    </div>
+                    <p>Without const, this would fail:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">catch (const FileException& e) {
+    cout << e.getMessage();  // ERROR: can't call non-const method on const object
+}</code></pre>
+                    </div>
+
+                    <p><strong>Problem 2: Should use initializer list instead of assignment</strong></p>
+                    <p>The constructor uses assignment in the body instead of an initializer list. Initializer lists are more efficient (especially for strings) and allow initialization of const/reference members:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">// Current (less efficient):
+FileException(string msg, int code) {
+    message = msg;      // Default construct, then assign
+    errorCode = code;
+}
+
+// Better (more efficient):
+FileException(string msg, int code)
+    : message(msg), errorCode(code) {
+    // Direct initialization
+}</code></pre>
+                    </div>
+
+                    <p><strong>Fixed version:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class FileException {
+    string message;
+    int errorCode;
+
+public:
+    FileException(string msg, int code)
+        : message(msg), errorCode(code) { }
+
+    string getMessage() const {
+        return message;
+    }
+
+    int getCode() const {
+        return errorCode;
+    }
+};</code></pre>
+                    </div>
+
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> There ARE problems as explained above</li>
+                        <li><strong>c)</strong> Inheriting from std::exception is GOOD practice but not required - custom exceptions can stand alone</li>
+                        <li><strong>d)</strong> Exception classes can have as many data members as needed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions 16-25 continue with similar pattern -->
+        <!-- For brevity, I'll include a few more representative questions -->
+
+        <!-- Question 16 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 16</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                What happens if a destructor throws an exception?
+            </div>
+            <div class="options">
+                <div class="option">a) Nothing unusual - exceptions can be thrown anywhere</div>
+                <div class="option">b) The program terminates if the destructor is called during stack unwinding</div>
+                <div class="option">c) The exception is automatically caught and ignored</div>
+                <div class="option">d) Compilation error - destructors cannot throw</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q16')">Show Answer</button>
+            <div class="answer-section" id="q16">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) The program terminates if the destructor is called during stack unwinding</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Throwing from a destructor is dangerous and should be avoided. Here's why:</p>
+                    <p>When an exception is thrown, C++ performs "stack unwinding" - it destroys all local objects in the current scope and calling scopes until it finds a catch block.</p>
+                    <p>If a destructor throws an exception WHILE stack unwinding is already happening (because another exception was thrown), you have TWO active exceptions. C++ cannot handle this and calls <code>std::terminate()</code>, ending the program immediately.</p>
+                    <p><strong>Example of the problem:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class BadClass {
+public:
+    ~BadClass() {
+        throw runtime_error("Oops!");  // BAD!
+    }
+};
+
+void dangerous() {
+    BadClass obj;
+    throw logic_error("First exception");
+    // Stack unwinding starts
+    // obj's destructor is called
+    // Destructor throws - TWO exceptions active
+    // std::terminate() called - program ends
+}</code></pre>
+                    </div>
+                    <p><strong>Best practice: Never throw from destructors</strong></p>
+                    <p>Mark destructors as <code>noexcept</code> and handle errors internally:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class GoodClass {
+public:
+    ~GoodClass() noexcept {
+        try {
+            riskyCleanup();
+        }
+        catch (...) {
+            // Log error but don't throw
+        }
+    }
+};</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 17</span>
+                <span class="question-marks">1 mark</span>
+            </div>
+            <div class="question-text">
+                True or False: You can have multiple catch blocks for the same try block.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q17')">Show Answer</button>
+            <div class="answer-section" id="q17">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>True</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This statement is <strong>true</strong>. A single try block can have multiple catch blocks to handle different types of exceptions.</p>
+                    <p>Example:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">try {
+    riskyOperation();
+}
+catch (FileNotFoundException& e) {
+    cout << "File error: " << e.getMessage();
+}
+catch (NetworkException& e) {
+    cout << "Network error: " << e.getCode();
+}
+catch (InvalidInputException& e) {
+    cout << "Input error: " << e.getField();
+}
+catch (...) {
+    cout << "Unknown error";
+}</code></pre>
+                    </div>
+                    <p>C++ will check each catch block from top to bottom and execute the FIRST one that matches the thrown exception's type.</p>
+                    <p>This allows you to handle different error types in different ways, providing specific error handling for each case.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 18 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 18</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                What is "stack unwinding" in the context of exception handling?
+            </div>
+            <div class="options">
+                <div class="option">a) The process of removing items from a stack data structure</div>
+                <div class="option">b) The process of destroying local objects when an exception is thrown</div>
+                <div class="option">c) A compiler optimization technique</div>
+                <div class="option">d) The process of reversing a function call</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q18')">Show Answer</button>
+            <div class="answer-section" id="q18">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) The process of destroying local objects when an exception is thrown</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Stack unwinding is the automatic process that happens when an exception is thrown. C++ destroys all local objects in the current scope and calling scopes (in reverse order of construction) until it finds a matching catch block.</p>
+                    <p><strong>Step by step:</strong></p>
+                    <ol>
+                        <li>Exception is thrown in a function</li>
+                        <li>C++ looks for a matching catch block in the current function</li>
+                        <li>If not found, destroy all local objects in current function (call their destructors)</li>
+                        <li>Exit the function and search the calling function</li>
+                        <li>Repeat until a catch block is found or main() is exited</li>
+                    </ol>
+                    <p><strong>Example:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class Resource {
+public:
+    Resource() { cout << "Acquired\n"; }
+    ~Resource() { cout << "Released\n"; }
+};
+
+void inner() {
+    Resource r1;
+    throw runtime_error("Error!");
+    // r1's destructor is automatically called
+    // (stack unwinding)
+}
+
+void outer() {
+    Resource r2;
+    inner();
+    // When inner() throws, r2's destructor
+    // is also called during unwinding
+}
+
+// Output:
+// Acquired (r2)
+// Acquired (r1)
+// Released (r1)  <- unwinding from inner()
+// Released (r2)  <- unwinding from outer()</code></pre>
+                    </div>
+                    <p><strong>Why this matters:</strong> Stack unwinding ensures that destructors are called, which is crucial for RAII (Resource Acquisition Is Initialization). Even when exceptions occur, resources are properly cleaned up.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 19</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                What will the following code output?
+            </div>
+            <div class="code-block">
+                <pre><code class="language-cpp">class MyException {
+private:
+    int value;
+public:
+    MyException(int v) : value(v) {}
+    int getValue() const { return value; }
+};
+
+void test(int x) {
+    try {
+        if (x < 0) {
+            throw MyException(-1);
+        }
+        if (x == 0) {
+            throw MyException(0);
+        }
+        cout << "Value: " << x << endl;
+    }
+    catch (MyException& e) {
+        if (e.getValue() < 0) {
+            cout << "Negative error" << endl;
+            throw;
+        }
+        cout << "Zero error" << endl;
+    }
+}
+
+int main() {
+    try {
+        test(-5);
+    }
+    catch (MyException& e) {
+        cout << "Caught in main: " << e.getValue() << endl;
+    }
+    return 0;
+}</code></pre>
+            </div>
+            <div class="options">
+                <div class="option">a) Negative error</div>
+                <div class="option">b) Negative error<br>Caught in main: -1</div>
+                <div class="option">c) Zero error</div>
+                <div class="option">d) Value: -5</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q19')">Show Answer</button>
+            <div class="answer-section" id="q19">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) Negative error<br>Caught in main: -1</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation - Complete trace:</strong></p>
+                    <ol>
+                        <li>Call <code>test(-5)</code> from main</li>
+                        <li>In test(): x is -5</li>
+                        <li>Check <code>if (x < 0)</code>: -5 < 0 is TRUE</li>
+                        <li>Throw <code>MyException(-1)</code></li>
+                        <li>Jump to catch block in test()</li>
+                        <li>Catch the exception: <code>e.getValue()</code> returns -1</li>
+                        <li>Check <code>if (e.getValue() < 0)</code>: -1 < 0 is TRUE</li>
+                        <li>Print "Negative error"</li>
+                        <li>Execute <code>throw;</code> - rethrow the SAME exception to the caller (main)</li>
+                        <li>Back in main(), the exception is caught</li>
+                        <li>Print "Caught in main: " + e.getValue() which is -1</li>
+                    </ol>
+                    <p><strong>Output:</strong></p>
+                    <pre>Negative error
+Caught in main: -1</pre>
+                    <p><strong>Key concepts tested:</strong></p>
+                    <ul>
+                        <li><strong>Exception throwing:</strong> Creating exception objects with data</li>
+                        <li><strong>Rethrowing:</strong> Using <code>throw;</code> to propagate to outer handler</li>
+                        <li><strong>Nested try-catch:</strong> Both test() and main() have catch blocks</li>
+                        <li><strong>Conditional handling:</strong> test() does partial handling (prints message) then rethrows</li>
+                    </ul>
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> Missing the second line - the rethrow means main() also catches it</li>
+                        <li><strong>c)</strong> We never reach the x == 0 check because we threw at x < 0</li>
+                        <li><strong>d)</strong> We never print "Value" because we threw an exception before reaching that line</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 20</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                Which of the following is a disadvantage of using exceptions?
+            </div>
+            <div class="options">
+                <div class="option">a) They make error handling more complex</div>
+                <div class="option">b) They have runtime overhead and can make control flow less obvious</div>
+                <div class="option">c) They cannot carry error information</div>
+                <div class="option">d) They are not supported in modern C++</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q20')">Show Answer</button>
+            <div class="answer-section" id="q20">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) They have runtime overhead and can make control flow less obvious</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>While exceptions are powerful, they do have some disadvantages:</p>
+
+                    <p><strong>1. Runtime overhead:</strong></p>
+                    <ul>
+                        <li>Exception handling mechanisms add some performance cost</li>
+                        <li>Stack unwinding, destructor calls, and exception matching take time</li>
+                        <li>For performance-critical code paths, this can be significant</li>
+                    </ul>
+
+                    <p><strong>2. Less obvious control flow:</strong></p>
+                    <ul>
+                        <li>Functions can exit at any throw point, not just at return statements</li>
+                        <li>Code between throw and catch is skipped - not always obvious when reading</li>
+                        <li>Harder to trace execution path compared to explicit return codes</li>
+                    </ul>
+
+                    <p>Example of non-obvious flow:</p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">void process() {
+    setup();
+    riskyOperation();  // Might throw - jumps to catch
+    cleanup();         // This might never run!
+}
+
+// Better - guarantee cleanup:
+void process() {
+    setup();
+    try {
+        riskyOperation();
+    }
+    catch (...) {
+        cleanup();
+        throw;
+    }
+    cleanup();
+}</code></pre>
+                    </div>
+
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a)</strong> Exceptions actually simplify error handling by separating error handling from normal code</li>
+                        <li><strong>c)</strong> Exceptions CAN carry detailed error information in exception objects</li>
+                        <li><strong>d)</strong> Exceptions are fully supported in all modern C++ standards</li>
+                    </ul>
+
+                    <p><strong>When to avoid exceptions:</strong></p>
+                    <ul>
+                        <li>Performance-critical inner loops</li>
+                        <li>Embedded systems with limited resources</li>
+                        <li>Real-time systems with strict timing requirements</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 21 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 21</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                What is the purpose of declaring member functions as <code>const</code> in exception classes (e.g., <code>string getMessage() const</code>)?
+            </div>
+            <div class="options">
+                <div class="option">a) To prevent the function from being called</div>
+                <div class="option">b) To allow the function to be called on const exception objects</div>
+                <div class="option">c) To make the function run faster</div>
+                <div class="option">d) It's required by the C++ standard for all exception classes</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q21')">Show Answer</button>
+            <div class="answer-section" id="q21">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) To allow the function to be called on const exception objects</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>When you catch an exception by const reference (which is common practice), the exception object becomes const. You can only call const member functions on const objects.</p>
+                    <p><strong>Example of the problem:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class MyException {
+    string message;
+public:
+    MyException(string msg) : message(msg) {}
+
+    // Non-const version - PROBLEM!
+    string getMessage() {
+        return message;
+    }
+};
+
+try {
+    throw MyException("Error!");
+}
+catch (const MyException& e) {  // Caught by const ref
+    cout << e.getMessage();     // ERROR! Can't call non-const
+                                // method on const object
+}</code></pre>
+                    </div>
+
+                    <p><strong>The fix - add const:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class MyException {
+    string message;
+public:
+    MyException(string msg) : message(msg) {}
+
+    // Const version - WORKS!
+    string getMessage() const {
+        return message;
+    }
+};
+
+try {
+    throw MyException("Error!");
+}
+catch (const MyException& e) {  // Caught by const ref
+    cout << e.getMessage();     // ✓ Works! Can call const method
+}</code></pre>
+                    </div>
+
+                    <p><strong>Why catch by const reference?</strong></p>
+                    <ul>
+                        <li>Prevents accidental modification of the exception object</li>
+                        <li>Communicates intent - you're just reading the error info</li>
+                        <li>Matches the pattern used by standard library exceptions</li>
+                    </ul>
+
+                    <p><strong>Rule of thumb:</strong> Any member function in an exception class that reads data (getters, display functions, etc.) should be marked const.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 22 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 22</span>
+                <span class="question-marks">1 mark</span>
+            </div>
+            <div class="question-text">
+                True or False: An exception thrown in a constructor will cause the destructor to be called.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q22')">Show Answer</button>
+            <div class="answer-section" id="q22">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>False</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This statement is <strong>false</strong>. If an exception is thrown during construction, the destructor for that object is NOT called because the object was never fully constructed.</p>
+                    <p><strong>The rule:</strong> Destructors are only called for fully constructed objects. If construction fails (exception thrown), the object doesn't exist, so its destructor doesn't run.</p>
+                    <p><strong>Example:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class Resource {
+public:
+    Resource() {
+        cout << "Constructor" << endl;
+        throw runtime_error("Construction failed!");
+        cout << "After throw" << endl;  // Never executed
+    }
+
+    ~Resource() {
+        cout << "Destructor" << endl;  // NEVER CALLED
+    }
+};
+
+int main() {
+    try {
+        Resource r;
+    }
+    catch (...) {
+        cout << "Caught exception" << endl;
+    }
+}
+
+// Output:
+// Constructor
+// Caught exception
+// (No "Destructor" - it's not called!)</code></pre>
+                    </div>
+
+                    <p><strong>Why this matters for resource management:</strong></p>
+                    <p>If your constructor allocates resources (memory, files, etc.), you MUST clean them up before throwing an exception, because the destructor won't run.</p>
+
+                    <p><strong>Example with resource leak:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class BadClass {
+    int* data;
+public:
+    BadClass(int size) {
+        data = new int[size];  // Allocate
+
+        if (size < 0) {
+            throw invalid_argument("Bad size");
+            // LEAK! data is never deleted because
+            // destructor won't be called
+        }
+    }
+
+    ~BadClass() {
+        delete[] data;  // This won't run if construction fails
+    }
+};</code></pre>
+                    </div>
+
+                    <p><strong>The fix:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class GoodClass {
+    int* data;
+public:
+    GoodClass(int size) {
+        if (size < 0) {
+            throw invalid_argument("Bad size");
+            // Good - throw BEFORE allocating
+        }
+
+        data = new int[size];  // Only allocate if valid
+    }
+
+    ~BadClass() {
+        delete[] data;
+    }
+};</code></pre>
+                    </div>
+
+                    <p><strong>Important note:</strong> Even though the constructor's destructor isn't called, destructors of any FULLY CONSTRUCTED member objects ARE called during stack unwinding.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 23 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 23</span>
+                <span class="question-marks">2 marks</span>
+            </div>
+            <div class="question-text">
+                What is the difference between <code>throw e;</code> and <code>throw;</code> when rethrowing?
+            </div>
+            <div class="options">
+                <div class="option">a) No difference - they do the same thing</div>
+                <div class="option">b) throw; rethrows the original exception, throw e; throws a copy</div>
+                <div class="option">c) throw e; is faster</div>
+                <div class="option">d) throw; can only be used in catch blocks</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q23')">Show Answer</button>
+            <div class="answer-section" id="q23">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) throw; rethrows the original exception, throw e; throws a copy</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This is a subtle but important distinction:</p>
+
+                    <p><strong><code>throw;</code> (no argument):</strong></p>
+                    <ul>
+                        <li>Rethrows the EXACT SAME exception object that was caught</li>
+                        <li>Preserves the dynamic type (important for polymorphism)</li>
+                        <li>More efficient (no copying)</li>
+                        <li>Can ONLY be used inside a catch block</li>
+                    </ul>
+
+                    <p><strong><code>throw e;</code> (with argument):</strong></p>
+                    <ul>
+                        <li>Throws a COPY of the exception variable e</li>
+                        <li>Can cause object slicing if e is a base reference to a derived object</li>
+                        <li>Less efficient (requires copying)</li>
+                        <li>Can be used anywhere, not just in catch blocks</li>
+                    </ul>
+
+                    <p><strong>Example showing the difference:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class Base {
+public:
+    virtual void show() { cout << "Base"; }
+};
+
+class Derived : public Base {
+public:
+    void show() { cout << "Derived"; }
+};
+
+void test1() {
+    try {
+        throw Derived();
+    }
+    catch (Base& e) {
+        throw;  // Rethrows original Derived object
+    }
+}
+
+void test2() {
+    try {
+        throw Derived();
+    }
+    catch (Base& e) {
+        throw e;  // Throws a COPY of Base (slicing!)
+    }
+}
+
+// Using test1():
+try {
+    test1();
+}
+catch (Base& e) {
+    e.show();  // Prints "Derived" - preserved!
+}
+
+// Using test2():
+try {
+    test2();
+}
+catch (Base& e) {
+    e.show();  // Prints "Base" - lost derived info!
+}</code></pre>
+                    </div>
+
+                    <p><strong>Why option d is partially true but not the answer:</strong> Yes, <code>throw;</code> can only be used in catch blocks, but that's not the main difference - the key difference is what gets thrown (original vs copy).</p>
+
+                    <p><strong>Best practice:</strong> Always use <code>throw;</code> (no argument) when rethrowing to preserve the exception's type and avoid copying.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 24 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 24</span>
+                <span class="question-marks">3 marks</span>
+            </div>
+            <div class="question-text">
+                Design an exception class <code>ArrayException</code> that stores an error message and the invalid index. What members and methods should it have? Choose the BEST design:
+            </div>
+            <div class="options">
+                <div class="option">a) Public data members: message, index</div>
+                <div class="option">b) Private data members: message, index. Public methods: getMessage() const, getIndex() const</div>
+                <div class="option">c) Only a message member, no index needed</div>
+                <div class="option">d) No data members, just a display() method that prints a hardcoded message</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q24')">Show Answer</button>
+            <div class="answer-section" id="q24">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) Private data members: message, index. Public methods: getMessage() const, getIndex() const</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>Option b follows proper object-oriented design principles for exception classes:</p>
+
+                    <p><strong>Good design (option b):</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class ArrayException {
+private:
+    string message;
+    int index;
+
+public:
+    ArrayException(string msg, int idx)
+        : message(msg), index(idx) { }
+
+    string getMessage() const {
+        return message;
+    }
+
+    int getIndex() const {
+        return index;
+    }
+};</code></pre>
+                    </div>
+
+                    <p><strong>Why this design is good:</strong></p>
+                    <ul>
+                        <li><strong>Encapsulation:</strong> Data members are private, accessed through public methods</li>
+                        <li><strong>Const correctness:</strong> Getters are const because they don't modify the object</li>
+                        <li><strong>Complete information:</strong> Stores both message AND the problematic index</li>
+                        <li><strong>Flexible usage:</strong> Caller can format the error message however they want</li>
+                    </ul>
+
+                    <p><strong>Usage example:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">int getValue(int* arr, int size, int index) {
+    if (index < 0 || index >= size) {
+        throw ArrayException("Invalid array index", index);
+    }
+    return arr[index];
+}
+
+try {
+    int* data = new int[10];
+    int val = getValue(data, 10, 15);
+}
+catch (ArrayException& e) {
+    cout << "Error: " << e.getMessage()
+         << " at position " << e.getIndex() << endl;
+    // Output: Error: Invalid array index at position 15
+}</code></pre>
+                    </div>
+
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a) Public data members:</strong> Breaks encapsulation. Users could modify the exception object after it's thrown, which is bad design.</li>
+                        <li><strong>c) Only message:</strong> Loses important information. Knowing WHICH index failed is valuable for debugging.</li>
+                        <li><strong>d) Hardcoded message:</strong> Not reusable. Every different error would need a different exception class.</li>
+                    </ul>
+
+                    <p><strong>Optional enhancement - display() method:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class ArrayException {
+    // ... (same as before)
+
+public:
+    void display() const {
+        cout << message << " (index: " << index << ")" << endl;
+    }
+};
+
+// Usage:
+catch (ArrayException& e) {
+    e.display();  // Prints: Invalid array index (index: 15)
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 25 -->
+        <div class="question-block">
+            <div class="question-header">
+                <span class="question-number">Question 25</span>
+                <span class="question-marks">4 marks</span>
+            </div>
+            <div class="question-text">
+                You are building a file processing system. Design a complete exception hierarchy for file errors with the following requirements:
+                <ul>
+                    <li>Base class: <code>FileException</code></li>
+                    <li>Derived class 1: <code>FileNotFoundException</code> (stores filename)</li>
+                    <li>Derived class 2: <code>PermissionDeniedException</code> (stores filename and permission type)</li>
+                    <li>All exceptions should have a virtual <code>display()</code> method</li>
+                </ul>
+                Which implementation is correct?
+            </div>
+            <div class="options">
+                <div class="option">a) All classes store their own filename independently</div>
+                <div class="option">b) Base class stores filename in protected, derived classes add specific data and override display()</div>
+                <div class="option">c) Each class is independent with no inheritance</div>
+                <div class="option">d) Use a single class with flags to indicate exception type</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('q25')">Show Answer</button>
+            <div class="answer-section" id="q25">
+                <h3>✓ Correct Answer</h3>
+                <div class="correct-answer">
+                    <strong>b) Base class stores filename in protected, derived classes add specific data and override display()</strong>
+                </div>
+                <div class="explanation">
+                    <p><strong>Explanation:</strong></p>
+                    <p>This is the proper way to design an exception hierarchy using inheritance and polymorphism:</p>
+
+                    <p><strong>Correct implementation (option b):</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">class FileException {
+protected:
+    string filename;  // Protected - accessible to derived
+
+public:
+    FileException(string file) : filename(file) { }
+
+    virtual void display() const {
+        cout << "File error: " << filename << endl;
+    }
+
+    virtual ~FileException() { }  // Virtual destructor
+};
+
+class FileNotFoundException : public FileException {
+public:
+    FileNotFoundException(string file)
+        : FileException(file) { }
+
+    void display() const {
+        cout << "File not found: " << filename << endl;
+    }
+};
+
+class PermissionDeniedException : public FileException {
+private:
+    string permissionType;
+
+public:
+    PermissionDeniedException(string file, string perm)
+        : FileException(file), permissionType(perm) { }
+
+    void display() const {
+        cout << "Permission denied (" << permissionType
+             << "): " << filename << endl;
+    }
+};</code></pre>
+                    </div>
+
+                    <p><strong>Why this design is good:</strong></p>
+                    <ol>
+                        <li><strong>DRY principle:</strong> Filename is stored in base class, not duplicated in derived classes</li>
+                        <li><strong>Protected access:</strong> Derived classes can access <code>filename</code> directly for display</li>
+                        <li><strong>Polymorphism:</strong> <code>display()</code> is virtual, so calling it on a base reference invokes the correct version</li>
+                        <li><strong>Extensibility:</strong> Easy to add new file exception types</li>
+                        <li><strong>Virtual destructor:</strong> Proper cleanup when deleting through base pointer</li>
+                    </ol>
+
+                    <p><strong>Usage example showing polymorphism:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">void processFile(string filename) {
+    if (!fileExists(filename)) {
+        throw FileNotFoundException(filename);
+    }
+    if (!hasPermission(filename, "read")) {
+        throw PermissionDeniedException(filename, "read");
+    }
+    // ... process file
+}
+
+int main() {
+    try {
+        processFile("data.txt");
+    }
+    catch (FileException& e) {  // Catches ALL file exceptions
+        e.display();  // Polymorphism - calls correct version
+    }
+}</code></pre>
+                    </div>
+
+                    <p><strong>Output scenarios:</strong></p>
+                    <ul>
+                        <li>If file doesn't exist: "File not found: data.txt"</li>
+                        <li>If permission denied: "Permission denied (read): data.txt"</li>
+                    </ul>
+
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li><strong>a) Duplicate filename storage:</strong> Violates DRY (Don't Repeat Yourself). Wastes memory and makes updates harder.</li>
+                        <li><strong>c) No inheritance:</strong> Can't catch all file errors with a single catch block. No code reuse.</li>
+                        <li><strong>d) Single class with flags:</strong> Not object-oriented. Requires if-else logic to check flags. Hard to extend.</li>
+                    </ul>
+
+                    <p><strong>Advanced: Catching specific vs general:</strong></p>
+                    <div class="code-block">
+                        <pre><code class="language-cpp">try {
+    processFile("secret.txt");
+}
+catch (PermissionDeniedException& e) {
+    // Specific handling for permission errors
+    requestPermission(e.getFilename());
+}
+catch (FileNotFoundException& e) {
+    // Specific handling for missing files
+    createDefaultFile(e.getFilename());
+}
+catch (FileException& e) {
+    // General handling for other file errors
+    logError(e);
+}</code></pre>
+                    </div>
+
+                    <p>The inheritance hierarchy allows you to catch broadly (base class) or specifically (derived classes) depending on your needs.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const answerSection = document.getElementById(id);
+            if (answerSection.classList.contains('show')) {
+                answerSection.classList.remove('show');
+            } else {
+                answerSection.classList.add('show');
+            }
+        }
+
+        // Highlight code blocks
+        Prism.highlightAll();
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

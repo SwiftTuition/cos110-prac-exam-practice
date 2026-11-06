@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 4: Copy Constructors, Destructors & Assignment Operator - Examples | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- CodeMirror for interactive playground -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <style>
+        /* DEEP OCEAN THEME */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #10b981;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .content-card p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code Blocks */
+        pre[class*="language-"] {
+            background: #0c1222;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid #1e293b;
+        }
+
+        /* Step Boxes */
+        .step-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .step-box strong {
+            color: #0ea5e9;
+        }
+
+        /* Info/Warning/Success Boxes */
+        .swift-note-box {
+            background: #1f1a2e;
+            border-left: 4px solid #a78bfa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .swift-note-box strong {
+            color: #a78bfa;
+        }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong {
+            color: #0ea5e9;
+        }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong {
+            color: #ef4444;
+        }
+
+        .success-box {
+            background: #1a2d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong {
+            color: #10b981;
+        }
+
+        /* Interactive Playground */
+        .playground {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 2px solid #334155;
+        }
+
+        .playground-header {
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 200px;
+            border-radius: 8px;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+        }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(100, 116, 139, 0.3);
+        }
+
+        .playground-output {
+            background: #0c1222;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid #1e293b;
+        }
+
+        .output-header {
+            color: #0ea5e9;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .output-text {
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            white-space: pre-wrap;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .loading-indicator {
+            display: none;
+            color: #eab308;
+            font-style: italic;
+        }
+
+        /* Reveal Buttons */
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        .answer-section strong {
+            color: #eab308;
+        }
+
+        /* Complexity Badge */
+        .complexity-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .complexity-easy {
+            background: #1a2d1f;
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+
+        .complexity-medium {
+            background: #2d2414;
+            color: #eab308;
+            border: 1px solid #eab308;
+        }
+
+        .complexity-hard {
+            background: #2d1414;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">SWIFT TUITION</span>
+                <span class="nav-brand-title">Unit 4: Copy Constructors, Destructors & Assignment Operator</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Worked Examples</h2>
+
+            <p>This section shows you how to apply copy constructors, destructors, and assignment operators in real scenarios. Each example builds on the concepts from the theory section.</p>
+
+            <p>Each example includes:</p>
+            <ul>
+                <li><strong>Problem statement</strong> - What we're trying to achieve</li>
+                <li><strong>Complete solution</strong> - Working code with the Big Three implemented</li>
+                <li><strong>Explanation</strong> - Why the code works this way</li>
+                <li><strong>Experiments</strong> - Suggestions for things to try and modify</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Tip:</strong> Try running each example first, then work through the experiments to see what happens when you modify the code. This hands-on approach helps you understand the concepts deeply.
+            </div>
+        </section>
+
+        <!-- Example 1: Basic Application -->
+        <section class="content-card">
+            <h2>Example 1: Basic String Container</h2>
+            <span class="complexity-badge complexity-easy">Basic</span>
+
+            <p>Let's create a simple class that stores a string in dynamically allocated memory. This is a straightforward example that shows the Big Three in their simplest form.</p>
+
+            <h3>Problem Statement</h3>
+            <p>Create a <code>SimpleString</code> class that:</p>
+            <ul>
+                <li>Stores a C-style string (char array) dynamically</li>
+                <li>Properly copies strings when objects are copied</li>
+                <li>Cleans up memory when objects are destroyed</li>
+                <li>Handles assignment correctly</li>
+            </ul>
+
+            <h3>Solution</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Example 1: SimpleString Class</div>
+                </div>
+
+                <textarea id="editor1">#include <iostream>
+#include <cstring>
+using namespace std;
+
+class SimpleString {
+private:
+    char* data;
+    int length;
+
+public:
+    // Constructor
+    SimpleString(const char* str) {
+        length = strlen(str);
+        data = new char[length + 1];  // +1 for null terminator
+        strcpy(data, str);
+        cout << "Created: \"" << data << "\"" << endl;
+    }
+
+    // Copy constructor (deep copy)
+    SimpleString(const SimpleString& other) {
+        length = other.length;
+        data = new char[length + 1];
+        strcpy(data, other.data);
+        cout << "Copied: \"" << data << "\"" << endl;
+    }
+
+    // Assignment operator
+    SimpleString& operator=(const SimpleString& other) {
+        cout << "Assignment called" << endl;
+
+        // Self-assignment check
+        if (this == &other) {
+            return *this;
+        }
+
+        // Delete old memory
+        delete[] data;
+
+        // Copy new data
+        length = other.length;
+        data = new char[length + 1];
+        strcpy(data, other.data);
+
+        return *this;
+    }
+
+    // Destructor
+    ~SimpleString() {
+        cout << "Destroyed: \"" << data << "\"" << endl;
+        delete[] data;
+    }
+
+    void print() const {
+        cout << "String: \"" << data << "\" (length: " << length << ")" << endl;
+    }
+};
+
+int main() {
+    SimpleString str1("Hello");
+    str1.print();
+
+    cout << "\nCreating copy..." << endl;
+    SimpleString str2 = str1;  // Copy constructor
+    str2.print();
+
+    cout << "\nCreating new string..." << endl;
+    SimpleString str3("World");
+    str3.print();
+
+    cout << "\nAssignment..." << endl;
+    str3 = str1;  // Assignment operator
+    str3.print();
+
+    cout << "\nExiting program..." << endl;
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor1', originalCode1)">↺ Reset</button>
+                </div>
+
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div id="loading1" class="loading-indicator">Running...</div>
+                        <div id="output1" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Explanation</h3>
+
+            <div class="step-box">
+                <strong>Step 1: Constructor</strong><br>
+                Allocates memory for the string plus one extra byte for the null terminator (<code>\0</code>). Uses <code>strcpy</code> to copy the string into the allocated memory.
+            </div>
+
+            <div class="step-box">
+                <strong>Step 2: Copy Constructor</strong><br>
+                Allocates NEW memory (deep copy) and copies the string from the other object. Both objects now have independent memory.
+            </div>
+
+            <div class="step-box">
+                <strong>Step 3: Assignment Operator</strong><br>
+                First checks for self-assignment, then deletes the old memory, allocates new memory, and copies the string. Returns <code>*this</code> for chaining.
+            </div>
+
+            <div class="step-box">
+                <strong>Step 4: Destructor</strong><br>
+                Frees the dynamically allocated memory. Called automatically when objects go out of scope.
+            </div>
+
+            <h3>Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 1:</strong> What happens if you remove the <code>+ 1</code> from <code>new char[length + 1]</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_1')">Show Explanation</button>
+            <div class="answer-section" id="exp1_1">
+                <p><strong>What happens:</strong> The program might crash or produce garbage output when printing.</p>
+                <p><strong>Why:</strong> C-style strings need a null terminator (<code>\0</code>) at the end. Without the extra byte, <code>strcpy</code> writes past the end of the allocated memory (buffer overflow), causing undefined behavior.</p>
+                <p><strong>The lesson:</strong> When allocating memory for C-style strings, always add 1 for the null terminator.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 2:</strong> Comment out the destructor. Does the code still work?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_2')">Show Explanation</button>
+            <div class="answer-section" id="exp1_2">
+                <p><strong>What happens:</strong> The code runs normally, but you have memory leaks!</p>
+                <p><strong>Why:</strong> Each <code>SimpleString</code> object allocates memory with <code>new</code>, but without a destructor, that memory is never freed. In a long-running program, this exhausts available memory.</p>
+                <p><strong>The lesson:</strong> Always write a destructor when your class uses dynamic memory.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 3:</strong> In the copy constructor, change <code>data = new char[length + 1];</code> to <code>data = other.data;</code>. What's wrong?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_3')">Show Explanation</button>
+            <div class="answer-section" id="exp1_3">
+                <p><strong>What happens:</strong> You've created a shallow copy! Both objects point to the same string in memory.</p>
+                <p><strong>Why:</strong> <code>data = other.data;</code> copies the pointer (address), not the string itself. When one object is destroyed, it deletes the memory. The other object's pointer becomes dangling.</p>
+                <p><strong>The lesson:</strong> Deep copy means allocating NEW memory and copying VALUES, not addresses.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 4:</strong> Remove the self-assignment check in the assignment operator. Add <code>str1 = str1;</code> in main. What happens?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_4')">Show Explanation</button>
+            <div class="answer-section" id="exp1_4">
+                <p><strong>What happens:</strong> The program crashes or produces garbage.</p>
+                <p><strong>Why:</strong> Without the check, <code>delete[] data;</code> deletes the string that <code>other.data</code> points to (which is the same as <code>this->data</code> in self-assignment). Then <code>strcpy</code> tries to copy from freed memory!</p>
+                <p><strong>The lesson:</strong> Always check for self-assignment in the assignment operator.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 5:</strong> Change the return type of the assignment operator from <code>SimpleString&</code> to <code>void</code>. Does it still compile?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_5')">Show Explanation</button>
+            <div class="answer-section" id="exp1_5">
+                <p><strong>What happens:</strong> The code compiles and runs, but you can't chain assignments.</p>
+                <p><strong>Why:</strong> Returning <code>void</code> means the operator doesn't return anything. Chaining like <code>a = b = c;</code> requires the operator to return a reference to the assigned object.</p>
+                <p><strong>The lesson:</strong> Assignment operator should return <code>ClassName&</code> to enable chaining and match standard C++ behavior.</p>
+            </div>
+        </section>
+
+        <!-- Example 2: Code Geass - Intermediate -->
+        <section class="content-card">
+            <h2>Example 2: Knightmare Frame Mech System</h2>
+            <span class="complexity-badge complexity-medium">Intermediate</span>
+
+            <p>Swift's been watching Code Geass - a strategic mecha anime where pilots control giant robots called Knightmare Frames in tactical combat. Each Knightmare has customizable weapon loadouts. Let's model this with deep copying!</p>
+
+            <h3>Problem Statement</h3>
+            <p>Create a <code>KnightmareFrame</code> class that:</p>
+            <ul>
+                <li>Stores a pilot name and a dynamic array of weapons</li>
+                <li>Supports copying Knightmare configurations (each copy gets independent weapons)</li>
+                <li>Handles mass-producing frames with the same loadout via assignment</li>
+                <li>Properly cleans up memory when frames are destroyed</li>
+            </ul>
+
+            <h3>Solution</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Example 2: Knightmare Frame Class</div>
+                </div>
+
+                <textarea id="editor2">#include <iostream>
+#include <string>
+using namespace std;
+
+// Code Geass - Tactical mecha anime where pilots control giant robots
+// called Knightmare Frames in strategic combat
+
+class KnightmareFrame {
+private:
+    string pilotName;
+    string* weapons;    // Dynamic array of weapon names
+    int weaponCount;
+
+public:
+    // Constructor
+    KnightmareFrame(string pilot, int numWeapons) {
+        pilotName = pilot;
+        weaponCount = numWeapons;
+        weapons = new string[weaponCount];
+
+        // Initialize to default
+        for (int i = 0; i < weaponCount; i++) {
+            weapons[i] = "Slash Harken";  // Standard weapon
+        }
+
+        cout << "Knightmare deployed: Pilot " << pilotName << endl;
+    }
+
+    // Copy constructor (deep copy for mass production)
+    KnightmareFrame(const KnightmareFrame& other) {
+        pilotName = other.pilotName + " (Copy)";
+        weaponCount = other.weaponCount;
+
+        // Allocate NEW weapon array
+        weapons = new string[weaponCount];
+
+        // Copy each weapon
+        for (int i = 0; i < weaponCount; i++) {
+            weapons[i] = other.weapons[i];
+        }
+
+        cout << "Knightmare copied: Pilot " << pilotName << endl;
+    }
+
+    // Assignment operator (refit existing frame)
+    KnightmareFrame& operator=(const KnightmareFrame& other) {
+        cout << "Refitting Knightmare for " << pilotName << "..." << endl;
+
+        // Self-assignment check
+        if (this == &other) {
+            return *this;
+        }
+
+        // Delete old weapons
+        delete[] weapons;
+
+        // Copy data (keep our pilot name)
+        weaponCount = other.weaponCount;
+        weapons = new string[weaponCount];
+        for (int i = 0; i < weaponCount; i++) {
+            weapons[i] = other.weapons[i];
+        }
+
+        return *this;
+    }
+
+    // Destructor
+    ~KnightmareFrame() {
+        cout << "Knightmare destroyed: Pilot " << pilotName << endl;
+        delete[] weapons;
+    }
+
+    void setWeapon(int slot, string weaponName) {
+        if (slot >= 0 && slot < weaponCount) {
+            weapons[slot] = weaponName;
+        }
+    }
+
+    void displayLoadout() const {
+        cout << "\n=== " << pilotName << "'s Knightmare ===" << endl;
+        cout << "Weapons (" << weaponCount << " slots):" << endl;
+        for (int i = 0; i < weaponCount; i++) {
+            cout << "  Slot " << (i+1) << ": " << weapons[i] << endl;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    // Lelouch's custom Knightmare (protagonist)
+    KnightmareFrame lancelot("Lelouch", 3);
+    lancelot.setWeapon(0, "VARIS Rifle");        // Long-range
+    lancelot.setWeapon(1, "MVS Swords");         // Melee weapons
+    lancelot.setWeapon(2, "Hadron Cannon");      // Heavy artillery
+    lancelot.displayLoadout();
+
+    // Mass-produce copy for another pilot
+    cout << "Mass-producing frame..." << endl;
+    KnightmareFrame massProduced = lancelot;  // Copy constructor
+    massProduced.displayLoadout();
+
+    // Create standard frame
+    KnightmareFrame standardFrame("Kallen", 2);
+    standardFrame.displayLoadout();
+
+    // Refit standard frame with Lancelot's weapons
+    cout << "Upgrading standard frame..." << endl;
+    standardFrame = lancelot;  // Assignment operator
+    standardFrame.displayLoadout();
+
+    cout << "Battle concluded..." << endl;
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor2', originalCode2)">↺ Reset</button>
+                </div>
+
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div id="loading2" class="loading-indicator">Running...</div>
+                        <div id="output2" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Explanation</h3>
+
+            <p>This example adds complexity by managing an array of strings (weapons). Each Knightmare Frame has its own independent weapon array.</p>
+
+            <div class="step-box">
+                <strong>Key Point 1: Deep Copy in Copy Constructor</strong><br>
+                When we copy a Knightmare, we allocate a completely new weapons array. This allows mass production - each copy can be modified independently without affecting the original.
+            </div>
+
+            <div class="step-box">
+                <strong>Key Point 2: Assignment Preserves Pilot</strong><br>
+                Notice the assignment operator keeps the original pilot name but copies the weapon loadout. This models "refitting" an existing frame rather than creating a new one.
+            </div>
+
+            <div class="step-box">
+                <strong>Key Point 3: Destructor Cleanup</strong><br>
+                Each frame's destructor deletes its own weapons array. Without this, we'd leak memory for every Knightmare created.
+            </div>
+
+            <h3>Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 1:</strong> After copying, modify one of the weapons in <code>massProduced</code>. Does it affect <code>lancelot</code>'s weapons?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_1')">Show Explanation</button>
+            <div class="answer-section" id="exp2_1">
+                <p><strong>What happens:</strong> No! The weapons are independent. Modifying <code>massProduced</code> doesn't affect <code>lancelot</code>.</p>
+                <p><strong>Why:</strong> The copy constructor does a deep copy, allocating a separate weapons array for <code>massProduced</code>. They're completely independent.</p>
+                <p><strong>The lesson:</strong> Deep copying creates truly independent objects.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 2:</strong> What if the assignment operator forgot to <code>delete[] weapons;</code> before allocating new memory?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_2')">Show Explanation</button>
+            <div class="answer-section" id="exp2_2">
+                <p><strong>What happens:</strong> Memory leak! The old weapons array is never freed.</p>
+                <p><strong>Why:</strong> When you do <code>standardFrame = lancelot;</code>, <code>standardFrame</code> already has a weapons array. If we don't delete it before allocating a new one, we lose the pointer to the old array and can never free it.</p>
+                <p><strong>The lesson:</strong> Always delete old memory in the assignment operator before allocating new memory.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 3:</strong> Change <code>weaponCount</code> in the original after copying. Does the copy's weapon count change?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_3')">Show Explanation</button>
+            <div class="answer-section" id="exp2_3">
+                <p><strong>What happens:</strong> No, the copy's weapon count stays the same.</p>
+                <p><strong>Why:</strong> <code>weaponCount</code> is an integer (not a pointer), so it's copied by value automatically. The copy gets its own independent <code>weaponCount</code> variable.</p>
+                <p><strong>The lesson:</strong> Non-pointer members are automatically copied independently. It's the pointer members that need special handling.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 4:</strong> What happens if you create a Knightmare with 0 weapons (<code>weaponCount = 0</code>)?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_4')">Show Explanation</button>
+            <div class="answer-section" id="exp2_4">
+                <p><strong>What happens:</strong> <code>new string[0]</code> is allowed in C++. It returns a valid pointer (not NULL), but you shouldn't access any elements.</p>
+                <p><strong>Why:</strong> The C++ standard allows zero-size allocations. <code>delete[]</code> on this pointer is safe.</p>
+                <p><strong>The lesson:</strong> Your code should handle edge cases like zero-size arrays gracefully. Consider adding validation to ensure <code>weaponCount > 0</code>.</p>
+            </div>
+        </section>
+
+        <!-- Example 3: One Punch Man - Advanced -->
+        <section class="content-card">
+            <h2>Example 3: Hero Association Ranking System</h2>
+            <span class="complexity-badge complexity-medium">Intermediate</span>
+
+            <p>Swift's been watching One Punch Man - an action comedy about Saitama, a hero so powerful he defeats any enemy with one punch. Heroes are ranked by the Hero Association. Let's create a system that tracks hero stats!</p>
+
+            <h3>Problem Statement</h3>
+            <p>Create a <code>Hero</code> class that:</p>
+            <ul>
+                <li>Stores hero name, rank, and an array of villain defeats</li>
+                <li>Uses the <code>this</code> pointer for method chaining</li>
+                <li>Implements the Big Three for proper memory management</li>
+                <li>Supports comparing heroes and updating records</li>
+            </ul>
+
+            <h3>Solution</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Example 3: Hero Class with Method Chaining</div>
+                </div>
+
+                <textarea id="editor3">#include <iostream>
+#include <string>
+using namespace std;
+
+// One Punch Man - Action comedy about overpowered hero Saitama
+// who defeats any enemy with a single punch. Heroes are ranked
+// by the Hero Association based on their achievements.
+
+class Hero {
+private:
+    string name;
+    int rank;
+    int* defeatCounts;  // Array: [Demon-level, Dragon-level, God-level]
+    int numTiers;
+
+public:
+    // Constructor
+    Hero(string heroName, int initialRank) {
+        name = heroName;
+        rank = initialRank;
+        numTiers = 3;  // Demon, Dragon, God threat levels
+        defeatCounts = new int[numTiers];
+
+        for (int i = 0; i < numTiers; i++) {
+            defeatCounts[i] = 0;
+        }
+
+        cout << "Hero registered: " << name << " (Rank " << rank << ")" << endl;
+    }
+
+    // Copy constructor
+    Hero(const Hero& other) {
+        name = other.name;
+        rank = other.rank;
+        numTiers = other.numTiers;
+
+        defeatCounts = new int[numTiers];
+        for (int i = 0; i < numTiers; i++) {
+            defeatCounts[i] = other.defeatCounts[i];
+        }
+
+        cout << "Hero record copied: " << name << endl;
+    }
+
+    // Assignment operator
+    Hero& operator=(const Hero& other) {
+        if (this == &other) return *this;
+
+        delete[] defeatCounts;
+
+        name = other.name;
+        rank = other.rank;
+        numTiers = other.numTiers;
+
+        defeatCounts = new int[numTiers];
+        for (int i = 0; i < numTiers; i++) {
+            defeatCounts[i] = other.defeatCounts[i];
+        }
+
+        cout << "Hero record updated: " << name << endl;
+        return *this;
+    }
+
+    // Destructor
+    ~Hero() {
+        cout << "Hero retired: " << name << endl;
+        delete[] defeatCounts;
+    }
+
+    // Method chaining with 'this'
+    Hero& recordDefeat(int tier, int count = 1) {
+        if (tier >= 0 && tier < numTiers) {
+            defeatCounts[tier] += count;
+        }
+        return *this;  // Return reference for chaining!
+    }
+
+    Hero& promoteRank(int newRank) {
+        rank = newRank;
+        cout << name << " promoted to Rank " << rank << "!" << endl;
+        return *this;  // Chaining!
+    }
+
+    void displayStats() const {
+        cout << "\n=== " << name << " ===" << endl;
+        cout << "Rank: " << rank << endl;
+        cout << "Defeats:" << endl;
+        cout << "  Demon-level: " << defeatCounts[0] << endl;
+        cout << "  Dragon-level: " << defeatCounts[1] << endl;
+        cout << "  God-level: " << defeatCounts[2] << endl;
+        cout << endl;
+    }
+};
+
+int main() {
+    // Saitama - the protagonist (overpowered)
+    Hero saitama("Saitama", 100);
+    saitama.recordDefeat(0, 5)    // 5 Demon-level defeats
+           .recordDefeat(1, 3)    // 3 Dragon-level defeats
+           .recordDefeat(2, 1)    // 1 God-level defeat (very rare!)
+           .promoteRank(1);       // Method chaining!
+    saitama.displayStats();
+
+    // Genos - Saitama's disciple (strong but not as OP)
+    Hero genos("Genos", 50);
+    genos.recordDefeat(0, 10).recordDefeat(1, 2);
+    genos.displayStats();
+
+    // Copy Saitama's record for analysis
+    Hero backup = saitama;  // Copy constructor
+    backup.displayStats();
+
+    // Update Genos with Saitama's record (hypothetical)
+    cout << "Transferring records..." << endl;
+    genos = saitama;  // Assignment operator
+    genos.displayStats();
+
+    cout << "\nShutting down Hero Association database..." << endl;
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor3', originalCode3)">↺ Reset</button>
+                </div>
+
+                <div class="playground-output">
+                    <div class="output-header">Output:</div>
+                    <div class="output-content">
+                        <div id="loading3" class="loading-indicator">Running...</div>
+                        <div id="output3" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Explanation</h3>
+
+            <p>This example shows how <code>return *this;</code> enables method chaining, a powerful pattern for building fluent interfaces.</p>
+
+            <div class="step-box">
+                <strong>Method Chaining with <code>this</code></strong><br>
+                The <code>recordDefeat</code> and <code>promoteRank</code> methods return <code>Hero&</code> (reference to the current object). This allows you to chain calls: <code>hero.recordDefeat(0).recordDefeat(1).promoteRank(5)</code>. Each method modifies the object and returns <code>*this</code> so the next method can be called on it.
+            </div>
+
+            <div class="step-box">
+                <strong>Deep Copy of Stats</strong><br>
+                The <code>defeatCounts</code> array is copied deeply in both the copy constructor and assignment operator. This ensures backup records don't affect the original hero's stats.
+            </div>
+
+            <h3>Experiments</h3>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 1:</strong> Change <code>return *this;</code> to <code>return this;</code> in <code>recordDefeat</code>. Does it compile?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_1')">Show Explanation</button>
+            <div class="answer-section" id="exp3_1">
+                <p><strong>What happens:</strong> Compilation error! The return type is <code>Hero&</code> (reference), but you're trying to return a pointer.</p>
+                <p><strong>Why:</strong> <code>this</code> is a pointer, <code>*this</code> dereferences it to get the object. The return type must match: <code>Hero&</code> needs <code>*this</code>.</p>
+                <p><strong>The lesson:</strong> For method chaining, return <code>*this</code> (the object), not <code>this</code> (the pointer).</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 2:</strong> What if you change the return type from <code>Hero&</code> to <code>Hero</code> (remove the <code>&</code>)?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_2')">Show Explanation</button>
+            <div class="answer-section" id="exp3_2">
+                <p><strong>What happens:</strong> The code compiles but is inefficient. Each chained call creates a temporary copy!</p>
+                <p><strong>Why:</strong> Returning <code>Hero</code> (by value) invokes the copy constructor for each call. Returning <code>Hero&</code> (by reference) returns the actual object without copying.</p>
+                <p><strong>The lesson:</strong> For method chaining, always return by reference (<code>ClassName&</code>) to avoid unnecessary copies.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 3:</strong> Try chaining without returning <code>*this</code>. Make <code>recordDefeat</code> return <code>void</code>.
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_3')">Show Explanation</button>
+            <div class="answer-section" id="exp3_3">
+                <p><strong>What happens:</strong> You can't chain anymore. <code>saitama.recordDefeat(0).recordDefeat(1)</code> won't compile.</p>
+                <p><strong>Why:</strong> With <code>void</code> return, <code>recordDefeat</code> doesn't return anything. You can't call another method on nothing.</p>
+                <p><strong>The lesson:</strong> Method chaining requires methods to return a reference to the object they're modifying.</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>🔬 Experiment 4:</strong> Add <code>saitama = saitama;</code> in main. Does the self-assignment check prevent problems?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_4')">Show Explanation</button>
+            <div class="answer-section" id="exp3_4">
+                <p><strong>What happens:</strong> Yes! The code detects self-assignment and returns immediately without doing anything.</p>
+                <p><strong>Why:</strong> <code>if (this == &other)</code> checks if both pointers point to the same object. If they do, we skip the deletion and copying.</p>
+                <p><strong>The lesson:</strong> Self-assignment checks prevent deleting your own data before trying to copy from it.</p>
+            </div>
+        </section>
+
+        <!-- Example 4: Find the Bug -->
+        <section class="content-card">
+            <h2>Example 4: Find the Bug</h2>
+            <span class="complexity-badge complexity-hard">Challenge</span>
+
+            <p>The following code has bugs in the Big Three implementation. Your job is to find them!</p>
+
+            <h3>The Code</h3>
+
+            <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Container {
+private:
+    int* values;
+    int size;
+
+public:
+    Container(int s) {
+        size = s;
+        values = new int[size];
+        for (int i = 0; i < size; i++) {
+            values[i] = i * 10;
+        }
+    }
+
+    Container(Container& other) {
+        size = other.size;
+        values = new int[size];
+        for (int i = 0; i < size; i++) {
+            values[i] = other.values[i];
+        }
+    }
+
+    Container& operator=(const Container& other) {
+        size = other.size;
+        values = new int[size];
+        for (int i = 0; i < size; i++) {
+            values[i] = other.values[i];
+        }
+        return *this;
+    }
+
+    ~Container() {
+        delete values;
+    }
+
+    void print() {
+        cout << "Values: ";
+        for (int i = 0; i < size; i++) {
+            cout << values[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    Container c1(3);
+    c1.print();
+
+    Container c2 = c1;
+    c2.print();
+
+    Container c3(2);
+    c3 = c1;
+    c3.print();
+
+    return 0;
+}</code></pre>
+
+            <p><strong>Challenge:</strong> There are at least 3 bugs in this code. Can you find them all?</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('bug_answer')">Show Bugs and Fixes</button>
+            <div class="answer-section" id="bug_answer">
+                <h4>Bug 1: Missing <code>const</code> in Copy Constructor</h4>
+                <p><strong>Location:</strong> Line 16: <code>Container(Container& other)</code></p>
+                <p><strong>What's wrong:</strong> The parameter should be <code>const Container& other</code>.</p>
+                <p><strong>Why it's wrong:</strong> Without <code>const</code>, you can't copy from const objects or temporary objects. The copy constructor should not modify the source object.</p>
+                <p><strong>Fix:</strong> <code>Container(const Container& other)</code></p>
+
+                <h4>Bug 2: Missing Self-Assignment Check</h4>
+                <p><strong>Location:</strong> Line 25: Assignment operator</p>
+                <p><strong>What's wrong:</strong> No check for <code>if (this == &other)</code>.</p>
+                <p><strong>Why it's wrong:</strong> If you do <code>c1 = c1;</code>, the code allocates new memory without deleting the old memory first, causing a memory leak. Even worse, the old memory is lost forever since we didn't save the pointer.</p>
+                <p><strong>Fix:</strong> Add at the start:
+                <pre><code class="language-cpp">if (this == &other) return *this;</code></pre></p>
+
+                <h4>Bug 3: Missing <code>delete[]</code> in Assignment Operator</h4>
+                <p><strong>Location:</strong> Line 26: Assignment operator</p>
+                <p><strong>What's wrong:</strong> No <code>delete[] values;</code> before allocating new memory.</p>
+                <p><strong>Why it's wrong:</strong> When you assign to an existing object, it already has allocated memory. If you don't delete it before allocating new memory, you leak the old memory.</p>
+                <p><strong>Fix:</strong> Add before allocation:
+                <pre><code class="language-cpp">delete[] values;</code></pre></p>
+
+                <h4>Bug 4: Wrong Delete in Destructor</h4>
+                <p><strong>Location:</strong> Line 37: <code>delete values;</code></p>
+                <p><strong>What's wrong:</strong> Should be <code>delete[] values;</code></p>
+                <p><strong>Why it's wrong:</strong> <code>values</code> is allocated with <code>new int[size]</code> (array allocation), so it must be freed with <code>delete[]</code>. Using <code>delete</code> (without <code>[]</code>) on an array is undefined behavior.</p>
+                <p><strong>Fix:</strong> <code>delete[] values;</code></p>
+
+                <h4>Corrected Code</h4>
+                <pre><code class="language-cpp">Container(const Container& other) {  // Added const
+    size = other.size;
+    values = new int[size];
+    for (int i = 0; i < size; i++) {
+        values[i] = other.values[i];
+    }
+}
+
+Container& operator=(const Container& other) {
+    if (this == &other) return *this;  // Self-assignment check
+
+    delete[] values;  // Delete old memory
+
+    size = other.size;
+    values = new int[size];
+    for (int i = 0; i < size; i++) {
+        values[i] = other.values[i];
+    }
+    return *this;
+}
+
+~Container() {
+    delete[] values;  // Use delete[] for arrays
+}</code></pre>
+
+                <div class="success-box">
+                    <strong>Key Lessons:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Copy constructor parameter must be <code>const ClassName&</code></li>
+                        <li>Assignment operator must check for self-assignment</li>
+                        <li>Assignment operator must delete old memory before allocating new</li>
+                        <li>Match <code>new[]</code> with <code>delete[]</code>, <code>new</code> with <code>delete</code></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section class="content-card">
+            <h2>Summary</h2>
+
+            <p>You've now seen the Big Three in action across different scenarios:</p>
+
+            <ul>
+                <li><strong>Example 1:</strong> Basic implementation with C-style strings</li>
+                <li><strong>Example 2:</strong> Managing dynamic arrays with deep copying (Knightmare Frames)</li>
+                <li><strong>Example 3:</strong> Method chaining with <code>this</code> pointer (Hero Association)</li>
+                <li><strong>Example 4:</strong> Common bugs and how to fix them</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>Key Patterns to Remember:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Copy constructor: <code>ClassName(const ClassName& other)</code> - allocate NEW memory</li>
+                    <li>Assignment operator: Check self-assignment, delete old, allocate new, return <code>*this</code></li>
+                    <li>Destructor: <code>~ClassName()</code> - use <code>delete[]</code> for arrays</li>
+                    <li>Method chaining: Return <code>ClassName&</code> and <code>return *this;</code></li>
+                </ul>
+            </div>
+
+            <p>Practice these patterns with the exercises in the Practice section!</p>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        // Store original code for reset
+        const originalCode1 = `#include <iostream>
+#include <cstring>
+using namespace std;
+
+class SimpleString {
+private:
+    char* data;
+    int length;
+
+public:
+    // Constructor
+    SimpleString(const char* str) {
+        length = strlen(str);
+        data = new char[length + 1];  // +1 for null terminator
+        strcpy(data, str);
+        cout << "Created: \\"" << data << "\\"" << endl;
+    }
+
+    // Copy constructor (deep copy)
+    SimpleString(const SimpleString& other) {
+        length = other.length;
+        data = new char[length + 1];
+        strcpy(data, other.data);
+        cout << "Copied: \\"" << data << "\\"" << endl;
+    }
+
+    // Assignment operator
+    SimpleString& operator=(const SimpleString& other) {
+        cout << "Assignment called" << endl;
+
+        // Self-assignment check
+        if (this == &other) {
+            return *this;
+        }
+
+        // Delete old memory
+        delete[] data;
+
+        // Copy new data
+        length = other.length;
+        data = new char[length + 1];
+        strcpy(data, other.data);
+
+        return *this;
+    }
+
+    // Destructor
+    ~SimpleString() {
+        cout << "Destroyed: \\"" << data << "\\"" << endl;
+        delete[] data;
+    }
+
+    void print() const {
+        cout << "String: \\"" << data << "\\" (length: " << length << ")" << endl;
+    }
+};
+
+int main() {
+    SimpleString str1("Hello");
+    str1.print();
+
+    cout << "\\nCreating copy..." << endl;
+    SimpleString str2 = str1;  // Copy constructor
+    str2.print();
+
+    cout << "\\nCreating new string..." << endl;
+    SimpleString str3("World");
+    str3.print();
+
+    cout << "\\nAssignment..." << endl;
+    str3 = str1;  // Assignment operator
+    str3.print();
+
+    cout << "\\nExiting program..." << endl;
+    return 0;
+}`;
+
+        const originalCode2 = `#include <iostream>
+#include <string>
+using namespace std;
+
+// Code Geass - Tactical mecha anime where pilots control giant robots
+// called Knightmare Frames in strategic combat
+
+class KnightmareFrame {
+private:
+    string pilotName;
+    string* weapons;    // Dynamic array of weapon names
+    int weaponCount;
+
+public:
+    // Constructor
+    KnightmareFrame(string pilot, int numWeapons) {
+        pilotName = pilot;
+        weaponCount = numWeapons;
+        weapons = new string[weaponCount];
+
+        // Initialize to default
+        for (int i = 0; i < weaponCount; i++) {
+            weapons[i] = "Slash Harken";  // Standard weapon
+        }
+
+        cout << "Knightmare deployed: Pilot " << pilotName << endl;
+    }
+
+    // Copy constructor (deep copy for mass production)
+    KnightmareFrame(const KnightmareFrame& other) {
+        pilotName = other.pilotName + " (Copy)";
+        weaponCount = other.weaponCount;
+
+        // Allocate NEW weapon array
+        weapons = new string[weaponCount];
+
+        // Copy each weapon
+        for (int i = 0; i < weaponCount; i++) {
+            weapons[i] = other.weapons[i];
+        }
+
+        cout << "Knightmare copied: Pilot " << pilotName << endl;
+    }
+
+    // Assignment operator (refit existing frame)
+    KnightmareFrame& operator=(const KnightmareFrame& other) {
+        cout << "Refitting Knightmare for " << pilotName << "..." << endl;
+
+        // Self-assignment check
+        if (this == &other) {
+            return *this;
+        }
+
+        // Delete old weapons
+        delete[] weapons;
+
+        // Copy data (keep our pilot name)
+        weaponCount = other.weaponCount;
+        weapons = new string[weaponCount];
+        for (int i = 0; i < weaponCount; i++) {
+            weapons[i] = other.weapons[i];
+        }
+
+        return *this;
+    }
+
+    // Destructor
+    ~KnightmareFrame() {
+        cout << "Knightmare destroyed: Pilot " << pilotName << endl;
+        delete[] weapons;
+    }
+
+    void setWeapon(int slot, string weaponName) {
+        if (slot >= 0 && slot < weaponCount) {
+            weapons[slot] = weaponName;
+        }
+    }
+
+    void displayLoadout() const {
+        cout << "\\n=== " << pilotName << "'s Knightmare ===" << endl;
+        cout << "Weapons (" << weaponCount << " slots):" << endl;
+        for (int i = 0; i < weaponCount; i++) {
+            cout << "  Slot " << (i+1) << ": " << weapons[i] << endl;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    // Lelouch's custom Knightmare (protagonist)
+    KnightmareFrame lancelot("Lelouch", 3);
+    lancelot.setWeapon(0, "VARIS Rifle");        // Long-range
+    lancelot.setWeapon(1, "MVS Swords");         // Melee weapons
+    lancelot.setWeapon(2, "Hadron Cannon");      // Heavy artillery
+    lancelot.displayLoadout();
+
+    // Mass-produce copy for another pilot
+    cout << "Mass-producing frame..." << endl;
+    KnightmareFrame massProduced = lancelot;  // Copy constructor
+    massProduced.displayLoadout();
+
+    // Create standard frame
+    KnightmareFrame standardFrame("Kallen", 2);
+    standardFrame.displayLoadout();
+
+    // Refit standard frame with Lancelot's weapons
+    cout << "Upgrading standard frame..." << endl;
+    standardFrame = lancelot;  // Assignment operator
+    standardFrame.displayLoadout();
+
+    cout << "Battle concluded..." << endl;
+    return 0;
+}`;
+
+        const originalCode3 = `#include <iostream>
+#include <string>
+using namespace std;
+
+// One Punch Man - Action comedy about overpowered hero Saitama
+// who defeats any enemy with a single punch. Heroes are ranked
+// by the Hero Association based on their achievements.
+
+class Hero {
+private:
+    string name;
+    int rank;
+    int* defeatCounts;  // Array: [Demon-level, Dragon-level, God-level]
+    int numTiers;
+
+public:
+    // Constructor
+    Hero(string heroName, int initialRank) {
+        name = heroName;
+        rank = initialRank;
+        numTiers = 3;  // Demon, Dragon, God threat levels
+        defeatCounts = new int[numTiers];
+
+        for (int i = 0; i < numTiers; i++) {
+            defeatCounts[i] = 0;
+        }
+
+        cout << "Hero registered: " << name << " (Rank " << rank << ")" << endl;
+    }
+
+    // Copy constructor
+    Hero(const Hero& other) {
+        name = other.name;
+        rank = other.rank;
+        numTiers = other.numTiers;
+
+        defeatCounts = new int[numTiers];
+        for (int i = 0; i < numTiers; i++) {
+            defeatCounts[i] = other.defeatCounts[i];
+        }
+
+        cout << "Hero record copied: " << name << endl;
+    }
+
+    // Assignment operator
+    Hero& operator=(const Hero& other) {
+        if (this == &other) return *this;
+
+        delete[] defeatCounts;
+
+        name = other.name;
+        rank = other.rank;
+        numTiers = other.numTiers;
+
+        defeatCounts = new int[numTiers];
+        for (int i = 0; i < numTiers; i++) {
+            defeatCounts[i] = other.defeatCounts[i];
+        }
+
+        cout << "Hero record updated: " << name << endl;
+        return *this;
+    }
+
+    // Destructor
+    ~Hero() {
+        cout << "Hero retired: " << name << endl;
+        delete[] defeatCounts;
+    }
+
+    // Method chaining with 'this'
+    Hero& recordDefeat(int tier, int count = 1) {
+        if (tier >= 0 && tier < numTiers) {
+            defeatCounts[tier] += count;
+        }
+        return *this;  // Return reference for chaining!
+    }
+
+    Hero& promoteRank(int newRank) {
+        rank = newRank;
+        cout << name << " promoted to Rank " << rank << "!" << endl;
+        return *this;  // Chaining!
+    }
+
+    void displayStats() const {
+        cout << "\\n=== " << name << " ===" << endl;
+        cout << "Rank: " << rank << endl;
+        cout << "Defeats:" << endl;
+        cout << "  Demon-level: " << defeatCounts[0] << endl;
+        cout << "  Dragon-level: " << defeatCounts[1] << endl;
+        cout << "  God-level: " << defeatCounts[2] << endl;
+        cout << endl;
+    }
+};
+
+int main() {
+    // Saitama - the protagonist (overpowered)
+    Hero saitama("Saitama", 100);
+    saitama.recordDefeat(0, 5)    // 5 Demon-level defeats
+           .recordDefeat(1, 3)    // 3 Dragon-level defeats
+           .recordDefeat(2, 1)    // 1 God-level defeat (very rare!)
+           .promoteRank(1);       // Method chaining!
+    saitama.displayStats();
+
+    // Genos - Saitama's disciple (strong but not as OP)
+    Hero genos("Genos", 50);
+    genos.recordDefeat(0, 10).recordDefeat(1, 2);
+    genos.displayStats();
+
+    // Copy Saitama's record for analysis
+    Hero backup = saitama;  // Copy constructor
+    backup.displayStats();
+
+    // Update Genos with Saitama's record (hypothetical)
+    cout << "Transferring records..." << endl;
+    genos = saitama;  // Assignment operator
+    genos.displayStats();
+
+    cout << "\\nShutting down Hero Association database..." << endl;
+    return 0;
+}`;
+
+        // Initialize CodeMirror editors
+        const editors = {};
+
+        function initEditor(id, code) {
+            const editor = CodeMirror.fromTextArea(document.getElementById(id), {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true
+            });
+            editor.setValue(code);
+            editors[id] = editor;
+            return editor;
+        }
+
+        initEditor('editor1', originalCode1);
+        initEditor('editor2', originalCode2);
+        initEditor('editor3', originalCode3);
+
+        // Simulated code execution
+        function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = 'output' + playgroundId.replace('playground', '');
+            const loadingId = 'loading' + playgroundId.replace('playground', '');
+
+            const outputDiv = document.getElementById(outputId);
+            const loadingDiv = document.getElementById(loadingId);
+
+            loadingDiv.style.display = 'block';
+            outputDiv.style.display = 'none';
+
+            setTimeout(() => {
+                loadingDiv.style.display = 'none';
+                outputDiv.style.display = 'block';
+                outputDiv.classList.remove('output-placeholder');
+
+                const outputs = {
+                    'playground1': `Created: "Hello"
+String: "Hello" (length: 5)
+
+Creating copy...
+Copied: "Hello"
+String: "Hello" (length: 5)
+
+Creating new string...
+Created: "World"
+String: "World" (length: 5)
+
+Assignment...
+Assignment called
+String: "Hello" (length: 5)
+
+Exiting program...
+Destroyed: "Hello"
+Destroyed: "Hello"
+Destroyed: "Hello"`,
+                    'playground2': `Knightmare deployed: Pilot Lelouch
+
+=== Lelouch's Knightmare ===
+Weapons (3 slots):
+  Slot 1: VARIS Rifle
+  Slot 2: MVS Swords
+  Slot 3: Hadron Cannon
+
+Mass-producing frame...
+Knightmare copied: Pilot Lelouch (Copy)
+
+=== Lelouch (Copy)'s Knightmare ===
+Weapons (3 slots):
+  Slot 1: VARIS Rifle
+  Slot 2: MVS Swords
+  Slot 3: Hadron Cannon
+
+Knightmare deployed: Pilot Kallen
+
+=== Kallen's Knightmare ===
+Weapons (2 slots):
+  Slot 1: Slash Harken
+  Slot 2: Slash Harken
+
+Upgrading standard frame...
+Refitting Knightmare for Kallen...
+
+=== Kallen's Knightmare ===
+Weapons (3 slots):
+  Slot 1: VARIS Rifle
+  Slot 2: MVS Swords
+  Slot 3: Hadron Cannon
+
+Battle concluded...
+Knightmare destroyed: Pilot Kallen
+Knightmare destroyed: Pilot Lelouch (Copy)
+Knightmare destroyed: Pilot Lelouch`,
+                    'playground3': `Hero registered: Saitama (Rank 100)
+Saitama promoted to Rank 1!
+
+=== Saitama ===
+Rank: 1
+Defeats:
+  Demon-level: 5
+  Dragon-level: 3
+  God-level: 1
+
+Hero registered: Genos (Rank 50)
+
+=== Genos ===
+Rank: 50
+Defeats:
+  Demon-level: 10
+  Dragon-level: 2
+  God-level: 0
+
+Hero record copied: Saitama
+
+=== Saitama ===
+Rank: 1
+Defeats:
+  Demon-level: 5
+  Dragon-level: 3
+  God-level: 1
+
+Transferring records...
+Hero record updated: Saitama
+
+=== Saitama ===
+Rank: 1
+Defeats:
+  Demon-level: 5
+  Dragon-level: 3
+  God-level: 1
+
+Shutting down Hero Association database...
+Hero retired: Saitama
+Hero retired: Saitama
+Hero retired: Genos`
+                };
+
+                outputDiv.textContent = outputs[playgroundId] || 'Output would appear here...';
+            }, 800);
+        }
+
+        function resetCode(editorId, originalCode) {
+            editors[editorId].setValue(originalCode);
+        }
+
+        function toggleAnswer(answerId) {
+            const answer = document.getElementById(answerId);
+            answer.classList.toggle('visible');
+
+            const button = event.target;
+            if (answer.classList.contains('visible')) {
+                button.textContent = 'Hide Explanation';
+            } else {
+                button.textContent = 'Show Explanation';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

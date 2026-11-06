@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 4: Copy Constructors, Destructors & Assignment Operator - Practice | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- CodeMirror for interactive playground -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+
+    <style>
+        /* DEEP OCEAN THEME */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #10b981;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .content-card p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code Blocks */
+        pre[class*="language-"] {
+            background: #0c1222;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid #1e293b;
+        }
+
+        /* Problem Box */
+        .problem-box {
+            background: #1a2332;
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .problem-box h4 {
+            color: #0ea5e9;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        /* Info/Warning/Success Boxes */
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong {
+            color: #0ea5e9;
+        }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong {
+            color: #ef4444;
+        }
+
+        .success-box {
+            background: #1a2d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong {
+            color: #10b981;
+        }
+
+        /* Interactive Playground */
+        .playground {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 2px solid #334155;
+        }
+
+        .playground-header {
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0ea5e9;
+            margin-bottom: 0.5rem;
+        }
+
+        .CodeMirror {
+            height: auto;
+            min-height: 200px;
+            border-radius: 8px;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+        }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .run-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(100, 116, 139, 0.3);
+        }
+
+        .playground-output {
+            background: #0c1222;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid #1e293b;
+        }
+
+        .output-header {
+            color: #0ea5e9;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .output-text {
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            white-space: pre-wrap;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .output-placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .loading-indicator {
+            display: none;
+            color: #eab308;
+            font-style: italic;
+        }
+
+        /* Reveal Buttons */
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        .answer-section strong {
+            color: #eab308;
+        }
+
+        /* Complexity Badge */
+        .complexity-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .complexity-easy {
+            background: #1a2d1f;
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+
+        .complexity-medium {
+            background: #2d2414;
+            color: #eab308;
+            border: 1px solid #eab308;
+        }
+
+        .complexity-hard {
+            background: #2d1414;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">SWIFT TUITION</span>
+                <span class="nav-brand-title">Unit 4: Copy Constructors, Destructors & Assignment Operator</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html" class="active">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Practice Problems</h2>
+
+            <p>These problems test your understanding of copy constructors, destructors, and assignment operators. Try solving each problem yourself before revealing the solution!</p>
+
+            <div class="info-box">
+                <strong>How to use this section:</strong>
+                <ol style="margin-top: 0.5rem;">
+                    <li>Read the problem carefully</li>
+                    <li>Try implementing the solution yourself (on paper or in your IDE)</li>
+                    <li>Click "Show Solution" to see the answer</li>
+                    <li>Run the code and experiment with modifications</li>
+                </ol>
+            </div>
+
+            <p>Each problem includes:</p>
+            <ul>
+                <li>Task description with requirements</li>
+                <li>Function signatures (where applicable)</li>
+                <li>Test cases to verify your solution</li>
+                <li>Complete solution with explanation</li>
+                <li>Time and space complexity analysis</li>
+            </ul>
+        </section>
+
+        <!-- Problem 1: Basic -->
+        <section class="content-card">
+            <h2>Problem 1: Student Record Manager</h2>
+            <span class="complexity-badge complexity-easy">Easy</span>
+
+            <div class="problem-box">
+                <h4>Task:</h4>
+                <p>Create a <code>StudentRecord</code> class that stores a student's name and an array of test scores dynamically. Implement the Big Three (copy constructor, destructor, assignment operator) to ensure proper memory management.</p>
+
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Store student name (string) and test scores (dynamic int array)</li>
+                    <li>Copy constructor should create a deep copy of scores</li>
+                    <li>Destructor should free the scores array</li>
+                    <li>Assignment operator should handle self-assignment and deep copy</li>
+                </ul>
+
+                <p><strong>Class Interface:</strong></p>
+                <pre><code class="language-cpp">class StudentRecord {
+private:
+    string name;
+    int* scores;
+    int numScores;
+public:
+    StudentRecord(string studentName, int num);
+    StudentRecord(const StudentRecord& other);  // Copy constructor
+    StudentRecord& operator=(const StudentRecord& other);  // Assignment
+    ~StudentRecord();  // Destructor
+    void setScore(int index, int score);
+    void display() const;
+};</code></pre>
+
+                <p><strong>Test Cases:</strong></p>
+                <ul>
+                    <li>Create a student with 3 test scores</li>
+                    <li>Copy the student record (copy constructor)</li>
+                    <li>Modify one copy's scores - the other should remain unchanged</li>
+                    <li>Assign one student to another (assignment operator)</li>
+                    <li>Test self-assignment</li>
+                </ul>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Solution</button>
+            <div class="answer-section" id="answer1">
+                <h4>Solution:</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Solution: StudentRecord Class</div>
+                    </div>
+
+                    <textarea id="editor1">#include <iostream>
+#include <string>
+using namespace std;
+
+class StudentRecord {
+private:
+    string name;
+    int* scores;
+    int numScores;
+
+public:
+    // Constructor
+    StudentRecord(string studentName, int num) {
+        name = studentName;
+        numScores = num;
+        scores = new int[numScores];
+
+        // Initialize to zero
+        for (int i = 0; i < numScores; i++) {
+            scores[i] = 0;
+        }
+    }
+
+    // Copy constructor (deep copy)
+    StudentRecord(const StudentRecord& other) {
+        name = other.name;
+        numScores = other.numScores;
+
+        // Allocate NEW array
+        scores = new int[numScores];
+
+        // Copy values
+        for (int i = 0; i < numScores; i++) {
+            scores[i] = other.scores[i];
+        }
+    }
+
+    // Assignment operator
+    StudentRecord& operator=(const StudentRecord& other) {
+        // Self-assignment check
+        if (this == &other) {
+            return *this;
+        }
+
+        // Delete old memory
+        delete[] scores;
+
+        // Copy data
+        name = other.name;
+        numScores = other.numScores;
+        scores = new int[numScores];
+        for (int i = 0; i < numScores; i++) {
+            scores[i] = other.scores[i];
+        }
+
+        return *this;
+    }
+
+    // Destructor
+    ~StudentRecord() {
+        delete[] scores;
+    }
+
+    void setScore(int index, int score) {
+        if (index >= 0 && index < numScores) {
+            scores[index] = score;
+        }
+    }
+
+    void display() const {
+        cout << "Student: " << name << endl;
+        cout << "Scores: ";
+        for (int i = 0; i < numScores; i++) {
+            cout << scores[i] << " ";
+        }
+        cout << endl << endl;
+    }
+};
+
+int main() {
+    // Create original student
+    StudentRecord lesedi("Lesedi", 3);
+    lesedi.setScore(0, 85);
+    lesedi.setScore(1, 90);
+    lesedi.setScore(2, 78);
+    cout << "Original:" << endl;
+    lesedi.display();
+
+    // Copy constructor
+    StudentRecord mpho = lesedi;
+    cout << "Copy (via copy constructor):" << endl;
+    mpho.display();
+
+    // Modify copy
+    mpho.setScore(0, 95);
+    cout << "After modifying copy:" << endl;
+    cout << "Original (should be unchanged):" << endl;
+    lesedi.display();
+    cout << "Copy (modified):" << endl;
+    mpho.display();
+
+    // Assignment operator
+    StudentRecord karabo("Karabo", 2);
+    karabo.setScore(0, 70);
+    karabo.setScore(1, 75);
+    cout << "Before assignment:" << endl;
+    karabo.display();
+
+    karabo = lesedi;  // Assignment
+    cout << "After assignment:" << endl;
+    karabo.display();
+
+    // Self-assignment test
+    lesedi = lesedi;
+    cout << "After self-assignment (should be unchanged):" << endl;
+    lesedi.display();
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor1', solution1)">↺ Reset</button>
+                    </div>
+
+                    <div class="playground-output">
+                        <div class="output-header">Output:</div>
+                        <div class="output-content">
+                            <div id="loading1" class="loading-indicator">Running...</div>
+                            <div id="output1" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4>Explanation:</h4>
+                <ol>
+                    <li><strong>Copy Constructor:</strong> Allocates a new array and copies each score individually. This ensures that <code>mpho</code> and <code>lesedi</code> have independent score arrays.</li>
+                    <li><strong>Assignment Operator:</strong> First checks for self-assignment to avoid deleting our own data. Then deletes the old array, allocates new memory, and copies the scores.</li>
+                    <li><strong>Destructor:</strong> Frees the dynamically allocated scores array to prevent memory leaks.</li>
+                </ol>
+
+                <div class="success-box">
+                    <strong>Time Complexity:</strong> O(n) for copy constructor and assignment operator, where n is the number of scores.<br>
+                    <strong>Space Complexity:</strong> O(n) for storing the scores array.
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 2: Intermediate -->
+        <section class="content-card">
+            <h2>Problem 2: Matrix Class</h2>
+            <span class="complexity-badge complexity-medium">Intermediate</span>
+
+            <div class="problem-box">
+                <h4>Task:</h4>
+                <p>Create a <code>Matrix</code> class that stores a 2D array of integers dynamically. The matrix dimensions (rows and columns) can vary. Implement the Big Three and add a method for displaying the matrix.</p>
+
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Store a 2D dynamic array (pointer to pointer)</li>
+                    <li>Deep copy should copy all elements</li>
+                    <li>Handle different matrix sizes in assignment</li>
+                    <li>Properly free all allocated memory</li>
+                </ul>
+
+                <p><strong>Class Interface:</strong></p>
+                <pre><code class="language-cpp">class Matrix {
+private:
+    int** data;
+    int rows;
+    int cols;
+public:
+    Matrix(int r, int c);
+    Matrix(const Matrix& other);
+    Matrix& operator=(const Matrix& other);
+    ~Matrix();
+    void set(int row, int col, int value);
+    void display() const;
+};</code></pre>
+
+                <p><strong>Test Cases:</strong></p>
+                <ul>
+                    <li>Create a 3x3 matrix and fill it with values</li>
+                    <li>Copy the matrix and verify independent modification</li>
+                    <li>Assign a 2x2 matrix to the 3x3 matrix</li>
+                    <li>Verify no memory leaks</li>
+                </ul>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Solution</button>
+            <div class="answer-section" id="answer2">
+                <h4>Solution:</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Solution: Matrix Class</div>
+                    </div>
+
+                    <textarea id="editor2">#include <iostream>
+using namespace std;
+
+class Matrix {
+private:
+    int** data;
+    int rows;
+    int cols;
+
+public:
+    // Constructor
+    Matrix(int r, int c) {
+        rows = r;
+        cols = c;
+
+        // Allocate array of row pointers
+        data = new int*[rows];
+
+        // Allocate each row
+        for (int i = 0; i < rows; i++) {
+            data[i] = new int[cols];
+
+            // Initialize to zero
+            for (int j = 0; j < cols; j++) {
+                data[i][j] = 0;
+            }
+        }
+    }
+
+    // Copy constructor
+    Matrix(const Matrix& other) {
+        rows = other.rows;
+        cols = other.cols;
+
+        // Allocate new 2D array
+        data = new int*[rows];
+        for (int i = 0; i < rows; i++) {
+            data[i] = new int[cols];
+
+            // Copy values
+            for (int j = 0; j < cols; j++) {
+                data[i][j] = other.data[i][j];
+            }
+        }
+    }
+
+    // Assignment operator
+    Matrix& operator=(const Matrix& other) {
+        // Self-assignment check
+        if (this == &other) {
+            return *this;
+        }
+
+        // Delete old 2D array
+        for (int i = 0; i < rows; i++) {
+            delete[] data[i];  // Delete each row
+        }
+        delete[] data;  // Delete array of pointers
+
+        // Copy new dimensions
+        rows = other.rows;
+        cols = other.cols;
+
+        // Allocate new 2D array
+        data = new int*[rows];
+        for (int i = 0; i < rows; i++) {
+            data[i] = new int[cols];
+            for (int j = 0; j < cols; j++) {
+                data[i][j] = other.data[i][j];
+            }
+        }
+
+        return *this;
+    }
+
+    // Destructor
+    ~Matrix() {
+        // Delete each row
+        for (int i = 0; i < rows; i++) {
+            delete[] data[i];
+        }
+        // Delete array of pointers
+        delete[] data;
+    }
+
+    void set(int row, int col, int value) {
+        if (row >= 0 && row < rows && col >= 0 && col < cols) {
+            data[row][col] = value;
+        }
+    }
+
+    void display() const {
+        cout << rows << "x" << cols << " Matrix:" << endl;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                cout << data[i][j] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    // Create 3x3 matrix
+    Matrix m1(3, 3);
+    m1.set(0, 0, 1);
+    m1.set(0, 1, 2);
+    m1.set(0, 2, 3);
+    m1.set(1, 0, 4);
+    m1.set(1, 1, 5);
+    m1.set(1, 2, 6);
+    m1.set(2, 0, 7);
+    m1.set(2, 1, 8);
+    m1.set(2, 2, 9);
+    cout << "Original 3x3:" << endl;
+    m1.display();
+
+    // Copy constructor
+    Matrix m2 = m1;
+    cout << "Copy (via copy constructor):" << endl;
+    m2.display();
+
+    // Modify copy
+    m2.set(0, 0, 99);
+    cout << "After modifying copy:" << endl;
+    cout << "Original (unchanged):" << endl;
+    m1.display();
+    cout << "Copy (modified):" << endl;
+    m2.display();
+
+    // Create 2x2 matrix
+    Matrix m3(2, 2);
+    m3.set(0, 0, 10);
+    m3.set(0, 1, 20);
+    m3.set(1, 0, 30);
+    m3.set(1, 1, 40);
+    cout << "2x2 matrix:" << endl;
+    m3.display();
+
+    // Assignment (different sizes)
+    m3 = m1;
+    cout << "After assigning 3x3 to 2x2 variable:" << endl;
+    m3.display();
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor2', solution2)">↺ Reset</button>
+                    </div>
+
+                    <div class="playground-output">
+                        <div class="output-header">Output:</div>
+                        <div class="output-content">
+                            <div id="loading2" class="loading-indicator">Running...</div>
+                            <div id="output2" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4>Explanation:</h4>
+                <ol>
+                    <li><strong>2D Array Allocation:</strong> We allocate an array of pointers (<code>data = new int*[rows]</code>), then allocate each row (<code>data[i] = new int[cols]</code>). This creates a true 2D dynamic array.</li>
+                    <li><strong>Deep Copy:</strong> Both copy constructor and assignment operator allocate completely new arrays and copy all elements.</li>
+                    <li><strong>Proper Deletion:</strong> The destructor (and assignment operator) must delete each row before deleting the array of pointers. Forgetting this causes memory leaks.</li>
+                    <li><strong>Size Changes:</strong> The assignment operator handles changing matrix sizes by deleting the old matrix (whatever size it was) and allocating a new one with the source's dimensions.</li>
+                </ol>
+
+                <div class="success-box">
+                    <strong>Time Complexity:</strong> O(rows × cols) for copy constructor and assignment operator.<br>
+                    <strong>Space Complexity:</strong> O(rows × cols) for storing the matrix.<br>
+                    <strong>Key Point:</strong> With 2D arrays, you must delete in reverse order of allocation: delete rows first, then the pointer array.
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 3: What's Wrong -->
+        <section class="content-card">
+            <h2>Problem 3: Debug the Inventory System</h2>
+            <span class="complexity-badge complexity-medium">Debugging Challenge</span>
+
+            <div class="problem-box">
+                <h4>Task:</h4>
+                <p>The following <code>Inventory</code> class has bugs in its Big Three implementation. Find all the bugs and explain how to fix them.</p>
+
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Inventory {
+private:
+    string* items;
+    int numItems;
+
+public:
+    Inventory(int n) {
+        numItems = n;
+        items = new string[numItems];
+        for (int i = 0; i < numItems; i++) {
+            items[i] = "Empty";
+        }
+    }
+
+    Inventory(Inventory& other) {
+        numItems = other.numItems;
+        items = other.items;
+    }
+
+    Inventory& operator=(const Inventory& other) {
+        numItems = other.numItems;
+        items = new string[numItems];
+        for (int i = 0; i < numItems; i++) {
+            items[i] = other.items[i];
+        }
+        return *this;
+    }
+
+    ~Inventory() {
+        delete items;
+    }
+
+    void setItem(int index, string item) {
+        if (index >= 0 && index < numItems) {
+            items[index] = item;
+        }
+    }
+
+    void display() {
+        for (int i = 0; i < numItems; i++) {
+            cout << items[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    Inventory inv1(3);
+    inv1.setItem(0, "Sword");
+    inv1.setItem(1, "Shield");
+    inv1.setItem(2, "Potion");
+
+    Inventory inv2 = inv1;
+    inv2.setItem(0, "Axe");
+
+    inv1.display();
+    inv2.display();
+
+    Inventory inv3(2);
+    inv3 = inv1;
+    inv3.display();
+
+    return 0;
+}</code></pre>
+
+                <p><strong>Your Task:</strong> Identify at least 4 bugs in the code above.</p>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Bugs and Fixes</button>
+            <div class="answer-section" id="answer3">
+                <h4>Bugs Found:</h4>
+
+                <div class="warning-box">
+                    <strong>Bug 1: Shallow Copy in Copy Constructor</strong><br>
+                    <strong>Location:</strong> Line 22: <code>items = other.items;</code><br>
+                    <strong>Problem:</strong> This copies the pointer address, not the data. Both objects point to the same array.<br>
+                    <strong>Fix:</strong> Allocate new memory and copy values:
+                    <pre style="margin-top: 0.5rem;"><code class="language-cpp">items = new string[numItems];
+for (int i = 0; i < numItems; i++) {
+    items[i] = other.items[i];
+}</code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Bug 2: Missing <code>const</code> in Copy Constructor</strong><br>
+                    <strong>Location:</strong> Line 19: <code>Inventory(Inventory& other)</code><br>
+                    <strong>Problem:</strong> Should be <code>const Inventory& other</code>. Without <code>const</code>, you can't copy from const objects.<br>
+                    <strong>Fix:</strong> <code>Inventory(const Inventory& other)</code>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Bug 3: Missing Self-Assignment Check</strong><br>
+                    <strong>Location:</strong> Assignment operator (line 25)<br>
+                    <strong>Problem:</strong> No check for <code>if (this == &other)</code>. Also missing deletion of old memory.<br>
+                    <strong>Fix:</strong> Add at start:
+                    <pre style="margin-top: 0.5rem;"><code class="language-cpp">if (this == &other) return *this;
+delete[] items;  // Delete old memory</code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Bug 4: Wrong Delete in Destructor</strong><br>
+                    <strong>Location:</strong> Line 36: <code>delete items;</code><br>
+                    <strong>Problem:</strong> Should be <code>delete[] items;</code> because <code>items</code> is an array.<br>
+                    <strong>Fix:</strong> <code>delete[] items;</code>
+                </div>
+
+                <h4>Corrected Code:</h4>
+                <pre><code class="language-cpp">// Copy constructor (FIXED)
+Inventory(const Inventory& other) {  // Added const
+    numItems = other.numItems;
+
+    // Deep copy!
+    items = new string[numItems];
+    for (int i = 0; i < numItems; i++) {
+        items[i] = other.items[i];
+    }
+}
+
+// Assignment operator (FIXED)
+Inventory& operator=(const Inventory& other) {
+    if (this == &other) return *this;  // Self-assignment check
+
+    delete[] items;  // Delete old memory
+
+    numItems = other.numItems;
+    items = new string[numItems];
+    for (int i = 0; i < numItems; i++) {
+        items[i] = other.items[i];
+    }
+    return *this;
+}
+
+// Destructor (FIXED)
+~Inventory() {
+    delete[] items;  // Use delete[] for arrays
+}</code></pre>
+
+                <div class="success-box">
+                    <strong>Key Lessons:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Always deep copy pointers in copy constructor</li>
+                        <li>Copy constructor parameter must be <code>const ClassName&</code></li>
+                        <li>Assignment operator must check self-assignment and delete old memory</li>
+                        <li>Match allocation type with deletion: <code>new[]</code> with <code>delete[]</code></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem 4: Challenge - Clash Royale -->
+        <section class="content-card">
+            <h2>Problem 4: Clash Royale Deck Manager</h2>
+            <span class="complexity-badge complexity-hard">Challenge</span>
+
+            <p>Swift plays Clash Royale - a real-time strategy mobile game where players build decks of 8 cards and battle opponents. Each card has a name and elixir cost (resource needed to play it). Decks need to be copied for testing strategies and assigned to different player profiles.</p>
+
+            <div class="problem-box">
+                <h4>Task:</h4>
+                <p>Create a <code>ClashDeck</code> class that manages a collection of cards. The class should support:</p>
+
+                <ul>
+                    <li>Dynamic card storage (array of Card structs)</li>
+                    <li>Method chaining for adding cards (return <code>*this</code>)</li>
+                    <li>Deep copying for deck testing (copy constructor)</li>
+                    <li>Profile switching (assignment operator)</li>
+                    <li>Proper cleanup when decks are destroyed</li>
+                </ul>
+
+                <p><strong>Card Structure:</strong></p>
+                <pre><code class="language-cpp">struct Card {
+    string name;
+    int elixirCost;
+};</code></pre>
+
+                <p><strong>Requirements:</strong></p>
+                <ol>
+                    <li>Store an array of Cards dynamically (max 8 cards)</li>
+                    <li>Implement <code>addCard()</code> that returns <code>ClashDeck&</code> for chaining</li>
+                    <li>Implement copy constructor for deep copying</li>
+                    <li>Implement assignment operator with self-assignment check</li>
+                    <li>Implement destructor to free memory</li>
+                    <li>Add <code>displayDeck()</code> to show all cards</li>
+                </ol>
+
+                <p><strong>Test Cases:</strong></p>
+                <ul>
+                    <li>Create a deck and add multiple cards using method chaining</li>
+                    <li>Copy the deck and verify independence</li>
+                    <li>Assign one deck to another</li>
+                    <li>Test self-assignment</li>
+                </ul>
+            </div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Solution</button>
+            <div class="answer-section" id="answer4">
+                <h4>Solution:</h4>
+
+                <section class="playground">
+                    <div class="playground-header">
+                        <div class="playground-title">Solution: ClashDeck Class with Method Chaining</div>
+                    </div>
+
+                    <textarea id="editor3">#include <iostream>
+#include <string>
+using namespace std;
+
+struct Card {
+    string name;
+    int elixirCost;
+};
+
+class ClashDeck {
+private:
+    Card* cards;
+    int numCards;
+    int capacity;
+
+public:
+    // Constructor
+    ClashDeck(int maxCards = 8) {
+        capacity = maxCards;
+        numCards = 0;
+        cards = new Card[capacity];
+    }
+
+    // Copy constructor (deep copy for testing strategies)
+    ClashDeck(const ClashDeck& other) {
+        capacity = other.capacity;
+        numCards = other.numCards;
+
+        cards = new Card[capacity];
+        for (int i = 0; i < numCards; i++) {
+            cards[i] = other.cards[i];
+        }
+    }
+
+    // Assignment operator (switch profiles)
+    ClashDeck& operator=(const ClashDeck& other) {
+        if (this == &other) return *this;
+
+        delete[] cards;
+
+        capacity = other.capacity;
+        numCards = other.numCards;
+        cards = new Card[capacity];
+        for (int i = 0; i < numCards; i++) {
+            cards[i] = other.cards[i];
+        }
+
+        return *this;
+    }
+
+    // Destructor
+    ~ClashDeck() {
+        delete[] cards;
+    }
+
+    // Method chaining - add card and return reference
+    ClashDeck& addCard(string name, int cost) {
+        if (numCards < capacity) {
+            cards[numCards].name = name;
+            cards[numCards].elixirCost = cost;
+            numCards++;
+        }
+        return *this;  // Enable chaining!
+    }
+
+    void displayDeck() const {
+        cout << "Deck (" << numCards << "/" << capacity << " cards):" << endl;
+        int totalCost = 0;
+        for (int i = 0; i < numCards; i++) {
+            cout << "  " << (i+1) << ". " << cards[i].name
+                 << " (" << cards[i].elixirCost << " elixir)" << endl;
+            totalCost += cards[i].elixirCost;
+        }
+        if (numCards > 0) {
+            cout << "Average elixir cost: "
+                 << (double)totalCost / numCards << endl;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    // Build competitive deck with method chaining
+    cout << "=== Building Clash Royale Deck ===" << endl;
+    ClashDeck myDeck;
+    myDeck.addCard("Hog Rider", 4)      // Win condition
+          .addCard("Fireball", 4)        // Spell
+          .addCard("Ice Spirit", 1)      // Cycle card
+          .addCard("Cannon", 3)          // Defense
+          .addCard("Log", 2)             // Spell
+          .addCard("Musketeer", 4)       // Support
+          .addCard("Ice Golem", 2)       // Tank
+          .addCard("Skeletons", 1);      // Cycle
+    myDeck.displayDeck();
+
+    // Test deck copy (for strategy experimentation)
+    cout << "=== Copying deck for testing ===" << endl;
+    ClashDeck testDeck = myDeck;
+    testDeck.displayDeck();
+
+    // Create different deck
+    cout << "=== Alternative deck ===" << endl;
+    ClashDeck altDeck;
+    altDeck.addCard("Giant", 5)
+           .addCard("Wizard", 5)
+           .addCard("Arrows", 3);
+    altDeck.displayDeck();
+
+    // Switch to main deck
+    cout << "=== Switching to main deck ===" << endl;
+    altDeck = myDeck;
+    altDeck.displayDeck();
+
+    // Self-assignment test
+    myDeck = myDeck;
+    cout << "After self-assignment (unchanged):" << endl;
+    myDeck.displayDeck();
+
+    return 0;
+}</textarea>
+
+                    <div class="playground-controls">
+                        <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                        <button class="reset-btn" onclick="resetCode('editor3', solution3)">↺ Reset</button>
+                    </div>
+
+                    <div class="playground-output">
+                        <div class="output-header">Output:</div>
+                        <div class="output-content">
+                            <div id="loading3" class="loading-indicator">Running...</div>
+                            <div id="output3" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <h4>Explanation:</h4>
+                <ol>
+                    <li><strong>Method Chaining:</strong> <code>addCard()</code> returns <code>ClashDeck&</code> and ends with <code>return *this;</code>. This allows chaining: <code>deck.addCard(...).addCard(...).addCard(...)</code>.</li>
+                    <li><strong>Deep Copy:</strong> Copy constructor allocates a new Card array and copies each card. This allows testing strategies without affecting the original deck.</li>
+                    <li><strong>Assignment for Profile Switching:</strong> Assignment operator allows copying a deck configuration to a different profile. It checks self-assignment, deletes old memory, and creates a new copy.</li>
+                    <li><strong>Capacity Tracking:</strong> We track both <code>numCards</code> (current count) and <code>capacity</code> (max size) to prevent overflow.</li>
+                </ol>
+
+                <div class="success-box">
+                    <strong>Time Complexity:</strong> O(n) for copy constructor and assignment operator, where n is the number of cards.<br>
+                    <strong>Space Complexity:</strong> O(n) for storing the deck.<br>
+                    <strong>Design Pattern:</strong> This demonstrates the Fluent Interface pattern (method chaining) combined with proper resource management (Big Three).
+                </div>
+
+                <div class="info-box">
+                    <strong>Real-World Application:</strong> This pattern is used in many APIs:
+                    <ul style="margin-top: 0.5rem;">
+                        <li>jQuery: <code>$('.element').addClass('active').fadeIn().slideDown()</code></li>
+                        <li>cout: <code>cout << "Hello" << " " << "World" << endl;</code></li>
+                        <li>SQL builders: <code>query.select("*").from("users").where("age > 18")</code></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="content-card">
+            <h2>Summary</h2>
+
+            <p>You've practiced implementing the Big Three in different scenarios:</p>
+
+            <ul>
+                <li><strong>Problem 1:</strong> Basic implementation with a 1D array</li>
+                <li><strong>Problem 2:</strong> Intermediate complexity with 2D arrays</li>
+                <li><strong>Problem 3:</strong> Debugging common mistakes</li>
+                <li><strong>Problem 4:</strong> Advanced implementation with method chaining</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>Remember the Big Three Checklist:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>✓ Copy constructor: <code>ClassName(const ClassName& other)</code> with deep copy</li>
+                    <li>✓ Assignment operator: Self-assignment check, delete old, deep copy, return <code>*this</code></li>
+                    <li>✓ Destructor: <code>~ClassName()</code> with proper deletion (<code>delete[]</code> for arrays)</li>
+                    <li>✓ Method chaining: Return <code>ClassName&</code> and <code>return *this;</code></li>
+                </ul>
+            </div>
+
+            <p>Now test your knowledge with the quiz!</p>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        // Solutions stored for reset
+        const solution1 = `#include <iostream>
+#include <string>
+using namespace std;
+
+class StudentRecord {
+private:
+    string name;
+    int* scores;
+    int numScores;
+
+public:
+    // Constructor
+    StudentRecord(string studentName, int num) {
+        name = studentName;
+        numScores = num;
+        scores = new int[numScores];
+
+        // Initialize to zero
+        for (int i = 0; i < numScores; i++) {
+            scores[i] = 0;
+        }
+    }
+
+    // Copy constructor (deep copy)
+    StudentRecord(const StudentRecord& other) {
+        name = other.name;
+        numScores = other.numScores;
+
+        // Allocate NEW array
+        scores = new int[numScores];
+
+        // Copy values
+        for (int i = 0; i < numScores; i++) {
+            scores[i] = other.scores[i];
+        }
+    }
+
+    // Assignment operator
+    StudentRecord& operator=(const StudentRecord& other) {
+        // Self-assignment check
+        if (this == &other) {
+            return *this;
+        }
+
+        // Delete old memory
+        delete[] scores;
+
+        // Copy data
+        name = other.name;
+        numScores = other.numScores;
+        scores = new int[numScores];
+        for (int i = 0; i < numScores; i++) {
+            scores[i] = other.scores[i];
+        }
+
+        return *this;
+    }
+
+    // Destructor
+    ~StudentRecord() {
+        delete[] scores;
+    }
+
+    void setScore(int index, int score) {
+        if (index >= 0 && index < numScores) {
+            scores[index] = score;
+        }
+    }
+
+    void display() const {
+        cout << "Student: " << name << endl;
+        cout << "Scores: ";
+        for (int i = 0; i < numScores; i++) {
+            cout << scores[i] << " ";
+        }
+        cout << endl << endl;
+    }
+};
+
+int main() {
+    // Create original student
+    StudentRecord lesedi("Lesedi", 3);
+    lesedi.setScore(0, 85);
+    lesedi.setScore(1, 90);
+    lesedi.setScore(2, 78);
+    cout << "Original:" << endl;
+    lesedi.display();
+
+    // Copy constructor
+    StudentRecord mpho = lesedi;
+    cout << "Copy (via copy constructor):" << endl;
+    mpho.display();
+
+    // Modify copy
+    mpho.setScore(0, 95);
+    cout << "After modifying copy:" << endl;
+    cout << "Original (should be unchanged):" << endl;
+    lesedi.display();
+    cout << "Copy (modified):" << endl;
+    mpho.display();
+
+    // Assignment operator
+    StudentRecord karabo("Karabo", 2);
+    karabo.setScore(0, 70);
+    karabo.setScore(1, 75);
+    cout << "Before assignment:" << endl;
+    karabo.display();
+
+    karabo = lesedi;  // Assignment
+    cout << "After assignment:" << endl;
+    karabo.display();
+
+    // Self-assignment test
+    lesedi = lesedi;
+    cout << "After self-assignment (should be unchanged):" << endl;
+    lesedi.display();
+
+    return 0;
+}`;
+
+        const solution2 = `#include <iostream>
+using namespace std;
+
+class Matrix {
+private:
+    int** data;
+    int rows;
+    int cols;
+
+public:
+    // Constructor
+    Matrix(int r, int c) {
+        rows = r;
+        cols = c;
+
+        // Allocate array of row pointers
+        data = new int*[rows];
+
+        // Allocate each row
+        for (int i = 0; i < rows; i++) {
+            data[i] = new int[cols];
+
+            // Initialize to zero
+            for (int j = 0; j < cols; j++) {
+                data[i][j] = 0;
+            }
+        }
+    }
+
+    // Copy constructor
+    Matrix(const Matrix& other) {
+        rows = other.rows;
+        cols = other.cols;
+
+        // Allocate new 2D array
+        data = new int*[rows];
+        for (int i = 0; i < rows; i++) {
+            data[i] = new int[cols];
+
+            // Copy values
+            for (int j = 0; j < cols; j++) {
+                data[i][j] = other.data[i][j];
+            }
+        }
+    }
+
+    // Assignment operator
+    Matrix& operator=(const Matrix& other) {
+        // Self-assignment check
+        if (this == &other) {
+            return *this;
+        }
+
+        // Delete old 2D array
+        for (int i = 0; i < rows; i++) {
+            delete[] data[i];  // Delete each row
+        }
+        delete[] data;  // Delete array of pointers
+
+        // Copy new dimensions
+        rows = other.rows;
+        cols = other.cols;
+
+        // Allocate new 2D array
+        data = new int*[rows];
+        for (int i = 0; i < rows; i++) {
+            data[i] = new int[cols];
+            for (int j = 0; j < cols; j++) {
+                data[i][j] = other.data[i][j];
+            }
+        }
+
+        return *this;
+    }
+
+    // Destructor
+    ~Matrix() {
+        // Delete each row
+        for (int i = 0; i < rows; i++) {
+            delete[] data[i];
+        }
+        // Delete array of pointers
+        delete[] data;
+    }
+
+    void set(int row, int col, int value) {
+        if (row >= 0 && row < rows && col >= 0 && col < cols) {
+            data[row][col] = value;
+        }
+    }
+
+    void display() const {
+        cout << rows << "x" << cols << " Matrix:" << endl;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                cout << data[i][j] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    // Create 3x3 matrix
+    Matrix m1(3, 3);
+    m1.set(0, 0, 1);
+    m1.set(0, 1, 2);
+    m1.set(0, 2, 3);
+    m1.set(1, 0, 4);
+    m1.set(1, 1, 5);
+    m1.set(1, 2, 6);
+    m1.set(2, 0, 7);
+    m1.set(2, 1, 8);
+    m1.set(2, 2, 9);
+    cout << "Original 3x3:" << endl;
+    m1.display();
+
+    // Copy constructor
+    Matrix m2 = m1;
+    cout << "Copy (via copy constructor):" << endl;
+    m2.display();
+
+    // Modify copy
+    m2.set(0, 0, 99);
+    cout << "After modifying copy:" << endl;
+    cout << "Original (unchanged):" << endl;
+    m1.display();
+    cout << "Copy (modified):" << endl;
+    m2.display();
+
+    // Create 2x2 matrix
+    Matrix m3(2, 2);
+    m3.set(0, 0, 10);
+    m3.set(0, 1, 20);
+    m3.set(1, 0, 30);
+    m3.set(1, 1, 40);
+    cout << "2x2 matrix:" << endl;
+    m3.display();
+
+    // Assignment (different sizes)
+    m3 = m1;
+    cout << "After assigning 3x3 to 2x2 variable:" << endl;
+    m3.display();
+
+    return 0;
+}`;
+
+        const solution3 = `#include <iostream>
+#include <string>
+using namespace std;
+
+struct Card {
+    string name;
+    int elixirCost;
+};
+
+class ClashDeck {
+private:
+    Card* cards;
+    int numCards;
+    int capacity;
+
+public:
+    // Constructor
+    ClashDeck(int maxCards = 8) {
+        capacity = maxCards;
+        numCards = 0;
+        cards = new Card[capacity];
+    }
+
+    // Copy constructor (deep copy for testing strategies)
+    ClashDeck(const ClashDeck& other) {
+        capacity = other.capacity;
+        numCards = other.numCards;
+
+        cards = new Card[capacity];
+        for (int i = 0; i < numCards; i++) {
+            cards[i] = other.cards[i];
+        }
+    }
+
+    // Assignment operator (switch profiles)
+    ClashDeck& operator=(const ClashDeck& other) {
+        if (this == &other) return *this;
+
+        delete[] cards;
+
+        capacity = other.capacity;
+        numCards = other.numCards;
+        cards = new Card[capacity];
+        for (int i = 0; i < numCards; i++) {
+            cards[i] = other.cards[i];
+        }
+
+        return *this;
+    }
+
+    // Destructor
+    ~ClashDeck() {
+        delete[] cards;
+    }
+
+    // Method chaining - add card and return reference
+    ClashDeck& addCard(string name, int cost) {
+        if (numCards < capacity) {
+            cards[numCards].name = name;
+            cards[numCards].elixirCost = cost;
+            numCards++;
+        }
+        return *this;  // Enable chaining!
+    }
+
+    void displayDeck() const {
+        cout << "Deck (" << numCards << "/" << capacity << " cards):" << endl;
+        int totalCost = 0;
+        for (int i = 0; i < numCards; i++) {
+            cout << "  " << (i+1) << ". " << cards[i].name
+                 << " (" << cards[i].elixirCost << " elixir)" << endl;
+            totalCost += cards[i].elixirCost;
+        }
+        if (numCards > 0) {
+            cout << "Average elixir cost: "
+                 << (double)totalCost / numCards << endl;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    // Build competitive deck with method chaining
+    cout << "=== Building Clash Royale Deck ===" << endl;
+    ClashDeck myDeck;
+    myDeck.addCard("Hog Rider", 4)      // Win condition
+          .addCard("Fireball", 4)        // Spell
+          .addCard("Ice Spirit", 1)      // Cycle card
+          .addCard("Cannon", 3)          // Defense
+          .addCard("Log", 2)             // Spell
+          .addCard("Musketeer", 4)       // Support
+          .addCard("Ice Golem", 2)       // Tank
+          .addCard("Skeletons", 1);      // Cycle
+    myDeck.displayDeck();
+
+    // Test deck copy (for strategy experimentation)
+    cout << "=== Copying deck for testing ===" << endl;
+    ClashDeck testDeck = myDeck;
+    testDeck.displayDeck();
+
+    // Create different deck
+    cout << "=== Alternative deck ===" << endl;
+    ClashDeck altDeck;
+    altDeck.addCard("Giant", 5)
+           .addCard("Wizard", 5)
+           .addCard("Arrows", 3);
+    altDeck.displayDeck();
+
+    // Switch to main deck
+    cout << "=== Switching to main deck ===" << endl;
+    altDeck = myDeck;
+    altDeck.displayDeck();
+
+    // Self-assignment test
+    myDeck = myDeck;
+    cout << "After self-assignment (unchanged):" << endl;
+    myDeck.displayDeck();
+
+    return 0;
+}`;
+
+        // Initialize CodeMirror editors
+        const editors = {};
+
+        function initEditor(id, code) {
+            const editor = CodeMirror.fromTextArea(document.getElementById(id), {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true
+            });
+            editor.setValue(code);
+            editors[id] = editor;
+            return editor;
+        }
+
+        initEditor('editor1', solution1);
+        initEditor('editor2', solution2);
+        initEditor('editor3', solution3);
+
+        // Simulated code execution
+        function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = 'output' + playgroundId.replace('playground', '');
+            const loadingId = 'loading' + playgroundId.replace('playground', '');
+
+            const outputDiv = document.getElementById(outputId);
+            const loadingDiv = document.getElementById(loadingId);
+
+            loadingDiv.style.display = 'block';
+            outputDiv.style.display = 'none';
+
+            setTimeout(() => {
+                loadingDiv.style.display = 'none';
+                outputDiv.style.display = 'block';
+                outputDiv.classList.remove('output-placeholder');
+
+                const outputs = {
+                    'playground1': `Original:
+Student: Lesedi
+Scores: 85 90 78
+
+Copy (via copy constructor):
+Student: Lesedi
+Scores: 85 90 78
+
+After modifying copy:
+Original (should be unchanged):
+Student: Lesedi
+Scores: 85 90 78
+
+Copy (modified):
+Student: Lesedi
+Scores: 95 90 78
+
+Before assignment:
+Student: Karabo
+Scores: 70 75
+
+After assignment:
+Student: Lesedi
+Scores: 85 90 78
+
+After self-assignment (should be unchanged):
+Student: Lesedi
+Scores: 85 90 78`,
+                    'playground2': `Original 3x3:
+3x3 Matrix:
+1 2 3
+4 5 6
+7 8 9
+
+Copy (via copy constructor):
+3x3 Matrix:
+1 2 3
+4 5 6
+7 8 9
+
+After modifying copy:
+Original (unchanged):
+3x3 Matrix:
+1 2 3
+4 5 6
+7 8 9
+
+Copy (modified):
+3x3 Matrix:
+99 2 3
+4 5 6
+7 8 9
+
+2x2 matrix:
+2x2 Matrix:
+10 20
+30 40
+
+After assigning 3x3 to 2x2 variable:
+3x3 Matrix:
+1 2 3
+4 5 6
+7 8 9`,
+                    'playground3': `=== Building Clash Royale Deck ===
+Deck (8/8 cards):
+  1. Hog Rider (4 elixir)
+  2. Fireball (4 elixir)
+  3. Ice Spirit (1 elixir)
+  4. Cannon (3 elixir)
+  5. Log (2 elixir)
+  6. Musketeer (4 elixir)
+  7. Ice Golem (2 elixir)
+  8. Skeletons (1 elixir)
+Average elixir cost: 2.625
+
+=== Copying deck for testing ===
+Deck (8/8 cards):
+  1. Hog Rider (4 elixir)
+  2. Fireball (4 elixir)
+  3. Ice Spirit (1 elixir)
+  4. Cannon (3 elixir)
+  5. Log (2 elixir)
+  6. Musketeer (4 elixir)
+  7. Ice Golem (2 elixir)
+  8. Skeletons (1 elixir)
+Average elixir cost: 2.625
+
+=== Alternative deck ===
+Deck (3/8 cards):
+  1. Giant (5 elixir)
+  2. Wizard (5 elixir)
+  3. Arrows (3 elixir)
+Average elixir cost: 4.33333
+
+=== Switching to main deck ===
+Deck (8/8 cards):
+  1. Hog Rider (4 elixir)
+  2. Fireball (4 elixir)
+  3. Ice Spirit (1 elixir)
+  4. Cannon (3 elixir)
+  5. Log (2 elixir)
+  6. Musketeer (4 elixir)
+  7. Ice Golem (2 elixir)
+  8. Skeletons (1 elixir)
+Average elixir cost: 2.625
+
+After self-assignment (unchanged):
+Deck (8/8 cards):
+  1. Hog Rider (4 elixir)
+  2. Fireball (4 elixir)
+  3. Ice Spirit (1 elixir)
+  4. Cannon (3 elixir)
+  5. Log (2 elixir)
+  6. Musketeer (4 elixir)
+  7. Ice Golem (2 elixir)
+  8. Skeletons (1 elixir)
+Average elixir cost: 2.625`
+                };
+
+                outputDiv.textContent = outputs[playgroundId] || 'Output would appear here...';
+            }, 800);
+        }
+
+        function resetCode(editorId, originalCode) {
+            editors[editorId].setValue(originalCode);
+        }
+
+        function toggleAnswer(answerId) {
+            const answer = document.getElementById(answerId);
+            answer.classList.toggle('visible');
+
+            const button = event.target;
+            if (answer.classList.contains('visible')) {
+                button.textContent = 'Hide Solution';
+            } else {
+                button.textContent = 'Show Solution';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

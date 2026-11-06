@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 3: Introduction to Classes & Constructors - Quiz | COS 110</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Primary Colors */
+            --background-primary: #0f172a;
+            --background-secondary: #1e293b;
+            --background-tertiary: #0c1222;
+
+            /* Accent Colors */
+            --accent-blue: #0ea5e9;
+            --accent-green: #10b981;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+
+            /* Text Colors */
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-code: #10b981;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--background-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            padding-bottom: 4rem;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--background-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--accent-blue);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--accent-blue);
+        }
+
+        .nav-menu a.active {
+            background: var(--accent-green);
+            color: var(--background-primary);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--accent-blue);
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: var(--accent-purple);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        code {
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            background: var(--background-tertiary);
+            color: var(--text-code);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: var(--background-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent-purple);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong {
+            color: var(--accent-blue);
+        }
+
+        /* Question Box */
+        .question-box {
+            background: var(--background-secondary);
+            border: 2px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c3aed 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Quiz Reveal Button - Purple Theme */
+        .quiz-reveal-btn {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c3aed 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: white;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        .quiz-answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--accent-purple);
+        }
+
+        .quiz-answer-section.visible {
+            display: block;
+        }
+
+        .quiz-answer-section strong {
+            color: #a78bfa;
+        }
+
+        /* Prism.js Custom Colors */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 3: Introduction to Classes & Constructors</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html" class="active">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Quiz: Classes & Constructors</h1>
+
+        <p>This quiz tests your understanding of Unit 3 concepts. Questions are modeled after actual EO1 exam patterns. Try to answer each question before revealing the solution.</p>
+
+        <div class="info-box">
+            <strong>Instructions:</strong> This is a practice quiz (not graded). Answer questions on your own first, then check your understanding with the detailed explanations. Questions cover: class basics, constructors, copy constructors, const correctness, inline functions, static members, and destructors.
+        </div>
+
+        <div class="info-box" style="border-left-color: #f59e0b; background: #1f2937; margin-top: 1rem;">
+            <strong style="color: #fbbf24;">⚠️ Known Display Issue:</strong>
+            <p style="margin-top: 0.5rem; color: #d1d5db;">
+                If you click "Show Answer" and the solution appears as a black box or doesn't display properly,
+                just <strong>click anywhere on the screen</strong> (on the page background, scroll bar, or near the answer area).
+                This will trigger the content to fully render. I've tried to fix this rendering bug multiple times,
+                but it persists - so this is the workaround for now! Sorry for the inconvenience.
+            </p>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-box">
+            <span class="question-number">Question 1</span>
+            <h3>Inline Member Functions</h3>
+            <p><strong>True or False:</strong> Inline member functions work against the principle of separating interface and implementation.</p>
+            <p>Justify your answer.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer1')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer1">
+                <p><strong>Answer:</strong> True</p>
+
+                <p><strong>Detailed Justification:</strong></p>
+                <p>When you define a member function as inline (either explicitly with the <code>inline</code> keyword or implicitly by defining it inside the class declaration), the function body must appear in the header file. This means the implementation details are exposed to anyone who includes the header.</p>
+
+                <p><strong>The principle of separation:</strong> Good software design separates the interface (what the class can do) from the implementation (how it does it). Typically:</p>
+                <ul>
+                    <li><strong>Header file (.h):</strong> Contains class declaration with function prototypes (interface)</li>
+                    <li><strong>Implementation file (.cpp):</strong> Contains function definitions (implementation)</li>
+                </ul>
+
+                <p><strong>Why inline violates this:</strong> Inline functions require their implementation to be visible at compile time (in the header), so the compiler can substitute the function code directly. This exposes implementation details that should be hidden.</p>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">class Student {
+private:
+    int id;
+public:
+    int getID() const { return id; }  // Inline - implementation in header
+};</code></pre>
+
+                <p><strong>Trade-off:</strong> Inline functions can improve performance for small functions by avoiding function call overhead, but they sacrifice encapsulation and increase header file dependencies.</p>
+
+                <div class="info-box">
+                    <strong>Source:</strong> This question format matches EO1 2025, Question 1
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-box">
+            <span class="question-number">Question 2</span>
+            <h3>Multiple Choice: Default Constructor</h3>
+            <p>Which statement about default constructors is correct?</p>
+            <ol type="A">
+                <li>C++ always provides a default constructor, even if you define other constructors</li>
+                <li>A default constructor must initialize all member variables to zero</li>
+                <li>If you define any constructor, C++ will not provide a default constructor automatically</li>
+                <li>Default constructors cannot use initialization lists</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer2')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer2">
+                <p><strong>Answer:</strong> C - If you define any constructor, C++ will not provide a default constructor automatically</p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>C++ provides a default constructor (one that takes no parameters) automatically only if you haven't defined any constructors. Once you define even a single parameterized constructor, C++ assumes you want control over object construction and stops generating a default constructor. If you want both, you must write both explicitly.</p>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">class Student {
+public:
+    Student(int id) { }  // Parameterized constructor defined
+};
+
+int main() {
+    Student s1(100);  // OK
+    Student s2;       // ERROR - no default constructor
+}</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. C++ only provides a default constructor if you define NO constructors. Once you define any constructor (even a parameterized one), the automatic default constructor is not generated.</li>
+                    <li><strong>B:</strong> Incorrect. A default constructor doesn't have to initialize anything to zero. The compiler-generated default constructor calls default constructors of member objects but leaves primitive types (int, double) uninitialized (garbage values). You can write a default constructor that initializes members to any values you want.</li>
+                    <li><strong>D:</strong> Incorrect. Default constructors CAN and SHOULD use initialization lists. Example: <code>Student() : id(0), gpa(0.0) { }</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-box">
+            <span class="question-number">Question 3</span>
+            <h3>Code Tracing: Constructor Execution</h3>
+            <p>What is the output of the following code?</p>
+            <pre><code class="language-cpp">#include <iostream>
+using namespace std;
+
+class Test {
+private:
+    int value;
+public:
+    Test() : value(0) {
+        cout << "A";
+    }
+
+    Test(int v) : value(v) {
+        cout << "B";
+    }
+
+    ~Test() {
+        cout << "C";
+    }
+};
+
+int main() {
+    Test t1;
+    Test t2(5);
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer3')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer3">
+                <p><strong>Output:</strong></p>
+                <pre>ABCC</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line: <code>Test t1;</code></strong> → Calls default constructor <code>Test()</code> → Outputs: "A" → Variables: value = 0</li>
+                    <li><strong>Line: <code>Test t2(5);</code></strong> → Calls parameterized constructor <code>Test(int v)</code> with v=5 → Outputs: "B" → Variables: value = 5</li>
+                    <li><strong>Line: <code>return 0;</code></strong> → main() ends, local objects destroyed in reverse order (LIFO)</li>
+                    <li><strong>Destruction of t2:</strong> → Calls <code>~Test()</code> for t2 → Outputs: "C"</li>
+                    <li><strong>Destruction of t1:</strong> → Calls <code>~Test()</code> for t1 → Outputs: "C"</li>
+                </ol>
+
+                <p><strong>Why this output?</strong></p>
+                <ul>
+                    <li>Constructors run in the order objects are created: t1 first ("A"), then t2 ("B")</li>
+                    <li>Destructors run in reverse order (LIFO - Last In, First Out): t2 destroyed first ("C"), then t1 ("C")</li>
+                    <li>Total output: "A" + "B" + "C" + "C" = "ABCC"</li>
+                </ul>
+
+                <p><strong>Key Concept:</strong> Local objects are destroyed in reverse order of their construction. This is important for managing dependencies between objects.</p>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-box">
+            <span class="question-number">Question 4</span>
+            <h3>Find the Bug: Private Member Access</h3>
+            <p>The following code has a compilation error. Identify the line number and explain the error.</p>
+            <pre><code class="language-cpp">class Person {
+    string name;
+    int age;
+public:
+    Person(string n, int a) : name(n), age(a) { }
+    void display() const {
+        cout << name << ", " << age << endl;
+    }
+};
+
+int main() {
+    Person p("Alice", 25);
+    p.age = 30;
+    p.display();
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer4')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer4">
+                <p><strong>Bug Location:</strong> Line 13 - <code>p.age = 30;</code></p>
+
+                <p><strong>What's Wrong:</strong></p>
+                <p>The code attempts to access the private member variable <code>age</code> from outside the class (in <code>main()</code>). This violates encapsulation.</p>
+
+                <p><strong>Why It's Wrong:</strong></p>
+                <p>In the <code>Person</code> class, <code>name</code> and <code>age</code> are declared without an access specifier. In a <code>class</code> (as opposed to a <code>struct</code>), members are <code>private</code> by default. Private members can only be accessed by member functions of the class, not from outside code.</p>
+
+                <p><strong>Compiler Error Message:</strong></p>
+                <pre>"'int Person::age' is private within this context"</pre>
+
+                <p><strong>How to Fix:</strong></p>
+                <p><strong>Option 1:</strong> Make <code>age</code> public (bad practice - breaks encapsulation):</p>
+                <pre><code class="language-cpp">class Person {
+    string name;
+public:
+    int age;  // Now public
+    // ...
+};</code></pre>
+
+                <p><strong>Option 2 (Better):</strong> Add a public setter method:</p>
+                <pre><code class="language-cpp">class Person {
+    string name;
+    int age;
+public:
+    Person(string n, int a) : name(n), age(a) { }
+
+    void setAge(int a) {
+        if (a > 0 && a < 150) {  // Validation
+            age = a;
+        }
+    }
+
+    void display() const {
+        cout << name << ", " << age << endl;
+    }
+};
+
+int main() {
+    Person p("Alice", 25);
+    p.setAge(30);  // Use setter
+    p.display();
+    return 0;
+}</code></pre>
+
+                <p><strong>Why the fix works:</strong> By using a setter function, we maintain encapsulation (age is still private) and can add validation to ensure age is reasonable. This is the correct object-oriented approach.</p>
+
+                <div class="info-box">
+                    <strong>Source:</strong> Similar to EO1 2025, Question 2.1a (private member access violation)
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-box">
+            <span class="question-number">Question 5</span>
+            <h3>Multiple Choice: Copy Constructor</h3>
+            <p>When is a copy constructor called?</p>
+            <ol type="A">
+                <li>Only when you use the assignment operator (=)</li>
+                <li>When passing an object by reference to a function</li>
+                <li>When initializing a new object from an existing object</li>
+                <li>When deleting an object with the delete keyword</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer5')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer5">
+                <p><strong>Answer:</strong> C - When initializing a new object from an existing object</p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>The copy constructor is called in three situations:</p>
+                <ol>
+                    <li>When initializing a new object from an existing object: <code>Student s2 = s1;</code> or <code>Student s2(s1);</code></li>
+                    <li>When passing an object by value to a function</li>
+                    <li>When returning an object by value from a function</li>
+                </ol>
+
+                <p><strong>Examples:</strong></p>
+                <pre><code class="language-cpp">Student s1("Alice", 123);
+Student s2 = s1;        // Copy constructor called
+Student s3(s1);         // Copy constructor called
+
+void func(Student s) { } // Copy constructor when calling func(s1)
+func(s1);</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. The assignment operator (<code>=</code>) is different from initialization. When you write <code>Student s2 = s1;</code> during declaration, it's initialization (copy constructor). But <code>s2 = s1;</code> after both objects exist is assignment (assignment operator, covered in Unit 4). The copy constructor is for creating a new object from an existing one, not for assigning to an already-existing object.</li>
+                    <li><strong>B:</strong> Incorrect. When passing by reference (<code>const Student&</code>), NO copy is made. The function receives a reference to the original object. The copy constructor is only called when passing by VALUE.</li>
+                    <li><strong>D:</strong> Incorrect. The <code>delete</code> keyword calls the destructor, not the copy constructor. Destructors clean up resources when an object is destroyed.</li>
+                </ul>
+
+                <p><strong>Key Distinction:</strong> Copy constructor creates a NEW object. Assignment operator modifies an EXISTING object.</p>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-box">
+            <span class="question-number">Question 6</span>
+            <h3>const Member Functions</h3>
+            <p>What happens if you try to modify a member variable inside a const member function?</p>
+            <ol type="A">
+                <li>The code compiles but gives a runtime warning</li>
+                <li>The code compiles fine with no issues</li>
+                <li>Compilation error: cannot modify member in const function</li>
+                <li>The member variable becomes const permanently</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer6')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer6">
+                <p><strong>Answer:</strong> C - Compilation error: cannot modify member in const function</p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>A <code>const</code> member function promises not to modify the object. If you try to modify any member variable inside a const function, the compiler will reject the code with an error like "assignment of member 'Class::member' in read-only object".</p>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">class Counter {
+private:
+    int count;
+public:
+    void increment() const {
+        count++;  // COMPILATION ERROR
+    }
+};</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. This is a compilation error, not a runtime warning. The compiler catches this violation immediately.</li>
+                    <li><strong>B:</strong> Incorrect. The code will NOT compile. The const qualifier is enforced at compile time.</li>
+                    <li><strong>D:</strong> Incorrect. The member variable doesn't become permanently const. The const on the function only applies within that function's scope. Other non-const functions can still modify the member.</li>
+                </ul>
+
+                <p><strong>Exception - mutable keyword:</strong></p>
+                <p>If you need to modify a member in a const function (e.g., for caching or counting), you can declare it <code>mutable</code>:</p>
+                <pre><code class="language-cpp">class Counter {
+private:
+    mutable int callCount;  // Can be modified even in const functions
+public:
+    int getValue() const {
+        callCount++;  // OK now
+        return value;
+    }
+};</code></pre>
+
+                <div class="info-box">
+                    <strong>Source:</strong> Related to EO1 2025, Question 4 (const correctness violations)
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-box">
+            <span class="question-number">Question 7</span>
+            <h3>Deep vs Shallow Copy</h3>
+            <p><strong>True or False:</strong> The default copy constructor provided by C++ performs a deep copy of all member variables, including dynamically allocated memory.</p>
+            <p>Justify your answer.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer7')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer7">
+                <p><strong>Answer:</strong> False</p>
+
+                <p><strong>Detailed Justification:</strong></p>
+                <p>The default copy constructor provided by C++ performs a <strong>shallow copy</strong>, not a deep copy. This means it copies member variables directly, bit-by-bit. For pointer members, it copies the pointer value (the memory address), not the data the pointer points to.</p>
+
+                <p><strong>What happens with shallow copy:</strong></p>
+                <pre><code class="language-cpp">class IntArray {
+private:
+    int* data;
+    int size;
+public:
+    IntArray(int s) : size(s) {
+        data = new int[size];
+    }
+    // No custom copy constructor - uses default shallow copy
+};
+
+int main() {
+    IntArray arr1(5);
+    IntArray arr2 = arr1;  // Shallow copy!
+    // Both arr1.data and arr2.data point to SAME array
+}</code></pre>
+
+                <p><strong>The problem:</strong></p>
+                <ul>
+                    <li>Both <code>arr1</code> and <code>arr2</code> have their own <code>size</code> variable (value copied correctly)</li>
+                    <li>But both <code>data</code> pointers point to the SAME dynamically allocated array</li>
+                    <li>When <code>arr2</code> is destroyed, it calls <code>delete[] data</code></li>
+                    <li>When <code>arr1</code> is destroyed, it tries to <code>delete[]</code> the same memory again → crash!</li>
+                </ul>
+
+                <p><strong>The solution - Deep copy:</strong></p>
+                <p>Write a custom copy constructor that allocates new memory and copies the values:</p>
+                <pre><code class="language-cpp">IntArray(const IntArray& other) : size(other.size) {
+    data = new int[size];  // Allocate NEW memory
+    for (int i = 0; i < size; i++) {
+        data[i] = other.data[i];  // Copy VALUES
+    }
+}</code></pre>
+
+                <p><strong>Key Concept:</strong> If your class has ANY pointer members allocated with <code>new</code>, you MUST write a custom copy constructor to perform deep copying. The default shallow copy will cause crashes and undefined behavior.</p>
+
+                <div class="info-box">
+                    <strong>Source:</strong> This concept appears in Tutorial 2 and is tested in EO1 2025, Question 7
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-box">
+            <span class="question-number">Question 8</span>
+            <h3>Static Member Initialization</h3>
+            <p>Which of the following correctly initializes a static member variable?</p>
+            <ol type="A">
+                <li><code>class Student { static int count = 0; };</code></li>
+                <li><code>class Student { static int count; };</code> in header, then <code>Student::count = 0;</code> in main()</li>
+                <li><code>class Student { static int count; };</code> in header, then <code>int Student::count = 0;</code> in .cpp file</li>
+                <li>Static members don't need initialization</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer8')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer8">
+                <p><strong>Answer:</strong> C - Declare in header, initialize in .cpp with <code>int Student::count = 0;</code></p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>Static member variables must be initialized outside the class definition. The proper approach is:</p>
+                <ol>
+                    <li>Declare in the class (header file): <code>static int count;</code></li>
+                    <li>Initialize outside the class (in .cpp file or before main()): <code>int Student::count = 0;</code></li>
+                </ol>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">// Student.h
+class Student {
+private:
+    static int count;  // Declaration
+public:
+    Student() { count++; }
+};
+
+// Student.cpp
+int Student::count = 0;  // Initialization (note: includes type)</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. You cannot initialize static members inside the class definition (except for <code>static const</code> integral types). This will cause a compilation error: "ISO C++ forbids in-class initialization of non-const static member".</li>
+                    <li><strong>B:</strong> Incorrect. You cannot initialize static members in <code>main()</code>. By the time <code>main()</code> runs, the static member must already be initialized. Also, trying to do <code>Student::count = 0;</code> in main() would be assignment, not initialization, and would fail if count is private.</li>
+                    <li><strong>D:</strong> Incorrect. Static members DO need initialization. If you don't initialize them, you'll get a linker error: "undefined reference to Student::count". The linker expects to find exactly one definition of the static member across all translation units.</li>
+                </ul>
+
+                <p><strong>Special case - static const integral types:</strong></p>
+                <p>You CAN initialize these in-class:</p>
+                <pre><code class="language-cpp">class Student {
+    static const int MAX_STUDENTS = 100;  // OK for const integral types
+};</code></pre>
+
+                <div class="info-box">
+                    <strong>Source:</strong> This is tested in EO1 Bootcamp, Slide 19
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-box">
+            <span class="question-number">Question 9</span>
+            <h3>Code Tracing: Initialization List</h3>
+            <p>What is the output?</p>
+            <pre><code class="language-cpp">#include <iostream>
+using namespace std;
+
+class Point {
+private:
+    int x;
+    int y;
+public:
+    Point(int a, int b) : x(a), y(a + b) {
+        cout << x << "," << y << " ";
+    }
+};
+
+int main() {
+    Point p1(2, 3);
+    Point p2(5, 5);
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer9')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer9">
+                <p><strong>Output:</strong></p>
+                <pre>2,5 5,10 </pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line: <code>Point p1(2, 3);</code></strong>
+                        <ul>
+                            <li>Calls <code>Point(int a, int b)</code> with a=2, b=3</li>
+                            <li>Initialization list executes: <code>x(a)</code> sets x = 2</li>
+                            <li>Then: <code>y(a + b)</code> sets y = 2 + 3 = 5</li>
+                            <li>Constructor body executes: <code>cout << x << "," << y << " ";</code></li>
+                            <li>Outputs: "2,5 "</li>
+                            <li>Variables after construction: p1.x = 2, p1.y = 5</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line: <code>Point p2(5, 5);</code></strong>
+                        <ul>
+                            <li>Calls <code>Point(int a, int b)</code> with a=5, b=5</li>
+                            <li>Initialization list: x = 5, y = 5 + 5 = 10</li>
+                            <li>Outputs: "5,10 "</li>
+                            <li>Variables after construction: p2.x = 5, p2.y = 10</li>
+                        </ul>
+                    </li>
+                    <li><strong>Total output:</strong> "2,5 " + "5,10 " = "2,5 5,10 "</li>
+                </ol>
+
+                <p><strong>Key Concepts:</strong></p>
+                <ul>
+                    <li>Initialization lists execute BEFORE the constructor body</li>
+                    <li>You can use expressions in initialization lists: <code>y(a + b)</code> evaluates to <code>y(2 + 3)</code></li>
+                    <li>Each object construction prints its x and y values during construction</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-box">
+            <span class="question-number">Question 10</span>
+            <h3>Destructor Behavior</h3>
+            <p>In what order are destructors called for local objects?</p>
+            <ol type="A">
+                <li>In the order the objects were created (FIFO)</li>
+                <li>In reverse order of creation (LIFO)</li>
+                <li>In random order determined by the compiler</li>
+                <li>All destructors are called simultaneously</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer10')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer10">
+                <p><strong>Answer:</strong> B - In reverse order of creation (LIFO - Last In, First Out)</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>Local objects are destroyed in reverse order of their construction when they go out of scope. This is a stack-based (LIFO) destruction order. The last object created is the first to be destroyed.</p>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">class Test {
+    int id;
+public:
+    Test(int i) : id(i) {
+        cout << "Construct " << id << endl;
+    }
+    ~Test() {
+        cout << "Destruct " << id << endl;
+    }
+};
+
+int main() {
+    Test t1(1);
+    Test t2(2);
+    Test t3(3);
+    return 0;
+}
+
+// Output:
+// Construct 1
+// Construct 2
+// Construct 3
+// Destruct 3    <- t3 destroyed first
+// Destruct 2    <- t2 destroyed second
+// Destruct 1    <- t1 destroyed last</code></pre>
+
+                <p><strong>Why this matters:</strong></p>
+                <ul>
+                    <li>If object A depends on object B, you should create B first, then A. This ensures A is destroyed before B.</li>
+                    <li>Example: If a Database object and a Connection object exist, and Connection uses Database, create Database first. When scope ends, Connection is destroyed before Database, preventing use-after-free errors.</li>
+                </ul>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. FIFO (First In, First Out) would mean the first object created is destroyed first. This is NOT how C++ works. C++ uses LIFO.</li>
+                    <li><strong>C:</strong> Incorrect. The order is deterministic, not random. It's always reverse order of construction.</li>
+                    <li><strong>D:</strong> Incorrect. Destructors are called one at a time in a specific order, not simultaneously.</li>
+                </ul>
+
+                <p><strong>Technical reason:</strong> Local objects are allocated on the stack. The stack is a LIFO data structure. When a scope ends, the stack unwinds in reverse order, calling destructors as objects are popped off.</p>
+            </div>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="question-box">
+            <span class="question-number">Question 11</span>
+            <h3>this Pointer</h3>
+            <p>What does the <code>this</code> pointer represent inside a member function?</p>
+            <ol type="A">
+                <li>A reference to the class itself</li>
+                <li>A pointer to the current object</li>
+                <li>A pointer to the base class</li>
+                <li>The address of the member function</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer11')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer11">
+                <p><strong>Answer:</strong> B - A pointer to the current object</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>The <code>this</code> pointer is an implicit pointer available in all non-static member functions. It points to the object that called the function. Type: <code>ClassName* const this</code> (a constant pointer to the object).</p>
+
+                <p><strong>Common uses:</strong></p>
+                <ol>
+                    <li><strong>Disambiguating parameters from members:</strong></li>
+                    <pre><code class="language-cpp">class Student {
+    int id;
+public:
+    void setID(int id) {
+        this->id = id;  // this->id is member, id is parameter
+    }
+};</code></pre>
+
+                    <li><strong>Returning the current object (for chaining):</strong></li>
+                    <pre><code class="language-cpp">class Student {
+public:
+    Student& setName(string n) {
+        name = n;
+        return *this;  // Return object itself (not pointer)
+    }
+};
+
+// Allows chaining:
+student.setName("Alice").setAge(20).setGPA(3.8);</code></pre>
+
+                    <li><strong>Passing current object to another function:</strong></li>
+                    <pre><code class="language-cpp">void register(Student* s);
+
+class Student {
+public:
+    void enroll() {
+        registerStudent(this);  // Pass pointer to current object
+    }
+};</code></pre>
+                </ol>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. <code>this</code> is a POINTER, not a reference. It points to a specific object instance, not the class itself. The class is a blueprint; <code>this</code> points to a concrete object created from that blueprint.</li>
+                    <li><strong>C:</strong> Incorrect. <code>this</code> points to the current object of the current class, not the base class. In inheritance, <code>this</code> points to the derived class object.</li>
+                    <li><strong>D:</strong> Incorrect. <code>this</code> points to the object (data), not to the function (code). Member functions are shared across all objects; <code>this</code> tells the function which object's data to operate on.</li>
+                </ul>
+
+                <p><strong>Important distinction:</strong></p>
+                <ul>
+                    <li><code>this</code> → pointer to the object (type: <code>ClassName*</code>)</li>
+                    <li><code>*this</code> → the object itself (type: <code>ClassName</code>)</li>
+                    <li><code>this->member</code> → access member via pointer</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="question-box">
+            <span class="question-number">Question 12</span>
+            <h3>Find the Bug: Static Function Error</h3>
+            <p>The following code has a compilation error. Identify what's wrong and explain how to fix it.</p>
+            <pre><code class="language-cpp">class Book {
+private:
+    static int totalBooks;
+    string title;
+public:
+    Book(string t) : title(t) {
+        totalBooks++;
+    }
+
+    static int getTotalBooks() {
+        return totalBooks + title.length();
+    }
+};
+
+int Book::totalBooks = 0;</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer12')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer12">
+                <p><strong>Bug Location:</strong> Line 10 - <code>return totalBooks + title.length();</code></p>
+
+                <p><strong>What's Wrong:</strong></p>
+                <p>The static function <code>getTotalBooks()</code> attempts to access the non-static member <code>title</code>. This is illegal.</p>
+
+                <p><strong>Why It's Wrong:</strong></p>
+                <p>Static member functions don't have a <code>this</code> pointer because they're not associated with any specific object. They belong to the class itself. Since <code>title</code> is a non-static member (each object has its own <code>title</code>), a static function can't access it without knowing which object's <code>title</code> to use.</p>
+
+                <p><strong>Compiler Error:</strong></p>
+                <pre>"invalid use of member 'Book::title' in static member function"</pre>
+
+                <p><strong>What static functions CAN access:</strong></p>
+                <ul>
+                    <li>Other static members (variables and functions)</li>
+                    <li>Local variables within the function</li>
+                    <li>Global variables</li>
+                </ul>
+
+                <p><strong>What static functions CANNOT access:</strong></p>
+                <ul>
+                    <li>Non-static member variables (<code>title</code>)</li>
+                    <li>Non-static member functions</li>
+                    <li>The <code>this</code> pointer (they don't have one)</li>
+                </ul>
+
+                <p><strong>How to Fix:</strong></p>
+                <p><strong>Option 1:</strong> Remove the problematic code (just return totalBooks):</p>
+                <pre><code class="language-cpp">static int getTotalBooks() {
+    return totalBooks;  // OK - totalBooks is static
+}</code></pre>
+
+                <p><strong>Option 2:</strong> Make the function non-static if you need to access <code>title</code>:</p>
+                <pre><code class="language-cpp">int getTitleLength() {  // Not static
+    return title.length();  // OK now
+}</code></pre>
+
+                <p><strong>Option 3:</strong> Pass an object as a parameter:</p>
+                <pre><code class="language-cpp">static int getBookInfo(const Book& book) {
+    return totalBooks + book.title.length();  // Access via parameter
+}</code></pre>
+
+                <p><strong>Why the fix works:</strong> By removing access to non-static members, the static function only uses data available to it (static members that belong to the class, not to specific objects).</p>
+            </div>
+        </div>
+
+        <!-- Question 13 -->
+        <div class="question-box">
+            <span class="question-number">Question 13</span>
+            <h3>Memory Management: What's the Output?</h3>
+            <p>What is the output of this code?</p>
+            <pre><code class="language-cpp">#include <iostream>
+using namespace std;
+
+class Array {
+private:
+    int* data;
+public:
+    Array(int size) {
+        data = new int[size];
+        cout << "A";
+    }
+
+    Array(const Array& other) {
+        data = other.data;
+        cout << "B";
+    }
+
+    ~Array() {
+        delete[] data;
+        cout << "C";
+    }
+};
+
+int main() {
+    Array arr1(5);
+    Array arr2 = arr1;
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer13')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer13">
+                <p><strong>Output (before crash):</strong></p>
+                <pre>ABC</pre>
+
+                <p><strong>Then: Runtime error (crash or undefined behavior)</strong></p>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line: <code>Array arr1(5);</code></strong> → Calls constructor → Allocates memory → Outputs: "A" → arr1.data points to new array</li>
+                    <li><strong>Line: <code>Array arr2 = arr1;</code></strong> → Calls copy constructor → Shallow copy: arr2.data = arr1.data → Outputs: "B" → Both point to SAME array</li>
+                    <li><strong>Line: <code>return 0;</code></strong> → Destructors called in reverse order</li>
+                    <li><strong>Destruction of arr2:</strong> → Calls destructor → <code>delete[] data;</code> frees the array → Outputs: "C"</li>
+                    <li><strong>Destruction of arr1:</strong> → Calls destructor → <code>delete[] data;</code> tries to free SAME array again → <strong>CRASH!</strong></li>
+                </ol>
+
+                <p><strong>The Problem - Double Delete:</strong></p>
+                <p>The copy constructor performs a shallow copy (<code>data = other.data;</code>), so both <code>arr1</code> and <code>arr2</code> point to the same dynamically allocated array. When <code>arr2</code> is destroyed, it frees the memory. When <code>arr1</code> is destroyed, it tries to free the same memory again, causing undefined behavior (usually a crash).</p>
+
+                <p><strong>Visual Representation:</strong></p>
+                <pre>After arr2 = arr1 (shallow copy):
+arr1.data ----\
+               \
+                v
+          [Memory Block]
+                ^
+               /
+arr2.data ----/
+
+Both point to same memory!
+
+When arr2 destructor runs:
+arr2.data ----> [FREED MEMORY]
+
+When arr1 destructor runs:
+arr1.data ----> [FREED MEMORY]  <- Double delete!</pre>
+
+                <p><strong>The Fix - Deep Copy:</strong></p>
+                <pre><code class="language-cpp">Array(const Array& other) {
+    // Allocate NEW memory
+    data = new int[other.size];  // (need to store size member)
+    // Copy VALUES
+    for (int i = 0; i < size; i++) {
+        data[i] = other.data[i];
+    }
+    cout << "B";
+}</code></pre>
+
+                <p><strong>Key Lesson:</strong> This demonstrates why shallow copies are dangerous with dynamic memory. You MUST implement deep copying for classes with pointer members.</p>
+            </div>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="question-box">
+            <span class="question-number">Question 14</span>
+            <h3>Initialization List vs Assignment</h3>
+            <p>Which of the following is a valid reason to use an initialization list instead of assignment in the constructor body?</p>
+            <ol type="A">
+                <li>Initialization lists are required for const members and references</li>
+                <li>Initialization lists make the code longer and more readable</li>
+                <li>Initialization lists allow you to call non-const functions</li>
+                <li>Assignment is more efficient than initialization lists</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer14')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer14">
+                <p><strong>Answer:</strong> A - Initialization lists are required for const members and references</p>
+
+                <p><strong>Why A is correct:</strong></p>
+                <p>Initialization lists are REQUIRED (not optional) in these cases:</p>
+                <ol>
+                    <li><strong>const members:</strong> Must be initialized when created, cannot be assigned later</li>
+                    <li><strong>Reference members:</strong> Must be bound to an object when created</li>
+                    <li><strong>Members without default constructors:</strong> If a member class has no default constructor, you must use initialization list to pass arguments</li>
+                    <li><strong>Base class initialization (Unit 7):</strong> Must use initialization list to pass arguments to base constructor</li>
+                </ol>
+
+                <p><strong>Example showing requirement:</strong></p>
+                <pre><code class="language-cpp">class Student {
+private:
+    const int id;          // const member
+    string& nameRef;       // reference member
+public:
+    // WRONG - Won't compile:
+    Student(int i, string& n) {
+        id = i;           // ERROR: can't assign to const
+        nameRef = n;      // ERROR: reference not initialized
+    }
+
+    // CORRECT - Must use initialization list:
+    Student(int i, string& n) : id(i), nameRef(n) {
+        // Now both are properly initialized
+    }
+};</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>B:</strong> Incorrect. Initialization lists are typically SHORTER, not longer. Compare:
+                        <pre><code class="language-cpp">// Initialization list (concise):
+Student(int i) : id(i), gpa(0.0) { }
+
+// Assignment (more code):
+Student(int i) {
+    id = i;
+    gpa = 0.0;
+}</code></pre>
+                    </li>
+                    <li><strong>C:</strong> Incorrect. This has nothing to do with initialization lists. You can call non-const functions in either approach.</li>
+                    <li><strong>D:</strong> Incorrect. This is backwards. Initialization lists are MORE efficient, not less. With initialization lists, members are constructed directly with the correct values. With assignment, members are first default-constructed, then assigned (two operations instead of one).</li>
+                </ul>
+
+                <p><strong>Efficiency example:</strong></p>
+                <pre><code class="language-cpp">class Student {
+    string name;
+public:
+    // Initialization list: Direct construction
+    Student(string n) : name(n) { }
+    // 1. Constructs name with value n
+
+    // Assignment: Default construct then assign
+    Student(string n) {
+        name = n;
+    }
+    // 1. Default constructs name ("")
+    // 2. Assigns n to name
+    // (Two operations instead of one!)
+};</code></pre>
+
+                <p><strong>Best Practice:</strong> Always use initialization lists for ALL members, even when not required. It's more efficient and consistent.</p>
+            </div>
+        </div>
+
+        <!-- Question 15 -->
+        <div class="question-box">
+            <span class="question-number">Question 15</span>
+            <h3>Class vs Struct Default Access</h3>
+            <p>What is the default access specifier for members in a <code>class</code> and in a <code>struct</code>?</p>
+            <ol type="A">
+                <li>class: public, struct: public</li>
+                <li>class: private, struct: private</li>
+                <li>class: private, struct: public</li>
+                <li>class: public, struct: private</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer15')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer15">
+                <p><strong>Answer:</strong> C - class: private, struct: public</p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <ul>
+                    <li>In a <code>class</code>, members are <strong>private by default</strong></li>
+                    <li>In a <code>struct</code>, members are <strong>public by default</strong></li>
+                </ul>
+
+                <p><strong>This is the ONLY difference between class and struct in C++.</strong></p>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">class MyClass {
+    int x;      // private by default
+    int y;      // private by default
+};
+
+struct MyStruct {
+    int x;      // public by default
+    int y;      // public by default
+};
+
+int main() {
+    MyClass c;
+    c.x = 5;    // ERROR - x is private
+
+    MyStruct s;
+    s.x = 5;    // OK - x is public
+}</code></pre>
+
+                <p><strong>You can override defaults:</strong></p>
+                <pre><code class="language-cpp">class MyClass {
+public:        // Explicitly make public
+    int x;
+    int y;
+};
+
+struct MyStruct {
+private:       // Explicitly make private
+    int x;
+    int y;
+};</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. If class members were public by default, there would be no point in having classes (they'd be identical to structs).</li>
+                    <li><strong>B:</strong> Incorrect. Structs have public default access. This is inherited from C, where structs are used for simple data grouping with public access.</li>
+                    <li><strong>D:</strong> Incorrect. This is backwards (class and struct defaults are swapped).</li>
+                </ul>
+
+                <p><strong>When to use each:</strong></p>
+                <ul>
+                    <li><strong>class:</strong> Use when you want encapsulation (private data with public methods)</li>
+                    <li><strong>struct:</strong> Use for simple data containers where all members should be public (like a Point with x, y coordinates)</li>
+                </ul>
+
+                <p><strong>C++ convention:</strong> Most C++ code uses <code>class</code> for OOP types with methods, and reserves <code>struct</code> for plain data structures (POD types).</p>
+            </div>
+        </div>
+
+        <!-- Continue with more questions... I'll add 15 more to reach 30 total -->
+
+        <!-- Question 16 -->
+        <div class="question-box">
+            <span class="question-number">Question 16</span>
+            <h3>Code Output: Constructor Chaining</h3>
+            <p>What is the output?</p>
+            <pre><code class="language-cpp">#include <iostream>
+using namespace std;
+
+class Box {
+private:
+    int width;
+    int height;
+public:
+    Box() : width(0), height(0) {
+        cout << "Default ";
+    }
+
+    Box(int w) : Box() {
+        width = w;
+        cout << "Width ";
+    }
+
+    Box(int w, int h) : Box(w) {
+        height = h;
+        cout << "Height ";
+    }
+};
+
+int main() {
+    Box b(5, 10);
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer16')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer16">
+                <p><strong>Output:</strong></p>
+                <pre>Default Width Height </pre>
+
+                <p><strong>Execution Trace:</strong></p>
+                <ol>
+                    <li><strong><code>Box b(5, 10);</code></strong> calls <code>Box(int w, int h)</code> with w=5, h=10</li>
+                    <li><strong>Initialization list: <code>Box(w)</code></strong> calls <code>Box(int w)</code> with w=5</li>
+                    <li><strong>Initialization list: <code>Box()</code></strong> calls default constructor</li>
+                    <li><strong>Default constructor executes:</strong> Sets width=0, height=0, outputs "Default "</li>
+                    <li><strong>Back to <code>Box(int w)</code>:</strong> Sets width=5, outputs "Width "</li>
+                    <li><strong>Back to <code>Box(int w, int h)</code>:</strong> Sets height=10, outputs "Height "</li>
+                </ol>
+
+                <p><strong>This demonstrates constructor delegation (C++11 feature).</strong> Constructors can call other constructors in the initialization list, creating a chain.</p>
+
+                <p><strong>Final state:</strong> b.width = 5, b.height = 10</p>
+
+                <p><strong>Note:</strong> Constructor delegation is a C++11 feature. In C++98 (which COS 110 uses), you would typically use a private helper function instead.</p>
+            </div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="question-box">
+            <span class="question-number">Question 17</span>
+            <h3>Encapsulation Violation</h3>
+            <p>Which of the following violates the principle of encapsulation?</p>
+            <ol type="A">
+                <li>Declaring all member variables as private</li>
+                <li>Providing public getter and setter functions</li>
+                <li>Making member variables public so they can be accessed directly</li>
+                <li>Using const member functions for accessors</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer17')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer17">
+                <p><strong>Answer:</strong> C - Making member variables public so they can be accessed directly</p>
+
+                <p><strong>Why C is correct (violates encapsulation):</strong></p>
+                <p>Encapsulation means hiding internal data and providing controlled access through methods. Making member variables public breaks encapsulation because:</p>
+                <ul>
+                    <li>External code can modify data without validation</li>
+                    <li>You can't change internal representation later without breaking existing code</li>
+                    <li>No way to track or log when data changes</li>
+                    <li>Violates the "information hiding" principle</li>
+                </ul>
+
+                <p><strong>Bad example (public members):</strong></p>
+                <pre><code class="language-cpp">class BankAccount {
+public:
+    double balance;  // Public - anyone can modify!
+};
+
+int main() {
+    BankAccount acc;
+    acc.balance = -5000.0;  // No validation - negative balance!
+}</code></pre>
+
+                <p><strong>Good example (encapsulation):</strong></p>
+                <pre><code class="language-cpp">class BankAccount {
+private:
+    double balance;  // Hidden
+public:
+    void deposit(double amount) {
+        if (amount > 0) {  // Validation
+            balance += amount;
+        }
+    }
+
+    double getBalance() const {
+        return balance;
+    }
+};</code></pre>
+
+                <p><strong>Why other options are wrong (they support encapsulation):</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Correct practice. Private members hide implementation details.</li>
+                    <li><strong>B:</strong> Correct practice. Getters/setters provide controlled access with validation.</li>
+                    <li><strong>D:</strong> Correct practice. Const functions promise not to modify, supporting safe access.</li>
+                </ul>
+
+                <p><strong>Benefits of encapsulation:</strong></p>
+                <ul>
+                    <li>Data validation and error checking</li>
+                    <li>Can change internal representation without affecting users</li>
+                    <li>Can add logging, debugging, or monitoring</li>
+                    <li>Prevents accidental corruption of data</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>Source:</strong> Related to EO1 2025, Question 11 (encapsulation principles)
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 18 -->
+        <div class="question-box">
+            <span class="question-number">Question 18</span>
+            <h3>Rule of Three</h3>
+            <p><strong>True or False:</strong> If a class needs a custom destructor to free dynamic memory, it probably also needs a custom copy constructor and assignment operator.</p>
+            <p>Justify your answer.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer18')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer18">
+                <p><strong>Answer:</strong> True</p>
+
+                <p><strong>Detailed Justification:</strong></p>
+                <p>This principle is called the <strong>"Rule of Three"</strong>. If a class manages resources (especially dynamic memory), you need all three:</p>
+                <ol>
+                    <li><strong>Destructor:</strong> To free the resource</li>
+                    <li><strong>Copy constructor:</strong> To properly copy the resource (deep copy)</li>
+                    <li><strong>Assignment operator:</strong> To properly assign/replace the resource</li>
+                </ol>
+
+                <p><strong>Why all three are needed:</strong></p>
+                <p>If you need a custom destructor, it means you're managing a resource that needs cleanup (like dynamically allocated memory). The default copy constructor and assignment operator do shallow copies, which causes problems:</p>
+
+                <ul>
+                    <li><strong>Without custom copy constructor:</strong> Two objects share the same resource. When one is destroyed, it frees the resource, leaving the other with a dangling pointer.</li>
+                    <li><strong>Without custom assignment operator:</strong> Same problem as above, plus memory leaks (old resource not freed before assignment).</li>
+                </ul>
+
+                <p><strong>Example showing all three:</strong></p>
+                <pre><code class="language-cpp">class IntArray {
+private:
+    int* data;
+    int size;
+public:
+    // Constructor
+    IntArray(int s) : size(s) {
+        data = new int[size];
+    }
+
+    // 1. Destructor (frees memory)
+    ~IntArray() {
+        delete[] data;
+    }
+
+    // 2. Copy constructor (deep copy)
+    IntArray(const IntArray& other) : size(other.size) {
+        data = new int[size];
+        for (int i = 0; i < size; i++) {
+            data[i] = other.data[i];
+        }
+    }
+
+    // 3. Assignment operator (Unit 4)
+    IntArray& operator=(const IntArray& other) {
+        if (this != &other) {  // Self-assignment check
+            delete[] data;     // Free old memory
+            size = other.size;
+            data = new int[size];  // Allocate new
+            for (int i = 0; i < size; i++) {
+                data[i] = other.data[i];  // Copy
+            }
+        }
+        return *this;
+    }
+};</code></pre>
+
+                <p><strong>What happens without all three:</strong></p>
+                <pre><code class="language-cpp">// Only has destructor, missing copy constructor:
+IntArray arr1(5);
+IntArray arr2 = arr1;  // Shallow copy (both point to same array)
+// When arr2 destroyed: delete[] data
+// When arr1 destroyed: delete[] data (SAME DATA) -> CRASH!</code></pre>
+
+                <p><strong>Modern C++ note:</strong> In C++11 and later, this becomes the "Rule of Five" (adds move constructor and move assignment operator).</p>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="question-box">
+            <span class="question-number">Question 19</span>
+            <h3>Constructor Parameter Ambiguity</h3>
+            <p>What is the problem with this constructor?</p>
+            <pre><code class="language-cpp">class Student {
+private:
+    int id;
+    double gpa;
+public:
+    Student(int id, double gpa) {
+        id = id;
+        gpa = gpa;
+    }
+};</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer19')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer19">
+                <p><strong>Problem:</strong> Parameter names shadow member variable names, causing self-assignment.</p>
+
+                <p><strong>What happens:</strong></p>
+                <p>Inside the constructor, <code>id</code> refers to the parameter (not the member variable). The line <code>id = id;</code> assigns the parameter to itself, which does nothing. The member variables remain uninitialized (garbage values).</p>
+
+                <p><strong>Why this happens:</strong></p>
+                <p>C++ name resolution rules: When there's a local variable/parameter with the same name as a member, the local name takes precedence. The member is "shadowed" and inaccessible without qualification.</p>
+
+                <p><strong>Fix 1: Use this pointer</strong></p>
+                <pre><code class="language-cpp">Student(int id, double gpa) {
+    this->id = id;      // this->id is member, id is parameter
+    this->gpa = gpa;    // this->gpa is member, gpa is parameter
+}</code></pre>
+
+                <p><strong>Fix 2: Use initialization list (best practice)</strong></p>
+                <pre><code class="language-cpp">Student(int id, double gpa) : id(id), gpa(gpa) {
+    // Initialization list handles the ambiguity correctly
+    // Empty body - all work done in initialization list
+}</code></pre>
+
+                <p><strong>Fix 3: Use different parameter names</strong></p>
+                <pre><code class="language-cpp">Student(int studentID, double studentGPA) {
+    id = studentID;
+    gpa = studentGPA;
+}</code></pre>
+
+                <p><strong>Why initialization list is best:</strong></p>
+                <ul>
+                    <li>More efficient (direct initialization vs default + assignment)</li>
+                    <li>Required for const/reference members</li>
+                    <li>Handles name ambiguity automatically</li>
+                    <li>Shorter, cleaner code</li>
+                </ul>
+
+                <p><strong>Common mistake indicator:</strong> If you see <code>name = name;</code> in a constructor, it's almost always wrong.</p>
+
+                <div class="info-box">
+                    <strong>Source:</strong> This appears in EO1 2025, Question 4 (ambiguity between local and member variables)
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="question-box">
+            <span class="question-number">Question 20</span>
+            <h3>Static vs Non-Static</h3>
+            <p>How many copies of a static member variable exist if you create 100 objects of a class?</p>
+            <ol type="A">
+                <li>100 copies (one per object)</li>
+                <li>1 copy (shared by all objects)</li>
+                <li>0 copies (static members don't exist)</li>
+                <li>Depends on the compiler</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer20')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer20">
+                <p><strong>Answer:</strong> B - 1 copy (shared by all objects)</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>Static member variables belong to the CLASS, not to individual objects. No matter how many objects you create (0, 1, 100, or 1000), there is exactly ONE copy of each static member, shared by all instances.</p>
+
+                <p><strong>Visual representation:</strong></p>
+                <pre>Non-static members (regular):
+Object 1: [name="Alice", id=1]
+Object 2: [name="Bob", id=2]
+Object 3: [name="Carol", id=3]
+→ Each object has its own copy
+
+Static member:
+Class Student: [static count=3]
+                      ↑
+                      |
+All objects share this ONE variable</pre>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">class Student {
+private:
+    static int totalStudents;  // ONE copy for entire class
+    string name;               // Each object has its own
+public:
+    Student(string n) : name(n) {
+        totalStudents++;  // All objects modify SAME variable
+    }
+
+    static int getTotal() {
+        return totalStudents;  // Returns the shared count
+    }
+};
+
+int Student::totalStudents = 0;  // Single initialization
+
+int main() {
+    // Create 100 students
+    Student* students[100];
+    for (int i = 0; i < 100; i++) {
+        students[i] = new Student("Student" + to_string(i));
+    }
+
+    cout << Student::getTotal();  // Outputs: 100
+    // Only ONE totalStudents variable, incremented 100 times
+}</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. This describes non-static members. Each object has its own copy of non-static members, but static members are shared.</li>
+                    <li><strong>C:</strong> Incorrect. Static members DO exist - they're allocated in static storage (like global variables), not on the heap or stack with objects.</li>
+                    <li><strong>D:</strong> Incorrect. This is specified by the C++ standard. ALL compilers must implement static members as shared class-level variables.</li>
+                </ul>
+
+                <p><strong>Memory location:</strong> Static members are stored in the data segment (like global variables), not with each object's memory.</p>
+
+                <p><strong>Access:</strong> Can be accessed via class name (<code>Student::totalStudents</code>) or via any object (<code>s1.totalStudents</code>), but there's still only one copy.</p>
+            </div>
+        </div>
+
+        <!-- Questions 21-30 continue... -->
+        <!-- I'll add 10 more questions to reach the minimum of 30 -->
+
+        <!-- Question 21 -->
+        <div class="question-box">
+            <span class="question-number">Question 21</span>
+            <h3>const Correctness with Objects</h3>
+            <p>Given:</p>
+            <pre><code class="language-cpp">class Point {
+private:
+    int x, y;
+public:
+    void setX(int val) { x = val; }
+    int getX() const { return x; }
+    void display() { cout << x << "," << y; }
+};
+
+void printPoint(const Point& p) {
+    p.display();
+}</code></pre>
+            <p>Will this code compile?</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer21')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer21">
+                <p><strong>Answer:</strong> No, compilation error</p>
+
+                <p><strong>Error location:</strong> <code>p.display();</code> in <code>printPoint()</code></p>
+
+                <p><strong>Why it fails:</strong></p>
+                <p>The parameter <code>p</code> is a <code>const Point&</code>, meaning you cannot call non-const member functions on it. <code>display()</code> is not marked <code>const</code>, so the compiler rejects the call.</p>
+
+                <p><strong>Compiler error:</strong></p>
+                <pre>"passing 'const Point' as 'this' argument discards qualifiers"</pre>
+
+                <p><strong>The fix:</strong> Mark <code>display()</code> as <code>const</code>:</p>
+                <pre><code class="language-cpp">void display() const {  // Add const
+    cout << x << "," << y;
+}</code></pre>
+
+                <p><strong>Why this works:</strong> <code>display()</code> doesn't modify the object, so it's safe to call on const objects. Adding <code>const</code> tells the compiler this guarantee.</p>
+
+                <p><strong>Rule:</strong> Any member function that doesn't modify the object should be marked <code>const</code>. This allows it to be called on const objects and const references.</p>
+            </div>
+        </div>
+
+        <!-- Question 22 -->
+        <div class="question-box">
+            <span class="question-number">Question 22</span>
+            <h3>Constructor Overloading</h3>
+            <p>How many constructors can a class have?</p>
+            <ol type="A">
+                <li>Exactly one</li>
+                <li>At most two (default and parameterized)</li>
+                <li>As many as needed, as long as they have different parameter lists</li>
+                <li>Only one of each type (default, copy, parameterized)</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer22')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer22">
+                <p><strong>Answer:</strong> C - As many as needed, as long as they have different parameter lists</p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>Constructors can be overloaded just like any function. You can have as many constructors as needed, provided each has a unique signature (different number or types of parameters).</p>
+
+                <p><strong>Example with 4 constructors:</strong></p>
+                <pre><code class="language-cpp">class Rectangle {
+private:
+    int width, height;
+public:
+    // 1. Default constructor
+    Rectangle() : width(0), height(0) { }
+
+    // 2. Square constructor (one parameter)
+    Rectangle(int side) : width(side), height(side) { }
+
+    // 3. Rectangle constructor (two parameters)
+    Rectangle(int w, int h) : width(w), height(h) { }
+
+    // 4. Copy constructor
+    Rectangle(const Rectangle& other)
+        : width(other.width), height(other.height) { }
+};</code></pre>
+
+                <p><strong>Usage:</strong></p>
+                <pre><code class="language-cpp">Rectangle r1;           // Calls default
+Rectangle r2(5);        // Calls single-parameter (square)
+Rectangle r3(4, 6);     // Calls two-parameter
+Rectangle r4 = r3;      // Calls copy constructor</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. You can have multiple constructors through overloading.</li>
+                    <li><strong>B:</strong> Incorrect. You can have more than two. There's no limit.</li>
+                    <li><strong>D:</strong> Incorrect. You can have multiple parameterized constructors with different parameters.</li>
+                </ul>
+
+                <p><strong>Overloading rules:</strong> Each constructor must have a unique signature. The signature includes the number and types of parameters, but NOT the return type (constructors have no return type anyway).</p>
+            </div>
+        </div>
+
+        <!-- Question 23 -->
+        <div class="question-box">
+            <span class="question-number">Question 23</span>
+            <h3>Memory Leak Detection</h3>
+            <p>Which class has a memory leak?</p>
+            <pre><code class="language-cpp">// Class A
+class A {
+    int* data;
+public:
+    A() { data = new int[10]; }
+    ~A() { delete[] data; }
+};
+
+// Class B
+class B {
+    int* data;
+public:
+    B() { data = new int[10]; }
+    // No destructor
+};
+
+// Class C
+class C {
+    int data[10];
+public:
+    C() { }
+    // No destructor
+};</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer23')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer23">
+                <p><strong>Answer:</strong> Class B has a memory leak</p>
+
+                <p><strong>Analysis of each class:</strong></p>
+
+                <p><strong>Class A - NO memory leak:</strong></p>
+                <ul>
+                    <li>Allocates memory with <code>new int[10]</code> in constructor</li>
+                    <li>Frees memory with <code>delete[] data</code> in destructor</li>
+                    <li>Every <code>new</code> has a matching <code>delete</code> - correct!</li>
+                </ul>
+
+                <p><strong>Class B - MEMORY LEAK:</strong></p>
+                <ul>
+                    <li>Allocates memory with <code>new int[10]</code> in constructor</li>
+                    <li>No destructor, so memory is never freed</li>
+                    <li>When B object is destroyed, the pointer is lost but the memory remains allocated</li>
+                    <li>Memory leak: 10 integers (40 bytes) leaked per object</li>
+                </ul>
+
+                <p><strong>Class C - NO memory leak:</strong></p>
+                <ul>
+                    <li>Uses a static array (<code>int data[10]</code>), not dynamic allocation</li>
+                    <li>Static arrays are automatically cleaned up when the object is destroyed</li>
+                    <li>No <code>new</code>, so no need for <code>delete</code></li>
+                    <li>Compiler-generated destructor handles cleanup automatically</li>
+                </ul>
+
+                <p><strong>The Rule:</strong></p>
+                <p>For every <code>new</code>, there must be a matching <code>delete</code>. For every <code>new[]</code>, there must be a matching <code>delete[]</code>. If you allocate memory in a constructor, you MUST free it in the destructor.</p>
+
+                <p><strong>How to detect:</strong></p>
+                <ul>
+                    <li>Use Valgrind (Linux): <code>valgrind ./program</code></li>
+                    <li>Look for "definitely lost: X bytes in Y blocks"</li>
+                </ul>
+
+                <p><strong>Fix for Class B:</strong></p>
+                <pre><code class="language-cpp">class B {
+    int* data;
+public:
+    B() { data = new int[10]; }
+    ~B() { delete[] data; }  // Add destructor!
+};</code></pre>
+            </div>
+        </div>
+
+        <!-- Question 24 -->
+        <div class="question-box">
+            <span class="question-number">Question 24</span>
+            <h3>Default Parameter Placement</h3>
+            <p>Which function declaration is valid?</p>
+            <ol type="A">
+                <li><code>void func(int a = 5, int b, int c);</code></li>
+                <li><code>void func(int a, int b = 5, int c);</code></li>
+                <li><code>void func(int a, int b, int c = 5);</code></li>
+                <li>All are valid</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer24')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer24">
+                <p><strong>Answer:</strong> C - <code>void func(int a, int b, int c = 5);</code></p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>Default parameters must appear at the END of the parameter list. Once you have a default parameter, all parameters after it must also have defaults.</p>
+
+                <p><strong>Rule:</strong> Default parameters must be rightmost and contiguous.</p>
+
+                <p><strong>Valid examples:</strong></p>
+                <pre><code class="language-cpp">void func1(int a, int b, int c = 5);              // OK: last param
+void func2(int a, int b = 3, int c = 5);          // OK: last two params
+void func3(int a = 1, int b = 3, int c = 5);      // OK: all three params</code></pre>
+
+                <p><strong>Invalid examples:</strong></p>
+                <pre><code class="language-cpp">void func4(int a = 5, int b, int c);              // ERROR (A)
+void func5(int a, int b = 5, int c);              // ERROR (B)
+void func6(int a = 5, int b, int c = 7);          // ERROR</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. Default parameter <code>a=5</code> is followed by non-default parameters <code>b</code> and <code>c</code>. This creates ambiguity.</li>
+                    <li><strong>B:</strong> Incorrect. Default parameter <code>b=5</code> is followed by non-default parameter <code>c</code>. Not allowed.</li>
+                    <li><strong>D:</strong> Incorrect. Only C is valid.</li>
+                </ul>
+
+                <p><strong>Why the rule exists:</strong></p>
+                <p>Consider: <code>void func(int a = 5, int b, int c);</code></p>
+                <p>If you call <code>func(10, 20);</code>, which parameter gets which value?</p>
+                <ul>
+                    <li>Is it <code>func(10, 20, ???)</code> using default for <code>a</code>?</li>
+                    <li>Or <code>func(???, 10, 20)</code> using default for <code>c</code>?</li>
+                    <li>Ambiguous! The compiler can't determine intent.</li>
+                </ul>
+
+                <p><strong>By requiring defaults to be rightmost, the rule is simple:</strong> Arguments fill parameters left-to-right. Missing arguments use defaults from right-to-left.</p>
+
+                <div class="info-box">
+                    <strong>Source:</strong> This is tested in EO1 Bootcamp regarding default parameter rules
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 25 -->
+        <div class="question-box">
+            <span class="question-number">Question 25</span>
+            <h3>Shallow Copy Problem</h3>
+            <p>What happens when you use the default copy constructor with a class containing a pointer member?</p>
+            <ol type="A">
+                <li>A deep copy is automatically performed</li>
+                <li>Both objects point to the same dynamically allocated memory</li>
+                <li>The pointer is set to NULL in the copy</li>
+                <li>A compilation error occurs</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer25')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer25">
+                <p><strong>Answer:</strong> B - Both objects point to the same dynamically allocated memory</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>The default copy constructor performs a shallow (member-wise) copy. For pointer members, it copies the pointer VALUE (the memory address), not the data the pointer points to. Result: both objects' pointers contain the same address.</p>
+
+                <p><strong>Visual representation:</strong></p>
+                <pre>Original object:           Copy (shallow):
+obj1.ptr ----\             obj2.ptr ----\
+              \                          |
+               v                         |
+          [Data Block] <-----------------/
+
+Both pointers point to SAME memory block!</pre>
+
+                <p><strong>The danger:</strong></p>
+                <pre><code class="language-cpp">class Array {
+    int* data;
+    int size;
+public:
+    Array(int s) : size(s) {
+        data = new int[size];
+    }
+    ~Array() {
+        delete[] data;  // Frees the memory
+    }
+    // No custom copy constructor - uses default shallow copy
+};
+
+void func() {
+    Array arr1(10);
+    Array arr2 = arr1;  // Shallow copy - both point to same array
+
+    // arr2 goes out of scope first
+    // ~Array() called for arr2: deletes the array
+
+    // arr1 goes out of scope
+    // ~Array() called for arr1: tries to delete SAME array
+    // CRASH! Double delete!
+}</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. The default copy constructor does NOT perform deep copy. You must write a custom copy constructor for deep copying.</li>
+                    <li><strong>C:</strong> Incorrect. The pointer is not set to NULL. It's copied as-is (same address as original).</li>
+                    <li><strong>D:</strong> Incorrect. The code compiles fine. The problem appears at runtime (crash when destructors run).</li>
+                </ul>
+
+                <p><strong>The solution - Custom deep copy constructor:</strong></p>
+                <pre><code class="language-cpp">Array(const Array& other) : size(other.size) {
+    data = new int[size];  // Allocate NEW memory
+    for (int i = 0; i < size; i++) {
+        data[i] = other.data[i];  // Copy VALUES
+    }
+}</code></pre>
+
+                <p><strong>After deep copy:</strong></p>
+                <pre>obj1.ptr ----> [Data Block 1]
+obj2.ptr ----> [Data Block 2] (independent copy)</pre>
+            </div>
+        </div>
+
+        <!-- Questions 26-30 -->
+        <!-- Continuing to reach 30 questions total -->
+
+        <!-- Question 26 -->
+        <div class="question-box">
+            <span class="question-number">Question 26</span>
+            <h3>Constructor Execution Order</h3>
+            <p>In what order are member variables initialized when using an initialization list?</p>
+            <ol type="A">
+                <li>Left to right as they appear in the initialization list</li>
+                <li>In the order they are declared in the class</li>
+                <li>Alphabetically by variable name</li>
+                <li>Random order determined by the compiler</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer26')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer26">
+                <p><strong>Answer:</strong> B - In the order they are declared in the class</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>Member variables are ALWAYS initialized in the order they appear in the class declaration, regardless of the order in the initialization list.</p>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">class Example {
+private:
+    int a;
+    int b;
+    int c;
+public:
+    // Initialization list order: c, a, b
+    Example() : c(3), a(1), b(2) { }
+    // But ACTUAL initialization order: a, b, c (declaration order)
+};</code></pre>
+
+                <p><strong>Why this matters - Dependency trap:</strong></p>
+                <pre><code class="language-cpp">class Trap {
+private:
+    int size;        // Declared FIRST
+    int* data;       // Declared SECOND
+public:
+    // WRONG order in initialization list:
+    Trap(int s) : data(new int[size]), size(s) { }
+    // Problem: data initialized first (using uninitialized size!)
+    // Then size initialized
+};
+
+// CORRECT:
+class Fixed {
+private:
+    int size;        // Declared FIRST
+    int* data;       // Declared SECOND
+public:
+    // Match declaration order:
+    Fixed(int s) : size(s), data(new int[size]) { }
+    // Now: size initialized first, then data uses size
+};</code></pre>
+
+                <p><strong>Best practice:</strong> List members in initialization list in the same order as declaration to avoid confusion.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. The initialization list order is ignored. Declaration order matters.</li>
+                    <li><strong>C:</strong> Incorrect. Alphabetical ordering is not used.</li>
+                    <li><strong>D:</strong> Incorrect. The order is deterministic (declaration order), not random.</li>
+                </ul>
+
+                <p><strong>Compiler warning:</strong> Some compilers warn if initialization list order doesn't match declaration order.</p>
+            </div>
+        </div>
+
+        <!-- Question 27 -->
+        <div class="question-box">
+            <span class="question-number">Question 27</span>
+            <h3>const Object Restrictions</h3>
+            <p>Given: <code>const Student s("Alice", 3.8);</code><br>Which operations are allowed on <code>s</code>?</p>
+            <ol type="A">
+                <li>Calling any member function</li>
+                <li>Only calling const member functions</li>
+                <li>Modifying public member variables</li>
+                <li>No operations allowed at all</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer27')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer27">
+                <p><strong>Answer:</strong> B - Only calling const member functions</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>A <code>const</code> object is immutable - it cannot be modified. The compiler enforces this by only allowing calls to <code>const</code> member functions, which promise not to modify the object.</p>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">class Student {
+private:
+    string name;
+    double gpa;
+public:
+    string getName() const { return name; }      // const - OK
+    void setName(string n) { name = n; }         // non-const - NOT OK
+    void display() const {                       // const - OK
+        cout << name << ", " << gpa << endl;
+    }
+};
+
+const Student s("Alice", 3.8);
+s.getName();     // OK - const function
+s.display();     // OK - const function
+s.setName("Bob"); // ERROR - non-const function</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. Only <code>const</code> member functions can be called, not all functions.</li>
+                    <li><strong>C:</strong> Incorrect. const objects cannot have members modified, even public ones. The entire object is immutable.</li>
+                    <li><strong>D:</strong> Incorrect. const member functions CAN be called. The object can still be used for reading data.</li>
+                </ul>
+
+                <p><strong>Practical use:</strong></p>
+                <pre><code class="language-cpp">void printStudent(const Student& s) {
+    // s is const, so we can only call const functions
+    cout << s.getName() << endl;  // OK if getName() is const
+    s.display();                  // OK if display() is const
+    // s.setName("X");            // ERROR
+}</code></pre>
+
+                <p><strong>Why this is useful:</strong> Passing by <code>const&</code> avoids copying (efficient) while preventing accidental modification (safe).</p>
+            </div>
+        </div>
+
+        <!-- Question 28 -->
+        <div class="question-box">
+            <span class="question-number">Question 28</span>
+            <h3>Destructor Syntax</h3>
+            <p>Which is the correct destructor declaration for a class named <code>Matrix</code>?</p>
+            <ol type="A">
+                <li><code>void ~Matrix() { }</code></li>
+                <li><code>~Matrix() { }</code></li>
+                <li><code>Matrix::~Matrix() { }</code></li>
+                <li><code>delete Matrix() { }</code></li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer28')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer28">
+                <p><strong>Answer:</strong> B - <code>~Matrix() { }</code> (in class declaration) or C - <code>Matrix::~Matrix() { }</code> (in .cpp file)</p>
+
+                <p><strong>Why B and C are correct:</strong></p>
+                <ul>
+                    <li><strong>B:</strong> Correct syntax for destructor declaration inside the class</li>
+                    <li><strong>C:</strong> Correct syntax for destructor definition outside the class (in .cpp file)</li>
+                </ul>
+
+                <p><strong>Destructor syntax rules:</strong></p>
+                <ol>
+                    <li>Name: Tilde (~) followed by class name</li>
+                    <li>No return type (not even void)</li>
+                    <li>No parameters</li>
+                    <li>Cannot be overloaded (only ONE destructor per class)</li>
+                    <li>Called automatically when object is destroyed</li>
+                </ol>
+
+                <p><strong>Complete example:</strong></p>
+                <pre><code class="language-cpp">// Matrix.h
+class Matrix {
+private:
+    int** data;
+    int rows, cols;
+public:
+    Matrix(int r, int c);
+    ~Matrix();  // Declaration (Option B)
+};
+
+// Matrix.cpp
+Matrix::~Matrix() {  // Definition (Option C)
+    for (int i = 0; i < rows; i++) {
+        delete[] data[i];
+    }
+    delete[] data;
+}</code></pre>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect. Destructors have NO return type, not even <code>void</code>. Writing <code>void ~Matrix()</code> is a syntax error.</li>
+                    <li><strong>D:</strong> Incorrect. <code>delete</code> is used to destroy objects, not to declare destructors. The destructor is what gets called when you use <code>delete</code> on an object.</li>
+                </ul>
+
+                <p><strong>When destructor is called:</strong></p>
+                <ul>
+                    <li>Local object goes out of scope</li>
+                    <li><code>delete</code> called on dynamically allocated object</li>
+                    <li>Program terminates (for global/static objects)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 29 -->
+        <div class="question-box">
+            <span class="question-number">Question 29</span>
+            <h3>Copy Constructor Parameter</h3>
+            <p>Why must the copy constructor parameter be a reference (<code>const ClassName&</code>)?</p>
+            <ol type="A">
+                <li>For efficiency (avoid copying)</li>
+                <li>To prevent infinite recursion</li>
+                <li>To allow modification of the parameter</li>
+                <li>It's a C++ convention, not required</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer29')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer29">
+                <p><strong>Answer:</strong> B - To prevent infinite recursion</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>If the copy constructor took the parameter by value instead of by reference, it would create infinite recursion:</p>
+
+                <pre><code class="language-cpp">// WRONG - would cause infinite recursion:
+class Student {
+public:
+    Student(Student other) {  // Pass by VALUE
+        // To pass 'other' by value, we need to COPY it
+        // To copy it, we call the copy constructor
+        // To call copy constructor, we pass by value
+        // To pass by value, we need to copy...
+        // INFINITE RECURSION!
+    }
+};</code></pre>
+
+                <p><strong>The problem step-by-step:</strong></p>
+                <ol>
+                    <li>You write: <code>Student s2 = s1;</code></li>
+                    <li>Compiler calls: <code>Student(s1)</code> (copy constructor)</li>
+                    <li>To pass <code>s1</code> by value, compiler must create a copy</li>
+                    <li>To create a copy, compiler calls copy constructor</li>
+                    <li>Back to step 2 → infinite loop!</li>
+                </ol>
+
+                <p><strong>CORRECT - uses reference:</strong></p>
+                <pre><code class="language-cpp">class Student {
+public:
+    Student(const Student& other) {  // Pass by REFERENCE
+        // No copying needed - just refers to original
+        // No recursion!
+    }
+};</code></pre>
+
+                <p><strong>Why <code>const</code>?</strong></p>
+                <p>The <code>const</code> is for safety - the copy constructor shouldn't modify the source object. It only needs to read from it.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> While efficiency is a benefit of using references, it's not the PRIMARY reason. The main reason is to avoid infinite recursion. Even if copying were cheap, we'd still need a reference.</li>
+                    <li><strong>C:</strong> Incorrect. We use <code>const</code> specifically to PREVENT modification. The copy constructor should not change the source object.</li>
+                    <li><strong>D:</strong> Incorrect. Using a reference is REQUIRED, not just convention. A copy constructor without a reference parameter would cause infinite recursion and is invalid.</li>
+                </ul>
+
+                <p><strong>C++ standard requirement:</strong> A copy constructor must have a parameter of type <code>const ClassName&</code> or <code>ClassName&</code> (reference). Any other type is not a valid copy constructor.</p>
+            </div>
+        </div>
+
+        <!-- Question 30 -->
+        <div class="question-box">
+            <span class="question-number">Question 30</span>
+            <h3>Access Specifier Inheritance</h3>
+            <p><strong>True or False:</strong> If a class uses <code>private</code> inheritance from a base class, the public members of the base class become private in the derived class.</p>
+            <p>Justify your answer.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleQuizAnswer('answer30')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer30">
+                <p><strong>Answer:</strong> True</p>
+
+                <p><strong>Detailed Justification:</strong></p>
+                <p>When you use private inheritance, ALL members of the base class (public and protected) become private in the derived class. This means they're accessible within the derived class but not from outside.</p>
+
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">class Base {
+public:
+    int publicVar;
+protected:
+    int protectedVar;
+private:
+    int privateVar;
+};
+
+class Derived : private Base {  // PRIVATE inheritance
+    // publicVar is now private in Derived
+    // protectedVar is now private in Derived
+    // privateVar is inaccessible (was already private in Base)
+};
+
+int main() {
+    Derived d;
+    d.publicVar = 5;  // ERROR - publicVar is private in Derived!
+}</code></pre>
+
+                <p><strong>Inheritance access levels:</strong></p>
+                <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                    <tr style="background: rgba(139, 92, 246, 0.2);">
+                        <th style="border: 1px solid #8b5cf6; padding: 0.5rem;">Base Member</th>
+                        <th style="border: 1px solid #8b5cf6; padding: 0.5rem;">public Inheritance</th>
+                        <th style="border: 1px solid #8b5cf6; padding: 0.5rem;">protected Inheritance</th>
+                        <th style="border: 1px solid #8b5cf6; padding: 0.5rem;">private Inheritance</th>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">public</td>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">public</td>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">protected</td>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">private</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">protected</td>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">protected</td>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">protected</td>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">private</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">private</td>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">inaccessible</td>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">inaccessible</td>
+                        <td style="border: 1px solid #8b5cf6; padding: 0.5rem;">inaccessible</td>
+                    </tr>
+                </table>
+
+                <p><strong>When to use private inheritance:</strong></p>
+                <ul>
+                    <li>Implementation hiding: You want to reuse base class functionality internally but not expose it as part of the derived class's interface</li>
+                    <li>Rare in practice - composition (has-a) is usually preferred over private inheritance</li>
+                </ul>
+
+                <p><strong>Note:</strong> This topic is covered in detail in Unit 7 (Inheritance). For Unit 3, you only need to know that access specifiers (public, protected, private) control member visibility.</p>
+
+                <div class="info-box">
+                    <strong>Heads up:</strong> Inheritance and access level changes are covered in Unit 7. For now, focus on understanding public/private/protected within a single class.
+                </div>
+            </div>
+        </div>
+
+        <!-- End of Quiz -->
+        <div class="info-box" style="margin-top: 3rem;">
+            <strong>Quiz Complete!</strong> You've completed all 30 questions on classes and constructors. Review any questions you found challenging and make sure you understand the concepts before moving on to the next unit.
+        </div>
+
+    </div>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        // Toggle quiz answer sections
+        function toggleQuizAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+
+                // CRITICAL: Force browser reflow before highlighting
+                void(answerSection.offsetHeight);
+
+                // Re-highlight Prism code blocks after reflow
+                if (typeof Prism !== 'undefined') {
+                    // Find all code blocks in this answer section and highlight them individually
+                    answerSection.querySelectorAll('pre code').forEach(function(codeBlock) {
+                        Prism.highlightElement(codeBlock);
+                    });
+                }
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

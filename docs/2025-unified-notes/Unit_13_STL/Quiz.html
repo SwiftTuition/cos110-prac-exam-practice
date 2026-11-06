@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 13: STL - Quiz | COS 110</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Highlight.js for Syntax Highlighting (vs2015 theme as per standards) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/vs2015.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #1e1e1e;
+            --accent-cyan: #0ea5e9;
+            --accent-cyan-hover: #0284c7;
+            --text-primary: #cbd5e1;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #eab308;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background-color: var(--bg-card);
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid var(--accent-cyan);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-brand-company {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .nav-brand-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .nav-menu a.active {
+            color: var(--accent-cyan);
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--accent-cyan);
+            margin: 3rem 0 1.5rem 0;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            margin: 2rem 0 1rem 0;
+            font-weight: 600;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            color: var(--accent-cyan);
+            margin: 1.5rem 0 1rem 0;
+            font-weight: 600;
+        }
+
+        p {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--bg-code) !important;
+            border-radius: 0.5rem;
+            padding: 1.5rem !important;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        code {
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Info Boxes */
+        .info-box, .warning-box, .success-box, .swift-note-box {
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+        }
+
+        .info-box {
+            background-color: rgba(14, 165, 233, 0.1);
+            border-color: var(--accent-cyan);
+        }
+
+        .warning-box {
+            background-color: rgba(234, 179, 8, 0.1);
+            border-color: var(--warning);
+        }
+
+        .success-box {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+        }
+
+        .swift-note-box {
+            background-color: rgba(147, 51, 234, 0.1);
+            border-color: #9333ea;
+        }
+
+        /* Question Card */
+        .question-card {
+            background-color: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid var(--border-color);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .question-number {
+            background-color: var(--accent-cyan);
+            color: white;
+            min-width: 60px;
+            height: 50px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding: 0 1rem;
+        }
+
+        .question-marks {
+            background-color: rgba(234, 179, 8, 0.2);
+            color: var(--warning);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .question-text {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Options */
+        .options {
+            margin: 1.5rem 0;
+        }
+
+        .option {
+            background-color: rgba(14, 165, 233, 0.05);
+            padding: 1rem 1.5rem;
+            margin: 0.75rem 0;
+            border-radius: 0.5rem;
+            border-left: 3px solid var(--accent-cyan);
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+
+        /* Reveal Button */
+        .reveal-btn {
+            background-color: rgba(14, 165, 233, 0.2);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 1.5rem 0;
+            font-size: 1rem;
+        }
+
+        .reveal-btn:hover {
+            background-color: rgba(14, 165, 233, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .answer-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background-color: rgba(16, 185, 129, 0.05);
+            border-left: 4px solid var(--success);
+            margin: 1rem 0;
+        }
+
+        .answer-section.visible {
+            max-height: 8000px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .correct-answer {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Links */
+        a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Section Headers */
+        .section-header {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(147, 51, 234, 0.1));
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 2px solid var(--accent-cyan);
+            margin: 3rem 0 2rem 0;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 13: Standard Template Library</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html" class="active">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>STL Assessment Quiz</h1>
+
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+            This quiz tests your understanding of the Standard Template Library with exam-style questions. Questions are modeled after the 2025 EO format and previous EO3 exams.
+        </p>
+
+        <div class="info-box">
+            <strong>Quiz Format:</strong>
+            <ul>
+                <li><strong>Total Questions:</strong> 28 questions</li>
+                <li><strong>Total Marks:</strong> 70 marks</li>
+                <li><strong>Sections:</strong> Multiple Choice, True/False, Code Tracing, Matching, Short Answer</li>
+                <li><strong>How to use:</strong> Try to answer each question, then click "Show Answer" to see the detailed explanation</li>
+            </ul>
+        </div>
+
+        <!-- Section A: Multiple Choice -->
+        <div class="section-header">
+            <div class="section-title">Section A: Multiple Choice</div>
+            <div class="section-description">10 questions · 1 mark each · 10 marks total</div>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q1</div>
+                <div class="question-marks">[1 mark]</div>
+            </div>
+            <div class="question-text">
+                Which STL container provides the fastest access to elements by index?
+            </div>
+            <div class="options">
+                <div class="option"><strong>A)</strong> list</div>
+                <div class="option"><strong>B)</strong> vector</div>
+                <div class="option"><strong>C)</strong> set</div>
+                <div class="option"><strong>D)</strong> map</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Answer</button>
+            <div class="answer-section" id="answer1">
+                <div class="correct-answer">Correct Answer: B) vector</div>
+                <p><strong>Explanation:</strong></p>
+                <p>Vector provides O(1) random access to elements by index using the <code>[]</code> operator or <code>at()</code> function. This is because vectors store elements contiguously in memory, so accessing <code>v[100]</code> is just a pointer offset calculation.</p>
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A) list:</strong> Requires O(n) time to access by index because you must traverse nodes from beginning.</li>
+                    <li><strong>C) set:</strong> Doesn't support index access at all (elements are ordered by value, not position).</li>
+                    <li><strong>D) map:</strong> Doesn't support index access (uses keys, not indices).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q2</div>
+                <div class="question-marks">[1 mark]</div>
+            </div>
+            <div class="question-text">
+                What is the return type of the <code>pop()</code> function in STL's <code>stack</code>?
+            </div>
+            <div class="options">
+                <div class="option"><strong>A)</strong> The element being removed</div>
+                <div class="option"><strong>B)</strong> A boolean indicating success</div>
+                <div class="option"><strong>C)</strong> void (returns nothing)</div>
+                <div class="option"><strong>D)</strong> An iterator to the next element</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Answer</button>
+            <div class="answer-section" id="answer2">
+                <div class="correct-answer">Correct Answer: C) void (returns nothing)</div>
+                <p><strong>Explanation:</strong></p>
+                <p>The <code>pop()</code> function in STL's stack (and queue) returns <code>void</code>. This is a deliberate design decision for exception safety. If <code>pop()</code> both removed and returned the element, and the copy constructor threw an exception, the element would be lost from the container but not received by the caller.</p>
+                <p><strong>Correct usage:</strong></p>
+                <pre><code class="language-cpp">// Get value first
+int value = myStack.top();
+// Then remove it
+myStack.pop();</code></pre>
+                <p>This two-step process ensures that if copying fails, the element remains on the stack.</p>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q3</div>
+                <div class="question-marks">[1 mark]</div>
+            </div>
+            <div class="question-text">
+                Which iterator category does a <code>list</code> provide?
+            </div>
+            <div class="options">
+                <div class="option"><strong>A)</strong> Forward iterator</div>
+                <div class="option"><strong>B)</strong> Bidirectional iterator</div>
+                <div class="option"><strong>C)</strong> Random access iterator</div>
+                <div class="option"><strong>D)</strong> Input iterator</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Answer</button>
+            <div class="answer-section" id="answer3">
+                <div class="correct-answer">Correct Answer: B) Bidirectional iterator</div>
+                <p><strong>Explanation:</strong></p>
+                <p>A <code>list</code> (doubly linked list) provides bidirectional iterators. This means you can:</p>
+                <ul>
+                    <li>Move forward with <code>++it</code></li>
+                    <li>Move backward with <code>--it</code></li>
+                    <li>Access elements with <code>*it</code></li>
+                </ul>
+                <p><strong>What you CANNOT do:</strong></p>
+                <ul>
+                    <li>Jump to arbitrary positions with <code>it + 5</code> (requires random access)</li>
+                    <li>Use array notation like <code>it[5]</code> (requires random access)</li>
+                    <li>Calculate distance in O(1) time with <code>it2 - it1</code> (requires random access)</li>
+                </ul>
+                <p>Only <code>vector</code> and <code>deque</code> provide random access iterators.</p>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q4</div>
+                <div class="question-marks">[1 mark]</div>
+            </div>
+            <div class="question-text">
+                In a <code>map&lt;int, string&gt;</code>, what does <code>it-&gt;first</code> represent when <code>it</code> is an iterator?
+            </div>
+            <div class="options">
+                <div class="option"><strong>A)</strong> The value (string)</div>
+                <div class="option"><strong>B)</strong> The key (int)</div>
+                <div class="option"><strong>C)</strong> A pointer to the pair</div>
+                <div class="option"><strong>D)</strong> The beginning of the map</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Answer</button>
+            <div class="answer-section" id="answer4">
+                <div class="correct-answer">Correct Answer: B) The key (int)</div>
+                <p><strong>Explanation:</strong></p>
+                <p>Map iterators point to <code>pair</code> objects. Each pair has two members:</p>
+                <ul>
+                    <li><code>first</code> - The key (in this case, <code>int</code>)</li>
+                    <li><code>second</code> - The value (in this case, <code>string</code>)</li>
+                </ul>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">map&lt;int, string&gt; students;
+students[12345] = "Themba";
+
+map&lt;int, string&gt;::iterator it = students.begin();
+cout &lt;&lt; it-&gt;first;  // Prints: 12345 (the key)
+cout &lt;&lt; it-&gt;second; // Prints: Themba (the value)</code></pre>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q5</div>
+                <div class="question-marks">[1 mark]</div>
+            </div>
+            <div class="question-text">
+                What happens if you insert a duplicate element into a <code>set</code>?
+            </div>
+            <div class="options">
+                <div class="option"><strong>A)</strong> The set stores both copies</div>
+                <div class="option"><strong>B)</strong> The insertion is ignored (element already exists)</div>
+                <div class="option"><strong>C)</strong> A compile error occurs</div>
+                <div class="option"><strong>D)</strong> The old element is replaced</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer5')">Show Answer</button>
+            <div class="answer-section" id="answer5">
+                <div class="correct-answer">Correct Answer: B) The insertion is ignored (element already exists)</div>
+                <p><strong>Explanation:</strong></p>
+                <p>Sets only store unique elements. If you try to insert an element that already exists, the <code>insert()</code> operation does nothing.</p>
+                <p><strong>How to check if insertion happened:</strong></p>
+                <pre><code class="language-cpp">set&lt;int&gt; numbers;
+numbers.insert(10);
+
+pair&lt;set&lt;int&gt;::iterator, bool&gt; result = numbers.insert(10);
+if (result.second) {
+    cout &lt;&lt; "Inserted successfully";
+} else {
+    cout &lt;&lt; "Element already exists"; // This will print
+}</code></pre>
+                <p>The <code>insert()</code> function returns a pair where <code>second</code> is <code>true</code> if insertion happened, <code>false</code> if element already existed.</p>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q6</div>
+                <div class="question-marks">[1 mark]</div>
+            </div>
+            <div class="question-text">
+                Which algorithm requires random access iterators and will NOT work with a <code>list</code>?
+            </div>
+            <div class="options">
+                <div class="option"><strong>A)</strong> find()</div>
+                <div class="option"><strong>B)</strong> count()</div>
+                <div class="option"><strong>C)</strong> sort()</div>
+                <div class="option"><strong>D)</strong> reverse()</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer6')">Show Answer</button>
+            <div class="answer-section" id="answer6">
+                <div class="correct-answer">Correct Answer: C) sort()</div>
+                <p><strong>Explanation:</strong></p>
+                <p>The <code>std::sort()</code> algorithm requires random access iterators because it needs to jump around in the container efficiently. Lists only provide bidirectional iterators.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">list&lt;int&gt; myList = {5, 2, 8, 1};
+// sort(myList.begin(), myList.end()); // COMPILE ERROR!
+
+// List has its own member function:
+myList.sort(); // This works!</code></pre>
+                <p><strong>Why other options work with lists:</strong></p>
+                <ul>
+                    <li><code>find()</code> - Only needs forward iterator (sequential search)</li>
+                    <li><code>count()</code> - Only needs forward iterator (sequential traversal)</li>
+                    <li><code>reverse()</code> - Works with bidirectional iterators</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q7</div>
+                <div class="question-marks">[1 mark]</div>
+            </div>
+            <div class="question-text">
+                What is the default inner container for <code>stack&lt;int&gt;</code>?
+            </div>
+            <div class="options">
+                <div class="option"><strong>A)</strong> vector</div>
+                <div class="option"><strong>B)</strong> list</div>
+                <div class="option"><strong>C)</strong> deque</div>
+                <div class="option"><strong>D)</strong> array</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer7')">Show Answer</button>
+            <div class="answer-section" id="answer7">
+                <div class="correct-answer">Correct Answer: C) deque</div>
+                <p><strong>Explanation:</strong></p>
+                <p>By default, <code>stack</code> uses <code>deque</code> as its underlying container. This is mentioned in EO3 2018 Question 1.2.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">stack&lt;int&gt; s1;                    // Uses deque by default
+stack&lt;int, vector&lt;int&gt; &gt; s2;     // Explicitly use vector
+stack&lt;int, list&lt;int&gt; &gt; s3;       // Explicitly use list</code></pre>
+                <p><strong>Note:</strong> In C++98, you need a space between the closing <code>&gt;&gt;</code> to avoid the parsing ambiguity: <code>vector&lt;int&gt; &gt;</code> not <code>vector&lt;int&gt;&gt;</code>.</p>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q8</div>
+                <div class="question-marks">[1 mark]</div>
+            </div>
+            <div class="question-text">
+                What does <code>container.end()</code> return?
+            </div>
+            <div class="options">
+                <div class="option"><strong>A)</strong> An iterator to the last element</div>
+                <div class="option"><strong>B)</strong> An iterator one past the last element</div>
+                <div class="option"><strong>C)</strong> A null pointer</div>
+                <div class="option"><strong>D)</strong> The size of the container</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer8')">Show Answer</button>
+            <div class="answer-section" id="answer8">
+                <div class="correct-answer">Correct Answer: B) An iterator one past the last element</div>
+                <p><strong>Explanation:</strong></p>
+                <p>The <code>end()</code> function returns an iterator pointing to the position <strong>one past</strong> the last element. This is called a "sentinel" or "past-the-end" iterator.</p>
+                <p><strong>Important:</strong> You should NEVER dereference <code>end()</code>! It doesn't point to a valid element.</p>
+                <p><strong>Correct usage:</strong></p>
+                <pre><code class="language-cpp">vector&lt;int&gt; v = {1, 2, 3};
+vector&lt;int&gt;::iterator it;
+for (it = v.begin(); it != v.end(); ++it) { // Compare to end()
+    cout &lt;&lt; *it; // Dereference to get value
+}
+// *v.end(); // UNDEFINED BEHAVIOR - DON'T DO THIS!</code></pre>
+                <p>The half-open range <code>[begin, end)</code> is standard in STL - includes first, excludes end.</p>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q9</div>
+                <div class="question-marks">[1 mark]</div>
+            </div>
+            <div class="question-text">
+                Which operation is O(1) for a <code>list</code> but O(n) for a <code>vector</code>?
+            </div>
+            <div class="options">
+                <div class="option"><strong>A)</strong> Access element by index</div>
+                <div class="option"><strong>B)</strong> Insert at the front</div>
+                <div class="option"><strong>C)</strong> Access last element</div>
+                <div class="option"><strong>D)</strong> Get size</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer9')">Show Answer</button>
+            <div class="answer-section" id="answer9">
+                <div class="correct-answer">Correct Answer: B) Insert at the front</div>
+                <p><strong>Explanation:</strong></p>
+                <p>Inserting at the front has different time complexities:</p>
+                <ul>
+                    <li><strong>List:</strong> O(1) - Just create new node and update head pointer</li>
+                    <li><strong>Vector:</strong> O(n) - Must shift all existing elements one position to make room</li>
+                </ul>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">list&lt;int&gt; l;
+l.push_front(10); // O(1) - efficient!
+
+vector&lt;int&gt; v;
+// No push_front() for vector!
+// Would need: v.insert(v.begin(), 10); // O(n) - slow!</code></pre>
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Vector is O(1), list is O(n)</li>
+                    <li><strong>C:</strong> Both are O(1) using <code>back()</code></li>
+                    <li><strong>D:</strong> Both are O(1) using <code>size()</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q10</div>
+                <div class="question-marks">[1 mark]</div>
+            </div>
+            <div class="question-text">
+                What does <code>binary_search()</code> return?
+            </div>
+            <div class="options">
+                <div class="option"><strong>A)</strong> An iterator to the found element</div>
+                <div class="option"><strong>B)</strong> The index of the found element</div>
+                <div class="option"><strong>C)</strong> A boolean (true if found, false otherwise)</div>
+                <div class="option"><strong>D)</strong> The number of matching elements</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer10')">Show Answer</button>
+            <div class="answer-section" id="answer10">
+                <div class="correct-answer">Correct Answer: C) A boolean (true if found, false otherwise)</div>
+                <p><strong>Explanation:</strong></p>
+                <p>The <code>binary_search()</code> algorithm returns a <code>bool</code>: <code>true</code> if the element is found, <code>false</code> otherwise. It does NOT return an iterator or index.</p>
+                <p><strong>Important requirement:</strong> The range must be sorted!</p>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">vector&lt;int&gt; v = {1, 3, 5, 7, 9}; // Must be sorted!
+if (binary_search(v.begin(), v.end(), 5)) {
+    cout &lt;&lt; "Found!";
+} else {
+    cout &lt;&lt; "Not found";
+}</code></pre>
+                <p><strong>If you need the iterator:</strong> Use <code>lower_bound()</code> or <code>find()</code> instead.</p>
+            </div>
+        </div>
+
+        <!-- Section B: True/False -->
+        <div class="section-header">
+            <div class="section-title">Section B: True or False</div>
+            <div class="section-description">5 questions · 2 marks each · 10 marks total · Justify your answer</div>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q11</div>
+                <div class="question-marks">[2 marks]</div>
+            </div>
+            <div class="question-text">
+                <strong>True or False:</strong> Vectors always use less memory than lists for the same number of elements.
+            </div>
+            <p style="margin-top: 1rem;"><em>Justify your answer in no more than two sentences.</em></p>
+            <button class="reveal-btn" onclick="toggleAnswer('answer11')">Show Answer</button>
+            <div class="answer-section" id="answer11">
+                <div class="correct-answer">Answer: TRUE</div>
+                <p><strong>Justification:</strong></p>
+                <p>Vectors store elements contiguously, requiring only space for the elements themselves plus overhead for size/capacity. Lists require additional memory for two pointers (next and prev) per node, making them less memory-efficient.</p>
+                <p><strong>Memory breakdown:</strong></p>
+                <ul>
+                    <li><strong>Vector:</strong> n × sizeof(element) + small overhead</li>
+                    <li><strong>List:</strong> n × (sizeof(element) + 2 × sizeof(pointer))</li>
+                </ul>
+                <p>For an <code>int</code> (4 bytes) on a 64-bit system (8-byte pointers): vector uses ~4 bytes per element, list uses ~20 bytes per element!</p>
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q12</div>
+                <div class="question-marks">[2 marks]</div>
+            </div>
+            <div class="question-text">
+                <strong>True or False:</strong> Map keys must be unique, but values can be duplicated.
+            </div>
+            <p style="margin-top: 1rem;"><em>Justify your answer in no more than two sentences.</em></p>
+            <button class="reveal-btn" onclick="toggleAnswer('answer12')">Show Answer</button>
+            <div class="answer-section" id="answer12">
+                <div class="correct-answer">Answer: TRUE</div>
+                <p><strong>Justification:</strong></p>
+                <p>A map stores unique key-value pairs where each key can only appear once, but multiple keys can map to the same value. If you insert a key that already exists, it overwrites the old value.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">map&lt;int, string&gt; m;
+m[1] = "Alice";
+m[2] = "Alice";  // Duplicate VALUE is fine
+m[1] = "Bob";    // Overwrites - keys must be unique!</code></pre>
+            </div>
+        </div>
+
+        <!-- Question 13 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q13</div>
+                <div class="question-marks">[2 marks]</div>
+            </div>
+            <div class="question-text">
+                <strong>True or False:</strong> You can use <code>sort()</code> algorithm directly on any STL container.
+            </div>
+            <p style="margin-top: 1rem;"><em>Justify your answer in no more than two sentences.</em></p>
+            <button class="reveal-btn" onclick="toggleAnswer('answer13')">Show Answer</button>
+            <div class="answer-section" id="answer13">
+                <div class="correct-answer">Answer: FALSE</div>
+                <p><strong>Justification:</strong></p>
+                <p>The <code>std::sort()</code> algorithm requires random access iterators, which only <code>vector</code> and <code>deque</code> provide. Containers like <code>list</code> must use their own member function <code>list.sort()</code> instead.</p>
+                <p><strong>Why this matters:</strong></p>
+                <p>Sorting requires jumping around in the collection for efficiency (e.g., quicksort pivoting). Lists can only move sequentially, so they need a different sorting algorithm optimized for linked structures (typically mergesort).</p>
+            </div>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q14</div>
+                <div class="question-marks">[2 marks]</div>
+            </div>
+            <div class="question-text">
+                <strong>True or False:</strong> Accessing <code>map[key]</code> when the key doesn't exist will throw an exception.
+            </div>
+            <p style="margin-top: 1rem;"><em>Justify your answer in no more than two sentences.</em></p>
+            <button class="reveal-btn" onclick="toggleAnswer('answer14')">Show Answer</button>
+            <div class="answer-section" id="answer14">
+                <div class="correct-answer">Answer: FALSE</div>
+                <p><strong>Justification:</strong></p>
+                <p>The <code>[]</code> operator will create a new entry with the default value for that type if the key doesn't exist. To avoid this behavior, use <code>find()</code> or <code>at()</code> (which does throw an exception).</p>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-cpp">map&lt;int, string&gt; m;
+cout &lt;&lt; m[999]; // Creates entry 999 → "" (empty string)
+cout &lt;&lt; m.size(); // Prints 1 (entry was created!)
+
+// Safe way:
+if (m.find(999) != m.end()) {
+    cout &lt;&lt; m[999]; // Only access if exists
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Question 15 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q15</div>
+                <div class="question-marks">[2 marks]</div>
+            </div>
+            <div class="question-text">
+                <strong>True or False:</strong> Iterators remain valid after calling <code>erase()</code> on a vector.
+            </div>
+            <p style="margin-top: 1rem;"><em>Justify your answer in no more than two sentences.</em></p>
+            <button class="reveal-btn" onclick="toggleAnswer('answer15')">Show Answer</button>
+            <div class="answer-section" id="answer15">
+                <div class="correct-answer">Answer: FALSE</div>
+                <p><strong>Justification:</strong></p>
+                <p>Calling <code>erase()</code> on a vector invalidates all iterators at and after the erased position because elements are shifted. You must use the iterator returned by <code>erase()</code> to continue safely.</p>
+                <p><strong>Correct pattern:</strong></p>
+                <pre><code class="language-cpp">vector&lt;int&gt;::iterator it = v.begin();
+while (it != v.end()) {
+    if (*it % 2 == 0) {
+        it = v.erase(it); // Use return value!
+    } else {
+        ++it;
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Section C: Code Tracing -->
+        <div class="section-header">
+            <div class="section-title">Section C: Code Tracing</div>
+            <div class="section-description">5 questions · 3-4 marks each · 18 marks total</div>
+        </div>
+
+        <!-- Question 16 (EO3 2018 Style) -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q16</div>
+                <div class="question-marks">[4 marks]</div>
+            </div>
+            <div class="question-text">
+                What is the output of the following code? Show your working.
+            </div>
+            <pre><code class="language-cpp">stack&lt;char&gt; s;
+for (char c = 'w'; c &lt;= 'z'; c++) {
+    s.push(c);
+}
+
+char x = s.top();
+s.pop();
+char y = 'a';
+
+while (!s.empty()) {
+    cout &lt;&lt; s.top() &lt;&lt; endl;
+    s.pop();
+    if (!s.empty()) {
+        s.pop();
+        s.push(y++);
+    }
+}
+cout &lt;&lt; x &lt;&lt; endl;
+cout &lt;&lt; y &lt;&lt; endl;</code></pre>
+            <p style="margin-top: 1rem;"><em>Similar to EO3 2018 Question 1.1</em></p>
+            <button class="reveal-btn" onclick="toggleAnswer('answer16')">Show Answer</button>
+            <div class="answer-section" id="answer16">
+                <div class="correct-answer">Output:</div>
+                <pre style="background-color: rgba(16, 185, 129, 0.1); padding: 1rem; border-left: 4px solid var(--success);">y
+a
+b
+z
+c</pre>
+                <p><strong>Step-by-step trace:</strong></p>
+                <ol>
+                    <li><strong>After loop:</strong> Stack contains (bottom to top): w, x, y, z</li>
+                    <li><strong>Line 6-7:</strong> <code>x = 'z'</code> (top), then pop. Stack: w, x, y</li>
+                    <li><strong>Initialize:</strong> <code>y = 'a'</code></li>
+                    <li><strong>Iteration 1:</strong>
+                        <ul>
+                            <li>Print top: <code>y</code></li>
+                            <li>Pop (removes 'y'). Stack: w, x</li>
+                            <li>Not empty, so pop (removes 'x'), push(<code>y++</code> = 'a'). Stack: w, a</li>
+                            <li><code>y</code> is now 'b'</li>
+                        </ul>
+                    </li>
+                    <li><strong>Iteration 2:</strong>
+                        <ul>
+                            <li>Print top: <code>a</code></li>
+                            <li>Pop (removes 'a'). Stack: w</li>
+                            <li>Not empty, so pop (removes 'w'), push(<code>y++</code> = 'b'). Stack: b</li>
+                            <li><code>y</code> is now 'c'</li>
+                        </ul>
+                    </li>
+                    <li><strong>Iteration 3:</strong>
+                        <ul>
+                            <li>Print top: <code>b</code></li>
+                            <li>Pop (removes 'b'). Stack: empty</li>
+                            <li>Stack is empty, so don't enter if</li>
+                        </ul>
+                    </li>
+                    <li><strong>After loop:</strong> Print <code>x = 'z'</code>, then <code>y = 'c'</code></li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q17</div>
+                <div class="question-marks">[3 marks]</div>
+            </div>
+            <div class="question-text">
+                What is the output of the following code?
+            </div>
+            <pre><code class="language-cpp">vector&lt;int&gt; v;
+v.push_back(10);
+v.push_back(20);
+v.push_back(30);
+
+v.pop_back();
+v.push_back(40);
+
+for (int i = 0; i &lt; v.size(); i++) {
+    cout &lt;&lt; v[i] &lt;&lt; " ";
+}
+cout &lt;&lt; endl;</code></pre>
+            <button class="reveal-btn" onclick="toggleAnswer('answer17')">Show Answer</button>
+            <div class="answer-section" id="answer17">
+                <div class="correct-answer">Output: 10 20 40</div>
+                <p><strong>Explanation:</strong></p>
+                <ol>
+                    <li>After lines 2-4: Vector contains [10, 20, 30]</li>
+                    <li>Line 6 (<code>pop_back()</code>): Removes 30. Vector: [10, 20]</li>
+                    <li>Line 7 (<code>push_back(40)</code>): Adds 40. Vector: [10, 20, 40]</li>
+                    <li>Loop prints all elements: 10 20 40</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Question 18 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q18</div>
+                <div class="question-marks">[4 marks]</div>
+            </div>
+            <div class="question-text">
+                What is the output of the following code?
+            </div>
+            <pre><code class="language-cpp">map&lt;string, int&gt; ages;
+ages["Alice"] = 20;
+ages["Bob"] = 25;
+ages["Charlie"] = 20;
+
+ages["Alice"] = 21;
+
+map&lt;string, int&gt;::iterator it;
+for (it = ages.begin(); it != ages.end(); ++it) {
+    cout &lt;&lt; it-&gt;first &lt;&lt; ": " &lt;&lt; it-&gt;second &lt;&lt; endl;
+}</code></pre>
+            <button class="reveal-btn" onclick="toggleAnswer('answer18')">Show Answer</button>
+            <div class="answer-section" id="answer18">
+                <div class="correct-answer">Output:</div>
+                <pre style="background-color: rgba(16, 185, 129, 0.1); padding: 1rem; border-left: 4px solid var(--success);">Alice: 21
+Bob: 25
+Charlie: 20</pre>
+                <p><strong>Explanation:</strong></p>
+                <ol>
+                    <li>Line 2-4: Insert three entries</li>
+                    <li>Line 6: Overwrites Alice's age from 20 to 21 (keys are unique)</li>
+                    <li>Iteration: Map automatically sorts by key (alphabetically for strings)</li>
+                    <li>Order: Alice, Bob, Charlie (alphabetical)</li>
+                    <li>Values: 21, 25, 20 (note: Alice was updated)</li>
+                </ol>
+                <p><strong>Key point:</strong> Maps sort by KEY, not by value or insertion order!</p>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q19</div>
+                <div class="question-marks">[3 marks]</div>
+            </div>
+            <div class="question-text">
+                What is the output of the following code?
+            </div>
+            <pre><code class="language-cpp">set&lt;int&gt; numbers;
+numbers.insert(5);
+numbers.insert(2);
+numbers.insert(8);
+numbers.insert(2);
+numbers.insert(1);
+
+set&lt;int&gt;::iterator it;
+for (it = numbers.begin(); it != numbers.end(); ++it) {
+    cout &lt;&lt; *it &lt;&lt; " ";
+}
+cout &lt;&lt; endl;</code></pre>
+            <button class="reveal-btn" onclick="toggleAnswer('answer19')">Show Answer</button>
+            <div class="answer-section" id="answer19">
+                <div class="correct-answer">Output: 1 2 5 8</div>
+                <p><strong>Explanation:</strong></p>
+                <ol>
+                    <li>Line 2: Insert 5</li>
+                    <li>Line 3: Insert 2</li>
+                    <li>Line 4: Insert 8</li>
+                    <li>Line 5: Try to insert 2 (duplicate - ignored!)</li>
+                    <li>Line 6: Insert 1</li>
+                    <li>Final set: {1, 2, 5, 8} (sorted, no duplicates)</li>
+                </ol>
+                <p><strong>Key points:</strong></p>
+                <ul>
+                    <li>Sets automatically remove duplicates (line 5 had no effect)</li>
+                    <li>Sets keep elements sorted (1, 2, 5, 8 not 5, 2, 8, 1)</li>
+                    <li>Total elements: 4 (not 5, because one duplicate was ignored)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q20</div>
+                <div class="question-marks">[4 marks]</div>
+            </div>
+            <div class="question-text">
+                What is the output of the following code?
+            </div>
+            <pre><code class="language-cpp">queue&lt;int&gt; q;
+q.push(10);
+q.push(20);
+q.push(30);
+
+cout &lt;&lt; q.front() &lt;&lt; endl;
+q.pop();
+
+q.push(40);
+cout &lt;&lt; q.front() &lt;&lt; endl;
+
+while (!q.empty()) {
+    cout &lt;&lt; q.front() &lt;&lt; " ";
+    q.pop();
+}
+cout &lt;&lt; endl;</code></pre>
+            <button class="reveal-btn" onclick="toggleAnswer('answer20')">Show Answer</button>
+            <div class="answer-section" id="answer20">
+                <div class="correct-answer">Output:</div>
+                <pre style="background-color: rgba(16, 185, 129, 0.1); padding: 1rem; border-left: 4px solid var(--success);">10
+20
+20 30 40</pre>
+                <p><strong>Step-by-step trace:</strong></p>
+                <ol>
+                    <li><strong>After pushes (lines 2-4):</strong> Queue: [10, 20, 30] (front → back)</li>
+                    <li><strong>Line 6:</strong> Print front: <code>10</code></li>
+                    <li><strong>Line 7:</strong> Pop front. Queue: [20, 30]</li>
+                    <li><strong>Line 9:</strong> Push 40 at back. Queue: [20, 30, 40]</li>
+                    <li><strong>Line 10:</strong> Print front: <code>20</code></li>
+                    <li><strong>While loop:</strong> Print and pop all: 20, 30, 40</li>
+                </ol>
+                <p><strong>Key point:</strong> Queue is FIFO (First In, First Out). Elements are removed from the front and added to the back.</p>
+            </div>
+        </div>
+
+        <!-- Section D: Matching -->
+        <div class="section-header">
+            <div class="section-title">Section D: Matching</div>
+            <div class="section-description">2 questions · 5 marks each · 10 marks total</div>
+        </div>
+
+        <!-- Question 21 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q21</div>
+                <div class="question-marks">[5 marks]</div>
+            </div>
+            <div class="question-text">
+                Match each use case with the most appropriate STL container:
+            </div>
+            <div style="margin: 1.5rem 0;">
+                <p><strong>Use Cases:</strong></p>
+                <ol style="margin-left: 1.5rem;">
+                    <li>Need frequent random access by index</li>
+                    <li>Need to store unique student numbers</li>
+                    <li>Need to map employee IDs to names</li>
+                    <li>Need to process tasks in the order they arrive</li>
+                    <li>Need frequent insertion/deletion at both ends</li>
+                </ol>
+                <p style="margin-top: 1.5rem;"><strong>Containers:</strong></p>
+                <ul style="margin-left: 1.5rem;">
+                    <li>A) vector</li>
+                    <li>B) list</li>
+                    <li>C) deque</li>
+                    <li>D) set</li>
+                    <li>E) map</li>
+                    <li>F) stack</li>
+                    <li>G) queue</li>
+                </ul>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer21')">Show Answer</button>
+            <div class="answer-section" id="answer21">
+                <div class="correct-answer">Answers:</div>
+                <ol>
+                    <li><strong>A) vector</strong> - Random access by index is O(1) for vectors</li>
+                    <li><strong>D) set</strong> - Sets automatically store unique elements</li>
+                    <li><strong>E) map</strong> - Maps store key-value pairs (ID → name)</li>
+                    <li><strong>G) queue</strong> - FIFO processing matches task queue behavior</li>
+                    <li><strong>C) deque</strong> - Efficient at both front and back</li>
+                </ol>
+                <p><strong>Detailed explanations:</strong></p>
+                <ul>
+                    <li><strong>1 → vector:</strong> Vectors store elements contiguously, allowing O(1) random access via <code>[]</code> operator.</li>
+                    <li><strong>2 → set:</strong> Sets enforce uniqueness automatically - trying to insert a duplicate student number would be ignored.</li>
+                    <li><strong>3 → map:</strong> Perfect for ID-to-name lookups with O(log n) access time.</li>
+                    <li><strong>4 → queue:</strong> First task in, first task processed (FIFO).</li>
+                    <li><strong>5 → deque:</strong> "Double-ended queue" - efficient push/pop at both front and back, unlike vector (only efficient at back).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 22 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q22</div>
+                <div class="question-marks">[5 marks]</div>
+            </div>
+            <div class="question-text">
+                Match each iterator category with its capabilities:
+            </div>
+            <div style="margin: 1.5rem 0;">
+                <p><strong>Iterator Categories:</strong></p>
+                <ol style="margin-left: 1.5rem;">
+                    <li>Forward Iterator</li>
+                    <li>Bidirectional Iterator</li>
+                    <li>Random Access Iterator</li>
+                </ol>
+                <p style="margin-top: 1.5rem;"><strong>Capabilities:</strong></p>
+                <ul style="margin-left: 1.5rem;">
+                    <li>A) Can use <code>++</code> only</li>
+                    <li>B) Can use <code>++</code> and <code>--</code></li>
+                    <li>C) Can use <code>++</code>, <code>--</code>, and <code>[]</code></li>
+                    <li>D) Can jump to arbitrary positions with <code>+</code> and <code>-</code></li>
+                    <li>E) Required for <code>std::sort()</code></li>
+                </ul>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer22')">Show Answer</button>
+            <div class="answer-section" id="answer22">
+                <div class="correct-answer">Answers:</div>
+                <ol>
+                    <li><strong>Forward Iterator:</strong> A only</li>
+                    <li><strong>Bidirectional Iterator:</strong> A, B</li>
+                    <li><strong>Random Access Iterator:</strong> A, B, C, D, E (all capabilities)</li>
+                </ol>
+                <p><strong>Breakdown:</strong></p>
+                <ul>
+                    <li><strong>Forward (A):</strong> Can only move forward (<code>++</code>), read/write with <code>*</code></li>
+                    <li><strong>Bidirectional (A, B):</strong> All forward capabilities PLUS backward movement (<code>--</code>)</li>
+                    <li><strong>Random Access (A, B, C, D, E):</strong> All bidirectional capabilities PLUS:
+                        <ul>
+                            <li>Array notation: <code>it[n]</code></li>
+                            <li>Arithmetic: <code>it + 5</code>, <code>it - 3</code></li>
+                            <li>Distance: <code>it2 - it1</code></li>
+                            <li>Required for <code>sort()</code></li>
+                        </ul>
+                    </li>
+                </ul>
+                <p><strong>Container examples:</strong></p>
+                <ul>
+                    <li>Forward: (most containers provide at least this)</li>
+                    <li>Bidirectional: <code>list</code>, <code>set</code>, <code>map</code></li>
+                    <li>Random Access: <code>vector</code>, <code>deque</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section E: Short Answer -->
+        <div class="section-header">
+            <div class="section-title">Section E: Short Answer / Implementation</div>
+            <div class="section-description">6 questions · Various marks · 22 marks total</div>
+        </div>
+
+        <!-- Question 23 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q23</div>
+                <div class="question-marks">[3 marks]</div>
+            </div>
+            <div class="question-text">
+                What is the inner container type for each of the following stack declarations? (Similar to EO3 2018 Q1.2)
+            </div>
+            <div style="margin: 1.5rem 0;">
+                <p><strong>a)</strong> <code>stack&lt;int&gt; s1;</code></p>
+                <p><strong>b)</strong> <code>stack&lt;int, vector&lt;int&gt; &gt; s2;</code></p>
+                <p><strong>c)</strong> <code>stack&lt;vector&lt;int&gt; &gt; s3;</code></p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer23')">Show Answer</button>
+            <div class="answer-section" id="answer23">
+                <div class="correct-answer">Answers:</div>
+                <p><strong>a)</strong> <code>deque&lt;int&gt;</code> - Default inner container for stack</p>
+                <p><strong>b)</strong> <code>vector&lt;int&gt;</code> - Explicitly specified as second template parameter</p>
+                <p><strong>c)</strong> <code>deque&lt;vector&lt;int&gt; &gt;</code> - Stack of vectors, using default deque container</p>
+                <p><strong>Explanation:</strong></p>
+                <ul>
+                    <li><strong>a:</strong> When no second template parameter is given, stack defaults to using <code>deque</code></li>
+                    <li><strong>b:</strong> The second template parameter explicitly specifies the inner container (<code>vector&lt;int&gt;</code>)</li>
+                    <li><strong>c:</strong> The first parameter is the element type (<code>vector&lt;int&gt;</code>), and since no inner container is specified, it defaults to <code>deque</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 24 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q24</div>
+                <div class="question-marks">[4 marks]</div>
+            </div>
+            <div class="question-text">
+                Write a function that uses an STL <code>stack&lt;int&gt;</code> to reverse a <code>vector&lt;int&gt;</code>. Your function should take a vector by reference and modify it in-place. (Similar to EO3 2018 Q4.1a)
+            </div>
+            <p style="margin-top: 1rem;"><em>Function signature:</em> <code>void reverseVector(vector&lt;int&gt;&amp; v)</code></p>
+            <button class="reveal-btn" onclick="toggleAnswer('answer24')">Show Answer</button>
+            <div class="answer-section" id="answer24">
+                <div class="correct-answer">Solution:</div>
+                <pre><code class="language-cpp">void reverseVector(vector&lt;int&gt;&amp; v) {
+    stack&lt;int&gt; s;
+
+    // Push all elements onto stack
+    for (int i = 0; i &lt; v.size(); i++) {
+        s.push(v[i]);
+    }
+
+    // Pop elements back into vector (reversed order)
+    for (int i = 0; i &lt; v.size(); i++) {
+        v[i] = s.top();
+        s.pop();
+    }
+}</code></pre>
+                <p><strong>How it works:</strong></p>
+                <ol>
+                    <li>Create a stack to temporarily store elements</li>
+                    <li>Push all vector elements onto stack (LIFO property)</li>
+                    <li>Pop elements from stack back into vector</li>
+                    <li>Since stack is LIFO, elements come out in reverse order</li>
+                </ol>
+                <p><strong>Example:</strong></p>
+                <ul>
+                    <li>Input: [1, 2, 3, 4]</li>
+                    <li>After push loop: Stack (bottom→top): 1, 2, 3, 4</li>
+                    <li>After pop loop: Vector: [4, 3, 2, 1]</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 25 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q25</div>
+                <div class="question-marks">[3 marks]</div>
+            </div>
+            <div class="question-text">
+                Explain why the <code>pop()</code> function in <code>stack</code> and <code>queue</code> returns <code>void</code> instead of returning the removed element.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer25')">Show Answer</button>
+            <div class="answer-section" id="answer25">
+                <div class="correct-answer">Answer:</div>
+                <p><strong>Reason: Exception safety</strong></p>
+                <p>If <code>pop()</code> both removed and returned the element, there's a risk of data loss. Here's why:</p>
+                <ol>
+                    <li><code>pop()</code> would need to make a copy of the element to return it</li>
+                    <li>If the copy constructor throws an exception during this copy, the element has already been removed from the container</li>
+                    <li>The caller never receives the element (exception interrupted the return)</li>
+                    <li>The element is lost - it's no longer in the container and wasn't received by the caller</li>
+                </ol>
+                <p><strong>Two-step solution prevents this:</strong></p>
+                <pre><code class="language-cpp">// Step 1: Get the value (if this fails, element stays in stack)
+T value = s.top();
+// Step 2: Remove it (void return, can't fail to return)
+s.pop();</code></pre>
+                <p>This separation guarantees that if getting the value fails, the element remains in the container.</p>
+            </div>
+        </div>
+
+        <!-- Question 26 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q26</div>
+                <div class="question-marks">[4 marks]</div>
+            </div>
+            <div class="question-text">
+                Given a <code>map&lt;string, int&gt; grades</code> containing student names and marks, write code to:
+            </div>
+            <ol style="margin: 1rem 0 1rem 2rem;">
+                <li>Find and print the highest mark</li>
+                <li>Find and print the name of the student with the highest mark</li>
+            </ol>
+            <p style="margin-top: 1rem;"><em>You may assume the map is not empty.</em></p>
+            <button class="reveal-btn" onclick="toggleAnswer('answer26')">Show Answer</button>
+            <div class="answer-section" id="answer26">
+                <div class="correct-answer">Solution:</div>
+                <pre><code class="language-cpp">int maxMark = 0;
+string topStudent = "";
+
+map&lt;string, int&gt;::iterator it;
+for (it = grades.begin(); it != grades.end(); ++it) {
+    if (it-&gt;second &gt; maxMark) {
+        maxMark = it-&gt;second;      // Update highest mark
+        topStudent = it-&gt;first;    // Update student name
+    }
+}
+
+cout &lt;&lt; "Highest mark: " &lt;&lt; maxMark &lt;&lt; endl;
+cout &lt;&lt; "Top student: " &lt;&lt; topStudent &lt;&lt; endl;</code></pre>
+                <p><strong>Explanation:</strong></p>
+                <ul>
+                    <li><strong>Line 1-2:</strong> Initialize tracking variables</li>
+                    <li><strong>Line 5-10:</strong> Iterate through map, comparing each mark (<code>it-&gt;second</code>) to current max</li>
+                    <li><strong>Line 7-8:</strong> When we find a higher mark, update both the mark and the name</li>
+                    <li><strong>Key point:</strong> We track BOTH the max value and its corresponding key</li>
+                </ul>
+                <p><strong>Note:</strong> We can't use <code>max_element()</code> directly on a map because we need to compare values, not keys. Manual iteration is required.</p>
+            </div>
+        </div>
+
+        <!-- Question 27 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q27</div>
+                <div class="question-marks">[4 marks]</div>
+            </div>
+            <div class="question-text">
+                Write code to remove all duplicate elements from a <code>vector&lt;int&gt; v</code> using an STL <code>set</code>. The resulting vector should contain only unique elements.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer27')">Show Answer</button>
+            <div class="answer-section" id="answer27">
+                <div class="correct-answer">Solution:</div>
+                <pre><code class="language-cpp">set&lt;int&gt; uniqueElements;
+
+// Insert all vector elements into set (duplicates auto-removed)
+for (int i = 0; i &lt; v.size(); i++) {
+    uniqueElements.insert(v[i]);
+}
+
+// Clear vector and copy unique elements back
+v.clear();
+set&lt;int&gt;::iterator it;
+for (it = uniqueElements.begin(); it != uniqueElements.end(); ++it) {
+    v.push_back(*it);
+}</code></pre>
+                <p><strong>How it works:</strong></p>
+                <ol>
+                    <li>Create a set to store unique elements</li>
+                    <li>Insert all vector elements into set - duplicates are automatically ignored</li>
+                    <li>Clear the original vector</li>
+                    <li>Copy elements from set back to vector - now only unique elements</li>
+                    <li>Bonus: Elements are now sorted (set maintains sorted order)</li>
+                </ol>
+                <p><strong>Example:</strong></p>
+                <ul>
+                    <li>Input: [3, 1, 4, 1, 5, 9, 2, 6, 5]</li>
+                    <li>After set insert: set contains {1, 2, 3, 4, 5, 6, 9}</li>
+                    <li>Final vector: [1, 2, 3, 4, 5, 6, 9] (unique and sorted)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 28 -->
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-number">Q28</div>
+                <div class="question-marks">[4 marks]</div>
+            </div>
+            <div class="question-text">
+                When should you choose a <code>list</code> over a <code>vector</code>? Give two specific scenarios with justification.
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer28')">Show Answer</button>
+            <div class="answer-section" id="answer28">
+                <div class="correct-answer">Answer:</div>
+                <p><strong>Scenario 1: Frequent insertion/deletion in the middle</strong></p>
+                <p><em>Justification:</em> List allows O(1) insertion/deletion once you have an iterator to the position. Vector requires O(n) time because all subsequent elements must be shifted.</p>
+                <p><strong>Example:</strong> Managing a playlist where users frequently add/remove songs at arbitrary positions.</p>
+
+                <p style="margin-top: 1.5rem;"><strong>Scenario 2: Iterator stability during modifications</strong></p>
+                <p><em>Justification:</em> When you insert or delete elements in a list, iterators to other elements remain valid. In a vector, insertions/deletions can invalidate all iterators due to reallocation or shifting.</p>
+                <p><strong>Example:</strong> Processing a task list where you might remove tasks while iterating, and other iterators need to remain valid.</p>
+
+                <p style="margin-top: 1.5rem;"><strong>When NOT to use list:</strong></p>
+                <ul>
+                    <li>Need random access by index (O(n) for list vs O(1) for vector)</li>
+                    <li>Concerned about memory overhead (list uses ~3x more memory per element)</li>
+                    <li>Cache locality matters (vector has better cache performance)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="success-box" style="margin-top: 3rem;">
+            <h3 style="color: var(--success);">Quiz Complete!</h3>
+            <p><strong>Topics Covered:</strong></p>
+            <ul>
+                <li>Container selection (vector, list, map, set, stack, queue)</li>
+                <li>Iterator categories and capabilities</li>
+                <li>Code tracing with stacks, queues, maps, and sets</li>
+                <li>Exception safety and design decisions</li>
+                <li>Practical implementation problems</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                <strong>Well done!</strong> You've completed the STL unit. Review any questions you found challenging, and make sure you understand the explanations. These concepts are exam favorites!
+            </p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/cpp.min.js"></script>
+
+    <script>
+        // Toggle answer visibility
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+        }
+
+        // Initialize syntax highlighting
+        document.addEventListener('DOMContentLoaded', function() {
+            hljs.highlightAll();
+        });
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

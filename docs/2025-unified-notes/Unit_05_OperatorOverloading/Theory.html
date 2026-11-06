@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 5: Operator Overloading - Theory | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code,
+        .content-card h1 code,
+        .content-card h2 code,
+        .content-card h3 code,
+        .content-card h4 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+            color: #64748b;
+        }
+
+        .token.punctuation {
+            color: #94a3b8;
+        }
+
+        .token.property,
+        .token.tag,
+        .token.boolean,
+        .token.number,
+        .token.constant,
+        .token.symbol {
+            color: #0ea5e9;
+        }
+
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin {
+            color: #10b981;
+        }
+
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .token.variable {
+            color: #f1f5f9;
+        }
+
+        .token.atrule,
+        .token.attr-value,
+        .token.keyword,
+        .token.class-name {
+            color: #8b5cf6;
+        }
+
+        .token.function {
+            color: #0ea5e9;
+        }
+
+        .token.regex,
+        .token.important {
+            color: #f59e0b;
+        }
+
+        .ascii-diagram {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #10b981;
+        }
+
+        .ascii-diagram pre {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            font-size: inherit;
+            line-height: inherit;
+            color: inherit;
+        }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #1a2d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .swift-note-box {
+            background: #1f1a2e;
+            border-left: 4px solid #a78bfa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .swift-note-box strong { color: #a78bfa; }
+
+        .swift-quiz {
+            background: #1a1f2e;
+            border: 2px solid #eab308;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .swift-quiz-header {
+            color: #eab308;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .swift-quiz-question {
+            color: #cbd5e1;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .swift-quiz-answer {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eab308;
+            color: #10b981;
+        }
+
+        .swift-quiz-answer.visible {
+            display: block;
+        }
+
+        .quiz-toggle-btn {
+            background: #eab308;
+            color: #0f172a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .quiz-toggle-btn:hover {
+            background: #ca8a04;
+            transform: translateY(-1px);
+        }
+
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 5: Operator Overloading</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html" class="active">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Opening -->
+        <section class="content-card">
+            <p style="font-size: 1.2rem; color: #0ea5e9; font-weight: 600; margin-bottom: 1.5rem;">
+                Good day, good people!
+            </p>
+
+            <h2>Welcome to Operator Overloading</h2>
+
+            <p>
+                In this unit, we're going to make your custom classes behave like built-in types. Imagine being able to write <code>money1 + money2</code> instead of <code>money1.add(money2)</code>, or <code>cout << student</code> instead of <code>student.print()</code>. That's the power of operator overloading.
+            </p>
+
+            <p>
+                This isn't just syntactic sugar (though it does make code sweeter). It makes your code more intuitive, easier to read, and less error-prone. When you see <code>a + b</code>, you immediately know what's happening. When you see <code>a.performAdditionOperationWith(b)</code>, your brain has to work harder.
+            </p>
+
+            <h3>Prerequisites</h3>
+            <p>
+                Before you start this unit, make sure you're comfortable with:
+            </p>
+            <ul>
+                <li>Classes and objects (defining member variables and functions)</li>
+                <li>Constructors (especially copy constructors)</li>
+                <li>Destructors and the assignment operator</li>
+                <li>References and the <code>this</code> pointer</li>
+                <li>Dynamic memory allocation (<code>new</code> and <code>delete</code>)</li>
+            </ul>
+
+            <p>
+                If any of these topics feel shaky, go back to Unit 4 and strengthen your foundation. Operator overloading builds directly on these concepts.
+            </p>
+        </section>
+
+        <!-- Section 1: What is Operator Overloading? -->
+        <section class="content-card">
+            <h2>1. What is Operator Overloading?</h2>
+
+            <p>
+                Operators like <code>+</code>, <code>-</code>, <code>*</code>, and <code>==</code> are actually functions with special syntax. When you write <code>5 + 3</code>, the compiler calls a function (something like <code>add(5, 3)</code> under the hood). Operator overloading lets you define what these operators do when applied to your custom classes.
+            </p>
+
+            <h3>Why Do We Need This?</h3>
+            <p>
+                Suppose you're building a class to represent money amounts. Without operator overloading:
+            </p>
+
+<pre><code class="language-cpp">Money price(10, 50);  // $10.50
+Money tax(0, 84);     // $0.84
+Money total = price.add(tax);  // Functional, but awkward</code></pre>
+
+            <p>
+                With operator overloading:
+            </p>
+
+<pre><code class="language-cpp">Money price(10, 50);  // $10.50
+Money tax(0, 84);     // $0.84
+Money total = price + tax;  // Natural and intuitive!</code></pre>
+
+            <p>
+                The second version reads like math. Your code becomes self-documenting. Anyone looking at <code>price + tax</code> immediately understands what's happening.
+            </p>
+
+            <h3>How Does It Work?</h3>
+            <p>
+                To overload an operator, you define a special function named <code>operator</code> followed by the symbol. For example, to overload <code>+</code>, you write a function called <code>operator+</code>.
+            </p>
+
+<pre><code class="language-cpp">// Basic syntax for overloading +
+ReturnType operator+(const ClassName& left, const ClassName& right) {
+    // Your implementation here
+    return result;
+}</code></pre>
+
+            <div class="info-box">
+                <strong>Key Concept:</strong> You're not creating a new operator or changing how existing operators work for built-in types. You're teaching the compiler what <code>+</code> means when applied to your class.
+            </div>
+
+            <h3>Important Rules</h3>
+            <ul>
+                <li><strong>At least one operand must be a class type</strong> - You can't redefine <code>2 + 2</code></li>
+                <li><strong>No new operators</strong> - You can't create <code>**</code> or <code><></code></li>
+                <li><strong>Arity cannot change</strong> - Binary operators stay binary, unary stay unary</li>
+                <li><strong>Precedence and associativity are fixed</strong> - <code>*</code> always comes before <code>+</code></li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>Common Mistake:</strong> Trying to change how operators work for built-in types. This code is illegal:
+                <pre style="margin-top: 0.5rem;"><code class="language-cpp">int operator+(int a, int b) {  // ILLEGAL!
+    return a - b;  // Can't change how integers add
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 1 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> If you define <code>operator+</code> for a <code>Fraction</code> class, can you write both <code>f1 + f2</code> and <code>f1 + 5</code>?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz1')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz1">
+                <strong>Answer:</strong> It depends on how you implement it. <code>f1 + f2</code> will work if you overload for two Fractions. For <code>f1 + 5</code> to work, the compiler needs a way to convert <code>5</code> to a Fraction (via a constructor) or you need to overload for <code>Fraction + int</code> specifically.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 1 -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 1: Basic Operator Overloading</div>
+            </div>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This playground shows a simple <code>Money</code> class with overloaded <code>+</code> and <code>==</code> operators. Try modifying the values or adding a <code>-</code> operator.
+            </p>
+
+            <textarea id="editor1">#include <iostream>
+using namespace std;
+
+class Money {
+public:
+    Money(int d, int c) : dollars(d), cents(c) {}
+
+    // Overload + operator as friend function
+    friend Money operator+(const Money& m1, const Money& m2);
+
+    // Overload == operator as friend function
+    friend bool operator==(const Money& m1, const Money& m2);
+
+    void print() const {
+        cout << "$" << dollars << "." << (cents < 10 ? "0" : "") << cents;
+    }
+
+private:
+    int dollars;
+    int cents;
+};
+
+// Implementation of operator+
+Money operator+(const Money& m1, const Money& m2) {
+    int totalCents = (m1.dollars * 100 + m1.cents) + (m2.dollars * 100 + m2.cents);
+    return Money(totalCents / 100, totalCents % 100);
+}
+
+// Implementation of operator==
+bool operator==(const Money& m1, const Money& m2) {
+    return (m1.dollars == m2.dollars && m1.cents == m2.cents);
+}
+
+int main() {
+    Money price(10, 50);
+    Money tax(0, 84);
+
+    Money total = price + tax;  // Using operator+
+
+    cout << "Price: "; price.print(); cout << endl;
+    cout << "Tax: "; tax.print(); cout << endl;
+    cout << "Total: "; total.print(); cout << endl;
+
+    if (total == Money(11, 34)) {  // Using operator==
+        cout << "Calculation is correct!" << endl;
+    }
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading1" class="loading-indicator">Running...</div>
+                    <div id="output1" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Friend vs Member vs Non-Member -->
+        <section class="content-card">
+            <h2>2. Three Ways to Overload: Friend, Member, and Non-Member</h2>
+
+            <p>
+                There are three approaches to operator overloading, each with different trade-offs. Understanding when to use each is critical.
+            </p>
+
+            <h3>Approach 1: Non-Member Functions</h3>
+            <p>
+                These are regular functions defined outside the class. They take both operands as parameters.
+            </p>
+
+<pre><code class="language-cpp">class Money {
+public:
+    int getDollars() const { return dollars; }
+    int getCents() const { return cents; }
+private:
+    int dollars, cents;
+};
+
+// Non-member operator function
+Money operator+(const Money& m1, const Money& m2) {
+    int total = (m1.getDollars() * 100 + m1.getCents()) +
+                (m2.getDollars() * 100 + m2.getCents());
+    return Money(total / 100, total % 100);
+}</code></pre>
+
+            <p>
+                <strong>Pros:</strong> Symmetric - both operands are treated equally. Supports automatic type conversion on both sides.
+            </p>
+            <p>
+                <strong>Cons:</strong> Must use public getters (can't access private members). Less efficient.
+            </p>
+
+            <h3>Approach 2: Member Functions</h3>
+            <p>
+                Defined inside the class. The left operand becomes the calling object (<code>this</code>), and the right operand is the parameter.
+            </p>
+
+<pre><code class="language-cpp">class Money {
+public:
+    // Member operator function
+    Money operator+(const Money& other) const {
+        int total = (dollars * 100 + cents) +
+                    (other.dollars * 100 + other.cents);
+        return Money(total / 100, total % 100);
+    }
+private:
+    int dollars, cents;
+};</code></pre>
+
+            <p>
+                When you write <code>m1 + m2</code>, the compiler calls <code>m1.operator+(m2)</code>.
+            </p>
+
+            <p>
+                <strong>Pros:</strong> Direct access to private members. More efficient.
+            </p>
+            <p>
+                <strong>Cons:</strong> Asymmetric - left and right operands treated differently. Type conversion only works on the right operand.
+            </p>
+
+            <div class="warning-box">
+                <strong>The Asymmetry Problem:</strong> With member functions, <code>m1 + 5</code> might work (if there's a constructor to convert 5 to Money), but <code>5 + m1</code> will NOT work. Why? Because <code>5.operator+(m1)</code> doesn't make sense - <code>5</code> is an int, not a Money object.
+            </div>
+
+            <h3>Approach 3: Friend Functions (Best of Both Worlds)</h3>
+            <p>
+                Friend functions are non-members that are granted access to private members. You declare them as <code>friend</code> inside the class, but define them outside.
+            </p>
+
+<pre><code class="language-cpp">class Money {
+public:
+    // Friend declaration (note the 'friend' keyword)
+    friend Money operator+(const Money& m1, const Money& m2);
+private:
+    int dollars, cents;
+};
+
+// Definition (NO 'friend' keyword here, NO 'Money::' scope)
+Money operator+(const Money& m1, const Money& m2) {
+    // Can access private members because it's a friend!
+    int total = (m1.dollars * 100 + m1.cents) +
+                (m2.dollars * 100 + m2.cents);
+    return Money(total / 100, total % 100);
+}</code></pre>
+
+            <p>
+                <strong>Pros:</strong> Symmetric (both <code>m1 + m2</code> and <code>5 + m1</code> can work). Efficient (direct access to private members).
+            </p>
+            <p>
+                <strong>Cons:</strong> Slightly breaks encapsulation (grants external access to private data).
+            </p>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> For most binary operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>==</code>), friend functions are the preferred approach. They combine efficiency with symmetric type conversion.
+            </div>
+
+            <h3>Decision Table</h3>
+            <div class="ascii-diagram"><pre>Operator          | Recommended Approach     | Why?
+------------------|--------------------------|---------------------------
++, -, *, /        | Friend function          | Symmetric conversion
+==, !=, <, >      | Friend function          | Symmetric conversion
+<<, >>            | Friend function (MUST!)  | Left operand is stream
+=, [], (), ->     | Member function (MUST!)  | C++ requires it
+++, --, - (unary) | Member function          | Operates on one object
++=, -=, *=, /=    | Member function          | Modifies left operand</pre></div>
+        </section>
+
+        <!-- Swift Quiz 2 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> Why must <code>operator<<</code> and <code>operator>></code> be friend functions and not member functions?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz2')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz2">
+                <strong>Answer:</strong> Because the left operand is a stream object (<code>ostream</code> or <code>istream</code>), not your class object. For <code>cout << myObject</code>, you need <code>operator<<(cout, myObject)</code>, not <code>myObject.operator<<(cout)</code>. Since we can't add members to <code>ostream</code>, we must use a non-member (friend) function.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 2 -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 2: Member vs Friend Comparison</div>
+            </div>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This playground demonstrates the difference between member and friend operators. Try uncommenting the <code>5 + m1</code> line to see why member operators can't handle it.
+            </p>
+
+            <textarea id="editor2">#include <iostream>
+using namespace std;
+
+class Counter {
+public:
+    Counter(int v = 0) : value(v) {}
+
+    // Member operator: only works as c1 + c2 or c1 + 5
+    Counter operator+(const Counter& other) const {
+        return Counter(value + other.value);
+    }
+
+    void print() const { cout << "Value: " << value << endl; }
+
+private:
+    int value;
+};
+
+int main() {
+    Counter c1(10);
+    Counter c2(20);
+
+    Counter c3 = c1 + c2;  // Works: c1.operator+(c2)
+    c3.print();
+
+    Counter c4 = c1 + 5;   // Works: compiler converts 5 to Counter(5)
+    c4.print();
+
+    // Counter c5 = 5 + c1;   // ERROR! Would need 5.operator+(c1)
+    // c5.print();
+
+    cout << "Note: 5 + c1 is commented out because member operators can't handle it!" << endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading2" class="loading-indicator">Running...</div>
+                    <div id="output2" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Stream Operators -->
+        <section class="content-card">
+            <h2>3. Stream Operators (<< and >>)</h2>
+
+            <p>
+                Overloading <code><<</code> and <code>>></code> is one of the most useful applications of operator overloading. It lets you write <code>cout << myObject</code> instead of <code>myObject.print()</code>.
+            </p>
+
+            <h3>Why They Must Be Friend Functions</h3>
+            <p>
+                For <code>cout << myObject</code>, the call is <code>operator<<(cout, myObject)</code>. The left operand is <code>cout</code> (an <code>ostream</code> object), not your object. You can't add member functions to <code>ostream</code> (it's from the standard library), so you must use a non-member function.
+            </p>
+
+            <h3>The Return Type: Why References?</h3>
+            <p>
+                To enable chaining like <code>cout << obj1 << obj2</code>, the operator must return the stream. But we return it <strong>by reference</strong> to avoid making unnecessary copies.
+            </p>
+
+<pre><code class="language-cpp">// Return type is ostream& (reference to ostream)
+ostream& operator<<(ostream& os, const Money& m) {
+    os << "$" << m.dollars << "." << (m.cents < 10 ? "0" : "") << m.cents;
+    return os;  // Return the stream for chaining
+}</code></pre>
+
+            <p>
+                When you write <code>cout << m1 << m2</code>, here's what happens:
+            </p>
+
+            <ol>
+                <li><code>operator<<(cout, m1)</code> is called, prints m1, returns cout</li>
+                <li>The result (<code>cout</code>) is used for the next operation: <code>operator<<(cout, m2)</code></li>
+                <li><code>operator<<(cout, m2)</code> is called, prints m2, returns cout</li>
+            </ol>
+
+            <h3>Input Operator (>>)</h3>
+            <p>
+                The input operator is similar, but the object parameter is NOT const (because we're modifying it with input).
+            </p>
+
+<pre><code class="language-cpp">// Note: 'Money& m' is NOT const because we're modifying it
+istream& operator>>(istream& is, Money& m) {
+    cout << "Enter dollars: ";
+    is >> m.dollars;
+    cout << "Enter cents: ";
+    is >> m.cents;
+    return is;  // Return stream for chaining
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>Common Mistake:</strong> Forgetting to return the stream. This code won't compile:
+<pre style="margin-top: 0.5rem;"><code class="language-cpp">void operator<<(ostream& os, const Money& m) {  // WRONG return type!
+    os << "$" << m.dollars;
+    // No return statement
+}
+// Error: cout << m1 << m2 won't work because (cout << m1) returns void</code></pre>
+            </div>
+
+            <h3>Complete Example</h3>
+
+<pre><code class="language-cpp">class Money {
+public:
+    Money(int d = 0, int c = 0) : dollars(d), cents(c) {}
+
+    // Friend declarations
+    friend ostream& operator<<(ostream& os, const Money& m);
+    friend istream& operator>>(istream& is, Money& m);
+
+private:
+    int dollars;
+    int cents;
+};
+
+// Output operator
+ostream& operator<<(ostream& os, const Money& m) {
+    os << "$" << m.dollars << "." << (m.cents < 10 ? "0" : "") << m.cents;
+    return os;
+}
+
+// Input operator
+istream& operator>>(istream& is, Money& m) {
+    char dollarSign;
+    is >> dollarSign;  // Read '$'
+    is >> m.dollars;   // Read dollars
+    is.ignore();       // Skip '.'
+    is >> m.cents;     // Read cents
+    return is;
+}</code></pre>
+        </section>
+
+        <!-- Swift Quiz 3 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> Why is the Money parameter <code>const</code> in <code>operator<<</code> but NOT const in <code>operator>></code>?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz3')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz3">
+                <strong>Answer:</strong> In <code>operator<<</code>, we're only reading the object to print it - we don't modify it, so it's <code>const</code>. In <code>operator>></code>, we're reading input INTO the object, modifying its values, so it cannot be <code>const</code>.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 3 -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 3: Stream Operators in Action</div>
+            </div>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This playground shows how stream operators enable natural I/O. Notice how chaining works with <code><<</code>.
+            </p>
+
+            <textarea id="editor3">#include <iostream>
+using namespace std;
+
+// Swift's been watching Violet Evergarden - an anime where Violet
+// is an Auto Memory Doll who writes letters for people.
+// Let's create a Letter class with stream operators!
+
+class Letter {
+public:
+    Letter(string t = "", string m = "") : to(t), message(m) {}
+
+    friend ostream& operator<<(ostream& os, const Letter& letter);
+
+private:
+    string to;
+    string message;
+};
+
+ostream& operator<<(ostream& os, const Letter& letter) {
+    os << "Dear " << letter.to << ",\n";
+    os << letter.message << "\n";
+    os << "Sincerely, Violet Evergarden";
+    return os;  // Return for chaining!
+}
+
+int main() {
+    Letter letter1("Thabo", "Hope you're doing well!");
+    Letter letter2("Amahle", "Thank you for your support.");
+
+    // Beautiful chaining with <<
+    cout << "=== Letter 1 ===" << endl;
+    cout << letter1 << endl << endl;
+
+    cout << "=== Letter 2 ===" << endl;
+    cout << letter2 << endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading3" class="loading-indicator">Running...</div>
+                    <div id="output3" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Increment and Decrement Operators -->
+        <section class="content-card">
+            <h2>4. Increment and Decrement Operators (++ and --)</h2>
+
+            <p>
+                These operators are tricky because they come in two forms: prefix (<code>++x</code>) and postfix (<code>x++</code>). They behave differently:
+            </p>
+
+            <ul>
+                <li><strong>Prefix</strong> (<code>++x</code>): Increment first, then return the new value</li>
+                <li><strong>Postfix</strong> (<code>x++</code>): Return the old value, then increment</li>
+            </ul>
+
+            <h3>How C++ Distinguishes Them</h3>
+            <p>
+                C++ uses a clever trick: the postfix version has a <strong>dummy int parameter</strong> that's never used. It's just a signal to the compiler.
+            </p>
+
+<pre><code class="language-cpp">class Counter {
+public:
+    Counter(int v = 0) : value(v) {}
+
+    // Prefix ++: increments and returns new value by reference
+    Counter& operator++() {
+        value++;
+        return *this;  // Return the modified object
+    }
+
+    // Postfix ++: returns old value, then increments
+    // The 'int' parameter is never used - it's just for disambiguation
+    const Counter operator++(int) {
+        Counter old = *this;  // Save current state
+        value++;              // Increment
+        return old;           // Return saved (old) state
+    }
+
+private:
+    int value;
+};</code></pre>
+
+            <h3>Understanding the Return Types</h3>
+            <p>
+                Notice the different return types:
+            </p>
+
+            <ul>
+                <li><strong>Prefix</strong>: Returns <code>Counter&</code> (reference) - allows chaining like <code>++(++c)</code></li>
+                <li><strong>Postfix</strong>: Returns <code>const Counter</code> (value) - prevents nonsense like <code>(c++)++</code></li>
+            </ul>
+
+            <div class="ascii-diagram"><pre>Example execution:
+
+Counter c(5);
+
+++c:                    c++:
+1. value becomes 6      1. Save old value (5)
+2. Return reference     2. value becomes 6
+   to c (now 6)         3. Return old value (5)
+
+After ++c: c = 6        After c++: c = 6
+Result: 6               Result: 5 (but c is now 6)</pre></div>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Postfix is less efficient because it creates a copy of the old state. When you have a choice, prefer prefix (<code>++i</code> instead of <code>i++</code>), especially in loops.
+            </div>
+
+            <h3>Why Postfix Returns const</h3>
+            <p>
+                The <code>const</code> on the postfix return prevents this nonsensical code:
+            </p>
+
+<pre><code class="language-cpp">Counter c(5);
+(c++)++;  // What should this mean?!
+
+// Without const, this would:
+// 1. c++ returns temporary copy (value 5)
+// 2. ++ on temporary (makes temporary 6)
+// 3. Temporary is destroyed
+// 4. c is still 6 (not 7 as you might expect)
+// This is confusing, so we prevent it with const</code></pre>
+        </section>
+
+        <!-- Swift Quiz 4 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> If <code>c</code> has value 10, what are the values of <code>c</code> and <code>result</code> after <code>Counter result = c++;</code>?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz4')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz4">
+                <strong>Answer:</strong> <code>result = 10</code> (the old value before increment), and <code>c = 11</code> (incremented after returning). Postfix returns the old value but still increments the original.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 4 -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 4: Prefix vs Postfix</div>
+            </div>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                Run this code to see the difference between prefix and postfix. Try changing the operators and observe the results.
+            </p>
+
+            <textarea id="editor4">#include <iostream>
+using namespace std;
+
+class Counter {
+public:
+    Counter(int v = 0) : value(v) {}
+
+    // Prefix ++
+    Counter& operator++() {
+        value++;
+        return *this;
+    }
+
+    // Postfix ++
+    const Counter operator++(int) {
+        Counter old = *this;
+        value++;
+        return old;
+    }
+
+    void print() const {
+        cout << "Value: " << value << endl;
+    }
+
+private:
+    int value;
+};
+
+int main() {
+    Counter c1(10);
+    Counter c2(20);
+
+    cout << "=== Testing Prefix ==" << endl;
+    cout << "c1 before: "; c1.print();
+    Counter r1 = ++c1;  // Prefix: increment first, return new
+    cout << "c1 after ++c1: "; c1.print();
+    cout << "r1 (result): "; r1.print();
+
+    cout << "\n=== Testing Postfix ===" << endl;
+    cout << "c2 before: "; c2.print();
+    Counter r2 = c2++;  // Postfix: return old, then increment
+    cout << "c2 after c2++: "; c2.print();
+    cout << "r2 (result): "; r2.print();
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading4" class="loading-indicator">Running...</div>
+                    <div id="output4" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Subscript Operator -->
+        <section class="content-card">
+            <h2>5. The Subscript Operator ([])</h2>
+
+            <p>
+                The subscript operator lets your class act like an array. It's perfect for classes that represent collections or containers.
+            </p>
+
+            <h3>Why It Must Be a Member</h3>
+            <p>
+                C++ requires <code>operator[]</code> to be a non-static member function. It operates directly on the object's internal data.
+            </p>
+
+            <h3>Return by Reference</h3>
+            <p>
+                To allow assignment (<code>myArray[0] = 42</code>), the operator must return a reference. This makes the result an l-value (something that can appear on the left side of <code>=</code>).
+            </p>
+
+<pre><code class="language-cpp">class IntArray {
+public:
+    IntArray(int size) : size(size) {
+        data = new int[size];
+    }
+
+    ~IntArray() {
+        delete[] data;
+    }
+
+    // Return by reference allows: arr[i] = value
+    int& operator[](int index) {
+        if (index < 0 || index >= size) {
+            cout << "Index out of bounds!" << endl;
+            exit(1);
+        }
+        return data[index];  // Return reference to element
+    }
+
+private:
+    int* data;
+    int size;
+};</code></pre>
+
+            <h3>Using the Subscript Operator</h3>
+
+<pre><code class="language-cpp">IntArray arr(5);
+
+arr[0] = 10;  // Works because operator[] returns int&
+arr[1] = 20;
+int x = arr[0];  // Also works - reading the reference
+
+cout << arr[0];  // Prints 10</code></pre>
+
+            <h3>Const Overload</h3>
+            <p>
+                For const objects, you need a const version that returns <code>const int&</code>:
+            </p>
+
+<pre><code class="language-cpp">class IntArray {
+public:
+    // Non-const version: allows modification
+    int& operator[](int index) {
+        return data[index];
+    }
+
+    // Const version: read-only
+    const int& operator[](int index) const {
+        return data[index];
+    }
+};</code></pre>
+
+            <p>
+                When you have a <code>const IntArray</code>, the const version is called. This prevents modification while still allowing efficient access (returns reference, not a copy).
+            </p>
+
+            <div class="warning-box">
+                <strong>Common Mistake:</strong> Returning by value instead of reference:
+<pre style="margin-top: 0.5rem;"><code class="language-cpp">int operator[](int index) {  // WRONG: returns copy
+    return data[index];
+}
+
+// This won't work:
+arr[0] = 42;  // ERROR: Can't assign to a temporary copy!</code></pre>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 5 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> Why does <code>operator[]</code> need to return a reference instead of a value?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz5')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz5">
+                <strong>Answer:</strong> Returning a reference allows the result to be an l-value, which means it can appear on the left side of an assignment. Without a reference, <code>arr[0] = 42</code> would try to assign to a temporary copy, which is illegal.
+            </div>
+        </section>
+
+        <!-- Interactive Playground 5 -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 5: Custom Array with Subscript Operator</div>
+            </div>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This playground implements a safe array class with bounds checking. Try accessing an invalid index to see the error handling.
+            </p>
+
+            <textarea id="editor5">#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+class SafeArray {
+public:
+    SafeArray(int s) : size(s) {
+        data = new int[size];
+        // Initialize to zero
+        for (int i = 0; i < size; i++) {
+            data[i] = 0;
+        }
+    }
+
+    ~SafeArray() {
+        delete[] data;
+    }
+
+    // Subscript operator with bounds checking
+    int& operator[](int index) {
+        if (index < 0 || index >= size) {
+            cout << "Error: Index " << index << " out of bounds!" << endl;
+            exit(1);
+        }
+        return data[index];
+    }
+
+    int getSize() const { return size; }
+
+private:
+    int* data;
+    int size;
+};
+
+int main() {
+    SafeArray scores(5);
+
+    // Assign values using operator[]
+    scores[0] = 85;
+    scores[1] = 92;
+    scores[2] = 78;
+    scores[3] = 95;
+    scores[4] = 88;
+
+    // Read values using operator[]
+    cout << "Student scores:" << endl;
+    for (int i = 0; i < scores.getSize(); i++) {
+        cout << "Student " << (i + 1) << ": " << scores[i] << endl;
+    }
+
+    // Try uncommenting this to see bounds checking:
+    // scores[10] = 100;  // Will print error and exit
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground5')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor5')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading5" class="loading-indicator">Running...</div>
+                    <div id="output5" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Common Mistakes -->
+        <section class="content-card">
+            <h2>6. Common Mistakes to Avoid</h2>
+
+            <h3>Mistake #1: Wrong Parameter Order for <<</h3>
+<pre><code class="language-cpp">// WRONG
+ostream& operator<<(const Money& m, ostream& os) {  // Backwards!
+    os << m.dollars;
+    return os;
+}
+
+// Calling cout << money would translate to operator<<(money, cout)
+// But you'd have to write: money << cout  (backwards and confusing!)
+
+// CORRECT
+ostream& operator<<(ostream& os, const Money& m) {
+    os << m.dollars;
+    return os;
+}</code></pre>
+
+            <h3>Mistake #2: Modifying Through const Reference</h3>
+<pre><code class="language-cpp">// WRONG
+Money operator+(const Money& m1, const Money& m2) {
+    m1.dollars++;  // ERROR: m1 is const!
+    return m1;
+}
+
+// CORRECT: Don't modify parameters, create new object
+Money operator+(const Money& m1, const Money& m2) {
+    int total = (m1.dollars * 100 + m1.cents) +
+                (m2.dollars * 100 + m2.cents);
+    return Money(total / 100, total % 100);
+}</code></pre>
+
+            <h3>Mistake #3: Using friend Keyword in Definition</h3>
+<pre><code class="language-cpp">class Money {
+public:
+    friend Money operator+(const Money& m1, const Money& m2);
+};
+
+// WRONG - Don't use 'friend' in definition
+friend Money operator+(const Money& m1, const Money& m2) {
+    // ...
+}
+
+// CORRECT - 'friend' only in declaration
+Money operator+(const Money& m1, const Money& m2) {
+    // ...
+}</code></pre>
+
+            <h3>Mistake #4: Assignment Operator Doesn't Return *this</h3>
+<pre><code class="language-cpp">// WRONG
+void operator=(const Money& other) {
+    dollars = other.dollars;
+    cents = other.cents;
+    // No return!
+}
+
+// This breaks chaining: a = b = c;
+
+// CORRECT
+Money& operator=(const Money& other) {
+    if (this != &other) {  // Self-assignment check
+        dollars = other.dollars;
+        cents = other.cents;
+    }
+    return *this;  // Enable chaining
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>Critical Rule:</strong> Operators that modify the left operand (<code>=</code>, <code>+=</code>, etc.) should:
+                <ul style="margin-top: 0.5rem;">
+                    <li>Be implemented as member functions</li>
+                    <li>Return <code>*this</code> by reference</li>
+                    <li>Check for self-assignment (for <code>=</code>)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="content-card">
+            <h2>7. Summary</h2>
+
+            <div class="success-box">
+                <strong>Key Concepts:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Operator overloading defines what operators do for your classes</li>
+                    <li>Makes code more intuitive: <code>m1 + m2</code> instead of <code>m1.add(m2)</code></li>
+                    <li>Cannot change arity, precedence, or associativity</li>
+                    <li>Cannot create new operators or redefine for built-in types</li>
+                </ul>
+            </div>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Decision Guide
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Friend functions:</strong> Binary operators (<code>+</code>, <code>-</code>, <code>==</code>), stream operators (<code><<</code>, <code>>></code>)</li>
+                    <li><strong>Member functions:</strong> Assignment (<code>=</code>), subscript (<code>[]</code>), increment (<code>++</code>), compound assignment (<code>+=</code>)</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>Return Type Guidelines:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code> → Return new object by value</li>
+                    <li><code><<</code>, <code>>></code> → Return stream by reference (<code>ostream&</code>, <code>istream&</code>)</li>
+                    <li><code>=</code>, <code>+=</code>, <code>-=</code> → Return <code>*this</code> by reference</li>
+                    <li>Prefix <code>++</code>, <code>--</code> → Return <code>*this</code> by reference</li>
+                    <li>Postfix <code>++</code>, <code>--</code> → Return old value by value (const)</li>
+                    <li><code>[]</code> → Return element by reference</li>
+                </ul>
+            </div>
+
+            <h3>What's Next?</h3>
+            <p>
+                Head to the Examples section to see complete, working implementations. Then try the Practice problems to cement your understanding. Finally, test yourself with Quiz questions modeled after EO1 exam formats.
+            </p>
+        </section>
+
+    </div>
+
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script>
+        const editors = {};
+        const originalCode = {};
+
+        function initEditor(id) {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initEditor('editor1');
+            initEditor('editor2');
+            initEditor('editor3');
+            initEditor('editor4');
+            initEditor('editor5');
+            Prism.highlightAll();
+        });
+
+        function toggleQuiz(quizId) {
+            const answerSection = document.getElementById(quizId);
+            answerSection.classList.toggle('visible');
+
+            const button = event.target;
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+
+        async function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = playgroundId.replace('playground', 'output');
+            const loadingId = playgroundId.replace('playground', 'loading');
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = event.target;
+
+            loadingEl.classList.add('active');
+            if (runBtn) runBtn.disabled = true;
+            outputEl.textContent = '';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                if (runBtn) runBtn.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            const outputId = editorId.replace('editor', 'output');
+            editors[editorId].setValue(originalCode[editorId]);
+
+            const outputEl = document.getElementById(outputId);
+            outputEl.textContent = 'Click "Run Code" to see the output...';
+            outputEl.className = 'output-text output-placeholder';
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

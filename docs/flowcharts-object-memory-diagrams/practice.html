@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Practice | 4. Flowcharts, Object Diagrams and Memory Diagrams | COS 110 Theory Exam Notes 2026</title>
+  <link rel="stylesheet" href="assets/css/house.css">
+  <link rel="stylesheet" href="assets/css/computing.css">
+  <link rel="stylesheet" href="assets/css/pipeline-contracts.css">
+  <script defer src="assets/vendor/cpp98-grammar.js"></script>
+  <script defer src="assets/js/learning-components.js"></script>
+</head>
+<body data-current-page="practice" data-template-id="cos110-template-v2.0.0">
+  <header class="site-header">
+    <div class="site-header__inner">
+      <div class="brand"><span class="brand__name">Swift Tuition</span><span class="brand__chapter">COS 110</span></div>
+      <span class="site-header__tag">Program Design: Introduction</span>
+    </div>
+  </header>
+  <header class="page-head">
+    <p class="eyebrow">Practice · 4. Flowcharts, Object Diagrams and Memory Diagrams</p>
+    <h1 class="page-title">Practice tasks</h1>
+    <p class="page-subtitle">Six tasks, then questions from past papers</p>
+  </header>
+  <nav class="page-tabs" aria-label="Page navigation"><div class="page-tabs__inner"><a href="index.html">Home</a><a href="theory.html">Theory</a><a href="examples.html">Examples</a><a href="practice.html" aria-current="page">Practice</a><a href="quiz.html">Quiz</a></div></nav>
+  <main class="chapter-page">
+<section id="practice-intro"><h2>How to practise</h2><p>Draw each diagram in DrawIO, the tool the tests use, and save it as a .xml file. Put each object diagram on its own page of the file. Then open the solution and compare shape by shape.</p><section class="block block--caution"><p class="block__label">Assumed</p><p>The tasks use the School, list and circular list programs from the Theory page. These programs are made up for practice; the task forms come from the 2026 tests and Practical 2.</p></section></section><section id="practice-drawing"><h2>Drawing tasks</h2><section class="question" id="pr-1"><p class="question-label">Flowchart from a class diagram (DrawIO)</p><h3>Task 1: the School assignment operator</h3><p>Draw the flowchart of the School assignment operator, <code>operator=(other: const School&amp;): School&amp;</code>. No code is given: use the class diagram and the description.</p><figure class="teaching-figure" id="pr-1-classes"><p class="code-caption"><a href="assets/diagrams/cd_school.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/cd_school_m.svg"><img src="assets/diagrams/cd_school.svg" alt="Class diagram: School owns Classroom (filled diamond at School, 1 to 0..*), Classroom owns Learner (filled diamond at Classroom), School holds Teachers (hollow diamond at School, 0..* to 0..*). Learner has a static learnerCount."></picture><figcaption>The School classes.</figcaption></figure><p>A school owns its classrooms (filled diamond): it makes each Classroom and deletes it, and each Classroom owns its learners. The school only stores pointers to its teachers (hollow diamond): the Teacher objects are made in main. <code>numClassrooms</code> and <code>numTeachers</code> are the sizes of the two arrays. After <code>a = b</code>, school a must have its own copy of every classroom of b, the same teachers as b, and no leaked memory.</p><p><em>Hint: Decide first which array gets new objects and which gets copied pointers.</em></p><p>Write this before you open the solution.</p><section class="reveal" data-component="practice-reveal" id="pr-1-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pr-1-solution" class="reveal__body" data-practice-solution hidden><figure class="teaching-figure" id="pr-1-figure"><p class="code-caption"><a href="assets/diagrams/school_assign.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/school_assign_m.svg"><img src="assets/diagrams/school_assign.svg" alt="Flowchart of the School operator=: the self-assignment decision, free the old memory, copy name and numClassrooms, allocate a new classrooms array, a loop that makes a new Classroom copy for each index, copy numTeachers, allocate a new teachers array, a loop that copies each teacher pointer, return a reference to this school, END."></picture><figcaption>The School operator= flowchart.</figcaption></figure><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>this == &amp;other</code></td><td>a = a: nothing to copy, return at once</td><td>copy other into this school</td></tr><tr><td><code>i &lt; numClassrooms</code></td><td>classroom i still needs a new copy</td><td>all classrooms copied: go on to the teachers</td></tr><tr><td><code>i &lt; numTeachers</code></td><td>teacher pointer i still needs copying</td><td>all copied: return</td></tr></tbody></table><p>It has the same shape as the Festival chart in Example 1 on the Examples page. Take a school a with one classroom and one teacher, and an empty school b. An instrumented copy of the operator ran <code>b = a</code> and then <code>b = b</code>:</p><table class="attribute-table"><thead><tr><th scope="col">Assignment</th><th scope="col">Same object?</th><th scope="col">Classroom loop passes</th><th scope="col">Teacher loop passes</th></tr></thead><tbody><tr><td><code>b = a</code></td><td>No</td><td>1</td><td>1</td></tr><tr><td><code>b = b</code></td><td>Yes</td><td>0</td><td>0</td></tr></tbody></table><p>The passes of <code>b = a</code>, one by one:</p><table class="attribute-table"><thead><tr><th scope="col">Loop</th><th scope="col">i</th><th scope="col">Is i less than the size (1)?</th><th scope="col">What happens</th></tr></thead><tbody><tr><td>classrooms</td><td>0</td><td>Yes</td><td>make a new Classroom that copies <code>a.classrooms[0]</code> (with its learners); store it in <code>b.classrooms[0]</code></td></tr><tr><td>classrooms</td><td>1</td><td>No</td><td>leave the loop</td></tr><tr><td>teachers</td><td>0</td><td>Yes</td><td>store the pointer <code>a.teachers[0]</code> in <code>b.teachers[0]</code>: the same Teacher object</td></tr><tr><td>teachers</td><td>1</td><td>No</td><td>leave the loop</td></tr></tbody></table><p>Check your chart against the code:</p><pre data-component="cpp-highlight"><code>School&amp; School::operator=(const School&amp; other) {
+    if (this == &amp;other)
+        return *this;
+    for (int i = 0; i &lt; numClassrooms; i++)
+        delete classrooms[i];
+    delete[] classrooms;
+    delete[] teachers;
+    name = other.name;
+    numClassrooms = other.numClassrooms;
+    classrooms = new Classroom*[numClassrooms];
+    for (int i = 0; i &lt; numClassrooms; i++)
+        classrooms[i] = new Classroom(*other.classrooms[i]);
+    numTeachers = other.numTeachers;
+    teachers = new Teacher*[numTeachers];
+    for (int i = 0; i &lt; numTeachers; i++)
+        teachers[i] = other.teachers[i];
+    return *this;
+}</code></pre></div></section></section><section class="question" id="pr-2"><p class="question-label">Objects after a line (DrawIO), one diagram per page</p><h3>Task 2: the School objects after line 8</h3><p>Use the School classes of Task 1 and this program. Draw every object that exists after line 8 on page 1 of a DrawIO file. On page 2 of the same file, draw every object that exists after line 6.</p><pre data-component="cpp-highlight"><code>#include &lt;iostream&gt;
+#include &quot;School.h&quot;
+
+using namespace std;
+
+int main() {
+    Teacher mrsDube(&quot;Mrs Dube&quot;, 12);              // line 1
+    Teacher mrNel(&quot;Mr Nel&quot;, 3);                   // line 2
+    School s(&quot;Hillview&quot;);                         // line 3
+    s += new Classroom(&quot;A1&quot;);                     // line 4
+    s[0]-&gt;addLearner(new Learner(&quot;Thabo&quot;, 14));   // line 5
+    s[0]-&gt;addLearner(new Learner(&quot;Ana&quot;, 13));     // line 6
+    s += new Classroom(&quot;B2&quot;);                     // line 7
+    s.addTeacher(&amp;mrsDube);                       // line 8
+    s[1]-&gt;addLearner(new Learner(&quot;Lebo&quot;, 15));    // line 9
+    s.addTeacher(&amp;mrNel);                         // line 10
+    cout &lt;&lt; &quot;Learner count: &quot; &lt;&lt; Learner::getLearnerCount() &lt;&lt; endl;   // line 11
+    s.print();                                    // line 12
+    return 0;
+}</code></pre><p><em>Hint: Go through the lines one by one and stop after line 8.</em></p><p>Write this before you open the solution.</p><section class="reveal" data-component="practice-reveal" id="pr-2-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pr-2-solution" class="reveal__body" data-practice-solution hidden><figure class="teaching-figure" id="pr-2-figure"><p class="code-caption"><a href="assets/diagrams/od_school_8.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/od_school_8_m.svg"><img src="assets/diagrams/od_school_8.svg" alt="Object diagram after line 8: mrsDube: Teacher joined to s by a hollow diamond; mrNel: Teacher with no link; s: School with classrooms = Classroom[2], teachers = Teacher[1], numTeachers 1; classrooms[0]: Classroom A1 with learners Thabo (id 1) and Ana (id 2); classrooms[1]: Classroom B2 with learners = NULL and numLearners 0; learnerCount = 2."></picture><figcaption>Page 1: after line 8.</figcaption></figure><p>Classroom B2 has no learner yet (Lebo is added on line 9), so <code>learners = NULL</code>. Mr Nel exists but is not linked: line 10 adds him. <code>learnerCount</code> is 2.</p><figure class="teaching-figure" id="pr-2-figure-6"><p class="code-caption"><a href="assets/diagrams/od_school_6.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/od_school_6_m.svg"><img src="assets/diagrams/od_school_6.svg" alt="Object diagram after line 6: mrsDube: Teacher and mrNel: Teacher with no links; s: School with one classroom and teachers = NULL; classrooms[0]: Classroom A1 with two learners, Thabo (id 1) and Ana (id 2), learnerCount = 2."></picture><figcaption>Page 2: after line 6. No teacher was added yet, so teachers = NULL.</figcaption></figure></div></section></section><section class="question" id="pr-3"><p class="question-label">Memory diagram (DrawIO)</p><h3>Task 3: the circular list after two appends</h3><p>A circular list keeps only <code>tail</code>. The <code>next</code> of the last node points back to the first node, so the list has no NULL at the end. Draw the memory diagram of this circular list after the second pass of the loop (i = 2).</p><pre data-component="cpp-highlight"><code>class Node {
+private:
+    int data;
+    Node* next;
+public:
+    Node(int data);
+    int&amp; getData();
+    Node*&amp; getNext();
+};</code></pre><pre data-component="cpp-highlight"><code>class CircularList {
+private:
+    Node* tail;
+public:
+    CircularList();
+    ~CircularList();
+    CircularList&amp; operator+=(int value);
+    void print() const;
+};</code></pre><pre data-component="cpp-highlight"><code>#include &quot;CircularList.h&quot;
+
+int main() {
+    CircularList cl;                          // line 1
+    for (int i = 1; i &lt;= 3; i++)              // line 2
+        cl += i * 100;                        // line 3
+    cl.print();                               // line 4
+    return 0;
+}</code></pre><pre data-component="cpp-highlight"><code>CircularList&amp; CircularList::operator+=(int value) {
+    Node* node = new Node(value);
+    if (tail == NULL) {
+        node-&gt;getNext() = node;
+        tail = node;
+        return *this;
+    }
+    node-&gt;getNext() = tail-&gt;getNext();
+    tail-&gt;getNext() = node;
+    tail = node;
+    return *this;
+}</code></pre><p><em>Hint: Where must the new node's next point, so that the list stays a circle?</em></p><p>Write this before you open the solution.</p><section class="reveal" data-component="practice-reveal" id="pr-3-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pr-3-solution" class="reveal__body" data-practice-solution hidden><figure class="teaching-figure" id="pr-3-figure"><p class="code-caption"><a href="assets/diagrams/mem_clist_2.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/mem_clist_2_m.svg"><img src="assets/diagrams/mem_clist_2.svg" alt="Circular list memory diagram after two appends: stack cl with tail pointing to node 200. Heap: node 100 with next to node 200, and node 200 with next (blue) back to node 100."></picture><figcaption>After the second pass.</figcaption></figure><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>tail == NULL</code></td><td>the list is empty: the new node points at itself and becomes tail</td><td>link the new node in after tail</td></tr></tbody></table><p>On the second pass the list is not empty. The new node takes <code>tail-&gt;getNext()</code> (node 100) as its next, the old tail points at the new node, and tail moves to the new node.</p></div></section></section></section><section id="practice-reading"><h2>Reading and checking tasks</h2><section class="question" id="pr-4"><p class="question-label">Read an object diagram</p><h3>Task 4: questions on the School diagram after line 10</h3><p>This is the School diagram after line 10 of the program in Task 2:</p><figure class="teaching-figure" id="pr-4-figure"><p class="code-caption"><a href="assets/diagrams/od_school_10.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/od_school_10_m.svg"><img src="assets/diagrams/od_school_10.svg" alt="Object diagram after line 10. mrsDube: Teacher (name &quot;Mrs Dube&quot;, years 12) and mrNel: Teacher (name &quot;Mr Nel&quot;, years 3), each joined to s by a hollow diamond at s. s: School (name &quot;Hillview&quot;, classrooms = Classroom[2], numClassrooms 2, teachers = Teacher[2], numTeachers 2). Filled diamonds from s to classrooms[0]: Classroom (A1, learners = Learner[2], 2) and classrooms[1]: Classroom (B2, learners = Learner[1], 1). A1 owns learners[0]: Learner (Thabo, 14, id 1) and learners[1]: Learner (Ana, 13, id 2); B2 owns learners[0]: Learner (Lebo, 15, id 3). Each Learner shows learnerCount = 3 underlined."></picture><figcaption>The School objects after line 10.</figcaption></figure><ol><li>How many Learner objects exist?</li><li>Which objects does the School destructor delete?</li><li>Which objects are still there after <code>s</code> is destroyed, until main ends?</li><li>Why does every Learner box show the same <code>learnerCount</code>?</li></ol><p><em>Hint: A filled diamond means the owner deletes that object; a hollow diamond means it does not.</em></p><p>Write this before you open the solution.</p><section class="reveal" data-component="practice-reveal" id="pr-4-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pr-4-solution" class="reveal__body" data-practice-solution hidden><ol><li>3 (Thabo, Ana and Lebo).</li><li>Both Classroom objects (each Classroom destructor deletes its learners), then the classrooms array and the teachers array.</li><li><code>mrsDube</code> and <code>mrNel</code>: they are local objects of main, joined with hollow diamonds, so the school does not delete them.</li><li><code>learnerCount</code> is static: there is one copy for the whole class, and its value is 3.</li></ol></div></section></section><section class="question" id="pr-5"><p class="question-label">Find the error · memory</p><h3>Task 5: a remove that reads freed memory</h3><p>This version of <code>remove</code> ends with the last two lines in the other order:</p><pre data-component="cpp-highlight"><code>    Node* temp = prev-&gt;getNext();
+    delete temp;
+    prev-&gt;getNext() = temp-&gt;getNext();</code></pre><p>The list holds 10, 20, 30, 40, and the program calls <code>ll.remove(20)</code>. <code>prev</code> stops at node 10 and <code>temp</code> gets node 20. These two pictures show memory in the correct version, before and after the relink line:</p><figure class="teaching-figure" id="pr-5-step1"><p class="code-caption"><a href="assets/diagrams/mem_list_remove1.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/mem_list_remove1_m.svg"><img src="assets/diagrams/mem_list_remove1.svg" alt="Memory inside remove(20), step 1. Stack: ll (head to node 10) and the frame of remove(20) with prev pointing at node 10 and temp pointing at node 20. Heap: 10 to 20 to 30 to 40 to NULL."></picture><figcaption>Step 1: prev and temp are found.</figcaption></figure><figure class="teaching-figure" id="pr-5-step2"><p class="code-caption"><a href="assets/diagrams/mem_list_remove2.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/mem_list_remove2_m.svg"><img src="assets/diagrams/mem_list_remove2.svg" alt="Memory inside remove(20), step 2, after prev-&gt;getNext() = temp-&gt;getNext(). The next of node 10 now has an orange arrow over node 20 to node 30. Node 20 is shaded red; temp still points at it and its next still points at node 30."></picture><figcaption>Step 2: node 10 now points past node 20. Then delete temp frees node 20.</figcaption></figure><p>The program with the swapped lines still prints the right list. Use the two pictures to explain what is wrong.</p><p><em>Hint: Look at step 2 of the pictures: which arrow is read, and from which node?</em></p><p>Write this before you open the solution.</p><section class="reveal" data-component="practice-reveal" id="pr-5-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pr-5-solution" class="reveal__body" data-practice-solution hidden><p>After <code>delete temp;</code> node 20 is gone, but <code>temp</code> still holds its address. The next line reads <code>temp-&gt;getNext()</code> from the deleted node. The list may still look right, because the old bytes are often still there, but the read is not allowed. valgrind reports it:</p><pre>Invalid read of size 8
+ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)</pre><p>The fix: relink first (<code>prev-&gt;getNext() = temp-&gt;getNext();</code>), then delete. That is step 2 of the pictures, before the delete.</p></div></section></section><section class="question" id="pr-6"><p class="question-label">Find the error · flowchart</p><h3>Task 6: a destructor chart that frees too much</h3><p>A School destructor flowchart has a loop that deletes each Teacher object, then deletes the teachers array. The program makes the teachers as local objects of main. What goes wrong, and what is the fix?</p><p><em>Hint: Look at the diamond between School and Teacher, and at how main makes the teachers.</em></p><p>Write this before you open the solution.</p><section class="reveal" data-component="practice-reveal" id="pr-6-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pr-6-solution" class="reveal__body" data-practice-solution hidden><p>The school does not own the teachers (hollow diamond). They were not made with <code>new</code>, so deleting them is an invalid free. The same mistake in the Festival code (deleting each Sponsor) made valgrind report:</p><pre>Invalid free() / delete / delete[] / realloc()
+ Address 0x1fff000230 is on thread 1&#x27;s stack</pre><p>The fix: one box, "delete the teachers array only (the Teacher objects stay)".</p></div></section></section></section><section id="pp-intro"><h2>From past papers</h2><p>These are the diagram questions of the 2026 tests, and pointer and linked-list tracing questions from older exams, copied word for word. Each label gives the paper and the question number. Any given code or diagram is redrawn here. Parts of a scan that cannot be read are marked [unreadable in the source].</p><table class="attribute-table"><thead><tr><th scope="col">Question</th><th scope="col">Source</th></tr></thead><tbody><tr><td><a href="#pp-ct1-q4">Draw the flowchart for board</a></td><td>Class Test 1, 2026, question 4</td></tr><tr><td><a href="#pp-ct2a-q2">Flowchart for the LogisticCompany destructor</a></td><td>Class Test 2A, 2026, question 2 (5 marks)</td></tr><tr><td><a href="#pp-mock-q3">Flowchart for the Client destructor</a></td><td>Logistics mock test, 2026, question 3 (5 marks)</td></tr><tr><td><a href="#pp-mock-q4">Flowchart for the LogisticCompany destructor (mock)</a></td><td>Logistics mock test, 2026, question 4 (5 marks)</td></tr><tr><td><a href="#pp-st1-q3">How many classes are in the object diagram?</a></td><td>Semester Test 1, 2026, question 3 (0.5 marks)</td></tr><tr><td><a href="#pp-st1-q15">The class and its constructor, from Figure 3 and Figure 4</a></td><td>Semester Test 1, 2026, questions 15 and 16 (3 marks each)</td></tr><tr><td><a href="#pp-st1-q23">Flowchart for the Universe assignment operator</a></td><td>Semester Test 1, 2026, question 23 (7 marks)</td></tr><tr><td><a href="#pp-st1-q24">Every object after line 13</a></td><td>Semester Test 1, 2026, question 24</td></tr><tr><td><a href="#pp-st2-q9c">The object diagram of arr</a></td><td>Semester Test 2, 2026, question 9(c) (5 marks)</td></tr><tr><td><a href="#pp-ct3-q2">The object diagram of ns</a></td><td>Class Test 3, 2026, question 2</td></tr><tr><td><a href="#pp-int-q2">From a recursive flowchart to code</a></td><td>Intervention Test, 14 September 2026, question 2</td></tr><tr><td><a href="#pp-eo1-2023">Connect each pointer to its value (2023)</a></td><td>EO1 2023, question 1.2 (2 marks)</td></tr><tr><td><a href="#pp-eo1-2024">Connect each pointer to its value (2024)</a></td><td>EO1 2024, question 1.1 (2 marks)</td></tr><tr><td><a href="#pp-eo2-2024">What does modify() do to the list?</a></td><td>EO2 2024, question 6.3 (3 marks)</td></tr></tbody></table></section><section id="pp-questions"><section class="question" id="pp-ct1-q4"><p class="question-label">From past papers · Class Test 1, 2026, question 4</p><h3>Draw the flowchart for board</h3><blockquote class="past-paper-quote"><p>Scenario:<br>Air travel has become the dominant method of travel since the 1970s. A critical part of the safety of any flight is ensuring that the passengers are correctly seated and distributed. You have been tasked with creating such a system.</p></blockquote><blockquote class="past-paper-quote"><p>1. Consider that the aircraft and the passengers can be modelled as two structs, namely <code>Aircraft</code> and <code>Passenger</code> respectively. The table below describes the structure of both structs:</p></blockquote><table class="attribute-table"><thead><tr><th scope="col">Struct</th><th scope="col">Member</th><th scope="col">Description</th></tr></thead><tbody><tr><td>Passenger</td><td>weight</td><td>The weight of the passenger as a float.</td></tr><tr><td>Aircraft</td><td>passengers</td><td>A 2D dynamic array of dynamic Passenger instances that represents the seating area.</td></tr><tr><td>Passenger</td><td>type</td><td>The type of seating the passenger has been assigned to, represented by a character.</td></tr><tr><td>Aircraft</td><td>numSeatingRows</td><td>The number of rows of passengers the aeroplane can take, as an int.</td></tr><tr><td>Passenger</td><td>luggageWeight</td><td>The weight of the passenger's luggage, as a double.</td></tr><tr><td>Aircraft</td><td>rows</td><td>A 1D dynamic array that contains the number of passengers that each row can contain.</td></tr></tbody></table><blockquote class="past-paper-quote"><p>4. Passengers need to be boarded onto an aircraft before the aircraft can depart. The airline to which the aircraft belongs decided that a priority-based boarding system should be implemented, where passengers board the aircraft based on seat types. Consider the following function: <code>void board(Aircraft* ac, char* priorityList, int sizeOfPriorityList)</code>, which needs to populate the aircraft&#x27;s seating area, row by row, with passengers based on their seat priority. The parameter <code>priorityList</code> specifies the boarding order, where the first character represents the highest priority seats, the second character represents the second highest priority seats, and so on. You can assume a helper function <code>Passenger* getNextPassenger(char seatType)</code>, has been provided, which will provide the next passenger with the specified seat type. If no more passengers with that seat type are available, the <code>getNexPassenger</code> function will return <code>NULL</code>. You may assume that there are enough passengers to populate the entire aircraft. Draw the flowchart for the implementation of the <code>board</code> function. Note you will be penalised if the incorrect flowchart notation is used, or if entire code segments are written in a single node in the flowchart.</p></blockquote><p>"getNexPassenger" [sic] is printed without the t; it is the same function as <code>getNextPassenger</code>. No mark is visible on the scan for question 4.</p><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-ct1-q4-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-ct1-q4-solution" class="reveal__body" data-practice-solution hidden><figure class="teaching-figure" id="pp-ct1-q4-chart"><p class="code-caption"><a href="assets/diagrams/pp_board.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_board_m.svg"><img src="assets/diagrams/pp_board.svg" alt="Flowchart of board: set p to 0 and r to 0; while r is less than numSeatingRows, set c to 0; while c is less than the number of seats in row r, set passenger to getNextPassenger with the seat type at index p; while the passenger is NULL and a lower priority is still left, add 1 to p and call it again; place the passenger in row r, seat c; add 1 to c; after the row, add 1 to r; END."></picture><figcaption>A flowchart for board. The two loops go row by row, then seat by seat. The inner decision moves to the next seat type when the current one has no passengers left.</figcaption></figure><p>How the chart is built:</p><ol><li>p is the position in <code>priorityList</code>. It starts at 0, the highest priority.</li><li>The outer loop goes over the rows: r goes from 0 while r is less than <code>numSeatingRows</code>.</li><li>The inner loop goes over the seats of row r: c goes from 0 while c is less than <code>rows[r]</code>, the number of seats in that row.</li><li>The call to <code>getNextPassenger</code> is a predefined process, because it calls a function.</li><li>If the call gives NULL, that seat type has no passengers left. Add 1 to p and call again with the next seat type. Repeat while it is NULL and p is not yet the last position.</li><li>Place the passenger in row r, seat c. Each step has its own box: no box holds a whole code segment.</li></ol><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>r &lt; ac-&gt;numSeatingRows</code></td><td>there is another row to fill</td><td>every row is full: END</td></tr><tr><td><code>c &lt; ac-&gt;rows[r]</code></td><td>row r has another empty seat</td><td>row r is full: go to the next row</td></tr><tr><td><code>next == NULL &amp;&amp; p &lt; sizeOfPriorityList - 1</code></td><td>the passenger (called <code>next</code> in the code) is NULL, and p is not yet the last position: this seat type has no passengers left, so move to the next seat type</td><td>a passenger was found (or no lower priority is left): seat the passenger</td></tr></tbody></table><p>The same steps in C++, compiled and run. The chart was checked against this function: each run of the function follows a path through the chart.</p><pre data-component="cpp-highlight"><code>void board(Aircraft* ac, char* priorityList, int sizeOfPriorityList) {
+    int p = 0;
+    for (int r = 0; r &lt; ac-&gt;numSeatingRows; r++) {
+        for (int c = 0; c &lt; ac-&gt;rows[r]; c++) {
+            Passenger* next = getNextPassenger(priorityList[p]);
+            while (next == NULL &amp;&amp; p &lt; sizeOfPriorityList - 1) {
+                p++;
+                next = getNextPassenger(priorityList[p]);
+            }
+            ac-&gt;passengers[r][c] = next;
+        }
+    }
+}</code></pre><p>With 2 F, 3 B and 10 E passengers, priority list F, B, E and rows of 2, 3 and 4 seats, the program prints the seat type in each seat:</p><pre>row 0: F F
+row 1: B B B
+row 2: E E E E</pre><p>Row 0 takes the two F passengers. The third call for F gives NULL, so p moves to B. Row 1 takes the three B passengers. Then p moves to E for row 2.</p><section class="block block--caution"><p class="block__label">Assumed</p><p>The paper does not say who allocates each row of <code>passengers</code>. This solution assumes the rows already exist before <code>board</code> runs. The paper does not give <code>getNextPassenger</code>; the program uses a stand-in with a fixed number of passengers of each type.</p></section></div></section></section><section class="question" id="pp-ct2a-q2"><p class="question-label">From past papers · Class Test 2A, 2026, question 2 (5 marks)</p><h3>Flowchart for the LogisticCompany destructor</h3><blockquote class="past-paper-quote"><p>Consider the following UML Class diagram that depicts a logistical company system. Note that all the arrays in the UML Class diagram are 1D dynamic arrays of dynamic objects. Answer the questions that follow:</p></blockquote><figure class="teaching-figure" id="pp-ct2a-q2-diagram"><p class="code-caption"><a href="assets/diagrams/pp_cd_logistics.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_cd_logistics.svg" alt="Class diagram of seven classes. LogisticCompany owns 1..* Truck (filled diamond) and has 1..* Client (hollow diamond). Truck has 1..* Driver and 1..* Parcel (hollow diamonds). Client owns 1..* Parcel (filled diamond) and has 1..* Address (hollow diamond). GPS owns 1..* Address (filled diamond, static members). Parcel has 1 Address (hollow diamond). Dashed dependency arrows: LogisticCompany to Driver, LogisticCompany to Parcel, Client to GPS."><figcaption>The class diagram, redrawn. Underlined members are static. The two papers print the generateParcel line of Client differently. The mock test prints <code>+ generateParcel(weight: double, description: string, fragile: bool, address: const Address&amp;): Parcel&amp;</code>, as drawn here. Class Test 2A prints <code>+ generateParcel(weight: double, description: string, fragile: bool, address): const Address&amp;</code>. The constructor and destructor are printed <code>LogisticsCompany</code> [sic], with an extra s.</figcaption></figure><blockquote class="past-paper-quote"><p>2. Using the UML Class Diagram, as well as the relations and multiplicity indicated on the diagram, design the flowchart for the <code>LogisticCompany</code> class&#x27; destructor. All the correct memory should be deallocated. The use of incorrect flowchart notation will result in marks being subtracted.</p></blockquote><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-ct2a-q2-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-ct2a-q2-solution" class="reveal__body" data-practice-solution hidden><p>Read the two relations that start at LogisticCompany. A filled diamond (composition) means the owner makes and deletes the other objects. A hollow diamond (aggregation) means it only uses objects that live elsewhere. "1 to 1..*" means one company has one or more of them.</p><table class="attribute-table"><thead><tr><th scope="col">Relation</th><th scope="col">What the destructor does</th></tr></thead><tbody><tr><td>Filled diamond to Truck (composition, 1 to 1..*): the company owns its trucks.</td><td>Delete each Truck object, then delete the <code>trucks</code> array.</td></tr><tr><td>Hollow diamond to Client (aggregation, 1 to 1..*): the company only uses its clients.</td><td>Delete the <code>clients</code> array only. The Client objects stay alive.</td></tr></tbody></table><figure class="teaching-figure" id="pp-ct2a-q2-chart"><p class="code-caption"><a href="assets/diagrams/pp_lc_dtor.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_lc_dtor_m.svg"><img src="assets/diagrams/pp_lc_dtor.svg" alt="Flowchart of the LogisticCompany destructor: set i to 0; while i is less than numberOfTrucks, delete the Truck object at index i and add 1 to i; then delete the trucks array; delete the clients array only; END."></picture><figcaption>The LogisticCompany destructor. The loop deletes what the company owns; the clients array is deleted, but not the clients in it.</figcaption></figure><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>i &lt; numberOfTrucks</code></td><td>there is another Truck to delete</td><td>every Truck is deleted: delete the arrays</td></tr></tbody></table><p>With two trucks: i = 0: 0 &lt; 2 is true, delete truck 0. i = 1: 1 &lt; 2 is true, delete truck 1. i = 2: 2 &lt; 2 is false, so the loop ends and the two arrays are deleted.</p><p>The same steps in C++, compiled and run. The chart was checked against this destructor:</p><pre data-component="cpp-highlight"><code>LogisticCompany::~LogisticCompany() {
+    for (int i = 0; i &lt; numberOfTrucks; i++)
+        delete trucks[i];
+    delete[] trucks;
+    delete[] clients;
+}</code></pre><p>A test program deletes the company first. The client must still be there afterwards, because the company did not own it:</p><pre data-component="cpp-highlight"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &quot;LogisticCompany.h&quot;
+
+using namespace std;
+
+int main() {
+    string street = &quot;12 Long Street&quot;;
+    Address home(street);
+    Driver thandi(&quot;Thandi&quot;, &quot;Mokoena&quot;, &#x27;C&#x27;);
+    Client* client = new Client();
+    client-&gt;addAddress(home);
+    Parcel&amp; box = client-&gt;generateParcel(2.5, &quot;books&quot;, false, home);
+    client-&gt;generateParcel(1.0, &quot;vase&quot;, true, home);
+    LogisticCompany* company = new LogisticCompany();
+    company-&gt;addClient(*client);
+    company-&gt;addDriverToTruck(thandi, 0);
+    company-&gt;addPackageToTruck(box, 0);
+    delete company;
+    cout &lt;&lt; &quot;company deleted: the client still exists&quot; &lt;&lt; endl;
+    delete client;
+    cout &lt;&lt; &quot;client deleted: its two parcels are gone; home and thandi are still in main&quot; &lt;&lt; endl;
+    cout &lt;&lt; home.getAddress() &lt;&lt; endl;
+    return 0;
+}</code></pre><pre>company deleted: the client still exists
+client deleted: its two parcels are gone; home and thandi are still in main
+12 Long Street</pre><p>valgrind reports no leak and no invalid read for this program.</p><section class="block block--caution"><p class="block__label">Assumed</p><p>The Truck destructor deletes its own <code>drivers</code> and <code>parcels</code> arrays, but not the Driver and Parcel objects (both are hollow diamonds). So the company destructor only has to delete each Truck. The company constructor in the test program makes two trucks; the paper does not say how many.</p></section></div></section></section><section class="question" id="pp-mock-q3"><p class="question-label">From past papers · Logistics mock test, 2026, question 3 (5 marks)</p><h3>Flowchart for the Client destructor</h3><blockquote class="past-paper-quote"><p>Consider the following UML Class diagram depicting a logistics company system. Note that all the arrays in the UML Class diagram are 1D dynamic arrays of dynamic objects. Answer the questions that follow:</p></blockquote><p>The class diagram is the same as in the Class Test 2A question above. It is shown again here.</p><figure class="teaching-figure" id="pp-mock-q3-diagram"><p class="code-caption"><a href="assets/diagrams/pp_cd_logistics.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_cd_logistics.svg" alt="Class diagram of seven classes. LogisticCompany owns 1..* Truck (filled diamond) and has 1..* Client (hollow diamond). Truck has 1..* Driver and 1..* Parcel (hollow diamonds). Client owns 1..* Parcel (filled diamond) and has 1..* Address (hollow diamond). GPS owns 1..* Address (filled diamond, static members). Parcel has 1 Address (hollow diamond). Dashed dependency arrows: LogisticCompany to Driver, LogisticCompany to Parcel, Client to GPS."><figcaption>The class diagram of the Logistics mock test, redrawn.</figcaption></figure><blockquote class="past-paper-quote"><p>Using the UML Class Diagram, as well as the relations and multiplicity indicated on the diagram, design the flowchart for the Client class&#x27; destructor. All the correct memory should be deallocated. The use of incorrect flowchart notation will result in marks being subtracted. [5 marks]</p><p>Upload your solution as a DrawIO (xml) file to the CS Portal-&gt;<wbr>COS110-&gt;<wbr>Assignments-&gt;<wbr>Mock Test Question 3 (https:/<wbr>/<wbr>portal.cs.up.ac.za/<wbr>assignments/<wbr>view/<wbr>10/<wbr>)</p><p>Did you submit an answer to the correct location?</p><p>True</p><p>False</p></blockquote><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-mock-q3-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-mock-q3-solution" class="reveal__body" data-practice-solution hidden><table class="attribute-table"><thead><tr><th scope="col">Relation</th><th scope="col">What the destructor does</th></tr></thead><tbody><tr><td>Filled diamond from Client to Parcel (composition, 1 to 1..*): the client owns its parcels.</td><td>Delete each Parcel object, then delete the <code>parcels</code> array.</td></tr><tr><td>Hollow diamond from Client to Address (aggregation, 1..* to 1..*: a client has one or more addresses, and an address can belong to one or more clients): the client only uses its addresses.</td><td>Delete the <code>addresses</code> array only. The Address objects stay alive.</td></tr></tbody></table><figure class="teaching-figure" id="pp-mock-q3-chart"><p class="code-caption"><a href="assets/diagrams/pp_client_dtor.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_client_dtor_m.svg"><img src="assets/diagrams/pp_client_dtor.svg" alt="Flowchart of the Client destructor: set i to 0; while i is less than numberOfParcels, delete the Parcel object at index i and add 1 to i; then delete the parcels array; delete the addresses array only; END."></picture><figcaption>The Client destructor.</figcaption></figure><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>i &lt; numberOfParcels</code></td><td>there is another Parcel to delete</td><td>every Parcel is deleted: delete the arrays</td></tr></tbody></table><p>With two parcels: i = 0: 0 &lt; 2 is true, delete parcel 0. i = 1: 1 &lt; 2 is true, delete parcel 1. i = 2: 2 &lt; 2 is false, so the loop ends and the two arrays are deleted.</p><p>The same steps in C++, compiled and run. The chart was checked against this destructor:</p><pre data-component="cpp-highlight"><code>Client::~Client() {
+    for (int i = 0; i &lt; numberOfParcels; i++)
+        delete parcels[i];
+    delete[] parcels;
+    delete[] addresses;
+}</code></pre><p>The test program gives the client one address and two parcels, then deletes the client:</p><pre data-component="cpp-highlight"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &quot;LogisticCompany.h&quot;
+
+using namespace std;
+
+int main() {
+    string street = &quot;12 Long Street&quot;;
+    Address home(street);
+    Driver thandi(&quot;Thandi&quot;, &quot;Mokoena&quot;, &#x27;C&#x27;);
+    Client* client = new Client();
+    client-&gt;addAddress(home);
+    Parcel&amp; box = client-&gt;generateParcel(2.5, &quot;books&quot;, false, home);
+    client-&gt;generateParcel(1.0, &quot;vase&quot;, true, home);
+    LogisticCompany* company = new LogisticCompany();
+    company-&gt;addClient(*client);
+    company-&gt;addDriverToTruck(thandi, 0);
+    company-&gt;addPackageToTruck(box, 0);
+    delete company;
+    cout &lt;&lt; &quot;company deleted: the client still exists&quot; &lt;&lt; endl;
+    delete client;
+    cout &lt;&lt; &quot;client deleted: its two parcels are gone; home and thandi are still in main&quot; &lt;&lt; endl;
+    cout &lt;&lt; home.getAddress() &lt;&lt; endl;
+    return 0;
+}</code></pre><pre>company deleted: the client still exists
+client deleted: its two parcels are gone; home and thandi are still in main
+12 Long Street</pre><p>The address <code>home</code> is still readable after the client is deleted, because the client did not own it. valgrind reports no leak.</p></div></section></section><section class="question" id="pp-mock-q4"><p class="question-label">From past papers · Logistics mock test, 2026, question 4 (5 marks)</p><h3>Flowchart for the LogisticCompany destructor (mock)</h3><p>The class diagram is the one in the Class Test 2A question above.</p><blockquote class="past-paper-quote"><p>Using the UML Class Diagram, as well as the relations and multiplicity indicated on the diagram, design the flowchart for the LogisticCompany class&#x27; destructor. All the correct memory should be deallocated. The use of incorrect flowchart notation will result in marks being subtracted. [5 marks]</p><p>Upload your solution as a DrawIO (xml) file to the CS Portal-&gt;<wbr>COS110-&gt;<wbr>Assignments-&gt;<wbr>Mock Test Question 4 (https:/<wbr>/<wbr>portal.cs.up.ac.za/<wbr>assignments/<wbr>view/<wbr>11/<wbr>)</p><p>Did you submit an answer to the correct location?</p><p>True</p><p>False</p></blockquote><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-mock-q4-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-mock-q4-solution" class="reveal__body" data-practice-solution hidden><p>This is the same task as Class Test 2A question 2. Read the two relations that start at LogisticCompany:</p><table class="attribute-table"><thead><tr><th scope="col">Relation</th><th scope="col">What the destructor does</th></tr></thead><tbody><tr><td>Filled diamond to Truck (composition, 1 to 1..*): the company owns its trucks.</td><td>Delete each Truck object, then delete the <code>trucks</code> array.</td></tr><tr><td>Hollow diamond to Client (aggregation, 1 to 1..*): the company only uses its clients.</td><td>Delete the <code>clients</code> array only. The Client objects stay alive.</td></tr></tbody></table><figure class="teaching-figure" id="pp-mock-q4-chart"><p class="code-caption"><a href="assets/diagrams/pp_lc_dtor.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_lc_dtor_m.svg"><img src="assets/diagrams/pp_lc_dtor.svg" alt="Flowchart of the LogisticCompany destructor: set i to 0; while i is less than numberOfTrucks, delete the Truck object at index i and add 1 to i; then delete the trucks array; delete the clients array only; END."></picture><figcaption>The LogisticCompany destructor.</figcaption></figure><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>i &lt; numberOfTrucks</code></td><td>there is another Truck to delete</td><td>every Truck is deleted: delete the arrays</td></tr></tbody></table><p>With two trucks: i = 0 and i = 1 delete the two Truck objects; at i = 2 the condition is false, and the two arrays are deleted.</p><pre data-component="cpp-highlight"><code>LogisticCompany::~LogisticCompany() {
+    for (int i = 0; i &lt; numberOfTrucks; i++)
+        delete trucks[i];
+    delete[] trucks;
+    delete[] clients;
+}</code></pre><pre>company deleted: the client still exists
+client deleted: its two parcels are gone; home and thandi are still in main
+12 Long Street</pre></div></section></section><section class="question" id="pp-st1-q3"><p class="question-label">From past papers · Semester Test 1, 2026, question 3 (0.5 marks)</p><h3>How many classes are in the object diagram?</h3><blockquote class="past-paper-quote"><p>MULTIPLE CHOICE</p><p>Given the following Object Diagram (Figure 1), select how many classes can be derived from the diagram:</p></blockquote><figure class="teaching-figure" id="pp-st1-q3-figure"><p class="code-caption"><a href="assets/diagrams/pp_od_st1_fig1.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_od_st1_fig1.svg" alt="Object diagram with six objects: city2:City and city1:City (each with mayor = Person[0]), town:Town (citizens = Person[3]), and citizens[0], citizens[1] and citizens[2], each :Person. Filled diamonds join the cities and the town; hollow diamonds join the town and the three citizens."><figcaption>Figure 1, redrawn.</figcaption></figure><ol type="A"><li>5</li><li>4</li><li>3</li><li>6</li></ol><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-st1-q3-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-st1-q3-solution" class="reveal__body" data-practice-solution hidden><p><strong>C. 3.</strong> In an object diagram each box is named <code>objectName:ClassName</code>. Count the different names after the colon:</p><table class="attribute-table"><thead><tr><th scope="col">Objects</th><th scope="col">Class</th></tr></thead><tbody><tr><td>city1, city2</td><td>City</td></tr><tr><td>town</td><td>Town</td></tr><tr><td>citizens[0], citizens[1], citizens[2]</td><td>Person</td></tr></tbody></table><p>Six objects, but only three classes. Answer D counts the objects, not the classes.</p><p>A program with these three classes compiles and makes the same objects:</p><pre>3 classes: City, Town and Person</pre></div></section></section><section class="question" id="pp-st1-q15"><p class="question-label">From past papers · Semester Test 1, 2026, questions 15 and 16 (3 marks each)</p><h3>The class and its constructor, from Figure 3 and Figure 4</h3><p>The test page does not show the scenario or the figures, so they are taken from the Intervention Session 3 slides (slides 13 and 14), which restate the question.</p><blockquote class="past-paper-quote"><p>Assume there is an anonymous class. Its constructor builds an object of that class from an existing array of values. The flowchart (Figure 3) shows the logic that the constructor must follow, and the incomplete object diagram (Figure 4) shows an object of the class.</p></blockquote><figure class="teaching-figure" id="pp-st1-q15-figure3"><p class="code-caption"><a href="assets/diagrams/pp_playlist_ctor.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_playlist_ctor_m.svg"><img src="assets/diagrams/pp_playlist_ctor.svg" alt="Figure 3, a flowchart: anonymousConstructor(std::string n, const std::string* source, int count); is source valid and count positive? No: END. Yes: set title to n; set songCount to count; allocate memory for songs that is the same size as songCount; initialise k to one less than songCount; is k more than 0? Yes: set songs at k to whatever source at k is; decrement k; back to the question. No: END."></picture><figcaption>Figure 3, redrawn: the constructor flowchart. The texts are as printed.</figcaption></figure><figure class="teaching-figure" id="pp-st1-q15-figure4"><p class="code-caption"><a href="assets/diagrams/pp_od_st1_fig4.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_od_st1_fig4.svg" alt="Figure 4, an object box: roadtrip: Playlist, with the slots property1 = value1, ..., propertyN = valueN."><figcaption>Figure 4, redrawn: the incomplete object diagram.</figcaption></figure><blockquote class="past-paper-quote"><p>15 ESSAY</p><p>Provide the full class definition for the class. Hint: The class needs to make appropriate use of dynamic memory and is responsible for deallocating any dynamic memory.</p></blockquote><blockquote class="past-paper-quote"><p>16 ESSAY</p><p>Implement the constructor for the class, based on Figure 3. Be sure to validate the parameter values, and do not perform any initialisation if a parameter is invalid.</p></blockquote><p>Question 15 is worth 3 marks and question 16 is worth 3 marks.</p><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-st1-q15-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-st1-q15-solution" class="reveal__body" data-practice-solution hidden><p>An anonymous class is a class whose name is not given in the question. Figure 4 gives the name.</p><p><strong>Question 15.</strong> Take each part of the class from one of the two figures:</p><table class="attribute-table"><thead><tr><th scope="col">From</th><th scope="col">What it gives</th></tr></thead><tbody><tr><td>Figure 4: <code>roadtrip: Playlist</code></td><td>The class name is <code>Playlist</code>.</td></tr><tr><td>Figure 3: the start box</td><td>The constructor parameters: <code>std::string n, const std::string* source, int count</code>.</td></tr><tr><td>Figure 3: "set title to n"</td><td>A member <code>title</code> of the type of n: <code>std::string</code>.</td></tr><tr><td>Figure 3: "set songCount to count"</td><td>A member <code>songCount</code> of type <code>int</code>.</td></tr><tr><td>Figure 3: "allocate memory for songs ..." and "set songs at k to whatever source at k is"</td><td>A member <code>songs</code> that holds a dynamic array of strings: <code>std::string*</code>.</td></tr><tr><td>The hint: "responsible for deallocating"</td><td>A destructor that deletes the <code>songs</code> array.</td></tr></tbody></table><pre data-component="cpp-highlight"><code>#ifndef PLAYLIST_H
+#define PLAYLIST_H
+#include &lt;string&gt;
+
+class Playlist {
+public:
+    Playlist(std::string n, const std::string* source, int count);
+    ~Playlist();
+private:
+    std::string title;
+    int songCount;
+    std::string* songs;
+};
+
+#endif</code></pre><p><strong>Question 16.</strong> One C++ line for each box of Figure 3:</p><pre data-component="cpp-highlight"><code>Playlist::Playlist(std::string n, const std::string* source, int count) {
+    if (source == NULL || count &lt;= 0)
+        return;
+    title = n;
+    songCount = count;
+    songs = new std::string[songCount];
+    for (int k = songCount - 1; k &gt; 0; k--)
+        songs[k] = source[k];
+}</code></pre><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>source == NULL || count &lt;= 0</code></td><td>a parameter is invalid: return at once, with no initialisation</td><td>both are valid: set the members</td></tr><tr><td><code>k &gt; 0</code></td><td>copy the song at index k</td><td>the loop ends</td></tr></tbody></table><p>The flowchart says "is k more than 0?", so the loop stops before k reaches 0. Index 0 is never copied. A run with the three songs Road, Rain and Sun shows this:</p><pre>title = Trip, songCount = 3
+songs[0] = &quot;&quot;
+songs[1] = &quot;Rain&quot;
+songs[2] = &quot;Sun&quot;</pre><p>Pass by pass, with songCount = 3: k starts at 2. k = 2: 2 &gt; 0 is true, copy Sun. k = 1: 1 &gt; 0 is true, copy Rain. k = 0: 0 &gt; 0 is false, so the loop ends. Road (index 0) is never copied.</p><p>This follows Figure 3 as printed. To copy every song, the question would need "k is 0 or more" (<code>k &gt;= 0</code>).</p><section class="block block--caution"><p class="block__label">Assumed</p><p>The memo is not available. Three points are open: (1) whether a full answer also needs a copy constructor and an assignment operator, since the class owns dynamic memory; (2) the order of members in the class; (3) the invalid case. With no initialisation, <code>songs</code> holds no set value, and the destructor would then delete an unset pointer. The paper asks for no initialisation, so the solution follows it. In your own code, setting <code>songs</code> to NULL first avoids the problem.</p></section></div></section></section><section class="question" id="pp-st1-q23"><p class="question-label">From past papers · Semester Test 1, 2026, question 23 (7 marks)</p><h3>Flowchart for the Universe assignment operator</h3><blockquote class="past-paper-quote"><p>[Co]nsider the following partially complete UML Class Diagram (Figure 5):</p></blockquote><figure class="teaching-figure" id="pp-st1-q23-figure5"><p class="code-caption"><a href="assets/diagrams/pp_cd_st1_fig5.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_cd_st1_fig5.svg" alt="Figure 5, a class diagram of Galaxy, Astronomer, Universe and Star. Universe owns * Galaxy (filled diamond); Galaxy owns * Star (filled diamond); Universe has * Star (hollow diamond); Astronomer depends on Galaxy (dashed arrow). Star has a static starCount and a static getStarCount()."><figcaption>Figure 5, redrawn. <code>unsigned double</code> [sic] is printed in Star; it is not a C++ type. Star also has three <code>operator()()</code> lines that differ only in the return type, as printed.</figcaption></figure><figure class="teaching-figure" id="pp-st1-q23-figure6"><p class="code-caption"><a href="assets/diagrams/pp_cd_st1_fig6.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_cd_st1_fig6.svg" alt="Figure 6: the Universe class with four notes. numGalaxies and numStars: sizes of the respective arrays. galaxies and stars: 1D dynamic array of dynamic objects. operator[]: returns a pointer to a Galaxy object at the passed in index. updateStarsArray: pulls stars from galaxies and populates the stars array."><figcaption>Figure 6, redrawn: the Universe class with its notes.</figcaption></figure><blockquote class="past-paper-quote"><p>23 TRUE/<wbr>FALSE</p><p>Using a flowchart, design the algorithm for the assignment operator such that no memory is leaked, the correct members are re-populated, and copied over. Note that the placement of only code statements or the use of incorrect notation in your flowchart will result in marks being deducted. [7 marks]</p><p>The drawing software can be accessed at the following link: https:/<wbr>/<wbr>portal.cs.up.ac.za/<wbr>draw/<wbr> (https:/<wbr>/<wbr>portal.cs.up.ac.za/<wbr>draw/<wbr>)</p><p>Upload your solution as a DrawIO (xml) file to the CS Portal-&gt;<wbr>COS110-&gt;<wbr>Assignments-&gt;<wbr>Semester Test 1 Q23 (https:/<wbr>/<wbr>portal.cs.up.ac.za/<wbr>assignments/<wbr>view/<wbr>12/<wbr> (https:/<wbr>/<wbr>portal.cs.up.ac.za/<wbr>assignments/<wbr>view/<wbr>12/<wbr>))</p><p>Did you submit an answer to the correct location?</p><p>Yes</p></blockquote><p>The first letters of "Consider" are cut off on the scan. The question does not name the class; Figure 6 shows only Universe, so it is the Universe assignment operator.</p><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-st1-q23-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-st1-q23-solution" class="reveal__body" data-practice-solution hidden><p>Read the three relations at Universe in Figure 5:</p><table class="attribute-table"><thead><tr><th scope="col">Relation</th><th scope="col">What operator= does with it</th></tr></thead><tbody><tr><td>Universe owns its galaxies (filled diamond).</td><td>Delete each old Galaxy and the old array. Then make a new copy of each Galaxy of the other universe: a deep copy, which means a new object for each one, not a copy of the pointer.</td></tr><tr><td>Universe has its stars (hollow diamond); the Galaxy objects own the stars.</td><td>Delete only the old <code>stars</code> array. Then fill a new one from the new galaxies with <code>updateStarsArray()</code> (Figure 6).</td></tr><tr><td>numGalaxies and numStars are the sizes (Figure 6).</td><td>Copy numGalaxies; updateStarsArray sets numStars.</td></tr></tbody></table><figure class="teaching-figure" id="pp-st1-q23-chart"><p class="code-caption"><a href="assets/diagrams/pp_universe_assign.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_universe_assign_m.svg"><img src="assets/diagrams/pp_universe_assign.svg" alt="Flowchart of the Universe assignment operator: is other the same object as this universe? Yes: return a reference to this universe. No: free the old memory as the destructor does; copy numGalaxies; allocate a new galaxies array; set i to 0; while i is less than numGalaxies, make a new Galaxy that copies the Galaxy at index i of other and store it at index i, add 1 to i; then call updateStarsArray(); return a reference to this universe; END."></picture><figcaption>The Universe assignment operator.</figcaption></figure><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>this == &amp;other</code></td><td>the object is assigned to itself (v = v): change nothing</td><td>free the old memory, then copy</td></tr><tr><td><code>i &lt; numGalaxies</code></td><td>copy the next Galaxy</td><td>every Galaxy is copied: rebuild the stars array</td></tr></tbody></table><p>For <code>v = u</code>, where u has 2 galaxies: i = 0: 0 &lt; 2 is true, copy G1. i = 1: 1 &lt; 2 is true, copy G2. i = 2: 2 &lt; 2 is false, so the loop ends and updateStarsArray() fills the stars array.</p><p>The self-assignment check comes first. Without it, <code>v = v</code> would delete the galaxies and then try to copy them from the deleted memory.</p><p>The same steps in C++, compiled and run. The chart was checked against this function, for <code>v = u</code> and for <code>v = v</code>:</p><pre data-component="cpp-highlight"><code>Universe&amp; Universe::operator=(const Universe&amp; other) {
+    if (this == &amp;other)
+        return *this;
+    for (int i = 0; i &lt; numGalaxies; i++)
+        delete galaxies[i];
+    delete[] galaxies;
+    delete[] stars;
+    stars = NULL;
+    numStars = 0;
+    numGalaxies = other.numGalaxies;
+    galaxies = new Galaxy*[numGalaxies];
+    for (int i = 0; i &lt; numGalaxies; i++)
+        galaxies[i] = new Galaxy(*other.galaxies[i]);
+    updateStarsArray();
+    return *this;
+}</code></pre><pre data-component="cpp-highlight"><code>#include &lt;iostream&gt;
+#include &quot;Universe.h&quot;
+
+using namespace std;
+
+int main() {
+    Universe u;
+    u += new Galaxy(&quot;G1&quot;);
+    u += new Galaxy(&quot;G2&quot;);
+    u[0]-&gt;addStar(new Star(&quot;AX1&quot;, 100));
+    u[1]-&gt;addStar(new Star(&quot;BF1&quot;, 476237));
+    u.updateStarsArray();
+    Universe v;
+    v += new Galaxy(&quot;Old&quot;);
+    v[0]-&gt;addStar(new Star(&quot;OLD&quot;, 5));
+    v.updateStarsArray();
+    v = u;
+    v = v;
+    u[0]-&gt;addStar(new Star(&quot;AP2&quot;, 2333));
+    cout &lt;&lt; &quot;u after adding AP2 to u&#x27;s G1:&quot; &lt;&lt; endl &lt;&lt; u &lt;&lt; endl;
+    cout &lt;&lt; &quot;v (its own copies, so no AP2):&quot; &lt;&lt; endl &lt;&lt; v &lt;&lt; endl;
+    return 0;
+}</code></pre><pre>u after adding AP2 to u&#x27;s G1:
+Universe:
+    Galaxy G1 is at index 0/2:
+        Star at index 0/2: AX1 (ID=1)
+        Star at index 1/2: AP2 (ID=4)
+    Galaxy G2 is at index 1/2:
+        Star at index 0/1: BF1 (ID=2)
+    Stars:
+        Star at index 0/2: AX1 (ID=1)
+        Star at index 1/2: BF1 (ID=2)
+v (its own copies, so no AP2):
+Universe:
+    Galaxy G1 is at index 0/2:
+        Star at index 0/1: AX1 (ID=1)
+    Galaxy G2 is at index 1/2:
+        Star at index 0/1: BF1 (ID=2)
+    Stars:
+        Star at index 0/2: AX1 (ID=1)
+        Star at index 1/2: BF1 (ID=2)</pre><p>Adding AP2 to u after <code>v = u</code> does not change v, because v has its own copies. valgrind reports no leak and no invalid read.</p><section class="block block--caution"><p class="block__label">Assumed</p><p>The paper does not give the Galaxy copy constructor. This solution assumes it makes a new copy of each Star, and that a copied Star keeps the ID of the star it copies.</p></section></div></section></section><section class="question" id="pp-st1-q24"><p class="question-label">From past papers · Semester Test 1, 2026, question 24</p><h3>Every object after line 13</h3><p>This question uses Figures 5 and 6 of question 23 above.</p><blockquote class="past-paper-quote"><p>24 TRUE/<wbr>FALSE</p><p>Given the following main function (line numbers are provided only for reference purposes):</p></blockquote><pre>1.  int main(){
+2.      Universe u;
+3.      u += new Galaxy(&quot;G1&quot;);
+4.      u += new Galaxy(&quot;G2&quot;, 200f);
+5.      u[0]-&gt;addStar(new Star(&quot;AX1&quot;, 100));
+6.      u[1]-&gt;addStar(new Star(&quot;BF1&quot;, 476237));
+7.      u[0]-&gt;addStar(new Star(&quot;AP2&quot;, 2333));
+8.      Astronomer a(&quot;Buzz&quot;);
+9.      a.inspect(*u[1]);
+10.     u.updateStarsArray();
+11.     u[0]-&gt;addStar(new Star(&quot;AF5&quot;, 2389));
+12.     cout &lt;&lt; &quot;Star Count:&quot; &lt;&lt; Star::getStarCount() &lt;&lt; endl;
+13.     cout &lt;&lt; u &lt;&lt; endl; //after this line
+14.     return 0;
+15. }</pre><p class="code-caption">As printed on the paper. <code>200f</code> [sic] on line 4 is not a valid C++ number; <code>200.0f</code> is.</p><blockquote class="past-paper-quote"><p>Which produced the following output:</p></blockquote><pre>Buzz sees galaxy &#x27;G2&#x27; with 1 stars, and a mass of 0
+Star Count: 4
+Universe:
+    Galaxy G1 is at index 0/2:
+        Star at index 0/3: AX1 (ID=1)
+        Star at index 1/3: AP2 (ID=3)
+        Star at index 2/3: AF5 (ID=4)
+    Galaxy G2 is at index 1/2:
+        Star at index 0/1: BF1 (ID=2)
+    Stars:
+        Star at index 0/3: AX1 (ID=1)
+        Star at index 1/3: AP2 (ID=3)
+        Star at index 2/3: BF1 (ID=2)</pre><blockquote class="past-paper-quote"><p>Draw the object diagram of all the objects that exist after line 13 in the main function has finished executing. [[unreadable in the source] marks]</p><p>The drawing software can be accessed at the following link: https:/<wbr>/<wbr>portal.cs.up.ac.za/<wbr>draw/<wbr></p><p>Upload your solution as a DrawIO (xml) file to the CS Portal-&gt;<wbr>COS110-&gt;<wbr>Assignments-&gt;<wbr>Semester Test Q24 (https:/<wbr>/<wbr>portal.cs.up.ac.za/<wbr>assignments/<wbr>view/<wbr>13/<wbr>)</p><p>Did you submit an answer to the correct location?</p><p>Yes</p></blockquote><p>The mark is printed as [8 marks] or [3 marks]; the digit cannot be read on the scan.</p><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-st1-q24-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-st1-q24-solution" class="reveal__body" data-practice-solution hidden><figure class="teaching-figure" id="pp-st1-q24-diagram"><p class="code-caption"><a href="assets/diagrams/pp_od_st1_q24.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_od_st1_q24.svg" alt="Object diagram after line 13. u: Universe (numGalaxies = 2, numStars = 3, galaxies = Galaxy[2], stars = Star[3]) owns galaxies[0]: Galaxy (totalStars = 3, name = &quot;G1&quot;, systemMass = 0, arrayOfStars = Star[3]) and galaxies[1]: Galaxy (totalStars = 1, name = &quot;G2&quot;, systemMass = 0, arrayOfStars = Star[1]). galaxies[0] owns three Star objects: AX1 (age 100, ID 1), AP2 (age 2333, ID 3) and AF5 (age 2389, ID 4). galaxies[1] owns BF1 (age 476237, ID 2). Each Star shows the static starCount = 4. Hollow diamonds from u: stars[0] to AX1, stars[1] to AP2, stars[2] to BF1. a: Astronomer (observerName = &quot;Buzz&quot;) stands alone."><figcaption>Every object after line 13. The values come from a run of the program.</figcaption></figure><p>How each part of the diagram follows from the code and the output:</p><ol><li><strong>Two objects on the stack:</strong> <code>u</code> (line 2) and <code>a</code> (line 8). <code>a</code> has no link to anything: <code>inspect</code> only used the galaxy during line 9.</li><li><strong>The galaxies:</strong> lines 3 and 4 add G1 and G2, so <code>galaxies = Galaxy[2]</code>. The output says G2 has "a mass of 0", so systemMass is 0 for both, even though line 4 passes 200.</li><li><strong>The stars and their IDs:</strong> the IDs follow the order of creation: AX1 is 1, BF1 is 2, AP2 is 3, AF5 is 4. starCount is static, so it is one value, 4, shared by all stars. Draw it underlined in each Star box.</li><li><strong>The stars array of u:</strong> <code>updateStarsArray()</code> ran on line 10, before AF5 was added on line 11. So <code>stars</code> holds 3 pointers: AX1, AP2 and BF1. It does not point at AF5, and <code>numStars = 3</code>.</li><li><strong>Links:</strong> filled diamonds where an object owns another (u owns the galaxies; a galaxy owns its stars). Hollow diamonds from u to the three stars it points at but does not own.</li></ol><p>The run that gave these values (line 4 changed to <code>200.0f</code>, so that it compiles):</p><pre data-component="cpp-highlight"><code>#include &lt;iostream&gt;
+#include &quot;Universe.h&quot;
+#include &quot;Astronomer.h&quot;
+
+using namespace std;
+
+int main(){
+    Universe u;
+    u += new Galaxy(&quot;G1&quot;);
+    u += new Galaxy(&quot;G2&quot;, 200.0f);
+    u[0]-&gt;addStar(new Star(&quot;AX1&quot;, 100));
+    u[1]-&gt;addStar(new Star(&quot;BF1&quot;, 476237));
+    u[0]-&gt;addStar(new Star(&quot;AP2&quot;, 2333));
+    Astronomer a(&quot;Buzz&quot;);
+    a.inspect(*u[1]);
+    u.updateStarsArray();
+    u[0]-&gt;addStar(new Star(&quot;AF5&quot;, 2389));
+    cout &lt;&lt; &quot;Star Count:&quot; &lt;&lt; Star::getStarCount() &lt;&lt; endl;
+    cout &lt;&lt; u &lt;&lt; endl; //after this line
+    return 0;
+}</code></pre><pre>Buzz sees galaxy &#x27;G2&#x27; with 1 stars, and a mass of 0
+Star Count:4
+Universe:
+    Galaxy G1 is at index 0/2:
+        Star at index 0/3: AX1 (ID=1)
+        Star at index 1/3: AP2 (ID=3)
+        Star at index 2/3: AF5 (ID=4)
+    Galaxy G2 is at index 1/2:
+        Star at index 0/1: BF1 (ID=2)
+    Stars:
+        Star at index 0/3: AX1 (ID=1)
+        Star at index 1/3: AP2 (ID=3)
+        Star at index 2/3: BF1 (ID=2)</pre><p>The program prints <code>Star Count:4</code>, with no space, because line 12 has no space after the colon. The paper's output shows <code>Star Count: 4</code>, with a space. This difference does not change the object diagram: the count is 4 either way.</p><section class="block block--caution"><p class="block__label">Assumed</p><p>The paper does not give the Galaxy and Star code. The solution assumes: the Galaxy constructor does not store its float parameter (the paper's output gives a mass of 0 for G2); each new Star takes the next ID; the static count goes up by one for each new Star. These give the output printed on the paper.</p></section></div></section></section><section class="question" id="pp-st2-q9c"><p class="question-label">From past papers · Semester Test 2, 2026, question 9(c) (5 marks)</p><h3>The object diagram of arr</h3><blockquote class="past-paper-quote"><p>8. Given the following class in the class diagram, answer the questions that follow.</p></blockquote><figure class="teaching-figure" id="pp-st2-q9c-diagram"><p class="code-caption"><a href="assets/diagrams/pp_cd_st2_q8.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_cd_st2_q8.svg" alt="Class diagram of Number, IntNumber, FloatNumber, NumberStorer, Ascending and Descending. IntNumber and FloatNumber inherit from Number; Ascending and Descending inherit from NumberStorer. NumberStorer owns Number objects (filled diamond). Italic members are abstract. A note &quot;virtual functions&quot; points at the two destructors; a note &quot;const functions&quot; points at the getters and operators."><figcaption>The class diagram of question 8, redrawn. Italic members are abstract. <code>constNumber&amp;</code> [sic] is printed with no space in IntNumber.</figcaption></figure><blockquote class="past-paper-quote"><p>9. Consider the stream insertion operator is added to the <code>NumberStorer</code> class, and used as shown in the code sample below.</p></blockquote><pre>1   struct NumberStorerArray{
+2       NumberStorer** array; //uses a relation
+3       int size;
+4   };
+5
+6   void populateStorer(NumberStorer&amp; ns){
+7       ns += 5;
+8       ns += 0.5f;
+9       ns += 2.5f;
+10      ns.sort();
+11  }
+12
+13  int main(){
+14      NumberStorerArray arr;
+15      arr.array = new NumberStorer*[2];
+16      arr.size = 2;
+17      arr.array[0] = new Ascending();
+18      arr.array[1] = new Descending();
+19      for(int i=0; i &lt; 2; i++){
+20          arr.array[i]-&gt;sort();
+21          cout &lt;&lt; (*arr.array[i]) &lt;&lt; endl;
+22      }
+23      return 0;
+24  }</pre><p class="code-caption">As printed on the paper.</p><blockquote class="past-paper-quote"><p>The output produced by the above program is:</p></blockquote><pre>[0.5,2.5,5]
+[5,2.5,0.5]</pre><blockquote class="past-paper-quote"><p>Answer the following questions.</p><p>[...]</p><p>(c) Draw the object diagram for the variable <code>arr</code>, after the for loop has finished executing, but before the return statement. (5)</p></blockquote><p>Parts (a) and (b) ask about the stream insertion operator; only part (c) is a diagram question.</p><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-st2-q9c-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-st2-q9c-solution" class="reveal__body" data-practice-solution hidden><p><strong>First, a problem in the paper.</strong> <code>main</code> as printed never calls <code>populateStorer</code>. Run as printed, the two storers stay empty:</p><pre>[]
+[]</pre><p>The printed output shows three values in each storer, so the solution assumes the loop calls <code>populateStorer(*arr.array[i]);</code> first:</p><pre data-component="cpp-highlight"><code>    for(int i=0; i &lt; 2; i++){
+        populateStorer(*arr.array[i]);
+        arr.array[i]-&gt;sort();
+        cout &lt;&lt; (*arr.array[i]) &lt;&lt; endl;
+    }</code></pre><pre>[0.5,2.5,5]
+[5,2.5,0.5]</pre><figure class="teaching-figure" id="pp-st2-q9c-answer-figure"><p class="code-caption"><a href="assets/diagrams/pp_od_st2_q9c.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_od_st2_q9c_m.svg"><img src="assets/diagrams/pp_od_st2_q9c.svg" alt="Object diagram of arr after the for loop. arr: NumberStorerArray (array = NumberStorer[2], size = 2) is joined by plain lines to array[0]: Ascending and array[1]: Descending, each with array = Number[3] and size = 3. array[0] owns array[0]: FloatNumber (data = 0.5f), array[1]: FloatNumber (data = 2.5f), array[2]: IntNumber (data = 5). array[1] owns array[0]: IntNumber (data = 5), array[1]: FloatNumber (data = 2.5f), array[2]: FloatNumber (data = 0.5f)."></picture><figcaption>The object diagram of arr after the for loop. The values come from a run of the program.</figcaption></figure><ol><li><strong>Class names:</strong> each box shows the class of the object made with <code>new</code>, not the pointer type. <code>array[0]</code> is a NumberStorer pointer, but the object is an Ascending, so the box says <code>Ascending</code>. In the same way, <code>ns += 5</code> makes an IntNumber and <code>ns += 0.5f</code> makes a FloatNumber.</li><li><strong>The loop:</strong> i = 0 fills the Ascending storer and sorts it, then prints it. i = 1 does the same for the Descending storer. At i = 2 the condition <code>i &lt; 2</code> is false and the loop ends.</li><li><strong>Order:</strong> each storer gets 5, 0.5f and 2.5f, then sorts. Ascending holds 0.5f, 2.5f, 5; Descending holds 5, 2.5f, 0.5f. The output lines show the same orders.</li><li><strong>Links:</strong> line 2 of the code says <code>//uses a relation</code>, so arr joins the two storers with plain lines (association). Each storer owns its Number objects (the filled diamond in the class diagram).</li></ol><p>valgrind reports a leak for this program, because the paper's <code>main</code> never deletes the storers:</p><pre>208 (16 direct, 192 indirect) bytes in 1 blocks are definitely lost in loss record 7 of 7</pre><section class="block block--caution"><p class="block__label">Assumed</p><p>The paper's <code>main</code> never calls <code>populateStorer</code>; the solution assumes the loop calls it first, to match the printed output. The paper does not give the NumberStorer code. The solution assumes each <code>+=</code> adds one new object at the end of the array, and that <code>sort()</code> reorders the pointers.</p></section></div></section></section><section class="question" id="pp-ct3-q2"><p class="question-label">From past papers · Class Test 3, 2026, question 2</p><h3>The object diagram of ns</h3><p>Listing 1: Provided Classes. The listing below is the paper's listing. The compiled copy also has an include guard and <code>#include &lt;iostream&gt;</code> (not shown). "Comparisions" [sic] is in the original.</p><pre data-component="cpp-highlight"><code>class Number{
+    public:
+        virtual ~Number();
+        virtual float getFloat() const = 0; //returns the value as a float.
+        virtual int getInt() const = 0; //returns the value as an int.
+        virtual bool isInt() const = 0; //returns true if the object is an IntNumber.
+
+//Comparisions are performed based on the data of the objects
+        virtual bool operator==(const Number&amp; o) const = 0;
+        virtual bool operator&gt;(const Number&amp; o) const = 0;
+        bool operator&gt;=(Number&amp; o) const;
+        bool operator&lt;(Number&amp; o) const;
+        bool operator&lt;=(Number&amp; o) const;
+    protected:
+        Number();
+};
+
+class IntNumber: public Number{
+    public:
+        IntNumber(int d);
+        float getFloat() const;
+        int getInt() const;
+        bool isInt() const;
+        bool operator==(const Number&amp; o) const;
+        bool operator&gt;(const Number&amp; o) const;
+    protected:
+        int data;
+};
+
+class FloatNumber: public Number{
+    public:
+        FloatNumber(float d);
+        float getFloat() const;
+        int getInt() const;
+        bool isInt() const;
+        bool operator==(const Number&amp; o) const;
+        bool operator&gt;(const Number&amp; o) const;
+    protected:
+        float data;
+};
+
+class NumberStorer{
+    public:
+        NumberStorer();
+        virtual ~NumberStorer();
+        Number&amp; operator[](int i); //retrieves the ith Number
+        const Number&amp; operator[](int i) const; //retrieves the ith Number
+        NumberStorer&amp; operator+=(float d); //Adds the parameter to the NumberStorer object
+        NumberStorer&amp; operator+=(int d); //Adds the parameter to the NumberStorer object
+        int getSize() const; //returns the size.
+        virtual void sort() = 0; //sorts the Numbers.
+    protected:
+        Number** array; //1D array of owned dynamic Number pointers.
+        int size; //size of the array
+    private:
+        NumberStorer&amp; operator+=(Number* ptr); //resizes the array and appends the pointer.
+};
+
+class Ascending: public NumberStorer{
+    public:
+        void sort(); //sorts the Numbers ascendingly
+};
+class Descending: public NumberStorer{
+    public:
+        void sort(); //sorts the Numbers descendingly
+};
+std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, const NumberStorer&amp; ns);</code></pre><blockquote class="past-paper-quote"><p>2. Consider the following <code>main</code> program. Provide the UML Object Diagram for the <code>ns</code> object after line 8 has finishe[d]<br>executing.</p></blockquote><pre>1   int main(){
+2       Ascending ns;
+3       ns += 5;
+4       ns += 0.5f;
+5       ns += 2.5f;
+6       ns += 3;
+7       ns.sort();
+8       cout &lt;&lt; ns &lt;&lt; endl;    //After this line
+9       return 0;
+10  }</pre><p class="code-caption">As printed on the paper.</p><blockquote class="past-paper-quote"><p>The output produced by the above program is:</p></blockquote><pre>[0.5,2.5,3,5]</pre><p>The last letter of "finished" is cut off on the photo. No marks are visible.</p><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-ct3-q2-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-ct3-q2-solution" class="reveal__body" data-practice-solution hidden><figure class="teaching-figure" id="pp-ct3-q2-answer-figure"><p class="code-caption"><a href="assets/diagrams/pp_od_ct3_q2.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_od_ct3_q2_m.svg"><img src="assets/diagrams/pp_od_ct3_q2.svg" alt="Object diagram of ns after line 8: ns: Ascending (array = Number[4], size = 4) owns array[0]: FloatNumber (data = 0.5f), array[1]: FloatNumber (data = 2.5f), array[2]: IntNumber (data = 3) and array[3]: IntNumber (data = 5)."></picture><figcaption>The object diagram of ns after line 8. The values come from a run of the program.</figcaption></figure><ol><li><code>ns</code> is an Ascending object. Its members come from NumberStorer: <code>array</code> and <code>size</code>.</li><li>Lines 3 to 6 add four numbers, so <code>size = 4</code>. An int argument makes an IntNumber; a float argument (with f) makes a FloatNumber.</li><li>Line 7 sorts them from small to large: 0.5f, 2.5f, 3, 5. The output line shows the same order.</li><li>ns owns the Number objects (the listing says "owned dynamic Number pointers"), so each link has a filled diamond at ns.</li></ol><pre data-component="cpp-highlight"><code>#include &lt;iostream&gt;
+#include &quot;Numbers.h&quot;
+
+using namespace std;
+
+int main(){
+    Ascending ns;
+    ns += 5;
+    ns += 0.5f;
+    ns += 2.5f;
+    ns += 3;
+    ns.sort();
+    cout &lt;&lt; ns &lt;&lt; endl;    //After this line
+    return 0;
+}</code></pre><pre>[0.5,2.5,3,5]</pre><section class="block block--caution"><p class="block__label">Assumed</p><p>The paper does not give the NumberStorer code. The solution assumes each <code>+=</code> adds one new object at the end, and that <code>sort()</code> reorders the pointers.</p></section></div></section></section><section class="question" id="pp-int-q2"><p class="question-label">From past papers · Intervention Test, 14 September 2026, question 2</p><h3>From a recursive flowchart to code</h3><blockquote class="past-paper-quote"><p>2. An anonymous function&#x27;s logic is depicted using the flowchart below. Answer the questions that follow.</p></blockquote><figure class="teaching-figure" id="pp-int-q2-chart"><p class="code-caption"><a href="assets/diagrams/pp_recurse.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_recurse_m.svg"><img src="assets/diagrams/pp_recurse.svg" alt="Flowchart: anonymousFunction(int n); is n &lt;= 0? No: Print n; Print a whitespace; anonymousFunction(n-1) as a predefined process; END. Yes: Print &quot;Done!&quot;; Print a newline; END."></picture><figcaption>The flowchart, redrawn. The texts are as printed.</figcaption></figure><blockquote class="past-paper-quote"><p>(a) The function is invoked as follows: <code>recurse(5);</code>.<br>Give the function signature.</p><p>(b) Provide the implementation of the function, and say what it does in one sentence.</p></blockquote><p>The chart names the function anonymousFunction, but part (a) calls it <code>recurse</code>. No marks are printed.</p><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-int-q2-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-int-q2-solution" class="reveal__body" data-practice-solution hidden><p><strong>(a)</strong> <code>void recurse(int n)</code>. The chart takes one int, n. It prints but never returns a value, so the return type is void. The name comes from the call in (a).</p><p><strong>(b)</strong> One line of code for each box. A predefined process box (with double side bars) stands for a call to a function. Here, <code>anonymousFunction(n-1)</code> becomes the recursive call <code>recurse(n - 1)</code>:</p><pre data-component="cpp-highlight"><code>void recurse(int n) {
+    if (n &lt;= 0) {
+        cout &lt;&lt; &quot;Done!&quot;;
+        cout &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; n;
+        cout &lt;&lt; &quot; &quot;;
+        recurse(n - 1);
+    }
+}</code></pre><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>n &lt;= 0</code></td><td>print "Done!" and a newline; the calls stop here</td><td>print n and a space, then call recurse(n - 1)</td></tr></tbody></table><table class="attribute-table"><caption>Each call, from recurse(5) down to recurse(0).</caption><thead><tr><th scope="col">Call</th><th scope="col">Is n &lt;= 0?</th><th scope="col">Prints</th></tr></thead><tbody><tr><td>recurse(5)</td><td>No</td><td>5 and a space</td></tr><tr><td>recurse(4)</td><td>No</td><td>4 and a space</td></tr><tr><td>recurse(3)</td><td>No</td><td>3 and a space</td></tr><tr><td>recurse(2)</td><td>No</td><td>2 and a space</td></tr><tr><td>recurse(1)</td><td>No</td><td>1 and a space</td></tr><tr><td>recurse(0)</td><td>Yes</td><td>Done! and a newline</td></tr></tbody></table><pre>5 4 3 2 1 Done!</pre><p>In one sentence: it prints the numbers from n down to 1, each followed by a space, and then "Done!".</p><p>The chart was checked against this function: the run of <code>recurse(5)</code> follows the No path five times and the Yes path once.</p></div></section></section><section class="question" id="pp-eo1-2023"><p class="question-label">From past papers · EO1 2023, question 1.2 (2 marks)</p><h3>Connect each pointer to its value (2023)</h3><blockquote class="past-paper-quote"><p>1.2 Given the code segment, connect each variable&#x27;s resulting value, using an arrow, to the most appropriate value on the right.</p></blockquote><pre>1  int* ptrA = new int(5);
+2  int* ptrB = new int(6);
+3  int* ptrC = ptrA;
+4  ptrA = ptrB;
+5  int* ptrD = ptrB;
+6  ptrB = NULL;</pre><p class="code-caption">As printed on the paper.</p><figure class="teaching-figure" id="pp-eo1-2023-boxes"><p class="code-caption"><a href="assets/diagrams/pp_ptr_blank.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_ptr_blank.svg" alt="Two columns of boxes. Left: ptrA, ptrB, ptrC, ptrD. Right: NULL, 5, 6, Garbage. No arrows."><figcaption>The two columns of boxes, redrawn.</figcaption></figure><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-eo1-2023-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-eo1-2023-solution" class="reveal__body" data-practice-solution hidden><table class="attribute-table"><caption>The value each pointer points at after each line.</caption><thead><tr><th scope="col">Line</th><th scope="col">What happens</th><th scope="col">ptrA</th><th scope="col">ptrB</th><th scope="col">ptrC</th><th scope="col">ptrD</th></tr></thead><tbody><tr><td>1</td><td>new int holding 5</td><td>5</td><td>-</td><td>-</td><td>-</td></tr><tr><td>2</td><td>new int holding 6</td><td>5</td><td>6</td><td>-</td><td>-</td></tr><tr><td>3</td><td>ptrC copies the address in ptrA</td><td>5</td><td>6</td><td>5</td><td>-</td></tr><tr><td>4</td><td>ptrA now points where ptrB points</td><td>6</td><td>6</td><td>5</td><td>-</td></tr><tr><td>5</td><td>ptrD copies the address in ptrB</td><td>6</td><td>6</td><td>5</td><td>6</td></tr><tr><td>6</td><td>ptrB is set to NULL; the 6 is still there</td><td>6</td><td>NULL</td><td>5</td><td>6</td></tr></tbody></table><figure class="teaching-figure" id="pp-eo1-2023-answer-figure"><p class="code-caption"><a href="assets/diagrams/pp_ptr_eo1_2023.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_ptr_eo1_2023.svg" alt="Arrows: ptrA to 6, ptrB to NULL, ptrC to 5, ptrD to 6."><figcaption>The answer: ptrA to 6, ptrB to NULL, ptrC to 5, ptrD to 6.</figcaption></figure><p>Copying a pointer copies the address, not the int. Line 6 changes only ptrB; ptrA and ptrD still point at the 6. A program that prints each value:</p><pre data-component="cpp-highlight"><code>#include &lt;iostream&gt;
+
+using namespace std;
+
+int main() {
+    int* ptrA = new int(5);
+    int* ptrB = new int(6);
+    int* ptrC = ptrA;
+    ptrA = ptrB;
+    int* ptrD = ptrB;
+    ptrB = NULL;
+    cout &lt;&lt; &quot;ptrA -&gt; &quot; &lt;&lt; *ptrA &lt;&lt; endl;
+    cout &lt;&lt; &quot;ptrB -&gt; &quot; &lt;&lt; (ptrB == NULL ? &quot;NULL&quot; : &quot;not NULL&quot;) &lt;&lt; endl;
+    cout &lt;&lt; &quot;ptrC -&gt; &quot; &lt;&lt; *ptrC &lt;&lt; endl;
+    cout &lt;&lt; &quot;ptrD -&gt; &quot; &lt;&lt; *ptrD &lt;&lt; endl;
+    delete ptrC;
+    delete ptrD;
+    return 0;
+}</code></pre><pre>ptrA -&gt; 6
+ptrB -&gt; NULL
+ptrC -&gt; 5
+ptrD -&gt; 6</pre></div></section></section><section class="question" id="pp-eo1-2024"><p class="question-label">From past papers · EO1 2024, question 1.1 (2 marks)</p><h3>Connect each pointer to its value (2024)</h3><blockquote class="past-paper-quote"><p>1.1 Given the code segment, connect each variable&#x27;s resulting value, using an arrow, to the most appropriate value on the right.</p></blockquote><pre>1  int* ptrA = new int(5);
+2  int* ptrB = ptrA;
+3  int* ptrC = new int(6);
+4  ptrA = ptrC;
+5  int* ptrD = ptrB;
+6  ptrB = NULL;
+7  delete ptrD;</pre><p class="code-caption">As printed on the paper.</p><figure class="teaching-figure" id="pp-eo1-2024-boxes"><p class="code-caption"><a href="assets/diagrams/pp_ptr_blank.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_ptr_blank.svg" alt="Two columns of boxes. Left: ptrA, ptrB, ptrC, ptrD. Right: NULL, 5, 6, Garbage. No arrows."><figcaption>The two columns of boxes, redrawn.</figcaption></figure><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-eo1-2024-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-eo1-2024-solution" class="reveal__body" data-practice-solution hidden><table class="attribute-table"><caption>The value each pointer points at after each line.</caption><thead><tr><th scope="col">Line</th><th scope="col">What happens</th><th scope="col">ptrA</th><th scope="col">ptrB</th><th scope="col">ptrC</th><th scope="col">ptrD</th></tr></thead><tbody><tr><td>1</td><td>new int holding 5</td><td>5</td><td>-</td><td>-</td><td>-</td></tr><tr><td>2</td><td>ptrB copies the address in ptrA</td><td>5</td><td>5</td><td>-</td><td>-</td></tr><tr><td>3</td><td>new int holding 6</td><td>5</td><td>5</td><td>6</td><td>-</td></tr><tr><td>4</td><td>ptrA now points where ptrC points</td><td>6</td><td>5</td><td>6</td><td>-</td></tr><tr><td>5</td><td>ptrD copies the address in ptrB (the 5)</td><td>6</td><td>5</td><td>6</td><td>5</td></tr><tr><td>6</td><td>ptrB is set to NULL</td><td>6</td><td>NULL</td><td>6</td><td>5</td></tr><tr><td>7</td><td>the int that ptrD points at (the 5) is deleted</td><td>6</td><td>NULL</td><td>6</td><td>Garbage</td></tr></tbody></table><figure class="teaching-figure" id="pp-eo1-2024-answer-figure"><p class="code-caption"><a href="assets/diagrams/pp_ptr_eo1_2024.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><img src="assets/diagrams/pp_ptr_eo1_2024.svg" alt="Arrows: ptrA to 6, ptrB to NULL, ptrC to 6, ptrD to Garbage."><figcaption>The answer: ptrA to 6, ptrB to NULL, ptrC to 6, ptrD to Garbage.</figcaption></figure><p>After line 7, ptrD still holds the old address, but that memory is no longer the program's: reading it gives an unknown value (Garbage). The 5 is the value that was deleted, so ptrD does not point at 5. A program that prints each value:</p><pre data-component="cpp-highlight"><code>#include &lt;iostream&gt;
+
+using namespace std;
+
+int main() {
+    int* ptrA = new int(5);
+    int* ptrB = ptrA;
+    int* ptrC = new int(6);
+    ptrA = ptrC;
+    int* ptrD = ptrB;
+    ptrB = NULL;
+    delete ptrD;
+    cout &lt;&lt; &quot;ptrA -&gt; &quot; &lt;&lt; *ptrA &lt;&lt; endl;
+    cout &lt;&lt; &quot;ptrB -&gt; &quot; &lt;&lt; (ptrB == NULL ? &quot;NULL&quot; : &quot;not NULL&quot;) &lt;&lt; endl;
+    cout &lt;&lt; &quot;ptrC -&gt; &quot; &lt;&lt; *ptrC &lt;&lt; endl;
+    cout &lt;&lt; &quot;ptrD -&gt; deleted memory (Garbage)&quot; &lt;&lt; endl;
+    delete ptrC;
+    return 0;
+}</code></pre><pre>ptrA -&gt; 6
+ptrB -&gt; NULL
+ptrC -&gt; 6
+ptrD -&gt; deleted memory (Garbage)</pre><p>A second program reads <code>*ptrD</code> after the delete. It prints a value that cannot be predicted, and valgrind reports the read:</p><pre data-component="cpp-highlight"><code>    delete ptrD;
+    cout &lt;&lt; &quot;ptrA -&gt; &quot; &lt;&lt; *ptrA &lt;&lt; endl;
+    cout &lt;&lt; &quot;ptrB -&gt; &quot; &lt;&lt; (ptrB == NULL ? &quot;NULL&quot; : &quot;not NULL&quot;) &lt;&lt; endl;
+    cout &lt;&lt; &quot;ptrC -&gt; &quot; &lt;&lt; *ptrC &lt;&lt; endl;
+    cout &lt;&lt; &quot;ptrD -&gt; &quot; &lt;&lt; *ptrD &lt;&lt; endl;</code></pre><pre>Invalid read of size 4</pre></div></section></section><section class="question" id="pp-eo2-2024"><p class="question-label">From past papers · EO2 2024, question 6.3 (3 marks)</p><h3>What does modify() do to the list?</h3><blockquote class="past-paper-quote"><p>Question 6 6 ........................................ (12 marks)</p><p>Consider the following singly linked list class and node struct:</p></blockquote><pre>1      struct Node{
+2          float data;
+3          Node* next;
+4          Node(float d, Node* n) : data(d), next(n) {}
+5      };
+6      class List{
+7          private:
+8              Node* head;
+9          public:
+10             List();
+11             ~List();
+12             friend istream &amp;operator&gt;&gt;(istream&amp; in, List&amp; list);
+13             friend ostream &amp;operator&lt;&lt;(ostream&amp; in, List&amp; list);
+14             int countOccurrences(float val) const;
+15     };</pre><p class="code-caption">As printed on the paper. Line 13 names the <code>ostream&amp;</code> parameter <code>in</code> [sic].</p><blockquote class="past-paper-quote"><p>6.3 Suppose the following function was added to the <code>List</code> class:</p></blockquote><pre>void modify() {
+        Node* current = head;
+        Node* prev = NULL;
+        Node* temp;
+
+        while (current != NULL) {
+            temp = current-&gt;next;
+            current-&gt;next = prev;
+            prev = current;
+            current = temp;
+        }
+
+        head = prev;
+}</pre><p class="code-caption">As printed on the paper.</p><blockquote class="past-paper-quote"><p>Consider the following <code>main</code> function, which includes a call to the <code>modify</code> function. The assumption is that the input and output operators have been correctly overloaded to prepend values and print all elements starting from the <code>head</code> node, respectively. Assume that the user enters 2, 4, and 6 as keyboard inputs.</p></blockquote><pre>int main() {
+    List list;
+    cin &gt;&gt; list; // 2 is entered on the keyboard;
+    cin &gt;&gt; list; // 4 is entered on the keyboard;
+    cin &gt;&gt; list; // 6 is entered on the keyboard;
+
+    list.modify();
+
+    cout &lt;&lt; list;
+
+    return 0;
+}</pre><p class="code-caption">As printed on the paper.</p><blockquote class="past-paper-quote"><p>What will be the output of the program above?</p></blockquote><p>Question 6.3 is worth 3 marks. The page header says "Examination Opportunity 1" [sic], on the EO2 paper of 25 October 2024.</p><p><strong>Write this before you open the solution.</strong></p><section class="reveal" data-component="practice-reveal" id="pp-eo2-2024-reveal"><button type="button" data-practice-toggle aria-expanded="false">Show the solution</button><div id="pp-eo2-2024-solution" class="reveal__body" data-practice-solution hidden><p><strong>Step 1: the list before modify.</strong> Each input is prepended (added at the front). 2 goes in first, then 4 goes in front of it, then 6 goes in front of that. So the list is 6, 4, 2:</p><figure class="teaching-figure" id="pp-eo2-2024-before"><p class="code-caption"><a href="assets/diagrams/pp_mem_eo2_before.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_mem_eo2_before_m.svg"><img src="assets/diagrams/pp_mem_eo2_before.svg" alt="Memory diagram: list.head points at node 6; 6 next points at 4; 4 next points at 2; 2 next is NULL."></picture><figcaption>The list after the three inputs, before modify().</figcaption></figure><p><strong>Step 2: trace the loop.</strong> Each pass turns one next pointer around, so it points back at the node before it. The four lines of the loop body, in pass 1 (current is node 6, prev is NULL):</p><ol><li><code>temp = current-&gt;next;</code> temp keeps node 4, the rest of the list, so it is not lost.</li><li><code>current-&gt;next = prev;</code> node 6 now points back at prev, which is NULL.</li><li><code>prev = current;</code> prev moves to node 6.</li><li><code>current = temp;</code> current moves to node 4.</li></ol><p>Passes 2 and 3 do the same for nodes 4 and 2. The table shows the pointers at the end of each pass:</p><table class="attribute-table"><thead><tr><th scope="col">Condition</th><th scope="col">True means</th><th scope="col">False means</th></tr></thead><tbody><tr><td><code>current != NULL</code></td><td>there is another node to turn around</td><td>every node is turned: set head to prev</td></tr></tbody></table><table class="attribute-table"><caption>From a run of modify() with a print after each pass.</caption><thead><tr><th scope="col">Pass</th><th scope="col">prev</th><th scope="col">current</th><th scope="col">Where each next pointer points</th></tr></thead><tbody><tr><td>1</td><td>6</td><td>4</td><td>6 &rarr; NULL, 4 &rarr; 2, 2 &rarr; NULL</td></tr><tr><td>2</td><td>4</td><td>2</td><td>6 &rarr; NULL, 4 &rarr; 6, 2 &rarr; NULL</td></tr><tr><td>3</td><td>2</td><td>NULL</td><td>6 &rarr; NULL, 4 &rarr; 6, 2 &rarr; 4</td></tr></tbody></table><p>After the loop, prev points at node 2, the last node of the old list. <code>head = prev;</code> makes it the first node:</p><figure class="teaching-figure" id="pp-eo2-2024-after"><p class="code-caption"><a href="assets/diagrams/pp_mem_eo2_after.svg" target="_blank" rel="noopener">Open the diagram full size</a></p><picture><source media="(max-width: 900px)" srcset="assets/diagrams/pp_mem_eo2_after_m.svg"><img src="assets/diagrams/pp_mem_eo2_after.svg" alt="Memory diagram: list.head points at node 2; 2 next points at 4; 4 next points at 6; 6 next is NULL."></picture><figcaption>The list after modify(): the order is reversed.</figcaption></figure><p><strong>Answer:</strong> the output is <code>2 4 6</code>. modify() reverses the list.</p><p>A run of the same code. A string stream stands in for the keyboard, and the program also prints the list once before modify():</p><pre data-component="cpp-highlight"><code>int main() {
+    istringstream keyboard(&quot;2 4 6&quot;);  // stands in for cin: the user enters 2, 4 and 6
+    List list;
+    keyboard &gt;&gt; list;
+    keyboard &gt;&gt; list;
+    keyboard &gt;&gt; list;
+    cout &lt;&lt; list;
+    list.modify();
+    cout &lt;&lt; list;
+    return 0;
+}</code></pre><pre>6 4 2 
+2 4 6 </pre><section class="block block--caution"><p class="block__label">Assumed</p><p>The paper does not give the output operator. The solution assumes it prints each value followed by a space, as the program above does. The exact spacing in the memo is not known.</p></section></div></section></section></section>
+  </main>
+  <footer class="site-footer"><div class="site-footer__inner">Swift Tuition | COS 110</div></footer>
+</body>
+</html>

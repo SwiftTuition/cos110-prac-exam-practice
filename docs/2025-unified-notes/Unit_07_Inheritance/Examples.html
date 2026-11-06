@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 7: Introduction to Inheritance - Examples | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card h4 {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: #10b981;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code,
+        .content-card h1 code,
+        .content-card h2 code,
+        .content-card h3 code,
+        .content-card h4 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        .step-box {
+            background: #0c1222;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .step-box h4 {
+            color: #10b981;
+            margin-top: 0;
+        }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #1a2d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 7: Introduction to Inheritance</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html" class="active">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Worked Examples</h2>
+
+            <p>
+                These examples show complete implementations of inheritance in different contexts. Each example includes experimental suggestions to help you understand what happens when you modify the code.
+            </p>
+
+            <div class="info-box">
+                <strong>How to use these examples:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Read the explanation before looking at the code</li>
+                    <li>Run the code to see how it works</li>
+                    <li>Try the experimental suggestions to deepen your understanding</li>
+                    <li>Pay attention to constructor/destructor execution order</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Example 1: Basic Inheritance -->
+        <section class="content-card">
+            <h2>Example 1: Basic Inheritance - Shape and Circle</h2>
+
+            <h3>Problem</h3>
+            <p>
+                Create a <code>Shape</code> base class that stores a color, and a <code>Circle</code> derived class that adds a radius and calculates area. This demonstrates the fundamentals of inheritance.
+            </p>
+
+            <h3>Approach</h3>
+            <p>
+                We'll create a base class with protected members so derived classes can access them. The <code>Circle</code> class will inherit from <code>Shape</code> and add circle-specific functionality.
+            </p>
+
+            <div class="step-box">
+                <h4>Step 1: Design the base class</h4>
+                <p>
+                    The <code>Shape</code> class has a <code>color</code> member and a constructor to initialize it. We make <code>color</code> protected so <code>Circle</code> can access it.
+                </p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Design the derived class</h4>
+                <p>
+                    <code>Circle</code> inherits from <code>Shape</code> using <code>class Circle : public Shape</code>. It adds a <code>radius</code> member and provides functions to calculate area and display information.
+                </p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Call the base constructor</h4>
+                <p>
+                    In the <code>Circle</code> constructor, we use the initializer list to call the <code>Shape</code> constructor and pass it the color: <code>Circle(string c, double r) : Shape(c), radius(r) { }</code>
+                </p>
+            </div>
+
+            <h3>Complete Solution</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Example 1: Shape → Circle</div>
+                </div>
+
+                <textarea id="editor1">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Shape {
+public:
+    Shape(string c) : color(c) {
+        cout << "Shape constructor called (color: " << color << ")" << endl;
+    }
+
+    ~Shape() {
+        cout << "Shape destructor called" << endl;
+    }
+
+    string getColor() const {
+        return color;
+    }
+
+protected:
+    string color;
+};
+
+class Circle : public Shape {
+public:
+    Circle(string c, double r) : Shape(c), radius(r) {
+        cout << "Circle constructor called (radius: " << radius << ")" << endl;
+    }
+
+    ~Circle() {
+        cout << "Circle destructor called" << endl;
+    }
+
+    double getArea() const {
+        return 3.14159 * radius * radius;
+    }
+
+    void displayInfo() const {
+        cout << "\n=== Circle Info ===" << endl;
+        cout << "Color: " << color << endl;
+        cout << "Radius: " << radius << endl;
+        cout << "Area: " << getArea() << endl;
+    }
+
+private:
+    double radius;
+};
+
+int main() {
+    cout << "Creating a Circle object:" << endl;
+    cout << "------------------------" << endl;
+
+    Circle myCircle("Red", 5.0);
+
+    myCircle.displayInfo();
+
+    cout << "\nDestroying the Circle object:" << endl;
+    cout << "-----------------------------" << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading1" class="loading-indicator">Running...</div>
+                        <div id="output1" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Key Observations</h3>
+            <ul>
+                <li>The <code>Shape</code> constructor runs before the <code>Circle</code> constructor</li>
+                <li>The <code>Circle</code> destructor runs before the <code>Shape</code> destructor (reverse order)</li>
+                <li><code>Circle</code> can access <code>color</code> directly because it's <code>protected</code></li>
+                <li>The <code>Circle</code> object contains both <code>color</code> (from Shape) and <code>radius</code> (its own)</li>
+            </ul>
+
+            <h3>Experimental Suggestions</h3>
+            <button class="reveal-btn" onclick="toggleReveal('exp1')">Show Experiments</button>
+            <div class="answer-section" id="exp1">
+                <h4>Experiment 1: Change color to private</h4>
+                <p>
+                    Change <code>protected:</code> to <code>private:</code> in the <code>Shape</code> class. What error do you get in <code>displayInfo()</code>? Why? How would you fix it?
+                </p>
+
+                <h4>Experiment 2: Remove the base constructor call</h4>
+                <p>
+                    In the <code>Circle</code> constructor, remove <code>: Shape(c)</code> so it's just <code>Circle(string c, double r) : radius(r) { }</code>. What error do you get? Why does this happen?
+                </p>
+
+                <h4>Experiment 3: Add another derived class</h4>
+                <p>
+                    Create a <code>Rectangle</code> class that also inherits from <code>Shape</code>. Add <code>width</code> and <code>height</code> members. Implement <code>getArea()</code> for rectangles. Create one Circle and one Rectangle in <code>main()</code>.
+                </p>
+
+                <h4>Experiment 4: Add a print function to Shape</h4>
+                <p>
+                    Add <code>void print() const { cout << "I am a " << color << " shape" << endl; }</code> to <code>Shape</code>. Call <code>myCircle.print()</code> in <code>main()</code>. Does it work? Why?
+                </p>
+            </div>
+        </section>
+
+        <!-- Example 2: My Hero Academia - Quirk Inheritance -->
+        <section class="content-card">
+            <h2>Example 2: My Hero Academia - Hero Quirks</h2>
+
+            <div class="info-box">
+                <strong>Context:</strong> In My Hero Academia, an anime where heroes have special powers called "quirks," different heroes inherit common traits but have unique quirk abilities. Let's model this system using inheritance.
+            </div>
+
+            <h3>Problem</h3>
+            <p>
+                Create a <code>Hero</code> base class with common hero attributes (name, power level), and derived classes for specific heroes with unique quirks. Demonstrate function redefinition and constructor chaining.
+            </p>
+
+            <h3>Approach</h3>
+            <p>
+                The base <code>Hero</code> class provides a generic <code>useQuirk()</code> function. Derived classes like <code>ExplosionHero</code> and <code>IceHero</code> redefine this function to show their specific quirk abilities.
+            </p>
+
+            <div class="step-box">
+                <h4>Step 1: Base class with protected members</h4>
+                <p>
+                    <code>Hero</code> has <code>name</code> and <code>powerLevel</code> as protected members. This allows derived classes to access them while keeping them hidden from main().
+                </p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Generic quirk function</h4>
+                <p>
+                    The base class <code>useQuirk()</code> function is generic and will be redefined by each derived hero type.
+                </p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Derived classes redefine useQuirk()</h4>
+                <p>
+                    Each hero type provides its own specific implementation of <code>useQuirk()</code> with the exact same signature (name and parameters).
+                </p>
+            </div>
+
+            <h3>Complete Solution</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Example 2: Hero Quirks</div>
+                </div>
+
+                <textarea id="editor2">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Hero {
+public:
+    Hero(string n, int power) : name(n), powerLevel(power) {
+        cout << "Hero " << name << " registered!" << endl;
+    }
+
+    ~Hero() {
+        cout << "Hero " << name << " signing off" << endl;
+    }
+
+    void useQuirk() const {
+        cout << name << " uses a generic quirk!" << endl;
+    }
+
+    void displayInfo() const {
+        cout << "Hero: " << name << endl;
+        cout << "Power Level: " << powerLevel << endl;
+    }
+
+protected:
+    string name;
+    int powerLevel;
+};
+
+class ExplosionHero : public Hero {
+public:
+    ExplosionHero(string n, int power, int explosionRadius)
+        : Hero(n, power), blastRadius(explosionRadius) {
+        cout << "Explosion quirk activated!" << endl;
+    }
+
+    void useQuirk() const {
+        cout << name << " creates massive explosions!" << endl;
+        cout << "Blast radius: " << blastRadius << " meters" << endl;
+        cout << "Power output: " << (powerLevel * blastRadius) << endl;
+    }
+
+private:
+    int blastRadius;
+};
+
+class IceHero : public Hero {
+public:
+    IceHero(string n, int power, double freezeTemp)
+        : Hero(n, power), temperature(freezeTemp) {
+        cout << "Ice quirk activated!" << endl;
+    }
+
+    void useQuirk() const {
+        cout << name << " unleashes ice powers!" << endl;
+        cout << "Freeze temperature: " << temperature << " degrees" << endl;
+        cout << "Ice coverage: " << (powerLevel * 0.5) << " square meters" << endl;
+    }
+
+private:
+    double temperature;
+};
+
+int main() {
+    cout << "=== Hero Academia Training ===" << endl;
+    cout << endl;
+
+    ExplosionHero bakugo("Katsuki Bakugo", 85, 10);
+    cout << endl;
+
+    IceHero todoroki("Shoto Todoroki", 90, -50.0);
+    cout << endl;
+
+    cout << "=== Quirk Demonstration ===" << endl;
+    cout << endl;
+
+    bakugo.displayInfo();
+    bakugo.useQuirk();
+    cout << endl;
+
+    todoroki.displayInfo();
+    todoroki.useQuirk();
+    cout << endl;
+
+    cout << "=== Training Complete ===" << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading2" class="loading-indicator">Running...</div>
+                        <div id="output2" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Key Observations</h3>
+            <ul>
+                <li>Each derived class calls the <code>Hero</code> constructor via the initializer list</li>
+                <li><code>useQuirk()</code> is redefined in each derived class with the same signature</li>
+                <li>When you call <code>bakugo.useQuirk()</code>, the <code>ExplosionHero</code> version runs</li>
+                <li>Constructor output shows base class constructor runs first</li>
+                <li>Protected members allow derived classes to use <code>name</code> and <code>powerLevel</code> directly</li>
+            </ul>
+
+            <h3>Experimental Suggestions</h3>
+            <button class="reveal-btn" onclick="toggleReveal('exp2')">Show Experiments</button>
+            <div class="answer-section" id="exp2">
+                <h4>Experiment 1: Add a third hero type</h4>
+                <p>
+                    Create an <code>ElectricHero</code> class with a <code>voltage</code> member. Redefine <code>useQuirk()</code> to show electric powers. Add it to <code>main()</code>.
+                </p>
+
+                <h4>Experiment 2: Call the base class version</h4>
+                <p>
+                    In <code>ExplosionHero::useQuirk()</code>, add <code>Hero::useQuirk();</code> as the first line. What happens? This shows how to call the base class version of a redefined function.
+                </p>
+
+                <h4>Experiment 3: What if signatures don't match?</h4>
+                <p>
+                    In <code>IceHero</code>, change <code>useQuirk()</code> to <code>useQuirk(int duration)</code>. Does this redefine or overload? Call both <code>todoroki.useQuirk()</code> and <code>todoroki.useQuirk(5)</code> in main().
+                </p>
+
+                <h4>Experiment 4: Add a stamina system</h4>
+                <p>
+                    Add an <code>int stamina</code> protected member to <code>Hero</code>. Modify <code>useQuirk()</code> in derived classes to decrease stamina each time it's called. Add a <code>hasStamina()</code> function.
+                </p>
+            </div>
+        </section>
+
+        <!-- Example 3: Attack on Titan - Military Hierarchy -->
+        <section class="content-card">
+            <h2>Example 3: Attack on Titan - Military Hierarchy</h2>
+
+            <div class="info-box">
+                <strong>Context:</strong> In Attack on Titan, an anime where soldiers are organized into different military branches, we can model the Scout Regiment hierarchy with inheritance.
+            </div>
+
+            <h3>Problem</h3>
+            <p>
+                Create a military system where <code>Soldier</code> is the base class, and specialized units like <code>ScoutRegiment</code> and <code>GarrisonRegiment</code> inherit from it. Demonstrate copy constructors in inheritance and function redefinition for specialized duties.
+            </p>
+
+            <h3>Approach</h3>
+            <p>
+                This is more advanced because we'll implement copy constructors that properly handle inheritance. We'll also show how each regiment type has different duties.
+            </p>
+
+            <div class="step-box">
+                <h4>Step 1: Base Soldier class with copy constructor</h4>
+                <p>
+                    <code>Soldier</code> has name, rank, and kill count. We implement a copy constructor that creates a proper copy.
+                </p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 2: Derived classes with specialized members</h4>
+                <p>
+                    <code>ScoutRegiment</code> adds <code>titansKilled</code> and <code>expeditionCount</code>. <code>GarrisonRegiment</code> adds <code>wallDefenseScore</code>.
+                </p>
+            </div>
+
+            <div class="step-box">
+                <h4>Step 3: Copy constructor in derived class</h4>
+                <p>
+                    The derived class copy constructor must call the base class copy constructor: <code>ScoutRegiment(const ScoutRegiment& other) : Soldier(other)</code>
+                </p>
+            </div>
+
+            <h3>Complete Solution</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Example 3: Military Hierarchy</div>
+                </div>
+
+                <textarea id="editor3">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Soldier {
+public:
+    Soldier(string n, string r) : name(n), rank(r), kills(0) {
+        cout << rank << " " << name << " enlisted" << endl;
+    }
+
+    Soldier(const Soldier& other) : name(other.name), rank(other.rank), kills(other.kills) {
+        cout << "Copying soldier: " << name << endl;
+    }
+
+    virtual ~Soldier() {
+        cout << rank << " " << name << " honorably discharged" << endl;
+    }
+
+    void reportDuty() const {
+        cout << rank << " " << name << " reporting for duty!" << endl;
+    }
+
+protected:
+    string name;
+    string rank;
+    int kills;
+};
+
+class ScoutRegiment : public Soldier {
+public:
+    ScoutRegiment(string n, string r, int expeditions)
+        : Soldier(n, r), expeditionCount(expeditions), titansKilled(0) {
+        cout << name << " joined the Scout Regiment" << endl;
+    }
+
+    ScoutRegiment(const ScoutRegiment& other)
+        : Soldier(other), expeditionCount(other.expeditionCount),
+          titansKilled(other.titansKilled) {
+        cout << "Copying scout: " << name << endl;
+    }
+
+    void reportDuty() const {
+        cout << rank << " " << name << " from Scout Regiment!" << endl;
+        cout << "Expeditions: " << expeditionCount << endl;
+        cout << "Titans eliminated: " << titansKilled << endl;
+    }
+
+    void goOnExpedition() {
+        expeditionCount++;
+        titansKilled += 2;
+        cout << name << " completed expedition #" << expeditionCount << endl;
+    }
+
+private:
+    int expeditionCount;
+    int titansKilled;
+};
+
+class GarrisonRegiment : public Soldier {
+public:
+    GarrisonRegiment(string n, string r, int defenseScore)
+        : Soldier(n, r), wallDefenseScore(defenseScore) {
+        cout << name << " joined the Garrison Regiment" << endl;
+    }
+
+    void reportDuty() const {
+        cout << rank << " " << name << " from Garrison Regiment!" << endl;
+        cout << "Wall defense score: " << wallDefenseScore << endl;
+    }
+
+    void defendWall() {
+        wallDefenseScore += 10;
+        cout << name << " successfully defended the wall!" << endl;
+    }
+
+private:
+    int wallDefenseScore;
+};
+
+int main() {
+    cout << "=== Military Recruitment ===" << endl;
+    cout << endl;
+
+    ScoutRegiment eren("Eren Yeager", "Cadet", 0);
+    GarrisonRegiment hannes("Hannes", "Squad Leader", 75);
+    cout << endl;
+
+    cout << "=== Duty Reports ===" << endl;
+    cout << endl;
+    eren.reportDuty();
+    cout << endl;
+    hannes.reportDuty();
+    cout << endl;
+
+    cout << "=== Mission Execution ===" << endl;
+    cout << endl;
+    eren.goOnExpedition();
+    eren.goOnExpedition();
+    hannes.defendWall();
+    cout << endl;
+
+    eren.reportDuty();
+    cout << endl;
+
+    cout << "=== Testing Copy Constructor ===" << endl;
+    ScoutRegiment erenCopy = eren;
+    cout << endl;
+
+    cout << "=== End of Service ===" << endl;
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading3" class="loading-indicator">Running...</div>
+                        <div id="output3" class="output-text output-placeholder">Click "Run Code" to see the output...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Key Observations</h3>
+            <ul>
+                <li>The copy constructor in <code>ScoutRegiment</code> calls <code>Soldier(other)</code> to copy base class members</li>
+                <li>Each regiment redefines <code>reportDuty()</code> to show regiment-specific information</li>
+                <li>The <code>virtual</code> keyword on the destructor ensures proper cleanup (more on this in later units)</li>
+                <li>Derived classes add their own methods (<code>goOnExpedition()</code>, <code>defendWall()</code>) beyond what they inherit</li>
+            </ul>
+
+            <h3>Experimental Suggestions</h3>
+            <button class="reveal-btn" onclick="toggleReveal('exp3')">Show Experiments</button>
+            <div class="answer-section" id="exp3">
+                <h4>Experiment 1: Add assignment operator</h4>
+                <p>
+                    Implement <code>operator=</code> for <code>ScoutRegiment</code>. Remember to call the base class assignment operator: <code>Soldier::operator=(other);</code>
+                </p>
+
+                <h4>Experiment 2: What happens without calling base copy constructor?</h4>
+                <p>
+                    Remove <code>: Soldier(other)</code> from the <code>ScoutRegiment</code> copy constructor. What values do <code>name</code> and <code>rank</code> have in the copy? Why?
+                </p>
+
+                <h4>Experiment 3: Add a third regiment</h4>
+                <p>
+                    Create a <code>MilitaryPolice</code> class with <code>prestigeLevel</code>. Add methods specific to the Military Police. Create an object in <code>main()</code>.
+                </p>
+
+                <h4>Experiment 4: Store soldiers in an array</h4>
+                <p>
+                    Try creating an array: <code>Soldier* squad[3];</code> and storing pointers to different regiment types. Call <code>reportDuty()</code> on each. What happens?
+                </p>
+            </div>
+        </section>
+
+        <!-- Example 4: Find the Bug -->
+        <section class="content-card">
+            <h2>Example 4: Find the Bug - Broken Animal Hierarchy</h2>
+
+            <h3>Problem</h3>
+            <p>
+                The code below attempts to create an <code>Animal</code> base class and a <code>Dog</code> derived class, but it has several inheritance-related bugs. Your job is to find them all.
+            </p>
+
+            <div class="warning-box">
+                <strong>Challenge:</strong> There are 4 bugs in this code. Try to find them all before revealing the answer. The code won't compile as-is.
+            </div>
+
+            <h3>Buggy Code</h3>
+
+            <section class="playground">
+                <div class="playground-header">
+                    <div class="playground-title">Example 4: Find the Bugs</div>
+                </div>
+
+                <textarea id="editor4">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Animal {
+public:
+    Animal(string n, int a) {
+        name = n;
+        age = a;
+    }
+
+    void makeSound() {
+        cout << name << " makes a sound" << endl;
+    }
+
+private:
+    string name;
+    int age;
+};
+
+class Dog : public Animal {
+public:
+    Dog(string n, int a, string b) {
+        breed = b;
+    }
+
+    void makeSound() {
+        cout << name << " barks!" << endl;
+    }
+
+    void displayInfo() {
+        cout << "Name: " << name << endl;
+        cout << "Age: " << age << endl;
+        cout << "Breed: " << breed << endl;
+    }
+
+private:
+    string breed;
+};
+
+int main() {
+    Dog myDog("Buddy", 3, "Golden Retriever");
+    myDog.makeSound();
+    myDog.displayInfo();
+
+    return 0;
+}</textarea>
+
+                <div class="playground-controls">
+                    <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                    <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-label">Output:</div>
+                    <div class="output-box">
+                        <div id="loading4" class="loading-indicator">Running...</div>
+                        <div id="output4" class="output-text output-placeholder">Click "Run Code" to see the errors...</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3>Find the Bugs</h3>
+            <p>
+                Try to identify all the bugs before revealing the solution. Think about:
+            </p>
+            <ul>
+                <li>How do constructors work in inheritance?</li>
+                <li>What can derived classes access from base classes?</li>
+                <li>How should member variables be initialized?</li>
+            </ul>
+
+            <button class="reveal-btn" onclick="toggleReveal('bugs')">Reveal Bugs and Solution</button>
+            <div class="answer-section" id="bugs">
+                <h3>Bug #1: Constructor doesn't call base constructor</h3>
+                <p>
+                    <strong>Location:</strong> <code>Dog</code> constructor<br>
+                    <strong>Problem:</strong> The <code>Dog</code> constructor doesn't call the <code>Animal</code> constructor, so <code>name</code> and <code>age</code> are never initialized.<br>
+                    <strong>Fix:</strong> <code>Dog(string n, int a, string b) : Animal(n, a), breed(b) { }</code>
+                </p>
+
+                <h3>Bug #2: Accessing private base class members</h3>
+                <p>
+                    <strong>Location:</strong> <code>Dog::makeSound()</code> and <code>Dog::displayInfo()</code><br>
+                    <strong>Problem:</strong> Trying to access <code>name</code> and <code>age</code> directly, but they're <code>private</code> in <code>Animal</code>.<br>
+                    <strong>Fix:</strong> Either change <code>name</code> and <code>age</code> to <code>protected</code> in Animal, or add public getter functions.
+                </p>
+
+                <h3>Bug #3: Initializing members in constructor body</h3>
+                <p>
+                    <strong>Location:</strong> <code>Animal</code> constructor<br>
+                    <strong>Problem:</strong> Using assignment in the constructor body instead of the initializer list is less efficient.<br>
+                    <strong>Fix:</strong> <code>Animal(string n, int a) : name(n), age(a) { }</code>
+                </p>
+
+                <h3>Bug #4: breed member not initialized in initializer list</h3>
+                <p>
+                    <strong>Location:</strong> <code>Dog</code> constructor<br>
+                    <strong>Problem:</strong> <code>breed</code> should be initialized in the initializer list.<br>
+                    <strong>Fix:</strong> Include it in the fixed version from Bug #1.
+                </p>
+
+                <h3>Corrected Code</h3>
+<pre><code class="language-cpp">class Animal {
+public:
+    Animal(string n, int a) : name(n), age(a) { }  // Bug #3 fixed
+
+    void makeSound() {
+        cout << name << " makes a sound" << endl;
+    }
+
+    string getName() const { return name; }  // Add getter
+    int getAge() const { return age; }       // Add getter
+
+protected:  // Bug #2 fixed: changed to protected
+    string name;
+    int age;
+};
+
+class Dog : public Animal {
+public:
+    Dog(string n, int a, string b)
+        : Animal(n, a), breed(b) { }  // Bug #1 and #4 fixed
+
+    void makeSound() {
+        cout << name << " barks!" << endl;  // Now accessible
+    }
+
+    void displayInfo() {
+        cout << "Name: " << name << endl;
+        cout << "Age: " << age << endl;
+        cout << "Breed: " << breed << endl;
+    }
+
+private:
+    string breed;
+};</code></pre>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script>
+        const editors = {};
+        const originalCode = {};
+
+        function initEditor(id) {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initEditor('editor1');
+            initEditor('editor2');
+            initEditor('editor3');
+            initEditor('editor4');
+            Prism.highlightAll();
+        });
+
+        function toggleReveal(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('visible');
+
+            const button = event.target;
+            if (section.classList.contains('visible')) {
+                button.textContent = button.textContent.replace('Show', 'Hide');
+            } else {
+                button.textContent = button.textContent.replace('Hide', 'Show');
+            }
+        }
+
+        async function runCode(playgroundId) {
+            const editorId = playgroundId.replace('playground', 'editor');
+            const outputId = playgroundId.replace('playground', 'output');
+            const loadingId = playgroundId.replace('playground', 'loading');
+
+            const code = editors[editorId].getValue();
+            const outputEl = document.getElementById(outputId);
+            const loadingEl = document.getElementById(loadingId);
+            const runBtn = event.target;
+
+            loadingEl.classList.add('active');
+            if (runBtn) runBtn.disabled = true;
+            outputEl.textContent = '';
+            outputEl.className = 'output-text output-placeholder';
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            name: 'main.cpp',
+                            content: code
+                        }],
+                        args: ['-std=c++98'],
+                        compile_timeout: 10000,
+                        run_timeout: 3000,
+                        compile_memory_limit: -1,
+                        run_memory_limit: -1
+                    })
+                });
+
+                const result = await response.json();
+
+                let output = '';
+                if (result.compile && result.compile.output) {
+                    output += '=== COMPILATION OUTPUT ===\n';
+                    output += result.compile.output + '\n\n';
+                }
+
+                if (result.run) {
+                    if (result.run.output) {
+                        output += result.run.output;
+                        outputEl.className = 'output-text output-success';
+                    }
+                    if (result.run.stderr) {
+                        output += '\n=== ERRORS ===\n';
+                        output += result.run.stderr;
+                        outputEl.className = 'output-text output-error';
+                    }
+                }
+
+                outputEl.textContent = output || 'No output produced.';
+
+            } catch (error) {
+                outputEl.textContent = 'Error: Could not execute code.\n\n' + error.message;
+                outputEl.className = 'output-text output-error';
+            } finally {
+                loadingEl.classList.remove('active');
+                if (runBtn) runBtn.disabled = false;
+            }
+        }
+
+        function resetCode(editorId) {
+            const outputId = editorId.replace('editor', 'output');
+            editors[editorId].setValue(originalCode[editorId]);
+
+            const outputEl = document.getElementById(outputId);
+            outputEl.textContent = 'Click "Run Code" to see the output...';
+            outputEl.className = 'output-text output-placeholder';
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

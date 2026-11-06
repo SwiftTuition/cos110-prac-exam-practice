@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 7: Introduction to Inheritance - Quiz | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        .quiz-question-box {
+            background: #1e293b;
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-number-badge {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-question-box h3 {
+            color: #a78bfa;
+            margin-top: 0;
+        }
+
+        .quiz-reveal-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: white;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .quiz-reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        .quiz-answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #8b5cf6;
+        }
+
+        .quiz-answer-section.visible {
+            display: block;
+        }
+
+        .quiz-answer-section strong {
+            color: #a78bfa;
+        }
+
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 7: Introduction to Inheritance</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html" class="active">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Assessment Quiz</h2>
+
+            <p>
+                This quiz contains 28 questions covering inheritance concepts. These questions are modeled after EO1 exam question formats and test your understanding at exam level.
+            </p>
+
+            <div class="info-box">
+                <strong>Instructions:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Try to answer each question before revealing the solution</li>
+                    <li>Read all options carefully for multiple choice questions</li>
+                    <li>For code tracing, work through line by line on paper first</li>
+                    <li>This is practice - use it to identify areas needing review</li>
+                </ul>
+            </div>
+
+            <div class="info-box" style="border-left-color: #f59e0b; background: #1f2937;">
+                <strong style="color: #fbbf24;">⚠️ Known Display Issue:</strong>
+                <p style="margin-top: 0.5rem; color: #d1d5db;">
+                    If you click "Show Answer" and the solution appears as a black box or doesn't display properly,
+                    just <strong>click anywhere on the screen</strong> (on the page background, scroll bar, or near the answer area).
+                    This will trigger the content to fully render. I've tried to fix this rendering bug multiple times,
+                    but it persists - so this is the workaround for now! Sorry for the inconvenience.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 1: Multiple Choice (10 questions) -->
+
+        <!-- Question 1 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 1</div>
+            <h3>Basic Inheritance Syntax</h3>
+            <p>Which of the following correctly declares a class <code>Dog</code> that inherits from class <code>Animal</code>?</p>
+            <ol type="A">
+                <li><code>class Dog extends Animal { };</code></li>
+                <li><code>class Dog : Animal { };</code></li>
+                <li><code>class Dog : public Animal { };</code></li>
+                <li><code>class Dog inherits Animal { };</code></li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer1')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer1">
+                <p><strong>Answer:</strong> C - <code>class Dog : public Animal { };</code></p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>C++ uses a colon (<code>:</code>) followed by an access specifier (<code>public</code>, <code>protected</code>, or <code>private</code>) and the base class name. Public inheritance is the most common and preserves the access levels of inherited members.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - <code>extends</code> is Java syntax, not C++.</li>
+                    <li><strong>B:</strong> Incorrect - Missing the access specifier. Without it, the default is <code>private</code> inheritance, which is rarely what you want. Always be explicit with <code>public</code>.</li>
+                    <li><strong>D:</strong> Incorrect - <code>inherits</code> is not valid C++ syntax.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 2 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 2</div>
+            <h3>What Gets Inherited?</h3>
+            <p>Which of the following is NOT inherited by a derived class?</p>
+            <ol type="A">
+                <li>Public member functions</li>
+                <li>Protected member variables</li>
+                <li>Constructors</li>
+                <li>Private member variables</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer2')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer2">
+                <p><strong>Answer:</strong> C - Constructors</p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>Constructors are NOT inherited. Each class must define its own constructors because a derived class has additional members that the base class constructor doesn't know about. The derived class constructor must call a base class constructor explicitly via the initializer list.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - Public member functions ARE inherited and become public members of the derived class.</li>
+                    <li><strong>B:</strong> Incorrect - Protected member variables ARE inherited. They're accessible from the derived class but not from outside the hierarchy.</li>
+                    <li><strong>D:</strong> Incorrect - Private member variables ARE inherited (they exist in the derived object), but they're not accessible from derived class member functions. The derived class must use public/protected accessors to work with them.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 3 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 3</div>
+            <h3>Protected Access Specifier</h3>
+            <p>What is the key difference between <code>private</code> and <code>protected</code> members?</p>
+            <ol type="A">
+                <li>Protected members can be accessed from main(), private members cannot</li>
+                <li>Protected members can be accessed by derived classes, private members cannot</li>
+                <li>Protected members are faster to access than private members</li>
+                <li>Protected members can only be used with inheritance, private members cannot</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer3')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer3">
+                <p><strong>Answer:</strong> B - Protected members can be accessed by derived classes, private members cannot</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>The <code>protected</code> access specifier creates a "middle ground." Protected members are accessible from within the defining class AND from derived classes, but NOT from outside code (like <code>main()</code>). Private members are only accessible from within the defining class itself.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - Protected members are NOT accessible from <code>main()</code> or any other external code. They're still hidden from the outside world, just like private members.</li>
+                    <li><strong>C:</strong> Incorrect - Access specifiers don't affect performance. They're compile-time checks. At runtime, all member access has the same performance.</li>
+                    <li><strong>D:</strong> Incorrect - Private members work exactly the same whether or not inheritance is used. Protected is specifically designed for inheritance hierarchies.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 4 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 4</div>
+            <h3>Constructor Execution Order</h3>
+            <p>When a derived class object is created, in what order are constructors executed?</p>
+            <ol type="A">
+                <li>Derived class constructor, then base class constructor</li>
+                <li>Base class constructor, then derived class constructor</li>
+                <li>They execute simultaneously</li>
+                <li>The order depends on the initializer list</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer4')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer4">
+                <p><strong>Answer:</strong> B - Base class constructor, then derived class constructor</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>The base class constructor ALWAYS runs first. This makes sense: you need to build the foundation (base class part) before you can build the specialized parts (derived class members) on top of it. The base class constructor is called automatically (or explicitly via the initializer list) before the derived class constructor body runs.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - This is backwards. If the derived constructor ran first, it might try to use base class members that haven't been initialized yet.</li>
+                    <li><strong>C:</strong> Incorrect - Constructors execute sequentially, not simultaneously.</li>
+                    <li><strong>D:</strong> Incorrect - The order is always base-then-derived, regardless of how the initializer list is written. The initializer list controls WHICH base constructor is called, not WHEN it's called.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 5 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 5</div>
+            <h3>Destructor Execution Order</h3>
+            <p>When a derived class object is destroyed, in what order are destructors executed?</p>
+            <ol type="A">
+                <li>Base class destructor, then derived class destructor</li>
+                <li>Derived class destructor, then base class destructor</li>
+                <li>Only the derived class destructor is called</li>
+                <li>The programmer must explicitly call both destructors</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer5')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer5">
+                <p><strong>Answer:</strong> B - Derived class destructor, then base class destructor</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>Destructors run in REVERSE order of construction. The derived class destructor runs first to clean up derived class members, then the base class destructor runs automatically to clean up base class members. This is the opposite of constructor order and ensures proper cleanup.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - This is backwards. You must tear down the derived parts before tearing down the base parts they depend on.</li>
+                    <li><strong>C:</strong> Incorrect - The base class destructor IS called automatically after the derived class destructor finishes.</li>
+                    <li><strong>D:</strong> Incorrect - The base class destructor is called automatically. You never explicitly call destructors in C++ (except in very advanced cases with placement new).</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 6 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 6</div>
+            <h3>Calling Base Constructor</h3>
+            <p>How do you call a base class constructor from a derived class constructor?</p>
+            <ol type="A">
+                <li>In the constructor body: <code>Base(args);</code></li>
+                <li>Before the constructor: <code>Base(args); Derived() { }</code></li>
+                <li>In the initializer list: <code>Derived() : Base(args) { }</code></li>
+                <li>Using <code>super(args);</code> in the constructor body</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer6')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer6">
+                <p><strong>Answer:</strong> C - In the initializer list: <code>Derived() : Base(args) { }</code></p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>The member initializer list (the part after the <code>:</code> and before the <code>{</code>) is where you call the base class constructor. The syntax is <code>: Base(arguments)</code>. This ensures the base class is constructed before the derived class constructor body runs.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - Calling <code>Base(args);</code> in the constructor body would create a temporary Base object and immediately destroy it. It wouldn't initialize the base class part of your derived object.</li>
+                    <li><strong>B:</strong> Incorrect - Invalid syntax. You can't have code before the constructor definition.</li>
+                    <li><strong>D:</strong> Incorrect - <code>super</code> is Java/Python syntax, not C++. C++ uses the actual base class name.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 7 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 7</div>
+            <h3>Function Redefinition vs Overloading</h3>
+            <p>What is the difference between function redefinition and function overloading in inheritance?</p>
+            <ol type="A">
+                <li>Redefinition changes the signature, overloading keeps it the same</li>
+                <li>Redefinition keeps the signature the same, overloading changes it</li>
+                <li>They are the same thing</li>
+                <li>Redefinition is for constructors, overloading is for other functions</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer7')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer7">
+                <p><strong>Answer:</strong> B - Redefinition keeps the signature the same, overloading changes it</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p><strong>Redefinition:</strong> A derived class function with the SAME signature (name, parameters, const-ness) as a base class function. It replaces the base version for derived objects.</p>
+                <p><strong>Overloading:</strong> Functions with the same name but DIFFERENT signatures. Both versions co-exist and can be called based on arguments.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - This is backwards. Redefinition requires matching signatures exactly.</li>
+                    <li><strong>C:</strong> Incorrect - They're different concepts with different purposes.</li>
+                    <li><strong>D:</strong> Incorrect - Redefinition and overloading apply to all member functions, not just constructors.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 8 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 8</div>
+            <h3>"Is-A" Relationship</h3>
+            <p>Which of the following demonstrates a proper "is-a" relationship suitable for inheritance?</p>
+            <ol type="A">
+                <li>A Car has an Engine (Car inherits from Engine)</li>
+                <li>A Student is a Person (Student inherits from Person)</li>
+                <li>A House has Rooms (House inherits from Room)</li>
+                <li>A Computer uses a Keyboard (Computer inherits from Keyboard)</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer8')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer8">
+                <p><strong>Answer:</strong> B - A Student is a Person (Student inherits from Person)</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>This demonstrates the "is-a" relationship correctly. A Student IS A Person (with additional student-specific attributes like student ID, major, GPA). Inheritance should model this kind of specialization relationship.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - This is a "has-a" relationship (composition). A Car HAS an Engine but is NOT an Engine. The Car class should contain an Engine member variable, not inherit from it.</li>
+                    <li><strong>C:</strong> Incorrect - Also "has-a." A House HAS Rooms but is NOT a Room. Use composition (array or vector of Room objects).</li>
+                    <li><strong>D:</strong> Incorrect - "Uses-a" relationship. A Computer USES a Keyboard but is NOT a Keyboard. This could be modeled with composition or association, not inheritance.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 9 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 9</div>
+            <h3>Copy Constructor in Derived Classes</h3>
+            <p>How should a derived class copy constructor call the base class copy constructor?</p>
+            <ol type="A">
+                <li><code>Derived(const Derived& other) { Base(other); }</code></li>
+                <li><code>Derived(const Derived& other) : Base::Base(other) { }</code></li>
+                <li><code>Derived(const Derived& other) : Base(other) { }</code></li>
+                <li>The base copy constructor is called automatically</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer9')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer9">
+                <p><strong>Answer:</strong> C - <code>Derived(const Derived& other) : Base(other) { }</code></p>
+
+                <p><strong>Why C is correct:</strong></p>
+                <p>In the initializer list, call <code>Base(other)</code>. The compiler knows that <code>other</code> is a <code>Derived</code> object, which IS ALSO a <code>Base</code> object, so it correctly calls the Base copy constructor. This ensures all base class members are properly copied.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - Calling <code>Base(other);</code> in the constructor body creates and destroys a temporary object. It doesn't initialize the base part of your derived object.</li>
+                    <li><strong>B:</strong> Incorrect - Invalid syntax. You don't use the <code>::</code> scope resolution operator when calling constructors in initializer lists.</li>
+                    <li><strong>D:</strong> Incorrect - If you don't explicitly call a base constructor, C++ calls the base class DEFAULT constructor, not the copy constructor. Your base class members won't be copied.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 10 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 10</div>
+            <h3>Access to Private Base Members</h3>
+            <p>Can a derived class directly access private members of its base class?</p>
+            <ol type="A">
+                <li>Yes, derived classes can access all inherited members</li>
+                <li>No, derived classes must use public accessor functions</li>
+                <li>Only if the derived class is declared as a friend</li>
+                <li>Yes, but only in the derived class constructor</li>
+            </ol>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer10')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer10">
+                <p><strong>Answer:</strong> B - No, derived classes must use public accessor functions</p>
+
+                <p><strong>Why B is correct:</strong></p>
+                <p>Private members are inherited but NOT directly accessible from derived classes. This maintains encapsulation. The derived class must use the public or protected interface provided by the base class. If you need derived class access, make members <code>protected</code> instead of <code>private</code>.</p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Incorrect - Common misconception. Derived classes inherit private members (they exist in the object) but cannot access them directly.</li>
+                    <li><strong>C:</strong> Incorrect - The friend mechanism doesn't work this way. You can declare specific functions or classes as friends, but all derived classes don't automatically become friends.</li>
+                    <li><strong>D:</strong> Incorrect - The constructor has no special access privileges. Private is private, regardless of where you try to access it from within the derived class.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Code Tracing (8 questions) -->
+
+        <!-- Question 11 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 11</div>
+            <h3>Constructor Order Tracing</h3>
+            <p>What is the output of the following code?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    Base() { cout << "B"; }
+};
+
+class Derived : public Base {
+public:
+    Derived() { cout << "D"; }
+};
+
+int main() {
+    Derived d;
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer11')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer11">
+                <p><strong>Output:</strong></p>
+                <pre>BD</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line 11:</strong> Create <code>Derived d;</code></li>
+                    <li><strong>Derived constructor starts:</strong> Before the body runs, Base constructor is called automatically</li>
+                    <li><strong>Base constructor:</strong> Prints "B"</li>
+                    <li><strong>Base constructor completes</strong></li>
+                    <li><strong>Derived constructor body:</strong> Prints "D"</li>
+                    <li><strong>Result:</strong> "BD"</li>
+                </ol>
+
+                <p><strong>Key Concept:</strong> Base class constructor ALWAYS runs before derived class constructor body, even if you don't explicitly call it.</p>
+            </div>
+        </section>
+
+        <!-- Question 12 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 12</div>
+            <h3>Destructor Order Tracing</h3>
+            <p>What is the output of the following code?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    Base() { cout << "B"; }
+    ~Base() { cout << "~B"; }
+};
+
+class Derived : public Base {
+public:
+    Derived() { cout << "D"; }
+    ~Derived() { cout << "~D"; }
+};
+
+int main() {
+    Derived d;
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer12')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer12">
+                <p><strong>Output:</strong></p>
+                <pre>BD~D~B</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Construction:</strong> Base constructor prints "B", then Derived constructor prints "D" → "BD"</li>
+                    <li><strong>Object d goes out of scope at end of main()</strong></li>
+                    <li><strong>Derived destructor runs first:</strong> Prints "~D" → "BD~D"</li>
+                    <li><strong>Base destructor runs automatically:</strong> Prints "~B" → "BD~D~B"</li>
+                </ol>
+
+                <p><strong>Key Concept:</strong> Destruction happens in REVERSE order of construction. Derived destructor runs, THEN base destructor runs automatically.</p>
+            </div>
+        </section>
+
+        <!-- Question 13 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 13</div>
+            <h3>Function Redefinition Tracing</h3>
+            <p>What is the output of the following code?</p>
+
+<pre><code class="language-cpp">class Animal {
+public:
+    void speak() { cout << "Animal sound"; }
+};
+
+class Dog : public Animal {
+public:
+    void speak() { cout << "Woof"; }
+};
+
+int main() {
+    Dog d;
+    d.speak();
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer13')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer13">
+                <p><strong>Output:</strong></p>
+                <pre>Woof</pre>
+
+                <p><strong>Explanation:</strong></p>
+                <p><code>Dog</code> redefines the <code>speak()</code> function. When you call <code>d.speak()</code> on a <code>Dog</code> object, the derived class version is called. The base class version is "hidden" for Dog objects.</p>
+
+                <p><strong>Key Concept:</strong> Function redefinition provides specialized behavior in derived classes. The derived class version is called when the function is invoked on a derived object.</p>
+            </div>
+        </section>
+
+        <!-- Question 14 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 14</div>
+            <h3>Protected Member Access</h3>
+            <p>Will this code compile? If yes, what's the output?</p>
+
+<pre><code class="language-cpp">class Base {
+protected:
+    int value;
+public:
+    Base(int v) : value(v) {}
+};
+
+class Derived : public Base {
+public:
+    Derived(int v) : Base(v) {}
+    void print() { cout << value; }
+};
+
+int main() {
+    Derived d(42);
+    d.print();
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer14')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer14">
+                <p><strong>Answer:</strong> Yes, it compiles. Output is <code>42</code></p>
+
+                <p><strong>Explanation:</strong></p>
+                <ol>
+                    <li><code>value</code> is <code>protected</code> in Base, so Derived can access it directly</li>
+                    <li>Derived constructor calls <code>Base(v)</code>, which sets <code>value = 42</code></li>
+                    <li><code>print()</code> accesses <code>value</code> directly (legal because it's protected)</li>
+                    <li>Outputs: 42</li>
+                </ol>
+
+                <p><strong>Key Concept:</strong> Protected members are accessible from derived classes. If <code>value</code> were <code>private</code>, this code would NOT compile.</p>
+            </div>
+        </section>
+
+        <!-- Question 15 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 15</div>
+            <h3>Multiple Derived Objects</h3>
+            <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Counter {
+public:
+    Counter() { cout << "C"; }
+    ~Counter() { cout << "~C"; }
+};
+
+int main() {
+    Counter c1;
+    Counter c2;
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer15')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer15">
+                <p><strong>Output:</strong></p>
+                <pre>CC~C~C</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line 7:</strong> Create c1, constructor prints "C" → "C"</li>
+                    <li><strong>Line 8:</strong> Create c2, constructor prints "C" → "CC"</li>
+                    <li><strong>End of main():</strong> Local variables destroyed in REVERSE order of creation</li>
+                    <li><strong>c2 destroyed first:</strong> Prints "~C" → "CC~C"</li>
+                    <li><strong>c1 destroyed second:</strong> Prints "~C" → "CC~C~C"</li>
+                </ol>
+
+                <p><strong>Key Concept:</strong> Objects are destroyed in reverse order of creation (stack order: last in, first out).</p>
+            </div>
+        </section>
+
+        <!-- Question 16 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 16</div>
+            <h3>Calling Base Class Function</h3>
+            <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    void show() { cout << "Base"; }
+};
+
+class Derived : public Base {
+public:
+    void show() {
+        Base::show();
+        cout << "Derived";
+    }
+};
+
+int main() {
+    Derived d;
+    d.show();
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer16')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer16">
+                <p><strong>Output:</strong></p>
+                <pre>BaseDerived</pre>
+
+                <p><strong>Explanation:</strong></p>
+                <ol>
+                    <li>Call <code>d.show()</code> → calls Derived version</li>
+                    <li>Inside Derived::show(), <code>Base::show()</code> explicitly calls base version</li>
+                    <li>Base::show() prints "Base"</li>
+                    <li>Returns to Derived::show(), which prints "Derived"</li>
+                    <li>Result: "BaseDerived"</li>
+                </ol>
+
+                <p><strong>Key Concept:</strong> Use <code>Base::functionName()</code> to explicitly call the base class version of a redefined function.</p>
+            </div>
+        </section>
+
+        <!-- Question 17 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 17</div>
+            <h3>Constructor with Parameters</h3>
+            <p>What is the output?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    Base(int x) { cout << x; }
+};
+
+class Derived : public Base {
+public:
+    Derived(int a, int b) : Base(a) {
+        cout << b;
+    }
+};
+
+int main() {
+    Derived d(5, 10);
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer17')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer17">
+                <p><strong>Output:</strong></p>
+                <pre>510</pre>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line 12:</strong> Create Derived object with arguments 5 and 10</li>
+                    <li><strong>Derived constructor:</strong> Initializer list calls <code>Base(5)</code></li>
+                    <li><strong>Base constructor:</strong> Prints 5 (the value of x) → "5"</li>
+                    <li><strong>Derived constructor body:</strong> Prints 10 (the value of b) → "510"</li>
+                </ol>
+
+                <p><strong>Key Concept:</strong> The initializer list <code>: Base(a)</code> passes argument <code>a</code> to the Base constructor.</p>
+            </div>
+        </section>
+
+        <!-- Question 18 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 18</div>
+            <h3>Complex Constructor Chain</h3>
+            <p>What is the output?</p>
+
+<pre><code class="language-cpp">class A {
+public:
+    A() { cout << "A"; }
+};
+
+class B : public A {
+public:
+    B() { cout << "B"; }
+};
+
+class C : public B {
+public:
+    C() { cout << "C"; }
+};
+
+int main() {
+    C obj;
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer18')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer18">
+                <p><strong>Output:</strong></p>
+                <pre>ABC</pre>
+
+                <p><strong>Explanation:</strong></p>
+                <p>Multi-level inheritance: C inherits from B, which inherits from A.</p>
+                <ol>
+                    <li>Creating C object triggers chain of constructor calls</li>
+                    <li><strong>A constructor runs first:</strong> Prints "A"</li>
+                    <li><strong>B constructor runs second:</strong> Prints "B"</li>
+                    <li><strong>C constructor runs third:</strong> Prints "C"</li>
+                    <li>Result: "ABC"</li>
+                </ol>
+
+                <p><strong>Key Concept:</strong> In multi-level inheritance, constructors execute from the top of the hierarchy down. Destructors would execute in reverse: C, B, A.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Find the Bug (5 questions) -->
+
+        <!-- Question 19 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 19</div>
+            <h3>Find the Bug #1</h3>
+            <p>This code won't compile. What's wrong?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    Base(int x) : value(x) {}
+private:
+    int value;
+};
+
+class Derived : public Base {
+public:
+    Derived(int x) {
+        value = x;
+    }
+};</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer19')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer19">
+                <p><strong>Bugs Found:</strong></p>
+
+                <p><strong>Bug #1: Derived constructor doesn't call Base constructor</strong></p>
+                <p>The Derived constructor doesn't call a Base constructor. The compiler tries to call a default Base constructor (with no parameters), but Base only has a constructor that requires an int parameter.</p>
+                <p><strong>Fix:</strong> <code>Derived(int x) : Base(x) { }</code></p>
+
+                <p><strong>Bug #2: Trying to access private member</strong></p>
+                <p>Even if we fixed bug #1, <code>value = x;</code> is illegal because <code>value</code> is private in Base. Derived classes cannot access private base members.</p>
+                <p><strong>Fix:</strong> Remove the assignment (it's unnecessary if we call <code>Base(x)</code>)</p>
+
+                <p><strong>Corrected Code:</strong></p>
+<pre><code class="language-cpp">class Derived : public Base {
+public:
+    Derived(int x) : Base(x) { }
+};</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 20 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 20</div>
+            <h3>Find the Bug #2</h3>
+            <p>What's wrong with this code?</p>
+
+<pre><code class="language-cpp">class Animal {
+protected:
+    string name;
+public:
+    Animal(string n) : name(n) {}
+};
+
+class Dog : public Animal {
+public:
+    void setName(string n) {
+        name = n;
+    }
+};
+
+int main() {
+    Dog d;
+    d.setName("Buddy");
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer20')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer20">
+                <p><strong>Bug: Dog constructor doesn't call Animal constructor</strong></p>
+
+                <p><strong>Problem:</strong></p>
+                <p>When you create <code>Dog d;</code> in main(), the Dog default constructor is called. Since there's no explicit Dog constructor, C++ generates a default one. This default constructor tries to call Animal's default constructor, but Animal ONLY has a constructor that takes a string parameter.</p>
+
+                <p><strong>Fix: Add a Dog constructor that calls Animal constructor</strong></p>
+<pre><code class="language-cpp">class Dog : public Animal {
+public:
+    Dog(string n) : Animal(n) { }
+
+    void setName(string n) {
+        name = n;
+    }
+};</code></pre>
+
+                <p>Then in main(): <code>Dog d("Buddy");</code></p>
+
+                <p><strong>Or provide a default Animal constructor:</strong></p>
+<pre><code class="language-cpp">class Animal {
+protected:
+    string name;
+public:
+    Animal() : name("") { }  // Default constructor
+    Animal(string n) : name(n) { }
+};</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 21 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 21</div>
+            <h3>Find the Bug #3</h3>
+            <p>What's the error in this copy constructor?</p>
+
+<pre><code class="language-cpp">class Base {
+public:
+    Base(int v) : value(v) {}
+    Base(const Base& other) : value(other.value) {}
+protected:
+    int value;
+};
+
+class Derived : public Base {
+public:
+    Derived(int v, double d) : Base(v), data(d) {}
+
+    Derived(const Derived& other) {
+        data = other.data;
+    }
+
+private:
+    double data;
+};</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer21')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer21">
+                <p><strong>Bug: Derived copy constructor doesn't call Base copy constructor</strong></p>
+
+                <p><strong>Problem:</strong></p>
+                <p>The Derived copy constructor doesn't call any Base constructor in its initializer list. C++ will try to call the default Base constructor, but Base doesn't have one. Additionally, even if it compiled, the base class <code>value</code> member wouldn't be copied.</p>
+
+                <p><strong>Fix:</strong></p>
+<pre><code class="language-cpp">Derived(const Derived& other)
+    : Base(other), data(other.data) { }</code></pre>
+
+                <p><strong>Explanation:</strong></p>
+                <p>Calling <code>Base(other)</code> in the initializer list invokes the Base copy constructor, which properly copies the <code>value</code> member. The compiler knows that <code>other</code> is a Derived object, which IS ALSO a Base object, so it calls the appropriate constructor.</p>
+            </div>
+        </section>
+
+        <!-- Question 22 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 22</div>
+            <h3>Find the Bug #4</h3>
+            <p>What's wrong with this protected usage?</p>
+
+<pre><code class="language-cpp">class Account {
+protected:
+    double balance;
+public:
+    Account(double b) : balance(b) {}
+};
+
+class SavingsAccount : public Account {
+public:
+    SavingsAccount(double b) : Account(b) {}
+};
+
+int main() {
+    SavingsAccount sa(1000.0);
+    sa.balance += 500.0;
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer22')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer22">
+                <p><strong>Bug: Accessing protected member from main()</strong></p>
+
+                <p><strong>Problem:</strong></p>
+                <p>In main(), the code tries to access <code>sa.balance</code> directly. Even though <code>balance</code> is <code>protected</code>, that only means derived classes can access it. Code outside the class hierarchy (like main()) CANNOT access protected members.</p>
+
+                <p><strong>Fix: Add a public function to modify balance</strong></p>
+<pre><code class="language-cpp">class Account {
+protected:
+    double balance;
+public:
+    Account(double b) : balance(b) {}
+    void deposit(double amount) { balance += amount; }
+};
+
+int main() {
+    SavingsAccount sa(1000.0);
+    sa.deposit(500.0);  // Use public interface
+    return 0;
+}</code></pre>
+
+                <p><strong>Key Lesson:</strong> Protected members are only accessible from within the class and its derived classes, NOT from external code.</p>
+            </div>
+        </section>
+
+        <!-- Question 23 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 23</div>
+            <h3>Find the Bug #5</h3>
+            <p>Why won't this function redefinition work as expected?</p>
+
+<pre><code class="language-cpp">class Shape {
+public:
+    void draw() const {
+        cout << "Drawing shape";
+    }
+};
+
+class Circle : public Shape {
+public:
+    void draw() {
+        cout << "Drawing circle";
+    }
+};
+
+int main() {
+    Circle c;
+    c.draw();
+    return 0;
+}</code></pre>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer23')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer23">
+                <p><strong>Bug: Signature mismatch - const vs non-const</strong></p>
+
+                <p><strong>Problem:</strong></p>
+                <p>This code WILL compile and run, but it's not actually redefinition - it's accidental overloading! The base class <code>draw()</code> is <code>const</code>, but the derived class <code>draw()</code> is NOT <code>const</code>. These are different signatures, so both functions exist.</p>
+
+                <p><strong>Impact:</strong></p>
+                <p>For regular Circle objects, the non-const version is called (as in main()). But if you have a const Circle object, it can only call the const version (inherited from Shape), which prints "Drawing shape" instead of "Drawing circle."</p>
+
+                <p><strong>Fix: Match the const-ness</strong></p>
+<pre><code class="language-cpp">class Circle : public Shape {
+public:
+    void draw() const {  // Add const to match base signature
+        cout << "Drawing circle";
+    }
+};</code></pre>
+
+                <p><strong>Key Lesson:</strong> For true redefinition, the signature must match EXACTLY: name, parameters, AND const-ness.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: True/False (4 questions) -->
+
+        <!-- Question 24 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 24</div>
+            <h3>True or False</h3>
+            <p><strong>Statement:</strong> When a derived class object is created, the base class constructor is called before the derived class constructor body executes.</p>
+            <p>True or False? Justify your answer.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer24')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer24">
+                <p><strong>Answer: TRUE</strong></p>
+
+                <p><strong>Justification:</strong></p>
+                <p>This is absolutely true. The base class constructor ALWAYS executes before the derived class constructor body. This ensures that the base class part of the object is fully constructed before the derived class tries to add its own members. If you don't explicitly call a base constructor via the initializer list, C++ automatically calls the base class default constructor.</p>
+
+                <p><strong>Example:</strong></p>
+<pre><code class="language-cpp">class Base {
+public:
+    Base() { cout << "Base"; }
+};
+
+class Derived : public Base {
+public:
+    Derived() { cout << "Derived"; }
+};
+
+Derived d;  // Prints: "BaseDerived"</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 25 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 25</div>
+            <h3>True or False</h3>
+            <p><strong>Statement:</strong> A derived class inherits the base class destructor.</p>
+            <p>True or False? Justify your answer.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer25')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer25">
+                <p><strong>Answer: FALSE</strong></p>
+
+                <p><strong>Justification:</strong></p>
+                <p>Destructors are NOT inherited. Each class must have its own destructor (either user-defined or compiler-generated). However, when a derived class object is destroyed, its destructor runs first, THEN the base class destructor is automatically called. You don't (and shouldn't) explicitly call the base destructor - C++ handles it automatically.</p>
+
+                <p><strong>Why this makes sense:</strong></p>
+                <p>The derived class might allocate its own resources that need cleanup. The base class destructor doesn't know about these resources. So each class handles its own cleanup, and C++ chains the destructors automatically.</p>
+            </div>
+        </section>
+
+        <!-- Question 26 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 26</div>
+            <h3>True or False</h3>
+            <p><strong>Statement:</strong> Protected members can be accessed from any function that has a pointer or reference to the derived class.</p>
+            <p>True or False? Justify your answer.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer26')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer26">
+                <p><strong>Answer: FALSE</strong></p>
+
+                <p><strong>Justification:</strong></p>
+                <p>This is false. Protected members are ONLY accessible from:</p>
+                <ul>
+                    <li>Member functions of the class itself</li>
+                    <li>Member functions of derived classes</li>
+                </ul>
+
+                <p>They are NOT accessible from outside the class hierarchy, even if you have a pointer or reference to the object.</p>
+
+                <p><strong>Example:</strong></p>
+<pre><code class="language-cpp">class Base {
+protected:
+    int value;
+};
+
+void someFunction(Base* ptr) {
+    ptr->value = 10;  // ERROR! Can't access protected member
+}
+
+class Derived : public Base {
+    void memberFunc() {
+        value = 10;  // OK! Accessing from derived class
+    }
+};</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 27 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 27</div>
+            <h3>True or False</h3>
+            <p><strong>Statement:</strong> If a base class has no default constructor, you must explicitly call a base class constructor in the derived class constructor's initializer list.</p>
+            <p>True or False? Justify your answer.</p>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer27')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer27">
+                <p><strong>Answer: TRUE</strong></p>
+
+                <p><strong>Justification:</strong></p>
+                <p>If you don't explicitly call a base constructor in the initializer list, C++ tries to call the base class's default constructor (the one with no parameters) automatically. If the base class doesn't have a default constructor, you'll get a compilation error.</p>
+
+                <p><strong>Example:</strong></p>
+<pre><code class="language-cpp">class Base {
+public:
+    Base(int x) : value(x) {}  // No default constructor!
+private:
+    int value;
+};
+
+class Derived : public Base {
+public:
+    Derived() { }  // ERROR! Tries to call Base(), which doesn't exist
+};
+
+// CORRECT:
+class Derived : public Base {
+public:
+    Derived() : Base(0) { }  // Explicitly call Base(int)
+};</code></pre>
+
+                <p><strong>Key Rule:</strong> Always explicitly call the base constructor you want to use in the derived class initializer list.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Implementation Tasks (1 question - comprehensive) -->
+
+        <!-- Question 28 -->
+        <section class="quiz-question-box">
+            <div class="quiz-number-badge">Question 28</div>
+            <h3>Implementation Challenge</h3>
+            <p><strong>Task:</strong> Implement a simple class hierarchy.</p>
+
+            <p>Create a <code>Person</code> base class and a <code>Student</code> derived class with the following specifications:</p>
+
+            <p><strong>Person class:</strong></p>
+            <ul>
+                <li>Protected members: <code>name</code> (string), <code>age</code> (int)</li>
+                <li>Constructor: <code>Person(string n, int a)</code></li>
+                <li>Function: <code>void displayInfo() const</code> - prints name and age</li>
+            </ul>
+
+            <p><strong>Student class (inherits from Person):</strong></p>
+            <ul>
+                <li>Private member: <code>studentID</code> (string)</li>
+                <li>Constructor: <code>Student(string n, int a, string id)</code></li>
+                <li>Redefine: <code>void displayInfo() const</code> - prints name, age, and student ID</li>
+            </ul>
+
+            <p><strong>Test in main():</strong></p>
+            <ul>
+                <li>Create a Student: <code>Student s("Lindiwe Khumalo", 20, "STU2025001");</code></li>
+                <li>Call <code>s.displayInfo();</code></li>
+            </ul>
+
+            <button class="quiz-reveal-btn" onclick="toggleAnswer('answer28')">Show Answer</button>
+            <div class="quiz-answer-section" id="answer28">
+                <p><strong>Complete Implementation:</strong></p>
+
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Person {
+public:
+    Person(string n, int a) : name(n), age(a) {
+        cout << "Person constructor called" << endl;
+    }
+
+    void displayInfo() const {
+        cout << "Name: " << name << endl;
+        cout << "Age: " << age << endl;
+    }
+
+protected:
+    string name;
+    int age;
+};
+
+class Student : public Person {
+public:
+    Student(string n, int a, string id)
+        : Person(n, a), studentID(id) {
+        cout << "Student constructor called" << endl;
+    }
+
+    void displayInfo() const {
+        cout << "=== Student Information ===" << endl;
+        Person::displayInfo();  // Call base version
+        cout << "Student ID: " << studentID << endl;
+    }
+
+private:
+    string studentID;
+};
+
+int main() {
+    Student s("Lindiwe Khumalo", 20, "STU2025001");
+    cout << endl;
+    s.displayInfo();
+
+    return 0;
+}</code></pre>
+
+                <p><strong>Expected Output:</strong></p>
+<pre>Person constructor called
+Student constructor called
+
+=== Student Information ===
+Name: Lindiwe Khumalo
+Age: 20
+Student ID: STU2025001</pre>
+
+                <p><strong>Key Points:</strong></p>
+                <ul>
+                    <li>Student constructor calls <code>Person(n, a)</code> in initializer list</li>
+                    <li><code>name</code> and <code>age</code> are <code>protected</code> so Student can access them</li>
+                    <li>Student::displayInfo() calls Person::displayInfo() to avoid code duplication</li>
+                    <li>Constructor messages show base constructor runs before derived constructor</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Prism.highlightAll();
+        });
+
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+
+            const button = event.target;
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

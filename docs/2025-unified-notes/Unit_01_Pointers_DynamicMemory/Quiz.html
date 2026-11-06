@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1: Pointers & Dynamic Memory - Quiz | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        /* DEEP OCEAN THEME */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0ea5e9;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+        }
+
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: #f1f5f9;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-hamburger:hover {
+            color: #0ea5e9;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            margin-bottom: 4rem;
+        }
+
+        .page-header {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .page-header h1 {
+            color: #0ea5e9;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .question-card h3 {
+            margin-bottom: 1.25rem;
+            color: #f1f5f9;
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .question-card p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .question-card ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .question-card ol li {
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .question-card code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #0c1222;
+            border: 2px solid #1e3a5f;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1.25rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-block pre {
+            color: #f1f5f9;
+            margin: 0;
+        }
+
+        .code-block code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* Custom Prism syntax highlighting */
+        .token.comment { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        /* Reveal Button */
+        .reveal-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Answer Section */
+        .answer-section {
+            display: none;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #0f172a;
+            border-radius: 8px;
+            border: 2px solid #8b5cf6;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        .answer-section h4 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .answer-section p {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+            line-height: 1.7;
+        }
+
+        .answer-section ul, .answer-section ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .answer-section li {
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+
+        .answer-section strong {
+            color: #a78bfa;
+        }
+
+        /* Callouts */
+        .callout-note {
+            background: #0c1e2d;
+            border-left: 5px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+        }
+
+        .callout-note strong {
+            color: #0ea5e9;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-wrap: wrap;
+            }
+
+            .nav-brand {
+                gap: 0.75rem;
+            }
+
+            .nav-logo {
+                height: 38px;
+                width: 38px;
+            }
+
+            .nav-brand-company {
+                font-size: 0.6rem;
+            }
+
+            .nav-brand-title {
+                font-size: 0.9rem;
+            }
+
+            .nav-brand-subtitle {
+                font-size: 0.6rem;
+            }
+
+            .nav-hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 0;
+                margin-top: 1rem;
+                background: #1e293b;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu li {
+                width: 100%;
+                border-bottom: 1px solid #334155;
+            }
+
+            .nav-menu li:last-child {
+                border-bottom: none;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: 1rem;
+                border-bottom: none !important;
+            }
+
+            .nav-menu a:hover,
+            .nav-menu a.active {
+                background: #0f172a;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 1: Pointers & Dynamic Memory</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+            ☰
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html" class="active">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Unit Quiz</h1>
+            <p>
+                Test your knowledge with these quiz questions. This is for practice only and is not graded. Try to answer each question before revealing the solution.
+            </p>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 0.5rem;">
+                These questions are modeled after actual COS 110 assessment formats to help you prepare for exams.
+            </p>
+
+            <div class="info-box" style="border-left-color: #f59e0b; background: #1f2937; margin-top: 1rem;">
+                <strong style="color: #fbbf24;">⚠️ Known Display Issue:</strong>
+                <p style="margin-top: 0.5rem; color: #d1d5db;">
+                    If you click "Show Answer" and the solution appears as a black box or doesn't display properly,
+                    just <strong>click anywhere on the screen</strong> (on the page background, scroll bar, or near the answer area).
+                    This will trigger the content to fully render. I've tried to fix this rendering bug multiple times,
+                    but it persists - so this is the workaround for now! Sorry for the inconvenience.
+                </p>
+            </div>
+        </div>
+
+        <!-- Question 1: Multiple Choice -->
+        <div class="question-card">
+            <span class="question-number">Question 1</span>
+            <h3>Which of the following correctly declares a pointer to an integer?</h3>
+            <ol type="A">
+                <li><code>int ptr*;</code></li>
+                <li><code>int *ptr;</code></li>
+                <li><code>*int ptr;</code></li>
+                <li><code>pointer int ptr;</code></li>
+            </ol>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Answer</button>
+
+            <div class="answer-section" id="answer1">
+                <h4>✅ Answer: B</h4>
+                <p><strong>Correct:</strong> <code>int *ptr;</code></p>
+                <p>
+                    <strong>Explanation:</strong> The asterisk (<code>*</code>) goes before the variable name to declare a pointer. <code>int *ptr;</code> means "ptr is a pointer to an int". The asterisk can be next to the type (<code>int* ptr</code>) or the variable (<code>int *ptr</code>) - both are syntactically correct, though <code>int *ptr</code> is preferred to avoid confusion when declaring multiple variables.
+                </p>
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> <code>int ptr*;</code> - Syntax error. The asterisk must come before the variable name, not after.</li>
+                    <li><strong>C:</strong> <code>*int ptr;</code> - Syntax error. You can't put <code>*</code> before the type.</li>
+                    <li><strong>D:</strong> <code>pointer int ptr;</code> - Not valid C++ syntax. There's no <code>pointer</code> keyword.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 2: Code Tracing -->
+        <div class="question-card">
+            <span class="question-number">Question 2</span>
+            <h3>What is the output of this code?</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int x = 10;
+    int *ptr = &x;
+    *ptr = 20;
+    cout << x << " " << *ptr << endl;
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Answer</button>
+
+            <div class="answer-section" id="answer2">
+                <h4>✅ Answer</h4>
+                <p><strong>Output:</strong> <code>20 20</code></p>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><code>int x = 10;</code> - Variable <code>x</code> is created with value 10</li>
+                    <li><code>int *ptr = &x;</code> - Pointer <code>ptr</code> stores the address of <code>x</code></li>
+                    <li><code>*ptr = 20;</code> - Dereference <code>ptr</code> and write 20 to that address. Since <code>ptr</code> points to <code>x</code>, this changes <code>x</code> to 20</li>
+                    <li><code>cout << x << " " << *ptr << endl;</code> - Print the value of <code>x</code> (which is now 20) and the value at the address stored in <code>ptr</code> (also 20, because it points to <code>x</code>)</li>
+                </ol>
+
+                <p><strong>Why this output?</strong> Because <code>ptr</code> points to <code>x</code>, modifying <code>*ptr</code> modifies <code>x</code> directly. Both <code>x</code> and <code>*ptr</code> refer to the same memory location, so they have the same value.</p>
+            </div>
+        </div>
+
+        <!-- Question 3: True/False -->
+        <div class="question-card">
+            <span class="question-number">Question 3</span>
+            <h3>True or False: In C++98, you can declare an array with a variable size like <code>int arr[n];</code> where <code>n</code> is determined at runtime.</h3>
+            <p>Justify your answer.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Answer</button>
+
+            <div class="answer-section" id="answer3">
+                <h4>✅ Answer: False</h4>
+
+                <p><strong>Justification:</strong></p>
+                <p>
+                    In C++98, array sizes must be compile-time constants. You cannot use a variable whose value is determined at runtime to declare the size of an array. For example:
+                </p>
+                <div class="code-block"><pre><code class="language-cpp">int n;
+cin >> n;
+int arr[n];  // ❌ ERROR in C++98: array size must be constant</code></pre></div>
+
+                <p>
+                    If you need an array whose size is determined at runtime, you must use dynamic memory allocation:
+                </p>
+                <div class="code-block"><pre><code class="language-cpp">int n;
+cin >> n;
+int *arr = new int[n];  // ✅ Correct: dynamic allocation
+// ... use array ...
+delete [] arr;</code></pre></div>
+
+                <p><strong>Important Note:</strong> Some compilers (like GCC) support Variable Length Arrays (VLAs) as a C99 extension, so <code>int arr[n];</code> might compile on certain systems. However, VLAs are NOT part of the C++98 standard and should not be used in COS 110.</p>
+            </div>
+        </div>
+
+        <!-- Question 4: Multiple Choice -->
+        <div class="question-card">
+            <span class="question-number">Question 4</span>
+            <h3>What happens if you dereference a NULL pointer?</h3>
+            <ol type="A">
+                <li>The program returns 0</li>
+                <li>The program accesses memory address 0</li>
+                <li>Undefined behavior (usually a crash)</li>
+                <li>The compiler prevents compilation</li>
+            </ol>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Answer</button>
+
+            <div class="answer-section" id="answer4">
+                <h4>✅ Answer: C</h4>
+                <p><strong>Correct:</strong> Undefined behavior (usually a crash)</p>
+
+                <p><strong>Detailed Explanation:</strong></p>
+                <p>
+                    Dereferencing a NULL pointer (e.g., <code>*ptr</code> where <code>ptr == NULL</code>) is undefined behavior in C++. On most systems, this causes a segmentation fault (segfault) or access violation, which crashes the program immediately.
+                </p>
+
+                <p>
+                    This happens because NULL is typically defined as 0, and memory address 0 is protected by the operating system. Trying to read or write to address 0 is caught by the OS, which terminates your program.
+                </p>
+
+                <p><strong>Example:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">int *ptr = NULL;
+*ptr = 10;  // ☠️ CRASH: dereferencing NULL pointer</code></pre></div>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> The program doesn't return 0 - it crashes before reaching any return statement</li>
+                    <li><strong>B:</strong> While technically you're trying to access address 0, this is protected and causes a crash, not successful access</li>
+                    <li><strong>D:</strong> The compiler usually cannot detect NULL dereferences at compile time (it's a runtime error). The code compiles successfully but fails when executed</li>
+                </ul>
+
+                <p><strong>Best Practice:</strong> Always check pointers before dereferencing:</p>
+                <div class="code-block"><pre><code class="language-cpp">if (ptr != NULL) {
+    *ptr = 10;  // Safe: only dereference if not NULL
+}</code></pre></div>
+            </div>
+        </div>
+
+        <!-- Question 5: Code Tracing -->
+        <div class="question-card">
+            <span class="question-number">Question 5</span>
+            <h3>What is the output of this code?</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int arr[] = {10, 20, 30};
+    int *ptr = arr;
+    cout << *ptr << " ";
+    ptr++;
+    cout << *ptr << " ";
+    ptr = ptr + 1;
+    cout << *ptr << endl;
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer5')">Show Answer</button>
+
+            <div class="answer-section" id="answer5">
+                <h4>✅ Answer</h4>
+                <p><strong>Output:</strong> <code>10 20 30</code></p>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><code>int arr[] = {10, 20, 30};</code> - Creates array with 3 elements at indices 0, 1, 2</li>
+                    <li><code>int *ptr = arr;</code> - <code>ptr</code> points to the first element of the array (address of <code>arr[0]</code>)</li>
+                    <li><code>cout << *ptr;</code> - Dereferences <code>ptr</code>, printing the value at <code>arr[0]</code>: <strong>10</strong></li>
+                    <li><code>ptr++;</code> - Increments the pointer. Now <code>ptr</code> points to <code>arr[1]</code>. (Pointer arithmetic: adding 1 to an <code>int*</code> moves it forward by <code>sizeof(int)</code> bytes)</li>
+                    <li><code>cout << *ptr;</code> - Dereferences <code>ptr</code>, printing the value at <code>arr[1]</code>: <strong>20</strong></li>
+                    <li><code>ptr = ptr + 1;</code> - Adds 1 to the pointer. Now <code>ptr</code> points to <code>arr[2]</code></li>
+                    <li><code>cout << *ptr;</code> - Dereferences <code>ptr</code>, printing the value at <code>arr[2]</code>: <strong>30</strong></li>
+                </ol>
+
+                <p><strong>Key Concept: Pointer Arithmetic</strong></p>
+                <p>
+                    When you add to a pointer, it moves by multiples of the size of the type it points to. For <code>int*</code>, adding 1 moves forward by <code>sizeof(int)</code> bytes (typically 4 bytes). This is why <code>ptr++</code> moves from <code>arr[0]</code> to <code>arr[1]</code>, not to some random memory location.
+                </p>
+
+                <p>Array notation <code>arr[i]</code> is actually shorthand for <code>*(arr + i)</code> - pointer arithmetic and dereferencing!</p>
+            </div>
+        </div>
+
+        <!-- Question 6: Find the Bug -->
+        <div class="question-card">
+            <span class="question-number">Question 6</span>
+            <h3>This code has a bug. Identify it and explain how to fix it.</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int size = 5;
+    int *arr = new int[size];
+
+    for (int i = 0; i < size; i++) {
+        arr[i] = i * 10;
+    }
+
+    delete arr;
+
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer6')">Show Answer</button>
+
+            <div class="answer-section" id="answer6">
+                <h4>🐛 Bug Location</h4>
+                <p><strong>Line 9:</strong> <code>delete arr;</code></p>
+
+                <h4>What's Wrong</h4>
+                <p>
+                    The array was allocated with <code>new int[size]</code> (array allocation), so it MUST be freed with <code>delete[] arr</code> (array deallocation). Using plain <code>delete</code> without brackets is undefined behavior - it typically only frees the first element and leaks the remaining 4 integers.
+                </p>
+
+                <h4>How to Fix</h4>
+                <div class="code-block"><pre><code class="language-cpp">delete [] arr;  // Use delete[] for arrays
+arr = NULL;     // Best practice: set to NULL after deleting</code></pre></div>
+
+                <h4>The Rule</h4>
+                <p>Match your allocation with your deallocation:</p>
+                <ul>
+                    <li><code>new</code> → <code>delete</code> (single object)</li>
+                    <li><code>new[]</code> → <code>delete[]</code> (array)</li>
+                </ul>
+
+                <p>Mismatching causes undefined behavior and memory leaks.</p>
+            </div>
+        </div>
+
+        <!-- Question 7: Multiple Choice -->
+        <div class="question-card">
+            <span class="question-number">Question 7</span>
+            <h3>Which statement about pointers is FALSE?</h3>
+            <ol type="A">
+                <li>A pointer stores the memory address of a variable</li>
+                <li>The <code>&</code> operator returns the address of a variable</li>
+                <li>The <code>*</code> operator dereferences a pointer</li>
+                <li>Pointers can only point to variables of type <code>int</code></li>
+            </ol>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer7')">Show Answer</button>
+
+            <div class="answer-section" id="answer7">
+                <h4>✅ Answer: D</h4>
+                <p><strong>False statement:</strong> Pointers can only point to variables of type <code>int</code></p>
+
+                <p><strong>Why this is false:</strong></p>
+                <p>
+                    Pointers can point to variables of ANY type. You can have <code>double*</code>, <code>char*</code>, <code>string*</code>, or pointers to any class or struct. Each pointer type matches the type of data it points to:
+                </p>
+                <div class="code-block"><pre><code class="language-cpp">int *intPtr;        // Points to int
+double *doublePtr;  // Points to double
+char *charPtr;      // Points to char</code></pre></div>
+
+                <p><strong>Why other options are true:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> True - A pointer is a variable that stores a memory address</li>
+                    <li><strong>B:</strong> True - <code>&x</code> gives you the address of variable <code>x</code></li>
+                    <li><strong>C:</strong> True - <code>*ptr</code> accesses the value at the address stored in <code>ptr</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 8: Code Tracing with Johan -->
+        <div class="question-card">
+            <span class="question-number">Question 8</span>
+            <h3>Johan writes the following function. What is the output when <code>main()</code> runs?</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">void update(int val) {
+    val = val + 10;
+}
+
+int main() {
+    int score = 50;
+    update(score);
+    cout << score << endl;
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer8')">Show Answer</button>
+
+            <div class="answer-section" id="answer8">
+                <h4>✅ Answer</h4>
+                <p><strong>Output:</strong> <code>50</code></p>
+
+                <p><strong>Why?</strong></p>
+                <p>
+                    The function <code>update</code> receives <code>val</code> by value, which means it gets a <em>copy</em> of <code>score</code>. When we modify <code>val</code> inside the function, we're only changing the copy, not the original <code>score</code> variable in <code>main()</code>.
+                </p>
+
+                <p><strong>Execution Trace:</strong></p>
+                <ol>
+                    <li><code>int score = 50;</code> - Create variable <code>score</code> with value 50</li>
+                    <li><code>update(score);</code> - Pass the <em>value</em> 50 to the function. Inside <code>update</code>, <code>val</code> is a separate variable initialized to 50</li>
+                    <li><code>val = val + 10;</code> - <code>val</code> becomes 60, but <code>score</code> in <code>main()</code> is unchanged</li>
+                    <li>Function ends, <code>val</code> is destroyed</li>
+                    <li><code>cout << score;</code> - Print <code>score</code>, which is still 50</li>
+                </ol>
+
+                <p><strong>How to fix it:</strong> Use a pointer parameter to modify the original variable:</p>
+                <div class="code-block"><pre><code class="language-cpp">void update(int *valPtr) {
+    *valPtr = *valPtr + 10;
+}
+
+int main() {
+    int score = 50;
+    update(&score);  // Pass address
+    cout << score << endl;  // Output: 60
+    return 0;
+}</code></pre></div>
+
+                <p>Now the function receives the <em>address</em> of <code>score</code> and can modify the original variable through the pointer.</p>
+            </div>
+        </div>
+
+        <!-- Question 9: Memory Leak -->
+        <div class="question-card">
+            <span class="question-number">Question 9</span>
+            <h3>Which of the following code snippets will cause a memory leak?</h3>
+
+            <ol type="A">
+                <li>
+                    <pre><code class="language-cpp">int *ptr = new int(5);
+delete ptr;
+ptr = NULL;</code></pre>
+                </li>
+                <li>
+                    <pre><code class="language-cpp">int *ptr = new int(5);
+ptr = NULL;</code></pre>
+                </li>
+                <li>
+                    <pre><code class="language-cpp">int x = 5;
+int *ptr = &x;</code></pre>
+                </li>
+                <li>
+                    <pre><code class="language-cpp">int *ptr = new int(5);
+delete ptr;
+delete ptr;</code></pre>
+                </li>
+            </ol>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer9')">Show Answer</button>
+
+            <div class="answer-section" id="answer9">
+                <h4>✅ Answer: B</h4>
+                <p><strong>Causes memory leak:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">int *ptr = new int(5);
+ptr = NULL;</code></pre></div>
+
+                <p><strong>Why this leaks:</strong></p>
+                <p>
+                    When we do <code>new int(5)</code>, we allocate memory on the heap and <code>ptr</code> stores its address. If we then do <code>ptr = NULL;</code> without first calling <code>delete ptr;</code>, we lose the address of that allocated memory. The integer is still allocated in the heap, but we have no way to access or free it - it's leaked.
+                </p>
+
+                <p><strong>Visualization:</strong></p>
+                <div class="code-block"><pre>After new:   ptr → [5]  (allocated integer on heap)
+After NULL:  ptr → NULL
+             [5]  (orphaned! still allocated but inaccessible)</pre></div>
+
+                <p><strong>Why other options don't leak:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> No leak - memory is properly freed with <code>delete</code> before setting to NULL</li>
+                    <li><strong>C:</strong> No leak - <code>ptr</code> points to a stack variable <code>x</code>, not heap memory. No <code>new</code> means no need to <code>delete</code></li>
+                    <li><strong>D:</strong> No leak (but has a different problem - double delete, which is undefined behavior and usually crashes). The memory is freed on the first <code>delete</code></li>
+                </ul>
+
+                <p><strong>Correct pattern:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">int *ptr = new int(5);
+delete ptr;      // Free memory first
+ptr = NULL;      // Then set to NULL</code></pre></div>
+            </div>
+        </div>
+
+        <!-- Question 10: True/False -->
+        <div class="question-card">
+            <span class="question-number">Question 10</span>
+            <h3>True or False: After calling <code>delete</code> on a pointer, the pointer's value automatically becomes NULL.</h3>
+            <p>Justify your answer.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer10')">Show Answer</button>
+
+            <div class="answer-section" id="answer10">
+                <h4>✅ Answer: False</h4>
+
+                <p><strong>Justification:</strong></p>
+                <p>
+                    After calling <code>delete</code> on a pointer, the pointer still contains the old memory address - it doesn't automatically become NULL. This creates a <strong>dangling pointer</strong> - a pointer that points to memory that has been freed.
+                </p>
+
+                <p><strong>Example:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">int *ptr = new int(42);
+cout << ptr << endl;   // Prints address, e.g., 0x55a2b3c4d5e6
+delete ptr;
+cout << ptr << endl;   // STILL prints 0x55a2b3c4d5e6 (dangling!)
+// ptr is NOT automatically NULL</code></pre></div>
+
+                <p>
+                    The memory at that address has been freed (returned to the OS), but <code>ptr</code> still holds the old address. Accessing <code>*ptr</code> now is undefined behavior - you're accessing freed memory.
+                </p>
+
+                <p><strong>Why this matters:</strong></p>
+                <p>
+                    Dangling pointers are dangerous because dereferencing them might appear to work (if the memory hasn't been reused yet) or might crash randomly. This makes bugs hard to find.
+                </p>
+
+                <p><strong>Best Practice:</strong> Always set pointers to NULL after deleting:</p>
+                <div class="code-block"><pre><code class="language-cpp">delete ptr;
+ptr = NULL;  // Now it's safe - dereferencing NULL crashes immediately
+
+if (ptr != NULL) {
+    *ptr = 10;  // Safe: only dereference if not NULL
+}</code></pre></div>
+
+                <p>Setting to NULL makes the pointer "safe" to check. Dereferencing NULL crashes immediately and predictably, making bugs obvious.</p>
+            </div>
+        </div>
+
+        <!-- Question 11: Code Tracing -->
+        <div class="question-card">
+            <span class="question-number">Question 11</span>
+            <h3>What is the output of this code?</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int size = 3;
+    int *arr = new int[size];
+
+    for (int i = 0; i < size; i++) {
+        arr[i] = i + 1;
+    }
+
+    cout << arr[0] + arr[2] << endl;
+
+    delete [] arr;
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer11')">Show Answer</button>
+
+            <div class="answer-section" id="answer11">
+                <h4>✅ Answer</h4>
+                <p><strong>Output:</strong> <code>4</code></p>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><code>int *arr = new int[size];</code> - Allocate array of 3 integers on the heap</li>
+                    <li>Loop iteration 1 (i=0): <code>arr[0] = 0 + 1 = 1</code></li>
+                    <li>Loop iteration 2 (i=1): <code>arr[1] = 1 + 1 = 2</code></li>
+                    <li>Loop iteration 3 (i=2): <code>arr[2] = 2 + 1 = 3</code></li>
+                    <li><code>cout << arr[0] + arr[2];</code> - Print <code>1 + 3 = 4</code></li>
+                    <li><code>delete [] arr;</code> - Free the array (correct operator for array deallocation)</li>
+                </ol>
+
+                <p><strong>Array state after loop:</strong></p>
+                <div class="code-block"><pre>arr[0] = 1
+arr[1] = 2
+arr[2] = 3</pre></div>
+
+                <p><strong>Note:</strong> This code correctly uses <code>delete[]</code> to free the dynamically allocated array.</p>
+            </div>
+        </div>
+
+        <!-- Question 12: Multiple Choice -->
+        <div class="question-card">
+            <span class="question-number">Question 12</span>
+            <h3>What does the expression <code>&x</code> return?</h3>
+            <ol type="A">
+                <li>The value stored in variable <code>x</code></li>
+                <li>The memory address of variable <code>x</code></li>
+                <li>A copy of variable <code>x</code></li>
+                <li>A reference to variable <code>x</code></li>
+            </ol>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer12')">Show Answer</button>
+
+            <div class="answer-section" id="answer12">
+                <h4>✅ Answer: B</h4>
+                <p><strong>Correct:</strong> The memory address of variable <code>x</code></p>
+
+                <p><strong>Explanation:</strong></p>
+                <p>
+                    The <code>&</code> operator is the "address-of" operator. When applied to a variable, it returns the memory address where that variable is stored. This is how you get a pointer to a variable:
+                </p>
+                <div class="code-block"><pre><code class="language-cpp">int x = 42;
+int *ptr = &x;  // ptr now stores the address of x
+cout << &x;     // Prints something like: 0x7ffd5e3c4a2c</code></pre></div>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> To get the value of <code>x</code>, you just use <code>x</code>, not <code>&x</code></li>
+                    <li><strong>C:</strong> <code>&x</code> doesn't create a copy - it returns an address</li>
+                    <li><strong>D:</strong> While references exist in C++, <code>&x</code> in this context returns an address (pointer), not a reference. References are declared differently (<code>int &ref = x;</code>)</li>
+                </ul>
+
+                <p><strong>The two meanings of &:</strong></p>
+                <ul>
+                    <li><code>&x</code> - Address-of operator: "give me the address of x"</li>
+                    <li><code>int &ref = x;</code> - Reference declaration: "ref is another name for x"</li>
+                </ul>
+                <p>These are different uses of the same symbol.</p>
+            </div>
+        </div>
+
+        <!-- Question 13: Find the Bug with Nandipha -->
+        <div class="question-card">
+            <span class="question-number">Question 13</span>
+            <h3>Nandipha writes this code but it crashes. What's wrong and how should it be fixed?</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int *ptr;
+    *ptr = 100;
+    cout << *ptr << endl;
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer13')">Show Answer</button>
+
+            <div class="answer-section" id="answer13">
+                <h4>🐛 Bug Location</h4>
+                <p><strong>Line 2-3:</strong> Uninitialized pointer being dereferenced</p>
+
+                <h4>What's Wrong</h4>
+                <p>
+                    The pointer <code>ptr</code> is declared but not initialized, so it contains a random garbage address. On line 3, we dereference this pointer with <code>*ptr = 100</code>, attempting to write to whatever random address is in <code>ptr</code>. This is undefined behavior and usually causes a crash (segmentation fault).
+                </p>
+
+                <p><strong>Why it crashes:</strong></p>
+                <p>
+                    The garbage address in <code>ptr</code> likely points to memory that doesn't belong to your program. When you try to write to it, the operating system detects the illegal access and terminates your program.
+                </p>
+
+                <h4>How to Fix - Option 1: Point to Existing Variable</h4>
+                <div class="code-block"><pre><code class="language-cpp">int main() {
+    int value;       // Create a variable
+    int *ptr = &value;  // Point to it
+    *ptr = 100;      // Now safe: we own this memory
+    cout << *ptr << endl;
+    return 0;
+}</code></pre></div>
+
+                <h4>How to Fix - Option 2: Dynamically Allocate</h4>
+                <div class="code-block"><pre><code class="language-cpp">int main() {
+    int *ptr = new int;  // Allocate memory
+    *ptr = 100;          // Now safe: we allocated this memory
+    cout << *ptr << endl;
+    delete ptr;          // Don't forget to free it!
+    ptr = NULL;
+    return 0;
+}</code></pre></div>
+
+                <h4>The Rule</h4>
+                <p>
+                    <strong>Never dereference an uninitialized pointer.</strong> Before using <code>*ptr</code>, ensure <code>ptr</code> points to valid memory by either:
+                </p>
+                <ul>
+                    <li>Pointing it to an existing variable with <code>&</code></li>
+                    <li>Allocating memory with <code>new</code></li>
+                    <li>Setting it to NULL (and checking before dereferencing)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 14: Multiple Choice -->
+        <div class="question-card">
+            <span class="question-number">Question 14</span>
+            <h3>If <code>arr</code> is an array of integers, what does <code>arr</code> by itself (without brackets) represent?</h3>
+            <ol type="A">
+                <li>The first element of the array</li>
+                <li>The size of the array</li>
+                <li>A pointer to the first element of the array</li>
+                <li>The sum of all elements in the array</li>
+            </ol>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer14')">Show Answer</button>
+
+            <div class="answer-section" id="answer14">
+                <h4>✅ Answer: C</h4>
+                <p><strong>Correct:</strong> A pointer to the first element of the array</p>
+
+                <p><strong>Explanation:</strong></p>
+                <p>
+                    In C++, an array name (without brackets) automatically "decays" to a pointer to its first element. This means <code>arr</code> is equivalent to <code>&arr[0]</code>.
+                </p>
+
+                <p><strong>Example:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">int arr[] = {10, 20, 30};
+int *ptr = arr;  // arr decays to pointer to first element
+
+cout << arr << endl;      // Prints address (e.g., 0x7ffd...)
+cout << &arr[0] << endl;  // Prints same address
+cout << *arr << endl;     // Prints 10 (first element)</code></pre></div>
+
+                <p><strong>This is why:</strong></p>
+                <ul>
+                    <li>You can assign an array to a pointer: <code>int *ptr = arr;</code></li>
+                    <li>Array notation <code>arr[i]</code> is actually <code>*(arr + i)</code> - pointer arithmetic!</li>
+                    <li>You can pass arrays to functions that expect pointers</li>
+                </ul>
+
+                <p><strong>Important:</strong> While <code>arr</code> acts like a pointer, it's NOT exactly the same:</p>
+                <ul>
+                    <li><code>sizeof(arr)</code> gives the total size of the array, not the size of a pointer</li>
+                    <li>You can't reassign <code>arr</code> to point elsewhere (it's a constant pointer)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 15: Code Tracing with Tebogo -->
+        <div class="question-card">
+            <span class="question-number">Question 15</span>
+            <h3>Tebogo writes the following code. What is the output?</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int x = 5;
+    int y = 10;
+    int *p1 = &x;
+    int *p2 = &y;
+
+    *p1 = *p2;
+
+    cout << x << " " << y << endl;
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer15')">Show Answer</button>
+
+            <div class="answer-section" id="answer15">
+                <h4>✅ Answer</h4>
+                <p><strong>Output:</strong> <code>10 10</code></p>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><code>int x = 5;</code> - <code>x</code> is 5</li>
+                    <li><code>int y = 10;</code> - <code>y</code> is 10</li>
+                    <li><code>int *p1 = &x;</code> - <code>p1</code> points to <code>x</code></li>
+                    <li><code>int *p2 = &y;</code> - <code>p2</code> points to <code>y</code></li>
+                    <li><code>*p1 = *p2;</code> - Dereference both pointers:
+                        <ul>
+                            <li><code>*p2</code> reads the value at <code>y</code> (which is 10)</li>
+                            <li><code>*p1 = ...</code> writes that value to the location <code>p1</code> points to (which is <code>x</code>)</li>
+                            <li>Result: <code>x</code> becomes 10, <code>y</code> stays 10</li>
+                        </ul>
+                    </li>
+                    <li><code>cout << x << " " << y;</code> - Print both: <code>10 10</code></li>
+                </ol>
+
+                <p><strong>Key Concept:</strong></p>
+                <p>
+                    The statement <code>*p1 = *p2;</code> copies the <em>value</em> from one location to another. It does NOT make <code>p1</code> point to the same place as <code>p2</code>. If Tebogo wanted to make <code>p1</code> point to <code>y</code>, the code would be:
+                </p>
+                <div class="code-block"><pre><code class="language-cpp">p1 = p2;  // Now both pointers point to y (no dereferencing)</code></pre></div>
+
+                <p><strong>Compare:</strong></p>
+                <ul>
+                    <li><code>*p1 = *p2;</code> - Copy the value: <code>x = y;</code> (x becomes 10)</li>
+                    <li><code>p1 = p2;</code> - Copy the address: both pointers now point to <code>y</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 16: True/False -->
+        <div class="question-card">
+            <span class="question-number">Question 16</span>
+            <h3>True or False: Dynamic memory allocated with <code>new</code> is automatically freed when the pointer goes out of scope.</h3>
+            <p>Justify your answer.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer16')">Show Answer</button>
+
+            <div class="answer-section" id="answer16">
+                <h4>✅ Answer: False</h4>
+
+                <p><strong>Justification:</strong></p>
+                <p>
+                    Dynamic memory allocated with <code>new</code> lives on the <strong>heap</strong> and persists until you explicitly free it with <code>delete</code>. When a pointer goes out of scope, only the <em>pointer variable itself</em> is destroyed, not the memory it points to.
+                </p>
+
+                <p><strong>Example of a memory leak:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">void doSomething() {
+    int *ptr = new int(42);
+    // Do some work
+    // Oops! Forgot to delete
+}  // ptr goes out of scope and is destroyed
+
+// The integer on the heap is now leaked - allocated but inaccessible</code></pre></div>
+
+                <p><strong>What happens:</strong></p>
+                <ol>
+                    <li><code>new int(42)</code> allocates memory on the heap</li>
+                    <li><code>ptr</code> (a local variable on the stack) stores the address</li>
+                    <li>Function ends: <code>ptr</code> is destroyed (it's a stack variable)</li>
+                    <li>The heap memory is <strong>still allocated</strong> but we lost the address - memory leak!</li>
+                </ol>
+
+                <p><strong>Correct pattern:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">void doSomething() {
+    int *ptr = new int(42);
+    // Do some work
+    delete ptr;  // MUST explicitly free heap memory
+    ptr = NULL;
+}  // Now safe: heap memory was freed before ptr went out of scope</code></pre></div>
+
+                <p><strong>Key Difference: Stack vs Heap</strong></p>
+                <ul>
+                    <li><strong>Stack variables:</strong> Automatically cleaned up when they go out of scope</li>
+                    <li><strong>Heap memory:</strong> Must be explicitly freed with <code>delete</code> - never automatic</li>
+                </ul>
+
+                <p>This is why you must be careful with dynamic memory - forgetting <code>delete</code> causes leaks!</p>
+            </div>
+        </div>
+
+        <!-- Question 17: Find the Bug -->
+        <div class="question-card">
+            <span class="question-number">Question 17</span>
+            <h3>This code compiles but has undefined behavior. What's the problem?</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int *ptr = new int(25);
+    delete ptr;
+    *ptr = 50;
+    cout << *ptr << endl;
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer17')">Show Answer</button>
+
+            <div class="answer-section" id="answer17">
+                <h4>🐛 Bug Location</h4>
+                <p><strong>Line 4:</strong> <code>*ptr = 50;</code></p>
+
+                <h4>What's Wrong</h4>
+                <p>
+                    After <code>delete ptr;</code> on line 3, the memory has been freed and returned to the operating system. However, <code>ptr</code> still contains the old address - it's now a <strong>dangling pointer</strong>. On line 4, we dereference this dangling pointer and try to write to freed memory, which is undefined behavior.
+                </p>
+
+                <p><strong>Why it's dangerous:</strong></p>
+                <ul>
+                    <li>The memory might have been reused for something else - we'd corrupt random data</li>
+                    <li>The OS might have reclaimed the memory - we'd crash with a segfault</li>
+                    <li>It might appear to work (the memory hasn't been reused yet) - silent bug that's hard to find</li>
+                </ul>
+
+                <p><strong>Execution timeline:</strong></p>
+                <div class="code-block"><pre>Line 2: Allocate  → ptr points to valid heap memory containing 25
+Line 3: Delete    → Memory freed, but ptr still holds old address (dangling!)
+Line 4: Dereference → ☠️ Accessing freed memory - UNDEFINED BEHAVIOR
+Line 5: Print     → Might print garbage, might crash, might print 50</pre></div>
+
+                <h4>How to Fix</h4>
+                <p><strong>Option 1:</strong> Don't use the pointer after deleting</p>
+                <div class="code-block"><pre><code class="language-cpp">int main() {
+    int *ptr = new int(25);
+    cout << *ptr << endl;  // Use it BEFORE deleting
+    delete ptr;
+    ptr = NULL;            // Set to NULL after deleting
+    // Don't use ptr anymore
+    return 0;
+}</code></pre></div>
+
+                <p><strong>Option 2:</strong> Allocate new memory if you need to continue using it</p>
+                <div class="code-block"><pre><code class="language-cpp">int main() {
+    int *ptr = new int(25);
+    delete ptr;
+    ptr = new int(50);  // Allocate new memory
+    cout << *ptr << endl;
+    delete ptr;
+    ptr = NULL;
+    return 0;
+}</code></pre></div>
+
+                <p><strong>Best Practice:</strong> Set pointers to NULL after deleting to make dangling pointers detectable:</p>
+                <div class="code-block"><pre><code class="language-cpp">delete ptr;
+ptr = NULL;
+
+if (ptr != NULL) {
+    *ptr = 50;  // This check prevents the bug
+}</code></pre></div>
+            </div>
+        </div>
+
+        <!-- Question 18: Multiple Choice -->
+        <div class="question-card">
+            <span class="question-number">Question 18</span>
+            <h3>What is the correct way to dynamically allocate an array of 10 doubles?</h3>
+            <ol type="A">
+                <li><code>double *arr = new double(10);</code></li>
+                <li><code>double *arr = new double[10];</code></li>
+                <li><code>double arr[] = new double[10];</code></li>
+                <li><code>double *arr = malloc(10 * sizeof(double));</code></li>
+            </ol>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer18')">Show Answer</button>
+
+            <div class="answer-section" id="answer18">
+                <h4>✅ Answer: B</h4>
+                <p><strong>Correct:</strong> <code>double *arr = new double[10];</code></p>
+
+                <p><strong>Explanation:</strong></p>
+                <p>
+                    To allocate a dynamic array, use <code>new type[size]</code>. The square brackets indicate array allocation. This allocates memory for 10 consecutive doubles on the heap and returns a pointer to the first element.
+                </p>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li>
+                        <strong>A:</strong> <code>new double(10);</code> allocates a <em>single</em> double initialized to 10, not an array of 10 doubles. Parentheses are for initialization, not array size.
+                    </li>
+                    <li>
+                        <strong>C:</strong> <code>double arr[] = new double[10];</code> - Syntax error. You can't use array notation <code>[]</code> on the left side with dynamic allocation. Must use pointer notation.
+                    </li>
+                    <li>
+                        <strong>D:</strong> <code>malloc(10 * sizeof(double));</code> - While this works in C, it's not the C++ way. In C++, use <code>new</code>, not <code>malloc</code>. Additionally, <code>malloc</code> returns <code>void*</code> which would need casting.
+                    </li>
+                </ul>
+
+                <p><strong>Complete example:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">double *arr = new double[10];  // Allocate array of 10 doubles
+
+for (int i = 0; i < 10; i++) {
+    arr[i] = i * 1.5;  // Use like regular array
+}
+
+delete [] arr;  // MUST use delete[] with square brackets
+arr = NULL;</code></pre></div>
+
+                <p><strong>Remember:</strong> <code>new[]</code> requires <code>delete[]</code> (with brackets)!</p>
+            </div>
+        </div>
+
+        <!-- Question 19: Code Tracing -->
+        <div class="question-card">
+            <span class="question-number">Question 19</span>
+            <h3>What is the output of this code?</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int *p1 = new int(7);
+    int *p2 = p1;
+
+    *p2 = 14;
+
+    cout << *p1 << " " << *p2 << endl;
+
+    delete p1;
+    p1 = NULL;
+    p2 = NULL;
+
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer19')">Show Answer</button>
+
+            <div class="answer-section" id="answer19">
+                <h4>✅ Answer</h4>
+                <p><strong>Output:</strong> <code>14 14</code></p>
+
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><code>int *p1 = new int(7);</code> - Allocate integer on heap with value 7, <code>p1</code> points to it</li>
+                    <li><code>int *p2 = p1;</code> - Copy the address from <code>p1</code> to <code>p2</code>. Now BOTH pointers point to the SAME integer on the heap</li>
+                    <li><code>*p2 = 14;</code> - Write 14 to the location <code>p2</code> points to. Since <code>p1</code> and <code>p2</code> point to the same place, the change is visible through both pointers</li>
+                    <li><code>cout << *p1 << " " << *p2;</code> - Both print 14 because they point to the same memory location</li>
+                    <li><code>delete p1;</code> - Free the memory (only one delete needed since there's only one allocation)</li>
+                    <li><code>p1 = NULL; p2 = NULL;</code> - Set both pointers to NULL for safety</li>
+                </ol>
+
+                <p><strong>Memory Visualization:</strong></p>
+                <div class="code-block"><pre>After line 2:
+  p1 → [7]  ← p2  (both point to same location)
+
+After line 4:
+  p1 → [14] ← p2  (both see the change)
+
+After line 7:
+  p1 → NULL
+  p2 → NULL
+  [deleted]  (heap memory freed)</pre></div>
+
+                <p><strong>Important Notes:</strong></p>
+                <ul>
+                    <li>When you assign one pointer to another (<code>p2 = p1;</code>), you're copying the <em>address</em>, not allocating new memory</li>
+                    <li>Both pointers share the same heap object, so modifying through one affects the other</li>
+                    <li>You only <code>delete</code> once because there's only one allocation - don't do <code>delete p2;</code> after <code>delete p1;</code> (that would be a double-delete error)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 20: Multiple Choice with Chantelle -->
+        <div class="question-card">
+            <span class="question-number">Question 20</span>
+            <h3>Chantelle wants to pass an array to a function that will modify its elements. Which function signature should she use?</h3>
+            <ol type="A">
+                <li><code>void modify(int arr[], int size);</code></li>
+                <li><code>void modify(int *arr, int size);</code></li>
+                <li><code>void modify(int arr, int size);</code></li>
+                <li>Both A and B are correct</li>
+            </ol>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer20')">Show Answer</button>
+
+            <div class="answer-section" id="answer20">
+                <h4>✅ Answer: D</h4>
+                <p><strong>Correct:</strong> Both A and B are correct</p>
+
+                <p><strong>Explanation:</strong></p>
+                <p>
+                    In C++, <code>int arr[]</code> and <code>int *arr</code> are <strong>exactly equivalent</strong> when used as function parameters. Both indicate that the function receives a pointer to the first element of an array.
+                </p>
+
+                <p><strong>Example:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">// These two signatures are identical:
+void modify1(int arr[], int size) {
+    arr[0] = 100;  // Modifies original array
+}
+
+void modify2(int *arr, int size) {
+    arr[0] = 100;  // Also modifies original array
+}
+
+int main() {
+    int numbers[] = {1, 2, 3, 4, 5};
+    modify1(numbers, 5);  // Works
+    modify2(numbers, 5);  // Also works - same effect
+    return 0;
+}</code></pre></div>
+
+                <p><strong>Why they're the same:</strong></p>
+                <p>
+                    When you pass an array to a function, it "decays" to a pointer to its first element. The function doesn't receive a copy of the array - it receives the address where the array starts. Both <code>arr[]</code> and <code>*arr</code> syntax express this.
+                </p>
+
+                <p><strong>Why option C is wrong:</strong></p>
+                <p>
+                    <code>void modify(int arr, int size);</code> declares <code>arr</code> as a regular integer, not an array or pointer. This would cause a compilation error when trying to pass an array.
+                </p>
+
+                <p><strong>Style note:</strong></p>
+                <ul>
+                    <li><code>int arr[]</code> - Makes it clear you expect an array</li>
+                    <li><code>int *arr</code> - More technically accurate (it IS a pointer)</li>
+                </ul>
+                <p>Both are used in practice. Choose based on readability for your context.</p>
+            </div>
+        </div>
+
+        <!-- Question 21: Find the Bug -->
+        <div class="question-card">
+            <span class="question-number">Question 21</span>
+            <h3>This code has a subtle bug. Identify and fix it.</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int size = 5;
+    int *arr = new int[size];
+
+    for (int i = 0; i <= size; i++) {
+        arr[i] = i * 2;
+    }
+
+    delete [] arr;
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer21')">Show Answer</button>
+
+            <div class="answer-section" id="answer21">
+                <h4>🐛 Bug Location</h4>
+                <p><strong>Line 5:</strong> <code>for (int i = 0; i <= size; i++)</code></p>
+
+                <h4>What's Wrong</h4>
+                <p>
+                    The loop condition <code>i <= size</code> is incorrect. For an array of size 5, valid indices are 0, 1, 2, 3, 4 (from 0 to size-1). The loop runs from 0 to 5 (inclusive), so on the last iteration when <code>i = 5</code>, we access <code>arr[5]</code>, which is <strong>out of bounds</strong> - one past the end of the array.
+                </p>
+
+                <p><strong>Why it's a problem:</strong></p>
+                <p>
+                    Accessing <code>arr[5]</code> when the array only has 5 elements (indices 0-4) is undefined behavior. You're writing to memory that doesn't belong to your array. This might:
+                </p>
+                <ul>
+                    <li>Corrupt other variables in your program</li>
+                    <li>Cause a crash (segmentation fault)</li>
+                    <li>Appear to work (if the memory happens to be accessible) - silent bug!</li>
+                </ul>
+
+                <p><strong>Execution trace (incorrect):</strong></p>
+                <div class="code-block"><pre>i = 0: arr[0] = 0   ✅ Valid
+i = 1: arr[1] = 2   ✅ Valid
+i = 2: arr[2] = 4   ✅ Valid
+i = 3: arr[3] = 6   ✅ Valid
+i = 4: arr[4] = 8   ✅ Valid
+i = 5: arr[5] = 10  ❌ OUT OF BOUNDS!</pre></div>
+
+                <h4>How to Fix</h4>
+                <p>Change <code>i <= size</code> to <code>i < size</code>:</p>
+                <div class="code-block"><pre><code class="language-cpp">for (int i = 0; i < size; i++) {  // Use < not <=
+    arr[i] = i * 2;
+}</code></pre></div>
+
+                <p>Now the loop runs from 0 to 4 (when i=5, the condition is false), accessing only valid indices.</p>
+
+                <h4>The Pattern</h4>
+                <p>For arrays of size <code>n</code>:</p>
+                <ul>
+                    <li>Valid indices: <code>0</code> to <code>n-1</code></li>
+                    <li>Loop condition: <code>i < n</code> (NOT <code>i <= n</code>)</li>
+                    <li>Total iterations: exactly <code>n</code> times</li>
+                </ul>
+
+                <p><strong>Common mistake:</strong> Confusing "less than" with "less than or equal to" when size is the loop bound!</p>
+            </div>
+        </div>
+
+        <!-- Question 22: True/False with Andile -->
+        <div class="question-card">
+            <span class="question-number">Question 22</span>
+            <h3>Andile claims: "If I delete a pointer twice, it will free the memory twice, which ensures it's completely gone." True or False?</h3>
+            <p>Justify your answer.</p>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer22')">Show Answer</button>
+
+            <div class="answer-section" id="answer22">
+                <h4>✅ Answer: False</h4>
+
+                <p><strong>Justification:</strong></p>
+                <p>
+                    Deleting a pointer twice is a serious error called a <strong>double delete</strong>, and it causes undefined behavior - usually a crash. The memory is fully freed after the first <code>delete</code>. Attempting to delete it again is illegal.
+                </p>
+
+                <p><strong>Why double delete is wrong:</strong></p>
+                <ol>
+                    <li><strong>First delete:</strong> Memory is freed and returned to the operating system</li>
+                    <li><strong>Second delete:</strong> You're trying to free memory that's already been freed (or worse, might have been reallocated for something else). This corrupts the memory management system</li>
+                </ol>
+
+                <p><strong>Example that crashes:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">int *ptr = new int(42);
+delete ptr;  // First delete: memory freed ✅
+delete ptr;  // Second delete: CRASH ☠️ - undefined behavior</code></pre></div>
+
+                <p><strong>What happens:</strong></p>
+                <p>
+                    The exact behavior is undefined (depends on your system), but typical outcomes are:
+                </p>
+                <ul>
+                    <li><strong>Immediate crash:</strong> The memory allocator detects corruption and aborts</li>
+                    <li><strong>Silent corruption:</strong> The allocator's internal data structures are corrupted, causing random crashes later</li>
+                    <li><strong>Appears to work:</strong> Rare, but if memory happened to be in a certain state, the error might not be immediately visible</li>
+                </ul>
+
+                <p><strong>How to prevent double delete:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">int *ptr = new int(42);
+delete ptr;
+ptr = NULL;  // Set to NULL after deleting
+
+// Later in code:
+if (ptr != NULL) {
+    delete ptr;  // Safe: won't delete if already NULL
+}
+// Or:
+delete ptr;  // Also safe: deleting NULL does nothing (it's defined behavior)</code></pre></div>
+
+                <p><strong>Key facts:</strong></p>
+                <ul>
+                    <li>Deleting NULL is safe and does nothing</li>
+                    <li>Deleting a non-NULL pointer twice is undefined behavior</li>
+                    <li>Always set pointers to NULL after deleting to prevent double-delete bugs</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Question 23: Code Tracing -->
+        <div class="question-card">
+            <span class="question-number">Question 23</span>
+            <h3>What is the output of this code?</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int x = 100;
+    int *ptr = &x;
+
+    cout << ptr << " " << *ptr << endl;
+
+    return 0;
+}</code></pre></div>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer23')">Show Answer</button>
+
+            <div class="answer-section" id="answer23">
+                <h4>✅ Answer</h4>
+                <p><strong>Output:</strong> An address followed by 100</p>
+                <p><strong>Example output:</strong> <code>0x7ffd5e3c4a2c 100</code></p>
+
+                <p><strong>Explanation:</strong></p>
+                <ul>
+                    <li><code>ptr</code> (without the <code>*</code>) prints the <em>address</em> stored in the pointer. This is a hexadecimal memory address like <code>0x7ffd5e3c4a2c</code>. The exact address will vary each time you run the program.</li>
+                    <li><code>*ptr</code> (with the <code>*</code>) dereferences the pointer and prints the <em>value</em> at that address, which is 100 (the value of <code>x</code>).</li>
+                </ul>
+
+                <p><strong>Understanding the output:</strong></p>
+                <div class="code-block"><pre>ptr:  0x7ffd5e3c4a2c  ← Memory address (varies each run)
+*ptr: 100              ← Value at that address (always 100)</pre></div>
+
+                <p><strong>The difference:</strong></p>
+                <ul>
+                    <li><code>ptr</code> - "WHERE is x in memory?" (the address)</li>
+                    <li><code>*ptr</code> - "WHAT value is stored there?" (the value)</li>
+                </ul>
+
+                <p><strong>Note:</strong> The actual address printed will be different each time because the operating system assigns memory dynamically. What matters is that <code>*ptr</code> always prints 100 regardless of where <code>x</code> is located.</p>
+            </div>
+        </div>
+
+        <!-- Question 24: Multiple Choice -->
+        <div class="question-card">
+            <span class="question-number">Question 24</span>
+            <h3>What is the purpose of setting a pointer to NULL after calling <code>delete</code>?</h3>
+            <ol type="A">
+                <li>To free the memory a second time</li>
+                <li>To prevent memory leaks</li>
+                <li>To make the pointer safe to check and prevent dangling pointer bugs</li>
+                <li>It's not necessary - just good style</li>
+            </ol>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer24')">Show Answer</button>
+
+            <div class="answer-section" id="answer24">
+                <h4>✅ Answer: C</h4>
+                <p><strong>Correct:</strong> To make the pointer safe to check and prevent dangling pointer bugs</p>
+
+                <p><strong>Explanation:</strong></p>
+                <p>
+                    After <code>delete ptr;</code>, the memory is freed but <code>ptr</code> still contains the old address - it's a <strong>dangling pointer</strong>. Setting it to NULL (<code>ptr = NULL;</code>) makes the pointer "safe":
+                </p>
+
+                <ol>
+                    <li><strong>Checkable:</strong> You can test <code>if (ptr != NULL)</code> to see if it's safe to use</li>
+                    <li><strong>Safe to delete again:</strong> Calling <code>delete</code> on a NULL pointer does nothing (defined behavior)</li>
+                    <li><strong>Immediate crash if dereferenced:</strong> Dereferencing NULL crashes immediately and predictably, unlike dereferencing a dangling pointer which causes random bugs</li>
+                </ol>
+
+                <p><strong>Example showing the benefit:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">int *ptr = new int(42);
+delete ptr;
+ptr = NULL;  // Make it safe
+
+// Later in code:
+if (ptr != NULL) {
+    *ptr = 10;  // This check prevents the bug
+} else {
+    cout << "Pointer is NULL, can't use it" << endl;
+}</code></pre></div>
+
+                <p><strong>Without setting to NULL:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">int *ptr = new int(42);
+delete ptr;
+// Didn't set to NULL - ptr still has old address (dangling!)
+
+if (ptr != NULL) {
+    *ptr = 10;  // ☠️ BUG: condition is true (ptr != NULL),
+                // but dereferencing accesses freed memory!
+}</code></pre></div>
+
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Setting to NULL doesn't free memory - <code>delete</code> already did that</li>
+                    <li><strong>B:</strong> Setting to NULL doesn't prevent memory leaks. Leaks happen when you FORGET to <code>delete</code>, not from setting to NULL</li>
+                    <li><strong>D:</strong> It's not just style - it actively prevents bugs by making dangling pointers detectable</li>
+                </ul>
+
+                <p><strong>Best Practice Pattern:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">delete ptr;
+ptr = NULL;  // ALWAYS do this together</code></pre></div>
+            </div>
+        </div>
+
+        <!-- Question 25: Comprehensive -->
+        <div class="question-card">
+            <span class="question-number">Question 25</span>
+            <h3>Consider this code that manages a dynamic array. How many memory-related errors does it contain?</h3>
+
+            <div class="code-block"><pre><code class="language-cpp">int main() {
+    int *arr = new int[5];
+
+    for (int i = 0; i < 5; i++) {
+        arr[i] = i;
+    }
+
+    int *backup = arr;
+    arr = new int[3];
+
+    for (int i = 0; i < 3; i++) {
+        arr[i] = backup[i];
+    }
+
+    delete [] arr;
+
+    return 0;
+}</code></pre></div>
+
+            <ol type="A">
+                <li>No errors</li>
+                <li>1 error</li>
+                <li>2 errors</li>
+                <li>3 errors</li>
+            </ol>
+
+            <button class="reveal-btn" onclick="toggleAnswer('answer25')">Show Answer</button>
+
+            <div class="answer-section" id="answer25">
+                <h4>✅ Answer: C (2 errors)</h4>
+
+                <h4>Error #1: Memory Leak (Line 8-9)</h4>
+                <p><strong>Location:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">int *backup = arr;
+arr = new int[3];</code></pre></div>
+
+                <p><strong>What's wrong:</strong></p>
+                <p>
+                    When we do <code>arr = new int[3];</code>, we're reassigning <code>arr</code> to point to a new array. The original array of 5 integers still exists on the heap, and <code>backup</code> points to it, but we never delete it. This is a memory leak - 5 integers allocated but never freed.
+                </p>
+
+                <p><strong>Memory state after line 9:</strong></p>
+                <div class="code-block"><pre>backup → [0][1][2][3][4]  (original array - leaked!)
+arr → [garbage][garbage][garbage]  (new array)</pre></div>
+
+                <h4>Error #2: No Cleanup for backup (Line 15-16)</h4>
+                <p><strong>What's wrong:</strong></p>
+                <p>
+                    We delete <code>arr</code> (the 3-element array), but we never delete <code>backup</code> (the 5-element array). The original 5-element array is never freed - confirmed memory leak.
+                </p>
+
+                <p><strong>What should happen:</strong></p>
+                <div class="code-block"><pre><code class="language-cpp">delete [] arr;   // Free the 3-element array
+arr = NULL;
+delete [] backup;  // Also need to free the original 5-element array
+backup = NULL;</code></pre></div>
+
+                <h4>Complete Fixed Version</h4>
+                <div class="code-block"><pre><code class="language-cpp">int main() {
+    int *arr = new int[5];
+
+    for (int i = 0; i < 5; i++) {
+        arr[i] = i;
+    }
+
+    // Option 1: Delete old array before allocating new one
+    int *backup = arr;
+    arr = new int[3];
+
+    for (int i = 0; i < 3; i++) {
+        arr[i] = backup[i];
+    }
+
+    delete [] backup;  // Clean up original array
+    backup = NULL;
+
+    delete [] arr;     // Clean up new array
+    arr = NULL;
+
+    return 0;
+}</code></pre></div>
+
+                <h4>Alternative Better Design</h4>
+                <p>If you need to resize an array, delete the old one before allocating new:</p>
+                <div class="code-block"><pre><code class="language-cpp">int main() {
+    int *arr = new int[5];
+
+    for (int i = 0; i < 5; i++) {
+        arr[i] = i;
+    }
+
+    // Create temporary copy
+    int *temp = new int[3];
+    for (int i = 0; i < 3; i++) {
+        temp[i] = arr[i];
+    }
+
+    // Delete old array BEFORE reassigning pointer
+    delete [] arr;
+
+    // Now reassign
+    arr = temp;
+
+    // Clean up
+    delete [] arr;
+    arr = NULL;
+
+    return 0;
+}</code></pre></div>
+
+                <h4>Key Lessons</h4>
+                <ul>
+                    <li><strong>Never reassign pointers without freeing the old memory first</strong> (unless you save the old pointer and free it later)</li>
+                    <li><strong>Every <code>new[]</code> needs exactly one <code>delete[]</code></strong></li>
+                    <li><strong>Track all your allocations</strong> - if you have multiple pointers to heap memory, make sure you delete through all of them</li>
+                    <li><strong>In C++11+:</strong> Use <code>std::vector</code> instead of manual arrays to avoid these issues entirely!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div style="background: #1e293b; padding: 2rem; border-radius: 12px; margin-top: 3rem; text-align: center; border: 1px solid #334155;">
+            <h3 style="color: #10b981; margin-bottom: 1rem;">🎉 Quiz Complete!</h3>
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                You've finished the Unit 1 quiz on Pointers & Dynamic Memory. Review any questions you found challenging and make sure you understand the concepts thoroughly.
+            </p>
+            <p style="color: #94a3b8; font-size: 0.95rem;">
+                These topics are essential for COS 110 and will be used extensively in later units (OOP, data structures, templates).
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        // Toggle mobile navigation menu
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                const menu = document.getElementById('navMenu');
+                menu.classList.remove('active');
+            });
+        });
+
+        // Toggle answer visibility
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+
+                // CRITICAL: Force browser reflow before highlighting
+                void(answerSection.offsetHeight);
+
+                // Re-highlight Prism code blocks after reflow
+                if (typeof Prism !== 'undefined') {
+                    // Find all code blocks in this answer section and highlight them individually
+                    answerSection.querySelectorAll('pre code').forEach(function(codeBlock) {
+                        Prism.highlightElement(codeBlock);
+                    });
+                }
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+    </script>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

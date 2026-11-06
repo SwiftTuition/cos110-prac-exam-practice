@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 14: Recursion - Theory | COS 110</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: #1e293b;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #0ea5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.7rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #f1f5f9;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover { color: #0ea5e9; }
+        .nav-menu a.active {
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .content-card {
+            background: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-card h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #0ea5e9;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .content-card p, .content-card li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card p code,
+        .content-card li code,
+        .content-card h1 code,
+        .content-card h2 code,
+        .content-card h3 code,
+        .content-card h4 code {
+            background: #0c1222;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Cascadia Code', monospace;
+            color: #10b981;
+            font-size: 0.9em;
+        }
+
+        .content-card pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        .ascii-diagram {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Cascadia Code', monospace;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #10b981;
+        }
+
+        .ascii-diagram pre {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+            font-size: inherit;
+            line-height: inherit;
+            color: inherit;
+        }
+
+        .swift-note-box {
+            background: #1f1a2e;
+            border-left: 4px solid #a78bfa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .swift-note-box strong { color: #a78bfa; }
+
+        .info-box {
+            background: #1f2937;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .info-box strong { color: #0ea5e9; }
+
+        .warning-box {
+            background: #2d1414;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .warning-box strong { color: #ef4444; }
+
+        .success-box {
+            background: #142d1f;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .success-box strong { color: #10b981; }
+
+        .swift-quiz {
+            background: #1a1f2e;
+            border: 2px solid #eab308;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .swift-quiz-header {
+            color: #eab308;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .swift-quiz-question {
+            color: #cbd5e1;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .swift-quiz-answer {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eab308;
+            color: #10b981;
+        }
+
+        .swift-quiz-answer.visible {
+            display: block;
+        }
+
+        .quiz-toggle-btn {
+            background: #eab308;
+            color: #0f172a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .quiz-toggle-btn:hover {
+            background: #ca8a04;
+            transform: translateY(-1px);
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: #0f172a;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(234, 179, 8, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eab308;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        .playground {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .playground-title {
+            color: #0ea5e9;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .CodeMirror {
+            border: 2px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            height: auto;
+        }
+
+        .output-section {
+            margin-top: 1rem;
+        }
+
+        .output-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .output-box {
+            background: #0c1222;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-placeholder { color: #64748b; }
+        .output-success { color: #10b981; }
+        .output-error { color: #ef4444; }
+
+        .loading-indicator {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+
+        .loading-indicator.active { display: block; }
+
+        .playground-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .run-btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .reset-btn {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .reset-btn:hover {
+            background: #475569;
+        }
+
+        @media (max-width: 768px) {
+            .nav { flex-direction: column; align-items: flex-start; }
+            .nav-menu { flex-direction: column; gap: 0.5rem; margin-top: 1rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 14: Recursion</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html" class="active">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Opening -->
+        <section class="content-card">
+            <p style="font-size: 1.2rem; color: #0ea5e9; font-weight: 600; margin-bottom: 1.5rem;">
+                Good day, good people!
+            </p>
+
+            <h2>Welcome to Recursion</h2>
+
+            <p>
+                Recursion is a way of solving problems by breaking them down into smaller versions of the same problem. Think of it like looking at a mirror that reflects another mirror - you see infinite reflections, each one smaller than the last.
+            </p>
+
+            <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #a78bfa; border-radius: 12px; padding: 1.5rem; margin: 2rem 0; box-shadow: 0 8px 16px rgba(167, 139, 250, 0.2);">
+                <div style="text-align: center; color: #a78bfa; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">
+                    ✨ One of Swift's Favourite Poems ✨
+                </div>
+                <div style="background: #0f0f1e; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #a78bfa; margin-bottom: 1rem;">
+                    <em style="color: #e0d4ff; font-size: 1.05rem; line-height: 1.8; display: block; text-align: center; font-style: italic;">
+                        "In the desert<br>
+                        I saw a creature, naked, bestial,<br>
+                        Who, squatting upon the ground,<br>
+                        Held his heart in his hands,<br>
+                        And ate of it.<br>
+                        I said, 'Is it good, friend?'<br>
+                        'It is bitter—bitter,' he answered;<br>
+                        'But I like it<br>
+                        Because it is bitter,<br>
+                        And because it is my heart.'"
+                    </em>
+                    <div style="text-align: right; margin-top: 1rem;">
+                        <small style="color: #a78bfa; font-weight: 600;">— Stephen Crane</small>
+                    </div>
+                </div>
+                <p style="color: #cbd5e1; font-size: 0.95rem; text-align: center; margin: 0;">
+                    This is one of Swift's favourite poems. Does it relate to recursion? Only vaguely - a creature consuming itself, like a function calling itself. But it's a cool poem and I wanted to force it in somewhere, so here it is. Self-referential and profound, right? 😅
+                </p>
+            </div>
+
+            <h3>Prerequisites</h3>
+            <p>Before starting this unit, you should understand:</p>
+            <ul>
+                <li><strong>Functions</strong> - How functions work, parameters, return values</li>
+                <li><strong>The call stack</strong> - Where function calls are stored in memory</li>
+                <li><strong>Linked lists</strong> (Unit 10) - For recursive data structure operations</li>
+            </ul>
+
+            <p>If these concepts feel shaky, review them first. Recursion builds directly on understanding how function calls work.</p>
+        </section>
+
+        <!-- Section 1: What is Recursion? -->
+        <section class="content-card">
+            <h2>1. What is Recursion?</h2>
+
+            <p>
+                <strong>Recursion</strong> is when a function calls itself. Instead of using a loop to repeat something, you write a function that solves a small part of the problem and calls itself to solve the rest.
+            </p>
+
+            <h3>The Two Parts of Every Recursive Function</h3>
+            <p>
+                Every recursive function needs exactly two things:
+            </p>
+
+            <ol>
+                <li><strong>Base Case:</strong> The stopping condition. When do we stop calling the function?</li>
+                <li><strong>Recursive Case:</strong> The part where the function calls itself with a simpler input.</li>
+            </ol>
+
+            <p>Without a base case, the function keeps calling itself forever (infinite recursion) and your program crashes with a stack overflow.</p>
+
+            <h3>Simple Example: Countdown</h3>
+            <p>
+                Let's write a function that counts down from a number to 1:
+            </p>
+
+<pre><code class="language-cpp">void countdown(int n) {
+    if (n <= 0) {
+        cout << "Done!" << endl;
+        return;  // BASE CASE - stop here
+    }
+
+    cout << n << " ";
+    countdown(n - 1);  // RECURSIVE CASE - call with smaller n
+}</code></pre>
+
+            <p><strong>How this works:</strong></p>
+            <ul>
+                <li><code>if (n <= 0)</code> - Base case: when n reaches 0 or below, stop</li>
+                <li><code>cout << n</code> - Print the current number</li>
+                <li><code>countdown(n - 1)</code> - Call the function again with a smaller number</li>
+            </ul>
+
+            <p>If you call <code>countdown(5)</code>, it prints: <code>5 4 3 2 1 Done!</code></p>
+
+            <div class="ascii-diagram"><pre>Call stack for countdown(3):
+
+countdown(3)  →  prints "3 ", calls countdown(2)
+    countdown(2)  →  prints "2 ", calls countdown(1)
+        countdown(1)  →  prints "1 ", calls countdown(0)
+            countdown(0)  →  prints "Done!", returns
+        countdown(1) returns
+    countdown(2) returns
+countdown(3) returns</pre></div>
+
+            <div class="warning-box">
+                <strong>Important:</strong> Without the base case <code>if (n <= 0)</code>, the function would call itself forever and crash with a stack overflow error.
+            </div>
+        </section>
+
+        <!-- Playground 1: Basic Countdown -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 1: Countdown Function</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This code shows the basic structure of recursion. Try changing the number to see how the countdown works.
+            </p>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                <strong>What this code does:</strong>
+            </p>
+            <ul style="color: #cbd5e1; margin-bottom: 1rem;">
+                <li>Checks if n <= 0 (base case) - if yes, print "Done!" and stop</li>
+                <li>Otherwise, print current n and call countdown(n - 1)</li>
+                <li>Each call gets its own copy of n on the call stack</li>
+            </ul>
+
+            <textarea id="editor1">#include &lt;iostream&gt;
+using namespace std;
+
+void countdown(int n) {
+    if (n <= 0) {
+        cout << "Done!" << endl;
+        return;
+    }
+
+    cout << n << " ";
+    countdown(n - 1);
+}
+
+int main() {
+    countdown(5);
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground1')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor1')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading1" class="loading-indicator">Running...</div>
+                    <div id="output1" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 1:</strong> What happens if you change the base case to <code>if (n < 0)</code> and call <code>countdown(5)</code>?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_1')">Show Explanation</button>
+            <div class="answer-section" id="exp1_1">
+                <p><strong>What happens:</strong> It prints: <code>5 4 3 2 1 0 Done!</code></p>
+                <p><strong>Why:</strong> Now it includes 0 in the output. The base case only triggers when n becomes negative (< 0), so 0 gets printed first.</p>
+                <p><strong>The lesson:</strong> The base case condition determines exactly when recursion stops!</p>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment 2:</strong> What happens if you remove the base case entirely (delete the <code>if</code> statement)?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp1_2')">Show Explanation</button>
+            <div class="answer-section" id="exp1_2">
+                <p><strong>What happens:</strong> Stack overflow! The program crashes.</p>
+                <p><strong>Why:</strong> Without a base case, <code>countdown</code> keeps calling itself forever. Each call uses space on the call stack. Eventually, the stack runs out of space and crashes.</p>
+                <p><strong>The lesson:</strong> ALWAYS have a base case in recursive functions!</p>
+            </div>
+        </section>
+
+        <!-- Swift Quiz 1 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> What are the two required parts of every recursive function?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz1')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz1">
+                <strong>Answer:</strong>
+                <ol>
+                    <li><strong>Base case</strong> - The condition that stops the recursion</li>
+                    <li><strong>Recursive case</strong> - The part where the function calls itself with a simpler input</li>
+                </ol>
+                <p>Without the base case, you get infinite recursion. Without the recursive case, it's just a normal function.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: How Recursion Works (The Call Stack) -->
+        <section class="content-card">
+            <h2>2. How Recursion Works: The Call Stack</h2>
+
+            <p>
+                When you call a function, C++ puts it on the <strong>call stack</strong> - a special area of memory that keeps track of active function calls. Each function call gets its own space (a "stack frame") with its own local variables.
+            </p>
+
+            <h3>Visualizing the Call Stack</h3>
+            <p>
+                Let's trace what happens when you call <code>factorial(3)</code>:
+            </p>
+
+<pre><code class="language-cpp">int factorial(int n) {
+    if (n <= 1) {
+        return 1;  // Base case
+    }
+    return n * factorial(n - 1);  // Recursive case
+}</code></pre>
+
+            <div class="ascii-diagram"><pre>Call Stack Evolution for factorial(3):
+
+Step 1: factorial(3) is called
+┌──────────────────┐
+│ factorial(3)     │  n = 3, waiting for factorial(2)
+└──────────────────┘
+
+Step 2: factorial(3) calls factorial(2)
+┌──────────────────┐
+│ factorial(2)     │  n = 2, waiting for factorial(1)
+├──────────────────┤
+│ factorial(3)     │  n = 3, waiting for factorial(2)
+└──────────────────┘
+
+Step 3: factorial(2) calls factorial(1)
+┌──────────────────┐
+│ factorial(1)     │  n = 1, BASE CASE! Returns 1
+├──────────────────┤
+│ factorial(2)     │  n = 2, waiting for factorial(1)
+├──────────────────┤
+│ factorial(3)     │  n = 3, waiting for factorial(2)
+└──────────────────┘
+
+Step 4: factorial(1) returns 1
+┌──────────────────┐
+│ factorial(2)     │  n = 2, gets 1, returns 2*1 = 2
+├──────────────────┤
+│ factorial(3)     │  n = 3, waiting for factorial(2)
+└──────────────────┘
+
+Step 5: factorial(2) returns 2
+┌──────────────────┐
+│ factorial(3)     │  n = 3, gets 2, returns 3*2 = 6
+└──────────────────┘
+
+Step 6: factorial(3) returns 6
+(Stack is empty - all done!)
+
+Final result: 6</pre></div>
+
+            <p><strong>Key points:</strong></p>
+            <ul>
+                <li>Each recursive call adds a new frame to the stack</li>
+                <li>Frames pile up until the base case is reached</li>
+                <li>Then they unwind (return) from top to bottom</li>
+                <li>Each frame has its own copy of the parameters</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>Stack Overflow:</strong> If recursion goes too deep (too many calls before hitting the base case), you run out of stack space and the program crashes. This is why the base case is so important.
+            </div>
+        </section>
+
+        <!-- Section 3: Simple Mathematical Recursion -->
+        <section class="content-card">
+            <h2>3. Mathematical Recursion: Factorial and Fibonacci</h2>
+
+            <h3>Factorial</h3>
+            <p>
+                Factorial of n (written n!) is the product of all positive integers up to n:
+            </p>
+            <ul>
+                <li>5! = 5 × 4 × 3 × 2 × 1 = 120</li>
+                <li>3! = 3 × 2 × 1 = 6</li>
+                <li>1! = 1</li>
+                <li>0! = 1 (by definition)</li>
+            </ul>
+
+            <p><strong>Recursive definition:</strong></p>
+            <ul>
+                <li>n! = n × (n-1)! for n > 1</li>
+                <li>1! = 1 (base case)</li>
+            </ul>
+
+<pre><code class="language-cpp">int factorial(int n) {
+    if (n <= 1) {
+        return 1;  // Base case: 0! = 1, 1! = 1
+    }
+    return n * factorial(n - 1);  // Recursive case
+}</code></pre>
+
+            <p><strong>How this works:</strong></p>
+            <ul>
+                <li><code>factorial(5)</code> = 5 × <code>factorial(4)</code></li>
+                <li><code>factorial(4)</code> = 4 × <code>factorial(3)</code></li>
+                <li><code>factorial(3)</code> = 3 × <code>factorial(2)</code></li>
+                <li><code>factorial(2)</code> = 2 × <code>factorial(1)</code></li>
+                <li><code>factorial(1)</code> = 1 (base case)</li>
+                <li>Now unwinding: 2×1=2, 3×2=6, 4×6=24, 5×24=120</li>
+            </ul>
+
+            <h3>Fibonacci Sequence</h3>
+            <p>
+                The Fibonacci sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21...
+            </p>
+            <p>
+                Each number is the sum of the previous two numbers.
+            </p>
+
+            <p><strong>Recursive definition:</strong></p>
+            <ul>
+                <li>fib(0) = 0 (base case)</li>
+                <li>fib(1) = 1 (base case)</li>
+                <li>fib(n) = fib(n-1) + fib(n-2) for n > 1 (recursive case)</li>
+            </ul>
+
+<pre><code class="language-cpp">int fibonacci(int n) {
+    if (n <= 0) {
+        return 0;  // Base case 1
+    }
+    if (n == 1) {
+        return 1;  // Base case 2
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);  // Recursive case
+}</code></pre>
+
+            <p><strong>How this works for fibonacci(4):</strong></p>
+
+            <div class="ascii-diagram"><pre>Tree of recursive calls for fibonacci(4):
+
+                    fib(4)
+                   /      \
+              fib(3)      fib(2)
+             /     \      /     \
+        fib(2)  fib(1) fib(1) fib(0)
+        /    \
+   fib(1) fib(0)
+
+Returns:
+fib(0) = 0, fib(1) = 1
+fib(2) = fib(1) + fib(0) = 1 + 0 = 1
+fib(3) = fib(2) + fib(1) = 1 + 1 = 2
+fib(4) = fib(3) + fib(2) = 2 + 1 = 3</pre></div>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Notice how <code>fibonacci(2)</code> is calculated twice in the tree above. This is why the recursive Fibonacci is slow - it recalculates the same values over and over. We'll see better approaches later.
+            </div>
+        </section>
+
+        <!-- Playground 2: Factorial and Fibonacci -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 2: Factorial and Fibonacci</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This code shows both factorial and Fibonacci. Try different values to see the patterns.
+            </p>
+
+            <textarea id="editor2">#include &lt;iostream&gt;
+using namespace std;
+
+int factorial(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}
+
+int fibonacci(int n) {
+    if (n <= 0) {
+        return 0;
+    }
+    if (n == 1) {
+        return 1;
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+int main() {
+    cout << "Factorial of 5: " << factorial(5) << endl;
+    cout << "Fibonacci sequence (first 8 numbers):" << endl;
+    for (int i = 0; i < 8; i++) {
+        cout << fibonacci(i) << " ";
+    }
+    cout << endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground2')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor2')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading2" class="loading-indicator">Running...</div>
+                    <div id="output2" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment:</strong> Try computing <code>fibonacci(35)</code>. What do you notice about how long it takes?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp2_1')">Show Explanation</button>
+            <div class="answer-section" id="exp2_1">
+                <p><strong>What happens:</strong> It takes a very long time (several seconds)!</p>
+                <p><strong>Why:</strong> The recursive Fibonacci has exponential time complexity. For <code>fibonacci(35)</code>, it makes over 29 million function calls because it recalculates the same values repeatedly.</p>
+                <p><strong>The solution:</strong> Use iteration or memoization (storing previously calculated values) for better performance.</p>
+            </div>
+        </section>
+
+        <!-- Section 4: Recursion vs Iteration -->
+        <section class="content-card">
+            <h2>4. Recursion vs Iteration: When to Use Each</h2>
+
+            <p>
+                Many problems can be solved with either recursion or iteration (loops). How do you decide which to use?
+            </p>
+
+            <h3>The Same Problem, Two Ways</h3>
+            <p>
+                Let's calculate factorial using both approaches:
+            </p>
+
+            <p><strong>Recursive version:</strong></p>
+<pre><code class="language-cpp">int factorialRecursive(int n) {
+    if (n <= 1) return 1;
+    return n * factorialRecursive(n - 1);
+}</code></pre>
+
+            <p><strong>Iterative version:</strong></p>
+<pre><code class="language-cpp">int factorialIterative(int n) {
+    int result = 1;
+    for (int i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}</code></pre>
+
+            <h3>Comparing the Approaches</h3>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <thead>
+                    <tr style="background: #0c1222; border-bottom: 2px solid #0ea5e9;">
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Aspect</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Recursion</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Iteration</th>
+                    </tr>
+                </thead>
+                <tbody style="color: #cbd5e1;">
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Code clarity</td>
+                        <td style="padding: 0.75rem;">Often clearer for naturally recursive problems</td>
+                        <td style="padding: 0.75rem;">Can be more straightforward for simple loops</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Memory usage</td>
+                        <td style="padding: 0.75rem;">Uses call stack (one frame per call)</td>
+                        <td style="padding: 0.75rem;">Uses only a few variables</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Speed</td>
+                        <td style="padding: 0.75rem;">Slower (function call overhead)</td>
+                        <td style="padding: 0.75rem;">Faster (no function calls)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Risk</td>
+                        <td style="padding: 0.75rem;">Can cause stack overflow if too deep</td>
+                        <td style="padding: 0.75rem;">No stack overflow risk</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.75rem;">Best for</td>
+                        <td style="padding: 0.75rem;">Tree/graph traversal, divide-and-conquer</td>
+                        <td style="padding: 0.75rem;">Simple counting, array processing</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>When to Use Recursion</h3>
+            <p>Recursion is better when:</p>
+            <ul>
+                <li><strong>The problem is naturally recursive</strong> - trees, graphs, divide-and-conquer algorithms</li>
+                <li><strong>The code is much clearer</strong> - recursion expresses the solution more naturally</li>
+                <li><strong>Depth is limited</strong> - you won't run out of stack space</li>
+            </ul>
+
+            <h3>When to Use Iteration</h3>
+            <p>Iteration is better when:</p>
+            <ul>
+                <li><strong>Performance matters</strong> - iteration is faster and uses less memory</li>
+                <li><strong>The problem is simple</strong> - counting, summing arrays, simple loops</li>
+                <li><strong>Recursion might be too deep</strong> - risk of stack overflow</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>Rule of Thumb:</strong> If iteration is just as clear as recursion, use iteration. Use recursion when it makes the code significantly clearer or when the problem is naturally recursive (like tree traversal).
+            </div>
+        </section>
+
+        <!-- Swift Quiz 2 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> Why does recursive Fibonacci run slower than iterative Fibonacci?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz2')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz2">
+                <strong>Answer:</strong> Recursive Fibonacci recalculates the same values many times. For example, <code>fib(5)</code> calls <code>fib(3)</code> twice, <code>fib(2)</code> three times, etc. This leads to exponential time complexity. Iterative Fibonacci calculates each value only once, giving linear time complexity.
+            </div>
+        </section>
+
+        <!-- Section 5: Recursion with Arrays -->
+        <section class="content-card">
+            <h2>5. Recursion with Arrays</h2>
+
+            <p>
+                Recursion works well with arrays. Instead of looping through the array, we process one element and recursively handle the rest.
+            </p>
+
+            <h3>Sum of Array Elements</h3>
+            <p>
+                To sum an array recursively:
+            </p>
+            <ul>
+                <li><strong>Base case:</strong> If the array is empty (size 0), return 0</li>
+                <li><strong>Recursive case:</strong> Return first element + sum of the rest</li>
+            </ul>
+
+<pre><code class="language-cpp">int sumArray(int arr[], int size) {
+    if (size == 0) {
+        return 0;  // Base case: empty array
+    }
+    return arr[0] + sumArray(arr + 1, size - 1);  // First + sum of rest
+}
+
+// arr + 1 moves the pointer to the next element
+// size - 1 reduces the size by 1</code></pre>
+
+            <p><strong>How this works for {5, 3, 8}:</strong></p>
+            <div class="ascii-diagram"><pre>sumArray({5, 3, 8}, 3)
+  = 5 + sumArray({3, 8}, 2)
+  = 5 + (3 + sumArray({8}, 1))
+  = 5 + (3 + (8 + sumArray({}, 0)))
+  = 5 + (3 + (8 + 0))
+  = 5 + (3 + 8)
+  = 5 + 11
+  = 16</pre></div>
+
+            <h3>Check if Array is Sorted</h3>
+            <p>
+                To check if an array is sorted in ascending order:
+            </p>
+            <ul>
+                <li><strong>Base case:</strong> If size <= 1, it's sorted (trivially true)</li>
+                <li><strong>Recursive case:</strong> Check if first element <= second element AND rest is sorted</li>
+            </ul>
+
+<pre><code class="language-cpp">bool isSorted(int arr[], int size) {
+    if (size <= 1) {
+        return true;  // Base case: 0 or 1 element is always sorted
+    }
+
+    // Check if first two elements are in order AND rest is sorted
+    return (arr[0] <= arr[1]) && isSorted(arr + 1, size - 1);
+}</code></pre>
+
+            <p><strong>How this works:</strong></p>
+            <ul>
+                <li>Checks arr[0] <= arr[1]</li>
+                <li>If yes, recursively checks if the rest (starting from arr[1]) is sorted</li>
+                <li>If any pair is out of order, returns false</li>
+            </ul>
+
+            <h3>Find Maximum in Array</h3>
+
+<pre><code class="language-cpp">int findMax(int arr[], int size) {
+    if (size == 1) {
+        return arr[0];  // Base case: one element
+    }
+
+    int maxRest = findMax(arr + 1, size - 1);  // Max of the rest
+    return (arr[0] > maxRest) ? arr[0] : maxRest;  // Compare first with max of rest
+}</code></pre>
+
+            <p><strong>How this works:</strong></p>
+            <ul>
+                <li>Find the maximum of the rest of the array (recursive call)</li>
+                <li>Compare the first element with that maximum</li>
+                <li>Return whichever is larger</li>
+            </ul>
+        </section>
+
+        <!-- Playground 3: Array Recursion -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 3: Recursive Array Operations</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This code shows three recursive array operations. Study how each one processes the array recursively.
+            </p>
+
+            <textarea id="editor3">#include &lt;iostream&gt;
+using namespace std;
+
+int sumArray(int arr[], int size) {
+    if (size == 0) {
+        return 0;
+    }
+    return arr[0] + sumArray(arr + 1, size - 1);
+}
+
+bool isSorted(int arr[], int size) {
+    if (size <= 1) {
+        return true;
+    }
+    return (arr[0] <= arr[1]) && isSorted(arr + 1, size - 1);
+}
+
+int findMax(int arr[], int size) {
+    if (size == 1) {
+        return arr[0];
+    }
+    int maxRest = findMax(arr + 1, size - 1);
+    return (arr[0] > maxRest) ? arr[0] : maxRest;
+}
+
+int main() {
+    int arr1[] = {5, 3, 8, 2};
+    int arr2[] = {2, 5, 8, 10};
+
+    cout << "Array 1: {5, 3, 8, 2}" << endl;
+    cout << "Sum: " << sumArray(arr1, 4) << endl;
+    cout << "Is sorted? " << (isSorted(arr1, 4) ? "Yes" : "No") << endl;
+    cout << "Max: " << findMax(arr1, 4) << endl << endl;
+
+    cout << "Array 2: {2, 5, 8, 10}" << endl;
+    cout << "Sum: " << sumArray(arr2, 4) << endl;
+    cout << "Is sorted? " << (isSorted(arr2, 4) ? "Yes" : "No") << endl;
+    cout << "Max: " << findMax(arr2, 4) << endl;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground3')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor3')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading3" class="loading-indicator">Running...</div>
+                    <div id="output3" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment:</strong> Modify <code>isSorted</code> to check for descending order instead of ascending order. What needs to change?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp3_1')">Show Explanation</button>
+            <div class="answer-section" id="exp3_1">
+                <p><strong>What changes:</strong> Just change <code><=</code> to <code>>=</code> in the comparison:</p>
+                <pre><code class="language-cpp">return (arr[0] >= arr[1]) && isSorted(arr + 1, size - 1);</code></pre>
+                <p><strong>Why:</strong> For descending order, each element must be >= the next one (instead of <= for ascending).</p>
+            </div>
+        </section>
+
+        <!-- Section 6: Recursion with Linked Lists -->
+        <section class="content-card">
+            <h2>6. Recursion with Linked Lists</h2>
+
+            <p>
+                Linked lists are naturally recursive structures! A linked list is either:
+            </p>
+            <ul>
+                <li>Empty (NULL) - base case</li>
+                <li>A node followed by another linked list - recursive case</li>
+            </ul>
+
+            <p>This makes recursion perfect for linked list operations.</p>
+
+            <h3>Node Structure</h3>
+<pre><code class="language-cpp">struct Node {
+    int data;
+    Node* next;
+};</code></pre>
+
+            <h3>Print Linked List Recursively</h3>
+
+<pre><code class="language-cpp">void printList(Node* head) {
+    if (head == NULL) {
+        cout << endl;  // Base case: end of list
+        return;
+    }
+
+    cout << head->data << " ";  // Print current node
+    printList(head->next);      // Recursively print rest
+}</code></pre>
+
+            <p><strong>How this works:</strong></p>
+            <ul>
+                <li>If the list is empty (head == NULL), stop</li>
+                <li>Otherwise, print the current node's data</li>
+                <li>Recursively print the rest of the list (head->next)</li>
+            </ul>
+
+            <h3>Print Linked List in Reverse</h3>
+            <p>
+                This is beautiful with recursion - we print AFTER the recursive call instead of before:
+            </p>
+
+<pre><code class="language-cpp">void printReverse(Node* head) {
+    if (head == NULL) {
+        return;  // Base case
+    }
+
+    printReverse(head->next);  // Recursively print rest FIRST
+    cout << head->data << " "; // THEN print current node
+}</code></pre>
+
+            <p><strong>Why this works:</strong></p>
+            <div class="ascii-diagram"><pre>For list: 1 -> 2 -> 3 -> NULL
+
+printReverse(1)
+    printReverse(2)
+        printReverse(3)
+            printReverse(NULL)  [returns immediately]
+        prints 3
+    prints 2
+prints 1
+
+Output: 3 2 1</pre></div>
+
+            <p>The magic: we go all the way to the end first (recursion), then print on the way back (unwinding).</p>
+
+            <h3>Count Nodes Recursively</h3>
+
+<pre><code class="language-cpp">int countNodes(Node* head) {
+    if (head == NULL) {
+        return 0;  // Base case: empty list has 0 nodes
+    }
+    return 1 + countNodes(head->next);  // 1 for current + count of rest
+}</code></pre>
+
+            <h3>Search for Value Recursively</h3>
+
+<pre><code class="language-cpp">bool search(Node* head, int value) {
+    if (head == NULL) {
+        return false;  // Base case: not found
+    }
+    if (head->data == value) {
+        return true;   // Found it!
+    }
+    return search(head->next, value);  // Search in rest
+}</code></pre>
+
+            <div class="swift-note-box">
+                <strong>Swift Note:</strong> Swift's been watching Steins;Gate - a sci-fi thriller about a group of friends who discover they can send messages to the past, creating branching timelines. Think of each timeline as a linked list of events, where each event (node) points to the next event. Recursion lets us traverse these timelines forwards or backwards!
+            </div>
+        </section>
+
+        <!-- Playground 4: Linked List Recursion -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 4: Recursive Linked List Operations</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This code shows recursive linked list operations. Notice how <code>printReverse</code> prints after the recursive call.
+            </p>
+
+            <textarea id="editor4">#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+void printList(Node* head) {
+    if (head == NULL) {
+        cout << endl;
+        return;
+    }
+    cout << head->data << " ";
+    printList(head->next);
+}
+
+void printReverse(Node* head) {
+    if (head == NULL) {
+        return;
+    }
+    printReverse(head->next);
+    cout << head->data << " ";
+}
+
+int countNodes(Node* head) {
+    if (head == NULL) {
+        return 0;
+    }
+    return 1 + countNodes(head->next);
+}
+
+int main() {
+    // Create list: 1 -> 2 -> 3 -> NULL
+    Node* head = new Node{1, NULL};
+    head->next = new Node{2, NULL};
+    head->next->next = new Node{3, NULL};
+
+    cout << "List forward: ";
+    printList(head);
+
+    cout << "List reverse: ";
+    printReverse(head);
+    cout << endl;
+
+    cout << "Node count: " << countNodes(head) << endl;
+
+    // Clean up
+    delete head->next->next;
+    delete head->next;
+    delete head;
+
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground4')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor4')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading4" class="loading-indicator">Running...</div>
+                    <div id="output4" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>Experiment:</strong> Write a recursive function <code>getMin(Node* head)</code> that returns the minimum value in the list.
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp4_1')">Show Explanation</button>
+            <div class="answer-section" id="exp4_1">
+                <p><strong>Solution:</strong></p>
+                <pre><code class="language-cpp">int getMin(Node* head) {
+    if (head->next == NULL) {
+        return head->data;  // Base case: only one node
+    }
+    int minRest = getMin(head->next);  // Min of rest of list
+    return (head->data < minRest) ? head->data : minRest;
+}</code></pre>
+                <p><strong>How it works:</strong> Find the minimum of the rest of the list, then compare it with the current node's data. Return whichever is smaller.</p>
+                <p><strong>Note:</strong> This assumes the list has at least one node (head != NULL).</p>
+            </div>
+        </section>
+
+        <!-- Section 7: Tree Recursion -->
+        <section class="content-card">
+            <h2>7. Tree Recursion (Multiple Recursive Calls)</h2>
+
+            <p>
+                Some recursive functions make multiple recursive calls. This creates a tree of function calls instead of a linear chain.
+            </p>
+
+            <h3>Fibonacci is Tree Recursion</h3>
+            <p>
+                Remember Fibonacci? It makes TWO recursive calls:
+            </p>
+
+<pre><code class="language-cpp">int fibonacci(int n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);  // Two recursive calls!
+}</code></pre>
+
+            <p>This creates a tree of calls:</p>
+
+            <div class="ascii-diagram"><pre>                    fib(5)
+                   /      \
+              fib(4)      fib(3)
+             /     \      /     \
+        fib(3)  fib(2) fib(2) fib(1)
+        /    \   /  \   /  \
+   fib(2) fib(1) ... ... ...
+   /    \
+fib(1) fib(0)</pre></div>
+
+            <h3>Counting Binary Strings</h3>
+            <p>
+                Here's another tree recursion example: counting binary strings of length n without consecutive 1s.
+            </p>
+
+            <p><strong>Examples:</strong></p>
+            <ul>
+                <li>Length 2: 00, 01, 10 (3 strings - "11" not allowed)</li>
+                <li>Length 3: 000, 001, 010, 100, 101 (5 strings)</li>
+            </ul>
+
+            <p><strong>Recursive insight:</strong></p>
+            <ul>
+                <li>If the string ends in 0, the previous part can be any valid string of length n-1</li>
+                <li>If the string ends in 1, the previous part must end in 0 (to avoid "11")</li>
+            </ul>
+
+<pre><code class="language-cpp">int countBinaryStrings(int n) {
+    if (n == 1) {
+        return 2;  // Base case: "0" and "1"
+    }
+    if (n == 2) {
+        return 3;  // Base case: "00", "01", "10"
+    }
+
+    // Strings ending in 0 + strings ending in 01
+    return countBinaryStrings(n - 1) + countBinaryStrings(n - 2);
+}
+
+// This is the Fibonacci sequence again!</code></pre>
+
+            <div class="info-box">
+                <strong>Interesting:</strong> Many tree recursion problems reduce to Fibonacci or similar sequences!
+            </div>
+        </section>
+
+        <!-- Section 8: Common Mistakes -->
+        <section class="content-card">
+            <h2>8. Common Mistakes and How to Avoid Them</h2>
+
+            <h3>Mistake 1: Missing Base Case</h3>
+
+<pre><code class="language-cpp">// WRONG - no base case!
+int factorial(int n) {
+    return n * factorial(n - 1);  // Infinite recursion!
+}
+
+// CORRECT
+int factorial(int n) {
+    if (n <= 1) return 1;  // Base case
+    return n * factorial(n - 1);
+}</code></pre>
+
+            <p><strong>Result:</strong> Stack overflow - the function calls itself forever until the program crashes.</p>
+
+            <h3>Mistake 2: Base Case Never Reached</h3>
+
+<pre><code class="language-cpp">// WRONG - base case is unreachable
+int sumToZero(int n) {
+    if (n == 0) return 0;  // Base case
+    return n + sumToZero(n + 1);  // n gets BIGGER, never reaches 0!
+}
+
+// CORRECT - approach base case
+int sumToZero(int n) {
+    if (n == 0) return 0;
+    return n + sumToZero(n - 1);  // n gets smaller, reaches 0
+}</code></pre>
+
+            <p><strong>Result:</strong> Same as missing base case - infinite recursion and stack overflow.</p>
+
+            <h3>Mistake 3: Not Making the Problem Smaller</h3>
+
+<pre><code class="language-cpp">// WRONG - recursive call doesn't reduce problem size
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n);  // Calling with same n - infinite!
+}
+
+// CORRECT - reduce n by 1
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);  // n - 1 is smaller
+}</code></pre>
+
+            <h3>Mistake 4: Wrong Return Type</h3>
+
+<pre><code class="language-cpp">// WRONG - base case returns wrong type
+int sumArray(int arr[], int size) {
+    if (size == 0) {
+        return;  // Should return 0, not void!
+    }
+    return arr[0] + sumArray(arr + 1, size - 1);
+}
+
+// CORRECT
+int sumArray(int arr[], int size) {
+    if (size == 0) {
+        return 0;  // Correct return value
+    }
+    return arr[0] + sumArray(arr + 1, size - 1);
+}</code></pre>
+
+            <h3>Mistake 5: Modifying the Wrong Parameter</h3>
+
+<pre><code class="language-cpp">// WRONG - modifying size in place doesn't help
+void printArray(int arr[], int size) {
+    if (size == 0) return;
+    cout << arr[0] << " ";
+    size--;  // This doesn't affect the recursive call!
+    printArray(arr, size);  // Should be arr + 1, size - 1
+}
+
+// CORRECT
+void printArray(int arr[], int size) {
+    if (size == 0) return;
+    cout << arr[0] << " ";
+    printArray(arr + 1, size - 1);  // Move pointer AND reduce size
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>Debugging Tip:</strong> If your recursive function hangs or crashes, check:
+                <ol>
+                    <li>Do you have a base case?</li>
+                    <li>Will the base case ever be reached?</li>
+                    <li>Does each recursive call make the problem smaller?</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Playground 5: Debugging Recursion -->
+        <section class="playground">
+            <div class="playground-header">
+                <div class="playground-title">Interactive Playground 5: Find the Bug</div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-bottom: 1rem;">
+                This code has a bug that causes infinite recursion. Can you spot it?
+            </p>
+
+            <textarea id="editor5">#include &lt;iostream&gt;
+using namespace std;
+
+// BUG: This function has infinite recursion
+int sumToN(int n) {
+    if (n == 1) {
+        return 1;
+    }
+    return n + sumToN(n);  // What's wrong here?
+}
+
+int main() {
+    cout << "Sum from 1 to 5: " << sumToN(5) << endl;
+    return 0;
+}</textarea>
+
+            <div class="playground-controls">
+                <button class="run-btn" onclick="runCode('playground5')">▶ Run Code</button>
+                <button class="reset-btn" onclick="resetCode('editor5')">↺ Reset</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-label">Output:</div>
+                <div class="output-box">
+                    <div id="loading5" class="loading-indicator">Running...</div>
+                    <div id="output5" class="output-text output-placeholder">
+Click "Run Code" to see the output...
+                    </div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 1.5rem;">
+                <strong>The Bug:</strong> Can you find it?
+            </p>
+            <button class="reveal-btn" onclick="toggleAnswer('exp5_1')">Show Explanation</button>
+            <div class="answer-section" id="exp5_1">
+                <p><strong>The bug:</strong> The recursive call is <code>sumToN(n)</code> instead of <code>sumToN(n - 1)</code>.</p>
+                <p><strong>Why it's broken:</strong> The function calls itself with the same value of n, so n never gets smaller and never reaches the base case (n == 1).</p>
+                <p><strong>The fix:</strong></p>
+                <pre><code class="language-cpp">return n + sumToN(n - 1);  // Reduce n by 1</code></pre>
+                <p><strong>The pattern:</strong> Always make sure the recursive call makes progress toward the base case!</p>
+            </div>
+        </section>
+
+        <!-- Section 9: When to Use Recursion -->
+        <section class="content-card">
+            <h2>9. When to Use Recursion</h2>
+
+            <h3>Perfect Use Cases for Recursion</h3>
+
+            <p><strong>1. Tree and Graph Traversal</strong></p>
+            <p>
+                Trees are naturally recursive. Each subtree is itself a tree, making recursion the natural choice.
+            </p>
+
+            <p><strong>2. Divide and Conquer Algorithms</strong></p>
+            <ul>
+                <li>Merge Sort - split array in half, recursively sort each half, merge</li>
+                <li>Quick Sort - partition array, recursively sort partitions</li>
+                <li>Binary Search - check middle, recursively search half</li>
+            </ul>
+
+            <p><strong>3. Backtracking Problems</strong></p>
+            <ul>
+                <li>Finding all permutations of a string</li>
+                <li>Solving mazes (try a path, backtrack if it fails)</li>
+                <li>N-Queens problem</li>
+            </ul>
+
+            <p><strong>4. Problems with Recursive Structure</strong></p>
+            <ul>
+                <li>Linked lists (a list is a node + a list)</li>
+                <li>Mathematical sequences (Fibonacci, factorial)</li>
+                <li>File system traversal (a directory contains files and directories)</li>
+            </ul>
+
+            <h3>When NOT to Use Recursion</h3>
+
+            <p><strong>1. Simple Iteration Works Better</strong></p>
+<pre><code class="language-cpp">// DON'T use recursion for simple loops
+int sumArray(int arr[], int size) {
+    // Better to just use a for loop here
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        sum += arr[i];
+    }
+    return sum;
+}</code></pre>
+
+            <p><strong>2. Performance Critical Code</strong></p>
+            <p>
+                Recursion has overhead (function calls, stack frames). If performance matters and iteration works, use iteration.
+            </p>
+
+            <p><strong>3. Deep Recursion Risk</strong></p>
+            <p>
+                If recursion depth might be very large (thousands of calls), you risk stack overflow. Use iteration instead.
+            </p>
+
+            <h3>Tail Recursion</h3>
+            <p>
+                <strong>Tail recursion</strong> is when the recursive call is the very last thing the function does (no operations after it).
+            </p>
+
+<pre><code class="language-cpp">// Tail recursive - nothing happens after recursive call
+int factorialTail(int n, int accumulator) {
+    if (n <= 1) {
+        return accumulator;
+    }
+    return factorialTail(n - 1, n * accumulator);  // Last thing!
+}
+
+// Not tail recursive - multiplication happens after recursive call
+int factorialNormal(int n) {
+    if (n <= 1) return 1;
+    return n * factorialNormal(n - 1);  // Multiply AFTER call returns
+}</code></pre>
+
+            <p>
+                Some compilers can optimize tail recursion into iteration automatically (tail call optimization), making it as efficient as a loop.
+            </p>
+
+            <div class="success-box">
+                <strong>Summary:</strong> Use recursion when it makes the code clearer or when the problem is naturally recursive. Use iteration when performance matters or when recursion doesn't add clarity.
+            </div>
+        </section>
+
+        <!-- Swift Quiz 3 -->
+        <section class="swift-quiz">
+            <div class="swift-quiz-header">⚡ Swift Quiz</div>
+            <div class="swift-quiz-question">
+                <strong>Quick Check:</strong> What is tail recursion, and why is it potentially more efficient?
+            </div>
+            <button class="quiz-toggle-btn" onclick="toggleQuiz('quiz3')">Show Answer</button>
+            <div class="swift-quiz-answer" id="quiz3">
+                <strong>Answer:</strong> Tail recursion is when the recursive call is the absolute last operation in the function (nothing happens after it returns). It's more efficient because compilers can optimize it into a loop (tail call optimization), eliminating the function call overhead and using constant stack space instead of linear stack space.
+            </div>
+        </section>
+
+        <!-- Section 10: Summary -->
+        <section class="content-card">
+            <h2>10. Summary: Recursion at a Glance</h2>
+
+            <h3>Key Concepts</h3>
+            <ul>
+                <li><strong>Recursion</strong> is a function calling itself</li>
+                <li>Every recursive function needs a <strong>base case</strong> (stopping condition) and a <strong>recursive case</strong> (function calls itself)</li>
+                <li>Recursive calls build up on the <strong>call stack</strong>, then unwind when the base case is reached</li>
+                <li><strong>Tree recursion</strong> makes multiple recursive calls, creating a tree of function calls</li>
+            </ul>
+
+            <h3>Common Recursive Patterns</h3>
+            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <thead>
+                    <tr style="background: #0c1222; border-bottom: 2px solid #0ea5e9;">
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Pattern</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Example</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #0ea5e9;">Base Case</th>
+                    </tr>
+                </thead>
+                <tbody style="color: #cbd5e1;">
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Countdown</td>
+                        <td style="padding: 0.75rem;">countdown(n)</td>
+                        <td style="padding: 0.75rem;">n <= 0</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Mathematical sequence</td>
+                        <td style="padding: 0.75rem;">factorial(n), fibonacci(n)</td>
+                        <td style="padding: 0.75rem;">n <= 1</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <td style="padding: 0.75rem;">Array processing</td>
+                        <td style="padding: 0.75rem;">sumArray(arr, size)</td>
+                        <td style="padding: 0.75rem;">size == 0</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.75rem;">Linked list</td>
+                        <td style="padding: 0.75rem;">printList(head)</td>
+                        <td style="padding: 0.75rem;">head == NULL</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Time and Space Complexity</h3>
+            <p><strong>Time Complexity:</strong></p>
+            <ul>
+                <li><strong>Linear recursion (one recursive call):</strong> Usually O(n) - factorial, sum array, linked list traversal</li>
+                <li><strong>Tree recursion (multiple calls):</strong> Can be exponential - naive Fibonacci is O(2^n)</li>
+            </ul>
+
+            <p><strong>Space Complexity:</strong></p>
+            <ul>
+                <li>Recursion uses <strong>O(depth)</strong> space on the call stack</li>
+                <li>Factorial: O(n) space for n recursive calls</li>
+                <li>Fibonacci: O(n) space (depth of tree), but makes exponential TIME calls</li>
+            </ul>
+
+            <h3>Common Mistakes to Avoid</h3>
+            <ul>
+                <li>❌ Missing base case → infinite recursion</li>
+                <li>❌ Base case never reached → infinite recursion</li>
+                <li>❌ Not making problem smaller → infinite recursion</li>
+                <li>❌ Wrong return type in base case → compilation error or wrong results</li>
+            </ul>
+
+            <h3>When to Use Recursion</h3>
+            <p>✅ Use recursion when:</p>
+            <ul>
+                <li>The problem is naturally recursive (trees, divide-and-conquer)</li>
+                <li>Recursion makes the code significantly clearer</li>
+                <li>Depth is limited (won't overflow the stack)</li>
+            </ul>
+
+            <p>❌ Avoid recursion when:</p>
+            <ul>
+                <li>Iteration is just as clear and simpler</li>
+                <li>Performance is important (recursion has overhead)</li>
+                <li>Recursion depth might be very large</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>You're ready!</strong> You now understand how recursion works, when to use it, and how to debug it. Next, you'll see complete worked examples applying these concepts.
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        // Initialize CodeMirror editors
+        const editors = {};
+        const originalCode = {};
+
+        ['editor1', 'editor2', 'editor3', 'editor4', 'editor5'].forEach(id => {
+            const textarea = document.getElementById(id);
+            originalCode[id] = textarea.value;
+
+            editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-c++src',
+                theme: 'material-ocean',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+        });
+
+        function toggleQuiz(quizId) {
+            const answerSection = document.getElementById(quizId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            const button = event.target;
+
+            answerSection.classList.toggle('visible');
+
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Explanation';
+            } else {
+                button.textContent = 'Show Explanation';
+            }
+        }
+
+        function resetCode(editorId) {
+            editors[editorId].setValue(originalCode[editorId]);
+        }
+
+        async function runCode(playgroundId) {
+            const playgroundNum = playgroundId.replace('playground', '');
+            const editorId = 'editor' + playgroundNum;
+            const outputId = 'output' + playgroundNum;
+            const loadingId = 'loading' + playgroundNum;
+
+            const code = editors[editorId].getValue();
+            const outputDiv = document.getElementById(outputId);
+            const loadingDiv = document.getElementById(loadingId);
+            const runBtn = event.target;
+
+            // Show loading, disable button
+            loadingDiv.classList.add('active');
+            outputDiv.textContent = '';
+            runBtn.disabled = true;
+
+            try {
+                const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        language: 'c++',
+                        version: '10.2.0',
+                        files: [{
+                            content: code
+                        }]
+                    })
+                });
+
+                const result = await response.json();
+
+                loadingDiv.classList.remove('active');
+                runBtn.disabled = false;
+
+                if (result.run && result.run.output) {
+                    outputDiv.textContent = result.run.output;
+                    outputDiv.className = 'output-text output-success';
+                } else if (result.run && result.run.stderr) {
+                    outputDiv.textContent = result.run.stderr;
+                    outputDiv.className = 'output-text output-error';
+                } else {
+                    outputDiv.textContent = 'No output';
+                    outputDiv.className = 'output-text output-placeholder';
+                }
+            } catch (error) {
+                loadingDiv.classList.remove('active');
+                runBtn.disabled = false;
+                outputDiv.textContent = 'Error: Could not execute code. Please check your internet connection.';
+                outputDiv.className = 'output-text output-error';
+            }
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

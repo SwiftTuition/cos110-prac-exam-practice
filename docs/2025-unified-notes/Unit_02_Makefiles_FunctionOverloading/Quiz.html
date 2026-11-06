@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2: Makefiles & Function Overloading - Quiz | COS 110</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cascadia+Code:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        /* Deep Ocean Theme - COS 110 Standard */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Primary Colors */
+            --background-primary: #0f172a;
+            --background-secondary: #1e293b;
+            --background-tertiary: #0c1222;
+
+            /* Accent Colors */
+            --accent-blue: #0ea5e9;
+            --accent-green: #10b981;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+
+            /* Text Colors */
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-code: #10b981;
+        }
+
+        body {
+            background: var(--background-primary);
+            color: var(--text-primary);
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            line-height: 1.6;
+            padding-bottom: 3rem;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--background-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--accent-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+
+        .nav-brand-company {
+            font-size: 0.875rem;
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .nav-brand-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--accent-blue);
+        }
+
+        .nav-menu a.active {
+            background: var(--accent-blue);
+            color: var(--background-primary);
+        }
+
+        /* Content Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: var(--background-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .content-card h2 {
+            color: var(--accent-blue);
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .content-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Quiz Question Cards - Purple Theme */
+        .question-card {
+            background: var(--background-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .question-type {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .question-text {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .question-text strong {
+            color: var(--accent-purple);
+        }
+
+        /* Options for Multiple Choice */
+        .options {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .options li {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .options li strong {
+            color: var(--accent-purple);
+            margin-right: 0.5rem;
+        }
+
+        /* Inline Code */
+        code {
+            background: var(--background-tertiary);
+            color: var(--text-code);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--background-tertiary) !important;
+            border-radius: 8px;
+            padding: 1rem !important;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            line-height: 1.4;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        /* Prism.js Custom Token Colors */
+        .token.comment, .token.prolog, .token.doctype, .token.cdata { color: #64748b; }
+        .token.punctuation { color: #94a3b8; }
+        .token.property, .token.tag, .token.boolean, .token.number, .token.constant, .token.symbol { color: #0ea5e9; }
+        .token.selector, .token.attr-name, .token.string, .token.char, .token.builtin { color: #10b981; }
+        .token.operator, .token.entity, .token.url, .token.variable { color: #f1f5f9; }
+        .token.atrule, .token.attr-value, .token.keyword, .token.class-name { color: #8b5cf6; }
+        .token.function { color: #0ea5e9; }
+        .token.regex, .token.important { color: #f59e0b; }
+
+        /* Reveal Button - Purple Theme */
+        .reveal-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            color: white;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Answer Section - Purple Theme */
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #8b5cf6;
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        .answer-section strong {
+            color: #a78bfa;
+        }
+
+        .answer-section p {
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .answer-section ul, .answer-section ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .answer-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: #1a2332;
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+        .info-box strong { color: var(--accent-blue); }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 2: Makefiles & Function Overloading</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html" class="active">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <!-- Content -->
+    <div class="container">
+        <!-- Introduction -->
+        <section class="content-card">
+            <h2>Assessment Quiz</h2>
+            <p>
+                Test your understanding of makefiles, function overloading, and default parameters with these 30 questions. Click "Show Answer" to reveal the answer and detailed explanation for each question.
+            </p>
+            <div class="info-box">
+                <strong>Note:</strong> This quiz is for practice and self-assessment. Take your time and try to answer each question before revealing the solution. The questions are modeled after typical exam formats to help you prepare for assessments.
+            </div>
+
+            <div class="info-box" style="border-left-color: #f59e0b; background: #1f2937; margin-top: 1rem;">
+                <strong style="color: #fbbf24;">⚠️ Known Display Issue:</strong>
+                <p style="margin-top: 0.5rem; color: #d1d5db;">
+                    If you click "Show Answer" and the solution appears as a black box or doesn't display properly,
+                    just <strong>click anywhere on the screen</strong> (on the page background, scroll bar, or near the answer area).
+                    This will trigger the content to fully render. I've tried to fix this rendering bug multiple times,
+                    but it persists - so this is the workaround for now! Sorry for the inconvenience.
+                </p>
+            </div>
+        </section>
+
+        <!-- MAKEFILE QUESTIONS (Questions 1-10) -->
+
+        <!-- Question 1 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 1</div>
+                <div class="question-type">Makefile Syntax</div>
+            </div>
+            <div class="question-text">
+                <p><strong>True or False:</strong> In a makefile, commands MUST be indented with a TAB character, not spaces.</p>
+                <p>Justify your answer.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Answer</button>
+            <div class="answer-section" id="answer1">
+                <p><strong>Answer:</strong> True</p>
+                <p><strong>Justification:</strong></p>
+                <p>Make requires commands to be indented with a TAB character (ASCII 9). If you use spaces instead, you'll get an error like "missing separator" or "*** missing separator. Stop."</p>
+                <p><strong>Why this rule exists:</strong></p>
+                <p>The make utility was designed in the 1970s to distinguish between dependency lines and command lines using tabs. This was a simple parsing strategy that stuck around for backward compatibility.</p>
+                <p><strong>Common mistake:</strong> Many modern text editors convert tabs to spaces automatically. You must configure your editor to insert actual TAB characters when editing makefiles.</p>
+            </div>
+        </section>
+
+        <!-- Question 2 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 2</div>
+                <div class="question-type">Makefile Structure</div>
+            </div>
+            <div class="question-text">
+                <p>What are the three components of a makefile rule?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Answer</button>
+            <div class="answer-section" id="answer2">
+                <p><strong>Answer:</strong></p>
+                <p>The three components of a makefile rule are:</p>
+                <ol>
+                    <li><strong>Target:</strong> The file you want to create (e.g., <code>main.o</code> or <code>executable</code>)</li>
+                    <li><strong>Dependencies:</strong> The files that the target depends on (e.g., source files and headers)</li>
+                    <li><strong>Command:</strong> The shell command to create the target (e.g., <code>g++ -c main.cpp</code>)</li>
+                </ol>
+                <p><strong>Format:</strong></p>
+                <pre><code class="language-makefile">target: dependencies
+	command</code></pre>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-makefile">main.o: main.cpp Student.h
+	g++ -c -std=c++98 main.cpp</code></pre>
+                <p>This rule says: "To create <code>main.o</code>, which depends on <code>main.cpp</code> and <code>Student.h</code>, run the command <code>g++ -c -std=c++98 main.cpp</code>."</p>
+            </div>
+        </section>
+
+        <!-- Question 3 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 3</div>
+                <div class="question-type">Dependencies</div>
+            </div>
+            <div class="question-text">
+                <p>Consider the following files:</p>
+                <ul>
+                    <li><code>main.cpp</code> includes <code>Student.h</code></li>
+                    <li><code>Student.cpp</code> includes <code>Student.h</code></li>
+                    <li><code>Student.h</code> includes <code>&lt;iostream&gt;</code></li>
+                </ul>
+                <p>Which of the following makefile rules is correct for compiling <code>main.cpp</code>?</p>
+                <ol type="A">
+                    <li><code>main.o: main.cpp</code></li>
+                    <li><code>main.o: main.cpp Student.h</code></li>
+                    <li><code>main.o: main.cpp Student.h iostream</code></li>
+                    <li><code>main.o: main.cpp Student.cpp</code></li>
+                </ol>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Answer</button>
+            <div class="answer-section" id="answer3">
+                <p><strong>Answer:</strong> B - <code>main.o: main.cpp Student.h</code></p>
+                <p><strong>Why B is correct:</strong></p>
+                <p>When compiling <code>main.cpp</code> to create <code>main.o</code>, the dependencies should include:</p>
+                <ul>
+                    <li>The source file itself (<code>main.cpp</code>)</li>
+                    <li>All project headers that the source file includes, directly or indirectly (<code>Student.h</code>)</li>
+                </ul>
+                <p>If <code>Student.h</code> changes (e.g., you add a new method), <code>main.cpp</code> needs to be recompiled to see those changes.</p>
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> Missing <code>Student.h</code> dependency. If <code>Student.h</code> changes, make won't know to recompile <code>main.cpp</code>.</li>
+                    <li><strong>C:</strong> System headers like <code>&lt;iostream&gt;</code> are not listed as dependencies because they don't change. Only list headers <em>you wrote</em>.</li>
+                    <li><strong>D:</strong> <code>Student.cpp</code> is not a dependency for <code>main.o</code>. Object files only depend on their own source file and the headers they include, not other source files.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 4 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 4</div>
+                <div class="question-type">Code Tracing</div>
+            </div>
+            <div class="question-text">
+                <p>Given this makefile:</p>
+                <pre><code class="language-makefile">ofiles = main.o Grade.o
+gpp_o = g++ -c -std=c++98
+
+gradeTracker: $(ofiles)
+	g++ -std=c++98 $(ofiles) -o gradeTracker
+
+main.o: main.cpp Grade.h
+	$(gpp_o) main.cpp
+
+Grade.o: Grade.cpp Grade.h
+	$(gpp_o) Grade.cpp</code></pre>
+                <p>What happens when you type <code>make</code> and all files are up to date?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Answer</button>
+            <div class="answer-section" id="answer4">
+                <p><strong>Answer:</strong> Make outputs "make: 'gradeTracker' is up to date." and does nothing.</p>
+                <p><strong>Explanation:</strong></p>
+                <p>When you run <code>make</code> without arguments, it builds the first target in the file (<code>gradeTracker</code>).</p>
+                <p><strong>Make's decision process:</strong></p>
+                <ol>
+                    <li>Check if <code>gradeTracker</code> exists</li>
+                    <li>Check if any dependency (<code>main.o</code> or <code>Grade.o</code>) is newer than <code>gradeTracker</code></li>
+                    <li>If <code>main.o</code> or <code>Grade.o</code> don't exist or are out of date, recursively check their dependencies</li>
+                    <li>If everything exists and no source files have changed since the last build, do nothing</li>
+                </ol>
+                <p><strong>This is the key benefit of makefiles:</strong> They only recompile what changed, saving time on large projects. If you modify <code>Grade.cpp</code>, only <code>Grade.cpp</code> is recompiled and the executable is relinked. <code>main.cpp</code> is not recompiled.</p>
+            </div>
+        </section>
+
+        <!-- Question 5 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 5</div>
+                <div class="question-type">Variables</div>
+            </div>
+            <div class="question-text">
+                <p>What is the purpose of using variables in makefiles (e.g., <code>ofiles = main.o Student.o</code>)?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer5')">Show Answer</button>
+            <div class="answer-section" id="answer5">
+                <p><strong>Answer:</strong></p>
+                <p>Variables in makefiles serve several purposes:</p>
+                <ol>
+                    <li><strong>Avoid repetition:</strong> Instead of typing <code>main.o Student.o Grade.o</code> multiple times, you type it once and use <code>$(ofiles)</code> everywhere else.</li>
+                    <li><strong>Easier maintenance:</strong> If you add a new file to your project, you only need to update the variable definition, not every place the list appears.</li>
+                    <li><strong>Consistency:</strong> Ensures you use the same compiler flags everywhere by storing them in a variable like <code>gpp_o = g++ -c -std=c++98</code>.</li>
+                    <li><strong>Readability:</strong> Makes the makefile easier to read and understand.</li>
+                </ol>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-makefile">ofiles = main.o Student.o Grade.o Course.o
+
+main: $(ofiles)
+	g++ $(ofiles) -o main</code></pre>
+                <p>Without variables, you'd have to type the full list in multiple places, and adding <code>Teacher.o</code> would require changing every occurrence.</p>
+            </div>
+        </section>
+
+        <!-- Question 6 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 6</div>
+                <div class="question-type">Find the Bug</div>
+            </div>
+            <div class="question-text">
+                <p>The following makefile has a bug. Identify and explain the problem:</p>
+                <pre><code class="language-makefile">ofiles = main.o Student.o
+gpp_o = g++ -c -std=c++98
+
+main: $(ofiles)
+	g++ -std=c++98 $(ofiles) -o main
+
+main.o: main.cpp Student.h
+	$(gpp_o) main.cpp
+
+Student.o: Student.cpp Student.h
+	$(gpp_o) Student.cpp
+
+clean:
+	rm -f *.o main</code></pre>
+                <p>You added a new file <code>Grade.cpp</code> and <code>Grade.h</code>, created a rule to compile it, but when you run <code>make</code>, you get "undefined reference" errors during linking.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer6')">Show Answer</button>
+            <div class="answer-section" id="answer6">
+                <p><strong>Bug Location:</strong> Line 1 - <code>ofiles</code> variable</p>
+                <p><strong>What's Wrong:</strong> You forgot to add <code>Grade.o</code> to the <code>ofiles</code> variable.</p>
+                <p><strong>Why It's Wrong:</strong></p>
+                <p>Even though you created a rule to compile <code>Grade.cpp</code>:</p>
+                <pre><code class="language-makefile">Grade.o: Grade.cpp Grade.h
+	$(gpp_o) Grade.cpp</code></pre>
+                <p>The linker never receives <code>Grade.o</code> because it's not in the dependency list for <code>main</code>. When make runs <code>g++ -std=c++98 $(ofiles) -o main</code>, it expands to <code>g++ -std=c++98 main.o Student.o -o main</code>, missing <code>Grade.o</code>.</p>
+                <p><strong>How to Fix:</strong></p>
+                <pre><code class="language-makefile">ofiles = main.o Student.o Grade.o</code></pre>
+                <p><strong>Why the Fix Works:</strong> Now when make links the executable, it includes <code>Grade.o</code>: <code>g++ -std=c++98 main.o Student.o Grade.o -o main</code>, resolving all references to functions defined in <code>Grade.cpp</code>.</p>
+            </div>
+        </section>
+
+        <!-- Question 7 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 7</div>
+                <div class="question-type">Compilation Flags</div>
+            </div>
+            <div class="question-text">
+                <p>What is the difference between these two g++ commands?</p>
+                <ol type="A">
+                    <li><code>g++ -c -std=c++98 main.cpp</code></li>
+                    <li><code>g++ -std=c++98 main.cpp -o main</code></li>
+                </ol>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer7')">Show Answer</button>
+            <div class="answer-section" id="answer7">
+                <p><strong>Answer:</strong></p>
+                <p><strong>Command A:</strong> <code>g++ -c -std=c++98 main.cpp</code></p>
+                <ul>
+                    <li><strong>Purpose:</strong> Compile only (don't link)</li>
+                    <li><strong>Output:</strong> Creates <code>main.o</code> (object file)</li>
+                    <li><strong>The <code>-c</code> flag:</strong> Tells g++ to stop after compilation, before linking</li>
+                    <li><strong>When to use:</strong> When compiling individual source files in a multi-file project</li>
+                </ul>
+                <p><strong>Command B:</strong> <code>g++ -std=c++98 main.cpp -o main</code></p>
+                <ul>
+                    <li><strong>Purpose:</strong> Compile and link in one step</li>
+                    <li><strong>Output:</strong> Creates <code>main</code> (executable)</li>
+                    <li><strong>No <code>-c</code> flag:</strong> g++ compiles and then links automatically</li>
+                    <li><strong>When to use:</strong> When compiling a single-file program, or as the final linking step</li>
+                </ul>
+                <p><strong>In a makefile context:</strong></p>
+                <p>Use command A (with <code>-c</code>) to create object files from individual source files. Use command B (without <code>-c</code>) to link all object files into the final executable:</p>
+                <pre><code class="language-makefile">main.o: main.cpp
+	g++ -c -std=c++98 main.cpp    # Compile only
+
+main: main.o Student.o
+	g++ -std=c++98 main.o Student.o -o main    # Link</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 8 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 8</div>
+                <div class="question-type">Makefile Targets</div>
+            </div>
+            <div class="question-text">
+                <p><strong>True or False:</strong> The target <code>clean</code> in a makefile must have dependencies.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer8')">Show Answer</button>
+            <div class="answer-section" id="answer8">
+                <p><strong>Answer:</strong> False</p>
+                <p><strong>Explanation:</strong></p>
+                <p>The <code>clean</code> target typically has no dependencies because it performs a manual cleanup action rather than building a file.</p>
+                <p><strong>Example:</strong></p>
+                <pre><code class="language-makefile">clean:
+	rm -f *.o main</code></pre>
+                <p><strong>How it works:</strong></p>
+                <ul>
+                    <li>When you run <code>make clean</code>, make executes the command regardless of file timestamps</li>
+                    <li>There's no actual file called "clean" being created</li>
+                    <li>The target exists solely to run the cleanup command</li>
+                </ul>
+                <p><strong>This is called a "phony target":</strong> A target that doesn't represent a real file. Other common phony targets include <code>run</code>, <code>test</code>, and <code>install</code>.</p>
+                <p><strong>Best practice:</strong> You can explicitly mark it as phony:</p>
+                <pre><code class="language-makefile">.PHONY: clean
+clean:
+	rm -f *.o main</code></pre>
+                <p>This tells make that <code>clean</code> is not a real file, so it should always run the command even if a file named "clean" exists.</p>
+            </div>
+        </section>
+
+        <!-- Question 9 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 9</div>
+                <div class="question-type">Dependency Chain</div>
+            </div>
+            <div class="question-text">
+                <p>You modify <code>Student.h</code> (adding a new method). Which files need to be recompiled?</p>
+                <p>Project structure:</p>
+                <ul>
+                    <li><code>main.cpp</code> includes <code>Student.h</code></li>
+                    <li><code>Student.cpp</code> includes <code>Student.h</code></li>
+                    <li><code>Grade.cpp</code> includes <code>Grade.h</code> (not <code>Student.h</code>)</li>
+                </ul>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer9')">Show Answer</button>
+            <div class="answer-section" id="answer9">
+                <p><strong>Answer:</strong> <code>main.cpp</code> and <code>Student.cpp</code> need to be recompiled. <code>Grade.cpp</code> does not.</p>
+                <p><strong>Detailed explanation:</strong></p>
+                <ol>
+                    <li><strong>main.cpp recompiled:</strong> It includes <code>Student.h</code>, so changes to <code>Student.h</code> affect it. Make will rebuild <code>main.o</code>.</li>
+                    <li><strong>Student.cpp recompiled:</strong> It includes <code>Student.h</code>, so changes to <code>Student.h</code> affect it. Make will rebuild <code>Student.o</code>.</li>
+                    <li><strong>Grade.cpp NOT recompiled:</strong> It doesn't include <code>Student.h</code>, so changes to <code>Student.h</code> don't affect it. <code>Grade.o</code> remains up to date.</li>
+                    <li><strong>Final step - Relinking:</strong> After <code>main.o</code> and <code>Student.o</code> are rebuilt, make will relink all object files (<code>main.o</code>, <code>Student.o</code>, <code>Grade.o</code>) to create the new executable.</li>
+                </ol>
+                <p><strong>Why this matters:</strong></p>
+                <p>This demonstrates the efficiency of makefiles. If your project has 100 source files and you only modify one header, only the files that include that header get recompiled. Everything else is reused, saving compilation time.</p>
+                <p><strong>Makefile rules that make this work:</strong></p>
+                <pre><code class="language-makefile">main.o: main.cpp Student.h       # Student.h listed → recompile if it changes
+Student.o: Student.cpp Student.h   # Student.h listed → recompile if it changes
+Grade.o: Grade.cpp Grade.h         # Student.h NOT listed → skip recompilation</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 10 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 10</div>
+                <div class="question-type">Makefile Best Practices</div>
+            </div>
+            <div class="question-text">
+                <p>Why is it important to list header file dependencies in makefile rules?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer10')">Show Answer</button>
+            <div class="answer-section" id="answer10">
+                <p><strong>Answer:</strong></p>
+                <p>Listing header file dependencies is crucial for correctness and consistency. Here's why:</p>
+                <p><strong>1. Ensures recompilation when headers change:</strong></p>
+                <p>If you change a class definition in <code>Student.h</code> (e.g., add a method, change a data member), any file that includes <code>Student.h</code> needs to be recompiled to see those changes.</p>
+                <p><strong>Without the dependency:</strong></p>
+                <pre><code class="language-makefile">main.o: main.cpp
+	g++ -c main.cpp</code></pre>
+                <p>If <code>main.cpp</code> includes <code>Student.h</code> and you modify <code>Student.h</code>, make won't know to recompile <code>main.cpp</code>. Your program will use the old <code>main.o</code> with outdated class definitions, leading to subtle bugs or linker errors.</p>
+                <p><strong>With the dependency:</strong></p>
+                <pre><code class="language-makefile">main.o: main.cpp Student.h
+	g++ -c main.cpp</code></pre>
+                <p>Now make knows: "If <code>Student.h</code> is newer than <code>main.o</code>, recompile <code>main.cpp</code>."</p>
+                <p><strong>2. Prevents using stale object files:</strong></p>
+                <p>Without proper dependencies, you might have object files compiled with old header definitions linked with object files compiled with new header definitions, causing unpredictable behavior.</p>
+                <p><strong>3. Automatic dependency tracking:</strong></p>
+                <p>Make uses file timestamps to track what's out of date. By listing headers as dependencies, make can automatically determine the minimal set of files to recompile after any change.</p>
+            </div>
+        </section>
+
+        <!-- FUNCTION OVERLOADING QUESTIONS (Questions 11-20) -->
+
+        <!-- Question 11 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 11</div>
+                <div class="question-type">Function Signatures</div>
+            </div>
+            <div class="question-text">
+                <p>Which of the following is NOT part of a function's signature?</p>
+                <ol type="A">
+                    <li>Function name</li>
+                    <li>Number of parameters</li>
+                    <li>Types of parameters</li>
+                    <li>Return type</li>
+                </ol>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer11')">Show Answer</button>
+            <div class="answer-section" id="answer11">
+                <p><strong>Answer:</strong> D - Return type</p>
+                <p><strong>Why D is correct:</strong></p>
+                <p>The function signature consists of:</p>
+                <ul>
+                    <li>Function name</li>
+                    <li>Number of parameters</li>
+                    <li>Types of parameters (in order)</li>
+                </ul>
+                <p>The return type is <strong>NOT</strong> part of the signature. This means you cannot overload functions that differ only in return type.</p>
+                <p><strong>Example - Invalid overloading:</strong></p>
+                <pre><code class="language-cpp">int getValue();      // Signature: getValue()
+double getValue();   // ERROR: Same signature getValue()</code></pre>
+                <p>The compiler can't distinguish between these because it doesn't know what type you want until after the function is called.</p>
+                <p><strong>Example - Valid overloading:</strong></p>
+                <pre><code class="language-cpp">int getValue();          // Signature: getValue()
+int getValue(int x);     // Signature: getValue(int)
+int getValue(double x);  // Signature: getValue(double)</code></pre>
+                <p>These are all different signatures because they have different parameter lists.</p>
+            </div>
+        </section>
+
+        <!-- Question 12 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 12</div>
+                <div class="question-type">Overload Resolution</div>
+            </div>
+            <div class="question-text">
+                <p>Given the following overloaded functions:</p>
+                <pre><code class="language-cpp">void display(int x);
+void display(double x);
+void display(int a, int b);</code></pre>
+                <p>Which function is called by <code>display(5)</code>?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer12')">Show Answer</button>
+            <div class="answer-section" id="answer12">
+                <p><strong>Answer:</strong> <code>void display(int x)</code></p>
+                <p><strong>Explanation:</strong></p>
+                <p>The argument <code>5</code> is an <code>int</code> literal. The compiler performs overload resolution:</p>
+                <ol>
+                    <li><strong>Look for exact match:</strong> <code>display(int)</code> is an exact match for <code>display(5)</code>.</li>
+                    <li><strong>Exact match found:</strong> Call <code>display(int)</code>.</li>
+                </ol>
+                <p><strong>Why not <code>display(double)</code>?</strong></p>
+                <p>While <code>5</code> could be converted to <code>5.0</code> and call <code>display(double)</code>, the compiler prefers exact matches over conversions. Since <code>display(int)</code> is an exact match, that version is chosen.</p>
+                <p><strong>Why not <code>display(int, int)</code>?</strong></p>
+                <p>The call <code>display(5)</code> provides only one argument, but <code>display(int, int)</code> requires two. This overload is not a candidate.</p>
+                <p><strong>Key principle:</strong> The compiler always prefers exact matches over automatic type conversions.</p>
+            </div>
+        </section>
+
+        <!-- Question 13 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 13</div>
+                <div class="question-type">Code Tracing</div>
+            </div>
+            <div class="question-text">
+                <p>What is the output of this program?</p>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+void print(int x) {
+    cout &lt;&lt; "Integer: " &lt;&lt; x &lt;&lt; endl;
+}
+
+void print(double x) {
+    cout &lt;&lt; "Double: " &lt;&lt; x &lt;&lt; endl;
+}
+
+int main() {
+    print(10);
+    print(3.14);
+    print(10.0);
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer13')">Show Answer</button>
+            <div class="answer-section" id="answer13">
+                <p><strong>Output:</strong></p>
+                <pre>Integer: 10
+Double: 3.14
+Double: 10</pre>
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Line: <code>print(10);</code></strong>
+                        <ul>
+                            <li>Argument: <code>10</code> (type: <code>int</code>)</li>
+                            <li>Exact match: <code>print(int)</code></li>
+                            <li>Output: "Integer: 10"</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line: <code>print(3.14);</code></strong>
+                        <ul>
+                            <li>Argument: <code>3.14</code> (type: <code>double</code>)</li>
+                            <li>Exact match: <code>print(double)</code></li>
+                            <li>Output: "Double: 3.14"</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line: <code>print(10.0);</code></strong>
+                        <ul>
+                            <li>Argument: <code>10.0</code> (type: <code>double</code>) - the <code>.0</code> makes it a double literal</li>
+                            <li>Exact match: <code>print(double)</code></li>
+                            <li>Output: "Double: 10" (the value 10.0 is printed as 10 by default)</li>
+                        </ul>
+                    </li>
+                </ol>
+                <p><strong>Key insight:</strong> The literal's type determines which overload is called. <code>10</code> is <code>int</code>, <code>10.0</code> is <code>double</code>, even though they represent the same mathematical value.</p>
+            </div>
+        </section>
+
+        <!-- Question 14 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 14</div>
+                <div class="question-type">Ambiguity</div>
+            </div>
+            <div class="question-text">
+                <p>Will the following code compile? If not, why?</p>
+                <pre><code class="language-cpp">void process(int a, double b);
+void process(double a, int b);
+
+int main() {
+    process(5, 10);
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer14')">Show Answer</button>
+            <div class="answer-section" id="answer14">
+                <p><strong>Answer:</strong> No, it will not compile.</p>
+                <p><strong>Error:</strong> Ambiguous function call</p>
+                <p><strong>Why it fails:</strong></p>
+                <p>The call <code>process(5, 10)</code> provides two <code>int</code> arguments. The compiler tries to find the best match:</p>
+                <ul>
+                    <li><strong>Option 1:</strong> <code>process(int, double)</code> - Requires converting second argument (10) from <code>int</code> to <code>double</code></li>
+                    <li><strong>Option 2:</strong> <code>process(double, int)</code> - Requires converting first argument (5) from <code>int</code> to <code>double</code></li>
+                </ul>
+                <p>Both options require exactly one conversion. Neither is "better" than the other. The compiler can't decide, so it gives an ambiguity error.</p>
+                <p><strong>How to fix:</strong></p>
+                <p><strong>Solution 1:</strong> Explicitly cast one argument:</p>
+                <pre><code class="language-cpp">process(5, 10.0);        // Calls process(int, double)
+process(5.0, 10);        // Calls process(double, int)</code></pre>
+                <p><strong>Solution 2:</strong> Rename the functions to make their purpose clearer:</p>
+                <pre><code class="language-cpp">void processIntFirst(int a, double b);
+void processDoubleFirst(double a, int b);</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 15 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 15</div>
+                <div class="question-type">Overloading Rules</div>
+            </div>
+            <div class="question-text">
+                <p><strong>True or False:</strong> The following function declarations can coexist in the same program:</p>
+                <pre><code class="language-cpp">double calculate(int x);
+int calculate(int x);</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer15')">Show Answer</button>
+            <div class="answer-section" id="answer15">
+                <p><strong>Answer:</strong> False</p>
+                <p><strong>Explanation:</strong></p>
+                <p>These functions cannot coexist because they have identical signatures:</p>
+                <ul>
+                    <li>Both have the name <code>calculate</code></li>
+                    <li>Both take one parameter of type <code>int</code></li>
+                    <li>Signature: <code>calculate(int)</code></li>
+                </ul>
+                <p>The only difference is the return type (<code>double</code> vs <code>int</code>), but <strong>return type is not part of the signature</strong>.</p>
+                <p><strong>Why this restriction exists:</strong></p>
+                <p>Consider this code:</p>
+                <pre><code class="language-cpp">calculate(5);</code></pre>
+                <p>The compiler can't determine which version to call because it doesn't know what type you expect the return value to be. Even in a context like:</p>
+                <pre><code class="language-cpp">int result = calculate(5);</code></pre>
+                <p>The compiler resolves overloading <em>before</em> considering the assignment target type. At the point of the function call, both versions match equally well.</p>
+                <p><strong>Error message:</strong> "redefinition of 'calculate'" or "conflicting declaration"</p>
+            </div>
+        </section>
+
+        <!-- Question 16 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 16</div>
+                <div class="question-type">Type Conversion</div>
+            </div>
+            <div class="question-text">
+                <p>Given:</p>
+                <pre><code class="language-cpp">void show(double x);
+void show(int a, int b);</code></pre>
+                <p>Which function is called by <code>show(10)</code>?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer16')">Show Answer</button>
+            <div class="answer-section" id="answer16">
+                <p><strong>Answer:</strong> <code>void show(double x)</code></p>
+                <p><strong>Explanation:</strong></p>
+                <p>The call <code>show(10)</code> provides one <code>int</code> argument. The compiler looks for matches:</p>
+                <ol>
+                    <li><strong>Check for exact match:</strong> There's no <code>show(int)</code> overload.</li>
+                    <li><strong>Check for match with automatic conversion:</strong> <code>int</code> can be automatically converted (promoted) to <code>double</code>, so <code>show(double)</code> is a candidate.</li>
+                    <li><strong>Check other candidates:</strong> <code>show(int, int)</code> requires two arguments but only one was provided. Not a candidate.</li>
+                    <li><strong>Resolution:</strong> Only one candidate exists (<code>show(double)</code>), so the compiler converts <code>10</code> to <code>10.0</code> and calls <code>show(double)</code>.</li>
+                </ol>
+                <p><strong>Key principle:</strong> If no exact match exists, the compiler will use automatic type conversions (like <code>int</code> → <code>double</code>) to find a match.</p>
+                <p><strong>Common conversions used:</strong></p>
+                <ul>
+                    <li><code>int</code> → <code>double</code></li>
+                    <li><code>char</code> → <code>int</code></li>
+                    <li><code>float</code> → <code>double</code></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 17 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 17</div>
+                <div class="question-type">Function Overloading</div>
+            </div>
+            <div class="question-text">
+                <p>Why is function overloading useful?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer17')">Show Answer</button>
+            <div class="answer-section" id="answer17">
+                <p><strong>Answer:</strong></p>
+                <p>Function overloading provides several benefits:</p>
+                <p><strong>1. Improved readability:</strong></p>
+                <p>Instead of having multiple functions with different names:</p>
+                <pre><code class="language-cpp">double averageTwo(double a, double b);
+double averageThree(double a, double b, double c);
+double averageArray(double arr[], int size);</code></pre>
+                <p>You can use one intuitive name:</p>
+                <pre><code class="language-cpp">double average(double a, double b);
+double average(double a, double b, double c);
+double average(double arr[], int size);</code></pre>
+                <p>The function name communicates <em>what</em> it does, and the compiler picks the right version based on the arguments.</p>
+                <p><strong>2. Easier to use:</strong></p>
+                <p>Users don't need to remember multiple function names. They just call <code>average(...)</code> with whatever data they have.</p>
+                <p><strong>3. Natural interface:</strong></p>
+                <p>Overloading lets you provide different ways to use the same operation. For example, a <code>print</code> function could accept <code>int</code>, <code>double</code>, <code>string</code>, etc., all with the same name.</p>
+                <p><strong>4. Works with operators:</strong></p>
+                <p>Function overloading is the foundation for operator overloading (covered later in the course), which lets you define how operators like <code>+</code>, <code>-</code>, <code>&lt;&lt;</code> work with your custom classes.</p>
+            </div>
+        </section>
+
+        <!-- Question 18 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 18</div>
+                <div class="question-type">Code Analysis</div>
+            </div>
+            <div class="question-text">
+                <p>Will the following code compile successfully?</p>
+                <pre><code class="language-cpp">void calculate(int x, int y);
+void calculate(int a, int b);
+
+int main() {
+    calculate(5, 10);
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer18')">Show Answer</button>
+            <div class="answer-section" id="answer18">
+                <p><strong>Answer:</strong> No, it will not compile.</p>
+                <p><strong>Error:</strong> Redefinition or conflicting declarations</p>
+                <p><strong>Why it fails:</strong></p>
+                <p>Both functions have identical signatures:</p>
+                <ul>
+                    <li>Name: <code>calculate</code></li>
+                    <li>Parameters: <code>(int, int)</code></li>
+                    <li>Signature: <code>calculate(int, int)</code></li>
+                </ul>
+                <p><strong>Parameter names don't matter for signatures:</strong></p>
+                <p>The first function uses parameter names <code>x, y</code>. The second uses <code>a, b</code>. But the compiler only cares about <em>types</em>, not names. Both have the same signature: <code>calculate(int, int)</code>.</p>
+                <p><strong>This is a redefinition, not overloading:</strong></p>
+                <p>Overloading requires <em>different</em> signatures. These have the same signature, so you're trying to define the same function twice.</p>
+                <p><strong>Compiler error:</strong> Something like "redefinition of 'calculate'" or "function 'calculate' already has a body"</p>
+                <p><strong>Key principle:</strong> Parameter names are for human readability in the function definition. The signature (used for overloading) is based only on parameter <em>types</em> and <em>order</em>.</p>
+            </div>
+        </section>
+
+        <!-- Question 19 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 19</div>
+                <div class="question-type">Overload Resolution</div>
+            </div>
+            <div class="question-text">
+                <p>What are the three steps the compiler uses for overload resolution?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer19')">Show Answer</button>
+            <div class="answer-section" id="answer19">
+                <p><strong>Answer:</strong></p>
+                <p>The compiler resolves overloaded function calls in three steps:</p>
+                <p><strong>Step 1: Look for Exact Match</strong></p>
+                <p>The compiler first tries to find a function where the parameter types exactly match the argument types.</p>
+                <p>Example:</p>
+                <pre><code class="language-cpp">void func(int x);
+void func(double x);
+
+func(5);    // Exact match with func(int)</code></pre>
+                <p><strong>Step 2: Try Automatic Type Conversions</strong></p>
+                <p>If no exact match is found, the compiler tries automatic type conversions (promotions and standard conversions).</p>
+                <p>Example:</p>
+                <pre><code class="language-cpp">void func(double x);
+void func(int a, int b);
+
+func(10);   // No exact match for func(int), converts 10 to 10.0 and calls func(double)</code></pre>
+                <p><strong>Step 3: Error if Ambiguous</strong></p>
+                <p>If multiple functions match equally well (requiring the same number of conversions), the compiler gives an ambiguity error.</p>
+                <p>Example:</p>
+                <pre><code class="language-cpp">void func(int a, double b);
+void func(double a, int b);
+
+func(5, 10);   // ERROR: Both require one conversion, equally good matches</code></pre>
+                <p><strong>Priority:</strong> Exact matches are always preferred over conversions. If multiple functions require conversions, they must not be equally good (ambiguity).</p>
+            </div>
+        </section>
+
+        <!-- Question 20 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 20</div>
+                <div class="question-type">Find the Bug</div>
+            </div>
+            <div class="question-text">
+                <p>The following code has a compilation error. Identify and explain the problem:</p>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+double max(int x, int y) {
+    return (x > y) ? x : y;
+}
+
+int main() {
+    cout &lt;&lt; max(10, 20) &lt;&lt; endl;
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer20')">Show Answer</button>
+            <div class="answer-section" id="answer20">
+                <p><strong>Bug Location:</strong> Lines 4-10 - Both function declarations</p>
+                <p><strong>What's Wrong:</strong> Both <code>max</code> functions have the same signature but different return types.</p>
+                <p><strong>Why It's Wrong:</strong></p>
+                <p>Function signatures are determined by:</p>
+                <ul>
+                    <li>Function name: <code>max</code> (same for both)</li>
+                    <li>Parameter types: <code>(int, int)</code> (same for both - parameter names <code>a, b</code> vs <code>x, y</code> don't matter)</li>
+                </ul>
+                <p>Both functions have signature <code>max(int, int)</code>. The only difference is the return type (<code>int</code> vs <code>double</code>), but <strong>return type is not part of the signature</strong>.</p>
+                <p><strong>Compiler error:</strong> "redefinition of 'max'" or "functions that differ only in their return type cannot be overloaded"</p>
+                <p><strong>How to Fix:</strong></p>
+                <p><strong>Option 1:</strong> Change parameter types:</p>
+                <pre><code class="language-cpp">int max(int a, int b);        // Works with ints
+double max(double a, double b); // Works with doubles</code></pre>
+                <p><strong>Option 2:</strong> Use a single function with one return type:</p>
+                <pre><code class="language-cpp">int max(int a, int b) {
+    return (a > b) ? a : b;
+}</code></pre>
+                <p><strong>Why the fix works:</strong> Now functions have different signatures (<code>max(int, int)</code> vs <code>max(double, double)</code>) or there's no conflict (only one function exists).</p>
+            </div>
+        </section>
+
+        <!-- DEFAULT PARAMETERS QUESTIONS (Questions 21-25) -->
+
+        <!-- Question 21 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 21</div>
+                <div class="question-type">Default Parameters</div>
+            </div>
+            <div class="question-text">
+                <p>Which of the following function declarations is valid?</p>
+                <ol type="A">
+                    <li><code>void func(int a, int b = 5, int c);</code></li>
+                    <li><code>void func(int a = 1, int b, int c = 3);</code></li>
+                    <li><code>void func(int a, int b = 2, int c = 3);</code></li>
+                    <li><code>void func(int a = 1, int b = 2, int c);</code></li>
+                </ol>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer21')">Show Answer</button>
+            <div class="answer-section" id="answer21">
+                <p><strong>Answer:</strong> C - <code>void func(int a, int b = 2, int c = 3);</code></p>
+                <p><strong>Why C is correct:</strong></p>
+                <p>Default parameters must be <strong>trailing</strong> (rightmost) parameters. Once you provide a default for a parameter, all parameters to the right must also have defaults.</p>
+                <p>In option C:</p>
+                <ul>
+                    <li><code>a</code> has no default (OK - it's leftmost)</li>
+                    <li><code>b</code> has default <code>= 2</code> (OK)</li>
+                    <li><code>c</code> has default <code>= 3</code> (OK - comes after <code>b</code> which has default)</li>
+                </ul>
+                <p><strong>Why other options are wrong:</strong></p>
+                <ul>
+                    <li><strong>A:</strong> <code>b</code> has a default but <code>c</code> (to its right) doesn't. Invalid - defaults must be trailing.</li>
+                    <li><strong>B:</strong> <code>a</code> has default, <code>b</code> doesn't, <code>c</code> does. Invalid - <code>b</code> is between two defaulted parameters.</li>
+                    <li><strong>D:</strong> <code>a</code> and <code>b</code> have defaults but <code>c</code> doesn't. Invalid - once defaults start, they must continue to the end.</li>
+                </ul>
+                <p><strong>Valid patterns:</strong></p>
+                <pre><code class="language-cpp">void f(int a, int b, int c);           // No defaults - OK
+void f(int a, int b, int c = 3);       // Last param has default - OK
+void f(int a, int b = 2, int c = 3);   // Last 2 params have defaults - OK
+void f(int a = 1, int b = 2, int c = 3); // All params have defaults - OK</code></pre>
+            </div>
+        </section>
+
+        <!-- Question 22 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 22</div>
+                <div class="question-type">Code Tracing</div>
+            </div>
+            <div class="question-text">
+                <p>What is the output of this program?</p>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+void showBox(int length, int width = 1, int height = 1) {
+    cout &lt;&lt; length * width * height &lt;&lt; endl;
+}
+
+int main() {
+    showBox(5);
+    showBox(5, 2);
+    showBox(5, 2, 3);
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer22')">Show Answer</button>
+            <div class="answer-section" id="answer22">
+                <p><strong>Output:</strong></p>
+                <pre>5
+10
+30</pre>
+                <p><strong>Line-by-Line Trace:</strong></p>
+                <ol>
+                    <li><strong>Call: <code>showBox(5);</code></strong>
+                        <ul>
+                            <li>Provided: <code>length = 5</code></li>
+                            <li>Defaults used: <code>width = 1</code>, <code>height = 1</code></li>
+                            <li>Calculation: <code>5 * 1 * 1 = 5</code></li>
+                            <li>Output: <code>5</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Call: <code>showBox(5, 2);</code></strong>
+                        <ul>
+                            <li>Provided: <code>length = 5</code>, <code>width = 2</code></li>
+                            <li>Default used: <code>height = 1</code></li>
+                            <li>Calculation: <code>5 * 2 * 1 = 10</code></li>
+                            <li>Output: <code>10</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Call: <code>showBox(5, 2, 3);</code></strong>
+                        <ul>
+                            <li>Provided: <code>length = 5</code>, <code>width = 2</code>, <code>height = 3</code></li>
+                            <li>No defaults used</li>
+                            <li>Calculation: <code>5 * 2 * 3 = 30</code></li>
+                            <li>Output: <code>30</code></li>
+                        </ul>
+                    </li>
+                </ol>
+                <p><strong>Key insight:</strong> You can provide 1, 2, or 3 arguments. The function fills in defaults from right to left for any omitted arguments.</p>
+            </div>
+        </section>
+
+        <!-- Question 23 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 23</div>
+                <div class="question-type">Default Parameters</div>
+            </div>
+            <div class="question-text">
+                <p><strong>True or False:</strong> Default parameter values should be specified in both the function declaration (prototype) and the function definition.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer23')">Show Answer</button>
+            <div class="answer-section" id="answer23">
+                <p><strong>Answer:</strong> False</p>
+                <p><strong>Explanation:</strong></p>
+                <p>Default parameter values should be specified <strong>only in the function declaration</strong> (prototype), typically in the header file. They should <strong>NOT</strong> be repeated in the function definition.</p>
+                <p><strong>Correct pattern:</strong></p>
+                <pre><code class="language-cpp">// student.h (header file)
+void setGrade(int score = 0);   // ✅ Default here
+
+// student.cpp (implementation file)
+void setGrade(int score) {      // ✅ NO default here
+    // function body
+}</code></pre>
+                <p><strong>Incorrect pattern:</strong></p>
+                <pre><code class="language-cpp">// student.h
+void setGrade(int score = 0);
+
+// student.cpp
+void setGrade(int score = 0) {  // ❌ ERROR: Redefinition of default
+    // function body
+}</code></pre>
+                <p><strong>Why this rule exists:</strong></p>
+                <ul>
+                    <li>The compiler only needs to see the defaults once (in the declaration) to know how to call the function</li>
+                    <li>Repeating defaults in the definition can cause "redefinition" errors</li>
+                    <li>Putting defaults in the header file (where declarations usually go) makes them visible to all files that include the header</li>
+                </ul>
+                <p><strong>Special case:</strong> If you define the function in the same file where you declare it (no separate .h/.cpp), you can put the default in the declaration or the definition, but not both.</p>
+            </div>
+        </section>
+
+        <!-- Question 24 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 24</div>
+                <div class="question-type">Code Analysis</div>
+            </div>
+            <div class="question-text">
+                <p>Given the function:</p>
+                <pre><code class="language-cpp">void schedule(string subject, int duration = 60, string location = "Room 101");</code></pre>
+                <p>Which of the following function calls is valid?</p>
+                <ol type="A">
+                    <li><code>schedule("Math");</code></li>
+                    <li><code>schedule("Math", 90);</code></li>
+                    <li><code>schedule("Math", "Room 202");</code></li>
+                    <li><code>schedule("Math", 90, "Room 202");</code></li>
+                </ol>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer24')">Show Answer</button>
+            <div class="answer-section" id="answer24">
+                <p><strong>Answer:</strong> A, B, and D are valid. C is invalid.</p>
+                <p><strong>Detailed analysis:</strong></p>
+                <p><strong>A: <code>schedule("Math");</code> - ✅ Valid</strong></p>
+                <ul>
+                    <li>Provides: <code>subject = "Math"</code></li>
+                    <li>Uses defaults: <code>duration = 60</code>, <code>location = "Room 101"</code></li>
+                </ul>
+                <p><strong>B: <code>schedule("Math", 90);</code> - ✅ Valid</strong></p>
+                <ul>
+                    <li>Provides: <code>subject = "Math"</code>, <code>duration = 90</code></li>
+                    <li>Uses default: <code>location = "Room 101"</code></li>
+                </ul>
+                <p><strong>C: <code>schedule("Math", "Room 202");</code> - ❌ Invalid</strong></p>
+                <ul>
+                    <li>This attempts to pass <code>"Math"</code> for <code>subject</code> and <code>"Room 202"</code> for <code>duration</code></li>
+                    <li>Type mismatch: <code>duration</code> expects <code>int</code>, but <code>"Room 202"</code> is a <code>string</code></li>
+                    <li>You cannot skip <code>duration</code> and provide <code>location</code> - arguments fill in from left to right</li>
+                </ul>
+                <p><strong>D: <code>schedule("Math", 90, "Room 202");</code> - ✅ Valid</strong></p>
+                <ul>
+                    <li>Provides all arguments: <code>subject = "Math"</code>, <code>duration = 90</code>, <code>location = "Room 202"</code></li>
+                    <li>No defaults used</li>
+                </ul>
+                <p><strong>Key principle:</strong> You can only omit trailing arguments, not middle ones. To provide <code>location</code>, you must also provide <code>duration</code>.</p>
+            </div>
+        </section>
+
+        <!-- Question 25 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 25</div>
+                <div class="question-type">Ambiguity</div>
+            </div>
+            <div class="question-text">
+                <p>Will the following code compile? If not, why?</p>
+                <pre><code class="language-cpp">void display(int x);
+void display(int x, int y = 10);
+
+int main() {
+    display(5);
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer25')">Show Answer</button>
+            <div class="answer-section" id="answer25">
+                <p><strong>Answer:</strong> No, it will not compile.</p>
+                <p><strong>Error:</strong> Ambiguous function call</p>
+                <p><strong>Why it fails:</strong></p>
+                <p>The call <code>display(5)</code> could match either function:</p>
+                <ul>
+                    <li><strong>Option 1:</strong> <code>display(int)</code> with argument <code>x = 5</code></li>
+                    <li><strong>Option 2:</strong> <code>display(int, int)</code> with arguments <code>x = 5</code>, <code>y = 10</code> (using default)</li>
+                </ul>
+                <p>Both are equally valid interpretations. The compiler can't decide which you intended, so it gives an ambiguity error.</p>
+                <p><strong>Why this is a problem:</strong></p>
+                <p>When you combine function overloading with default parameters, you can accidentally create situations where one call signature matches multiple function declarations. This pattern should be avoided.</p>
+                <p><strong>How to fix:</strong></p>
+                <p><strong>Option 1:</strong> Remove one of the functions:</p>
+                <pre><code class="language-cpp">// Keep only the version with default parameter
+void display(int x, int y = 10);</code></pre>
+                <p><strong>Option 2:</strong> Make the functions more distinct:</p>
+                <pre><code class="language-cpp">void display(int x);
+void display(int x, int y);  // Remove default
+
+// Now caller must explicitly provide both arguments for second version
+display(5);      // Calls display(int)
+display(5, 10);  // Calls display(int, int)</code></pre>
+                <p><strong>General rule:</strong> Be cautious when combining overloading and default parameters. Make sure each possible call has a clear "best match" among the overloads.</p>
+            </div>
+        </section>
+
+        <!-- INTEGRATION QUESTIONS (Questions 26-30) -->
+
+        <!-- Question 26 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 26</div>
+                <div class="question-type">Integration</div>
+            </div>
+            <div class="question-text">
+                <p>You have a multi-file project with overloaded functions. Which files need to be recompiled if you add a new overload to a header file?</p>
+                <p>Project structure:</p>
+                <ul>
+                    <li><code>main.cpp</code> includes <code>Calculator.h</code></li>
+                    <li><code>Calculator.cpp</code> includes <code>Calculator.h</code></li>
+                    <li><code>Display.cpp</code> includes <code>Display.h</code> (not <code>Calculator.h</code>)</li>
+                </ul>
+                <p>You add a new overload to <code>Calculator.h</code>.</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer26')">Show Answer</button>
+            <div class="answer-section" id="answer26">
+                <p><strong>Answer:</strong> <code>main.cpp</code> and <code>Calculator.cpp</code> need to be recompiled. <code>Display.cpp</code> does not.</p>
+                <p><strong>Detailed explanation:</strong></p>
+                <p><strong>Files affected by <code>Calculator.h</code> change:</strong></p>
+                <ul>
+                    <li><strong><code>main.cpp</code>:</strong> Includes <code>Calculator.h</code>, so it sees the new overload declaration. Must be recompiled to <code>main.o</code>.</li>
+                    <li><strong><code>Calculator.cpp</code>:</strong> Includes <code>Calculator.h</code>. Must be recompiled to <code>Calculator.o</code>.</li>
+                    <li><strong><code>Display.cpp</code>:</strong> Does NOT include <code>Calculator.h</code>, so changes to <code>Calculator.h</code> don't affect it. <code>Display.o</code> remains up to date.</li>
+                </ul>
+                <p><strong>Make's process:</strong></p>
+                <ol>
+                    <li>Check <code>main.o</code>: Depends on <code>main.cpp</code> and <code>Calculator.h</code>. <code>Calculator.h</code> changed → rebuild <code>main.o</code></li>
+                    <li>Check <code>Calculator.o</code>: Depends on <code>Calculator.cpp</code> and <code>Calculator.h</code>. <code>Calculator.h</code> changed → rebuild <code>Calculator.o</code></li>
+                    <li>Check <code>Display.o</code>: Depends on <code>Display.cpp</code> and <code>Display.h</code>. Neither changed → skip</li>
+                    <li>Relink: <code>main.o</code> or <code>Calculator.o</code> changed → relink all .o files into executable</li>
+                </ol>
+                <p><strong>This demonstrates makefile efficiency:</strong> Only files that include the changed header are recompiled, even in large projects with many source files.</p>
+            </div>
+        </section>
+
+        <!-- Question 27 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 27</div>
+                <div class="question-type">Code Tracing</div>
+            </div>
+            <div class="question-text">
+                <p>What is the output of this program?</p>
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+void calculate(int x, int y = 5) {
+    cout &lt;&lt; x + y &lt;&lt; " ";
+}
+
+void calculate(int x) {
+    cout &lt;&lt; x * 2 &lt;&lt; " ";
+}
+
+int main() {
+    calculate(10);
+    calculate(10, 3);
+    return 0;
+}</code></pre>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer27')">Show Answer</button>
+            <div class="answer-section" id="answer27">
+                <p><strong>Answer:</strong> This code will NOT compile due to ambiguity.</p>
+                <p><strong>Error:</strong> Ambiguous call to overloaded function <code>calculate(10)</code></p>
+                <p><strong>Why it fails:</strong></p>
+                <p>The call <code>calculate(10)</code> in main could match either:</p>
+                <ul>
+                    <li><strong>Option 1:</strong> <code>calculate(int x, int y = 5)</code> with <code>x = 10</code>, <code>y = 5</code> (using default)</li>
+                    <li><strong>Option 2:</strong> <code>calculate(int x)</code> with <code>x = 10</code></li>
+                </ul>
+                <p>Both match equally well. The compiler cannot decide which to call, so it gives an error.</p>
+                <p><strong>The second call <code>calculate(10, 3)</code> would work:</strong></p>
+                <p>It can only match <code>calculate(int x, int y = 5)</code> because that's the only overload that takes two arguments.</p>
+                <p><strong>This is a common mistake:</strong></p>
+                <p>Combining function overloading with default parameters can create ambiguous situations. This specific pattern (one overload with N parameters, another with N+1 parameters where the extra parameter has a default) should be avoided.</p>
+                <p><strong>How to fix:</strong> Use one of these approaches, not both together:</p>
+                <ul>
+                    <li>Use only overloading (no defaults)</li>
+                    <li>Use only one function with defaults (no overloading for this case)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Question 28 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 28</div>
+                <div class="question-type">Makefile + Overloading</div>
+            </div>
+            <div class="question-text">
+                <p>You have the following files:</p>
+                <ul>
+                    <li><code>utils.h</code> declares three overloads: <code>max(int, int)</code>, <code>max(double, double)</code>, <code>max(int, int, int)</code></li>
+                    <li><code>utils.cpp</code> defines all three overloads</li>
+                    <li><code>main.cpp</code> calls <code>max(10, 20)</code></li>
+                </ul>
+                <p>You add a fourth overload <code>max(float, float)</code> to <code>utils.h</code> and <code>utils.cpp</code>, but <code>main.cpp</code> doesn't use it.</p>
+                <p>When you run <code>make</code>, which files are recompiled?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer28')">Show Answer</button>
+            <div class="answer-section" id="answer28">
+                <p><strong>Answer:</strong> Both <code>main.cpp</code> and <code>utils.cpp</code> are recompiled, even though <code>main.cpp</code> doesn't use the new overload.</p>
+                <p><strong>Detailed explanation:</strong></p>
+                <p><strong>Why <code>utils.cpp</code> is recompiled:</strong></p>
+                <ul>
+                    <li><code>utils.cpp</code> includes <code>utils.h</code></li>
+                    <li>You modified <code>utils.h</code> (added new overload declaration)</li>
+                    <li>Makefile rule: <code>utils.o: utils.cpp utils.h</code></li>
+                    <li><code>utils.h</code> is newer than <code>utils.o</code> → recompile</li>
+                </ul>
+                <p><strong>Why <code>main.cpp</code> is recompiled:</strong></p>
+                <ul>
+                    <li><code>main.cpp</code> includes <code>utils.h</code> (to call <code>max</code> functions)</li>
+                    <li>You modified <code>utils.h</code></li>
+                    <li>Makefile rule: <code>main.o: main.cpp utils.h</code></li>
+                    <li><code>utils.h</code> is newer than <code>main.o</code> → recompile</li>
+                </ul>
+                <p><strong>Does it matter that <code>main.cpp</code> doesn't use the new overload?</strong></p>
+                <p>No. Make doesn't analyze which declarations you actually use. It only checks: "Did a header that this file includes change?" If yes, recompile.</p>
+                <p><strong>This is actually correct behavior:</strong></p>
+                <p>Even though <code>main.cpp</code> doesn't call <code>max(float, float)</code>, the header changed, and there could be side effects (like macro definitions, type changes, etc.). Make takes the safe approach and recompiles everything that includes the header.</p>
+                <p><strong>Final step:</strong> After recompiling <code>main.o</code> and <code>utils.o</code>, make will relink to create the new executable.</p>
+            </div>
+        </section>
+
+        <!-- Question 29 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 29</div>
+                <div class="question-type">Find the Bug</div>
+            </div>
+            <div class="question-text">
+                <p>The following code compiles but doesn't behave as expected. Identify the issue:</p>
+                <pre><code class="language-cpp">// math.h
+double average(double a, double b);
+double average(double a, double b, double c = 0.0);
+
+// math.cpp
+double average(double a, double b) {
+    return (a + b) / 2.0;
+}
+
+double average(double a, double b, double c) {
+    return (a + b + c) / 3.0;
+}
+
+// main.cpp
+#include "math.h"
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    cout &lt;&lt; average(10.0, 20.0) &lt;&lt; endl;
+    return 0;
+}</code></pre>
+                <p>What's wrong with this design?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer29')">Show Answer</button>
+            <div class="answer-section" id="answer29">
+                <p><strong>Bug:</strong> The call <code>average(10.0, 20.0)</code> is ambiguous.</p>
+                <p><strong>What's Wrong:</strong></p>
+                <p>The two overloads create an ambiguous situation:</p>
+                <ul>
+                    <li><code>average(double, double)</code></li>
+                    <li><code>average(double, double, double = 0.0)</code></li>
+                </ul>
+                <p>When you call <code>average(10.0, 20.0)</code>, the compiler can't decide:</p>
+                <ul>
+                    <li><strong>Option 1:</strong> Call <code>average(double, double)</code> with <code>a = 10.0</code>, <code>b = 20.0</code></li>
+                    <li><strong>Option 2:</strong> Call <code>average(double, double, double)</code> with <code>a = 10.0</code>, <code>b = 20.0</code>, <code>c = 0.0</code> (using default)</li>
+                </ul>
+                <p>Both match equally well, so the compiler gives an ambiguity error.</p>
+                <p><strong>Additionally, there's a logic error:</strong></p>
+                <p>The three-parameter version divides by 3 even when <code>c = 0.0</code> (the default). So <code>average(10.0, 20.0)</code> would compute <code>(10 + 20 + 0) / 3 = 10</code>, not the correct two-number average of <code>15</code>.</p>
+                <p><strong>How to Fix:</strong></p>
+                <p><strong>Option 1:</strong> Remove the two-parameter overload, keep only the one with default:</p>
+                <pre><code class="language-cpp">// math.h
+double average(double a, double b, double c = 0.0);
+
+// math.cpp
+double average(double a, double b, double c) {
+    if (c == 0.0) {
+        return (a + b) / 2.0;  // Two values
+    } else {
+        return (a + b + c) / 3.0;  // Three values
+    }
+}</code></pre>
+                <p><strong>Option 2:</strong> Keep separate overloads but remove the default:</p>
+                <pre><code class="language-cpp">// math.h
+double average(double a, double b);
+double average(double a, double b, double c);  // No default
+
+// Implementation stays the same</code></pre>
+                <p>Now <code>average(10.0, 20.0)</code> unambiguously calls the two-parameter version.</p>
+            </div>
+        </section>
+
+        <!-- Question 30 -->
+        <section class="question-card">
+            <div class="question-header">
+                <div class="question-number">Question 30</div>
+                <div class="question-type">Comprehensive</div>
+            </div>
+            <div class="question-text">
+                <p>You're working on a grading system project with these files:</p>
+                <ul>
+                    <li><code>main.cpp</code></li>
+                    <li><code>Grade.h</code>, <code>Grade.cpp</code></li>
+                    <li><code>Student.h</code>, <code>Student.cpp</code></li>
+                </ul>
+                <p><code>Grade.h</code> declares overloaded <code>calculate</code> functions:</p>
+                <pre><code class="language-cpp">double calculate(int score);
+double calculate(int score, int bonus = 0);</code></pre>
+                <p>What problems will occur, and how would you fix them?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer('answer30')">Show Answer</button>
+            <div class="answer-section" id="answer30">
+                <p><strong>Problems identified:</strong></p>
+                <p><strong>Problem 1: Ambiguous overloads</strong></p>
+                <p>The two function declarations create an ambiguity:</p>
+                <ul>
+                    <li><code>calculate(int)</code></li>
+                    <li><code>calculate(int, int = 0)</code></li>
+                </ul>
+                <p>A call like <code>calculate(85)</code> could match either function (the first directly, the second using the default). This is a compilation error.</p>
+                <p><strong>Problem 2: Makefile dependencies</strong></p>
+                <p>If you later modify <code>Grade.h</code>, the makefile needs to know which files to recompile. Typical dependencies would be:</p>
+                <pre><code class="language-makefile">Grade.o: Grade.cpp Grade.h
+Student.o: Student.cpp Student.h
+main.o: main.cpp Grade.h Student.h</code></pre>
+                <p>If <code>Student.cpp</code> also includes <code>Grade.h</code>, the dependency should be:</p>
+                <pre><code class="language-makefile">Student.o: Student.cpp Student.h Grade.h</code></pre>
+                <p><strong>How to fix the overloading issue:</strong></p>
+                <p><strong>Solution 1:</strong> Use a single function with default parameter:</p>
+                <pre><code class="language-cpp">double calculate(int score, int bonus = 0);</code></pre>
+                <p>Implementation:</p>
+                <pre><code class="language-cpp">double calculate(int score, int bonus) {
+    return (score + bonus) / 100.0;
+}</code></pre>
+                <p><strong>Solution 2:</strong> Keep two distinct overloads without default:</p>
+                <pre><code class="language-cpp">double calculate(int score);
+double calculate(int score, int bonus);  // Remove default</code></pre>
+                <p>Now <code>calculate(85)</code> unambiguously calls the first version, and <code>calculate(85, 5)</code> calls the second.</p>
+                <p><strong>Complete corrected example with makefile:</strong></p>
+                <pre><code class="language-makefile"># Variables
+ofiles = main.o Grade.o Student.o
+gpp_o = g++ -c -std=c++98
+
+# Link executable
+gradeSystem: $(ofiles)
+	g++ -std=c++98 $(ofiles) -o gradeSystem
+
+# Compile each source file
+main.o: main.cpp Grade.h Student.h
+	$(gpp_o) main.cpp
+
+Grade.o: Grade.cpp Grade.h
+	$(gpp_o) Grade.cpp
+
+Student.o: Student.cpp Student.h Grade.h
+	$(gpp_o) Student.cpp
+
+# Clean up
+clean:
+	rm -f *.o gradeSystem</code></pre>
+                <p>With <code>Grade.h</code> containing:</p>
+                <pre><code class="language-cpp">double calculate(int score, int bonus = 0);</code></pre>
+                <p>This eliminates the ambiguity and ensures proper recompilation when headers change.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Prism.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-makefile.min.js"></script>
+
+    <script>
+        // Toggle answer visibility
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+
+            const button = event.target;
+            if (answerSection.classList.contains('visible')) {
+                button.textContent = 'Hide Answer';
+
+                // CRITICAL: Force browser reflow before highlighting
+                void(answerSection.offsetHeight);
+
+                // Re-highlight Prism code blocks after reflow
+                if (typeof Prism !== 'undefined') {
+                    // Find all code blocks in this answer section and highlight them individually
+                    answerSection.querySelectorAll('pre code').forEach(function(codeBlock) {
+                        Prism.highlightElement(codeBlock);
+                    });
+                }
+            } else {
+                button.textContent = 'Show Answer';
+            }
+        }
+
+        // Highlight code blocks on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            Prism.highlightAll();
+        });
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>

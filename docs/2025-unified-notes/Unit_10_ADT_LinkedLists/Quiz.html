@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Unit 10: ADT - Linked Lists</title>
+
+    <!-- Prism.js CSS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            padding-bottom: 3rem;
+        }
+
+        .nav {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #0ea5e9;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0ea5e9;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+        }
+
+        .nav-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .nav-brand-company {
+            font-size: 0.875rem;
+            color: #0ea5e9;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .nav-brand-title {
+            font-size: 1.5rem;
+            color: #f8fafc;
+            font-weight: 700;
+        }
+
+        .nav-brand-subtitle {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+
+        .nav-menu a:hover {
+            color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .nav-menu a.active {
+            color: #0ea5e9;
+            background: rgba(14, 165, 233, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #0ea5e9;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin: 2rem 0 1rem 0;
+            color: #38bdf8;
+            border-left: 4px solid #0ea5e9;
+            padding-left: 1rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #7dd3fc;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            margin: 1rem 0 0.5rem 0;
+            color: #bae6fd;
+        }
+
+        .content-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        .question-box {
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 4px solid #0ea5e9;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .question-box h3 {
+            color: #0ea5e9;
+            margin-bottom: 1rem;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(14, 165, 233, 0.3);
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(14, 165, 233, 0.4);
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .answer-section.visible {
+            display: block;
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+            color: #cbd5e1;
+        }
+
+        code {
+            background: rgba(14, 165, 233, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            color: #7dd3fc;
+        }
+
+        pre {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #e2e8f0;
+        }
+
+        .note-box {
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid #fbbf24;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            color: #fef3c7;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">
+            <img src="swift_tuition_logo.png" alt="Swift Tuition" class="nav-logo">
+            <div class="nav-brand-text">
+                <span class="nav-brand-company">Swift Tuition</span>
+                <span class="nav-brand-title">Unit 10: ADT - Linked Lists</span>
+                <span class="nav-brand-subtitle">COS 110 Learning Package</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="Theory.html">Theory</a></li>
+            <li><a href="Examples.html">Examples</a></li>
+            <li><a href="Practice.html">Practice</a></li>
+            <li><a href="Quiz.html" class="active">Quiz</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Assessment Quiz</h1>
+
+        <div class="content-card">
+            <p class="intro-text">
+                This quiz contains questions similar to those you'll see in EO3.
+                Try to answer each question before revealing the solution.
+            </p>
+            <div class="warning-box">
+                <strong>Note:</strong> This is a practice quiz to help you prepare. It is not graded.
+                Take your time and understand each explanation thoroughly.
+            </div>
+        </div>
+
+        <!-- Question 1: Multiple Choice - Theory -->
+        <section class="content-card">
+            <div class="question-box">
+                <h3>Question 1: Time Complexity (Multiple Choice)</h3>
+                <p>What is the time complexity of searching for a specific value in a singly linked list with <em>n</em> nodes?</p>
+                <ol type="A">
+                    <li>O(1) - constant time</li>
+                    <li>O(log n) - logarithmic time</li>
+                    <li>O(n) - linear time</li>
+                    <li>O(n²) - quadratic time</li>
+                </ol>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer1')">Show Answer</button>
+
+                <div class="answer-section" id="answer1">
+                    <p><strong>Answer: C - O(n)</strong></p>
+
+                    <p><strong>Detailed Explanation:</strong></p>
+                    <p>
+                        Searching for a value in a singly linked list requires traversing the list from the head node
+                        until we find the target value or reach the end (NULL). In the worst case, the value is at the
+                        last node or doesn't exist in the list, meaning we must visit all <em>n</em> nodes.
+                    </p>
+
+                    <p><strong>Why other options are wrong:</strong></p>
+                    <ul>
+                        <li>
+                            <strong>Option A (O(1)):</strong> Incorrect. O(1) would mean we can access the value
+                            immediately without traversal, like accessing an array element by index. Linked lists
+                            don't support random access - we must traverse from the head.
+                        </li>
+                        <li>
+                            <strong>Option B (O(log n)):</strong> Incorrect. O(log n) complexity is typical for
+                            binary search on sorted arrays or balanced binary search trees. Linked lists cannot
+                            use binary search effectively because we can't jump to the middle element directly.
+                        </li>
+                        <li>
+                            <strong>Option D (O(n²)):</strong> Incorrect. O(n²) would involve nested loops through
+                            the list. A simple search only requires one pass through the list, making it O(n), not O(n²).
+                        </li>
+                    </ul>
+
+                    <div class="note-box">
+                        <p><strong>Key Point:</strong> Unlike arrays (O(1) access by index), linked lists require
+                        sequential traversal. This is the fundamental trade-off: linked lists excel at insertion/deletion
+                        but are slower for searching.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question 2: Code Tracing -->
+        <section class="content-card">
+            <div class="question-box">
+                <h3>Question 2: Code Tracing</h3>
+                <p>What is the output of the following code?</p>
+
+                <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+void mystery(Node* head) {
+    if (head == NULL || head->next == NULL) {
+        return;
+    }
+
+    Node* current = head;
+    while (current->next->next != NULL) {
+        current = current->next;
+    }
+
+    cout << current->next->data << endl;
+    delete current->next;
+    current->next = NULL;
+}
+
+int main() {
+    Node* head = new Node;
+    head->data = 5;
+    head->next = new Node;
+    head->next->data = 10;
+    head->next->next = new Node;
+    head->next->next->data = 15;
+    head->next->next->next = new Node;
+    head->next->next->next->data = 20;
+    head->next->next->next->next = NULL;
+
+    mystery(head);
+    mystery(head);
+
+    return 0;
+}</code></pre>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer2')">Show Answer</button>
+
+                <div class="answer-section" id="answer2">
+                    <p><strong>Output:</strong></p>
+                    <pre>20
+15</pre>
+
+                    <p><strong>Detailed Line-by-Line Trace:</strong></p>
+
+                    <p><strong>Initial list:</strong> 5 → 10 → 15 → 20 → NULL</p>
+
+                    <p><strong>First call to mystery(head):</strong></p>
+                    <ol>
+                        <li><strong>Check if head == NULL or head->next == NULL:</strong> No, we have at least 2 nodes.</li>
+                        <li><strong>current = head:</strong> current points to node with data 5</li>
+                        <li><strong>while (current->next->next != NULL):</strong> Loop until current is at second-to-last node
+                            <ul>
+                                <li>Iteration 1: current->next->next points to 15 (not NULL), so current moves to 10</li>
+                                <li>Iteration 2: current->next->next points to 20 (not NULL), so current moves to 15</li>
+                                <li>Iteration 3: current->next->next is NULL, loop exits</li>
+                            </ul>
+                        </li>
+                        <li><strong>current now points to node 15</strong></li>
+                        <li><strong>cout << current->next->data:</strong> Prints 20 (the last node)</li>
+                        <li><strong>delete current->next:</strong> Deletes the node with 20</li>
+                        <li><strong>current->next = NULL:</strong> Node 15 now points to NULL</li>
+                    </ol>
+
+                    <p><strong>List after first call:</strong> 5 → 10 → 15 → NULL</p>
+
+                    <p><strong>Second call to mystery(head):</strong></p>
+                    <ol>
+                        <li><strong>Check if head == NULL or head->next == NULL:</strong> No, we have 3 nodes</li>
+                        <li><strong>current = head:</strong> current points to node with data 5</li>
+                        <li><strong>while (current->next->next != NULL):</strong>
+                            <ul>
+                                <li>Iteration 1: current->next->next points to 15 (not NULL), so current moves to 10</li>
+                                <li>Iteration 2: current->next->next is NULL, loop exits</li>
+                            </ul>
+                        </li>
+                        <li><strong>current now points to node 10</strong></li>
+                        <li><strong>cout << current->next->data:</strong> Prints 15</li>
+                        <li><strong>delete current->next:</strong> Deletes the node with 15</li>
+                        <li><strong>current->next = NULL:</strong> Node 10 now points to NULL</li>
+                    </ol>
+
+                    <p><strong>Final list:</strong> 5 → 10 → NULL</p>
+
+                    <div class="note-box">
+                        <p><strong>What does the mystery function do?</strong> It deletes the last node from the list
+                        and prints its value before deletion. This is a "delete last" operation.</p>
+
+                        <p><strong>Why the condition <code>current->next->next != NULL</code>?</strong>
+                        We need to stop at the second-to-last node so we can update its <code>next</code> pointer to NULL
+                        after deleting the last node.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question 3: True/False - Doubly Linked List -->
+        <section class="content-card">
+            <div class="question-box">
+                <h3>Question 3: True or False</h3>
+                <p>
+                    <strong>Statement:</strong> In a doubly linked list, inserting a new node at the front requires
+                    updating exactly four pointers: the new node's <code>prev</code>, the new node's <code>next</code>,
+                    the old head's <code>prev</code>, and the <code>head</code> pointer itself.
+                </p>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer3')">Show Answer</button>
+
+                <div class="answer-section" id="answer3">
+                    <p><strong>Answer: TRUE (with conditions)</strong></p>
+
+                    <p><strong>Detailed Explanation:</strong></p>
+                    <p>
+                        When inserting at the front of a non-empty doubly linked list, we indeed update four pointers:
+                    </p>
+
+                    <ol>
+                        <li><code>newNode->prev = NULL</code> - new node's prev points to nothing</li>
+                        <li><code>newNode->next = head</code> - new node's next points to old head</li>
+                        <li><code>head->prev = newNode</code> - old head's prev points back to new node</li>
+                        <li><code>head = newNode</code> - update head pointer to new node</li>
+                    </ol>
+
+                    <p><strong>However, there's an edge case:</strong></p>
+                    <p>
+                        If the list is empty (head == NULL), we only update TWO pointers:
+                    </p>
+                    <ol>
+                        <li><code>newNode->prev = NULL</code></li>
+                        <li><code>newNode->next = NULL</code></li>
+                        <li><code>head = newNode</code></li>
+                    </ol>
+                    <p>We can't update <code>head->prev</code> because there is no old head!</p>
+
+                    <div class="note-box">
+                        <p><strong>Implementation tip:</strong> Always check if <code>head != NULL</code> before
+                        accessing <code>head->prev</code> to avoid segmentation faults.</p>
+
+                        <p><strong>The correct insert-front code:</strong></p>
+                        <pre><code class="language-cpp">void insertFront(Node*& head, int value) {
+    Node* newNode = new Node;
+    newNode->data = value;
+    newNode->prev = NULL;
+    newNode->next = head;
+
+    if (head != NULL) {  // Critical check!
+        head->prev = newNode;
+    }
+
+    head = newNode;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question 4: Find the Bug - Circular List -->
+        <section class="content-card">
+            <div class="question-box">
+                <h3>Question 4: Find the Bug</h3>
+                <p>
+                    The following function is supposed to print all values in a circular linked list,
+                    but it has a bug. Identify the bug and explain how to fix it.
+                </p>
+
+                <pre><code class="language-cpp">void printCircular(Node* tail) {
+    if (tail == NULL) {
+        return;
+    }
+
+    Node* current = tail->next;
+
+    while (current != tail) {
+        cout << current->data << " ";
+        current = current->next;
+    }
+
+    cout << endl;
+}</code></pre>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer4')">Show Answer</button>
+
+                <div class="answer-section" id="answer4">
+                    <p><strong>The Bug:</strong></p>
+                    <p>
+                        The function never prints the <code>tail</code> node's data! The loop stops when
+                        <code>current == tail</code>, which means we exit before printing the tail's value.
+                    </p>
+
+                    <p><strong>Why this happens:</strong></p>
+                    <p>
+                        We start at <code>tail->next</code> (the head) and loop while <code>current != tail</code>.
+                        This means we print all nodes from head to the second-to-last node, but never the tail itself.
+                    </p>
+
+                    <p><strong>The Fix:</strong></p>
+                    <p>Use a <code>do-while</code> loop instead of a <code>while</code> loop:</p>
+
+                    <pre><code class="language-cpp">void printCircular(Node* tail) {
+    if (tail == NULL) {
+        return;
+    }
+
+    Node* current = tail->next;  // Start at head
+
+    do {
+        cout << current->data << " ";
+        current = current->next;
+    } while (current != tail->next);  // Loop until back at head
+
+    cout << endl;
+}</code></pre>
+
+                    <p><strong>Alternative Fix:</strong></p>
+                    <p>Keep the while loop but print the tail after the loop:</p>
+
+                    <pre><code class="language-cpp">void printCircular(Node* tail) {
+    if (tail == NULL) {
+        return;
+    }
+
+    Node* current = tail->next;
+
+    while (current != tail) {
+        cout << current->data << " ";
+        current = current->next;
+    }
+
+    cout << tail->data << " ";  // Print the tail node
+    cout << endl;
+}</code></pre>
+
+                    <div class="note-box">
+                        <p><strong>Key Lesson:</strong> Circular linked lists are tricky because there's no NULL to
+                        mark the end. Always ensure you visit ALL nodes, including where you started!</p>
+
+                        <p><strong>do-while vs while for circular lists:</strong> The <code>do-while</code> is generally
+                        preferred for circular lists because it guarantees we process at least one node before checking
+                        the termination condition.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question 5: Implementation Question - Delete Middle Node -->
+        <section class="content-card">
+            <div class="question-box">
+                <h3>Question 5: Implementation (Short Answer)</h3>
+                <p>
+                    Write a function that deletes a node from the middle of a singly linked list, given a pointer
+                    to the node to be deleted. You may NOT use a pointer to the head of the list.
+                </p>
+
+                <p><strong>Constraint:</strong> You cannot access any node before the given node.</p>
+
+                <p><strong>Function signature:</strong></p>
+                <pre><code class="language-cpp">void deleteNode(Node* nodeToDelete);</code></pre>
+
+                <p><strong>Hint:</strong> Since you can't access the previous node, you'll need to use a trick involving
+                copying data.</p>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer5')">Show Answer</button>
+
+                <div class="answer-section" id="answer5">
+                    <p><strong>Solution:</strong></p>
+
+                    <pre><code class="language-cpp">void deleteNode(Node* nodeToDelete) {
+    if (nodeToDelete == NULL || nodeToDelete->next == NULL) {
+        return;  // Can't delete if null or last node
+    }
+
+    // Copy data from next node to current node
+    nodeToDelete->data = nodeToDelete->next->data;
+
+    // Delete the next node instead
+    Node* temp = nodeToDelete->next;
+    nodeToDelete->next = temp->next;
+    delete temp;
+}</code></pre>
+
+                    <p><strong>Detailed Explanation:</strong></p>
+
+                    <p>Since we can't access the previous node to update its <code>next</code> pointer, we use a clever trick:</p>
+
+                    <ol>
+                        <li><strong>Copy the next node's data into the current node:</strong>
+                            This makes the current node "become" the next node in terms of data.</li>
+                        <li><strong>Delete the next node instead:</strong>
+                            We update current node's <code>next</code> to skip the next node, then delete it.</li>
+                    </ol>
+
+                    <p><strong>Example:</strong></p>
+                    <p>Before: 1 → 2 → 3 → 4 → NULL (delete node 2)</p>
+                    <ol>
+                        <li>Copy 3's data into 2: 1 → 3 → 3 → 4 → NULL</li>
+                        <li>Delete the second 3: 1 → 3 → 4 → NULL</li>
+                    </ol>
+
+                    <div class="note-box">
+                        <p><strong>Limitations:</strong></p>
+                        <ul>
+                            <li>Cannot delete the last node (no next node to copy from)</li>
+                            <li>If the node stores complex data (objects with pointers), copying might cause issues</li>
+                            <li>This is a "trick" solution - in practice, you'd usually have access to the head</li>
+                        </ul>
+
+                        <p><strong>Time Complexity:</strong> O(1) - constant time deletion!</p>
+                        <p><strong>Space Complexity:</strong> O(1) - no extra space needed</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question 6: Conceptual - Doubly vs Singly -->
+        <section class="content-card">
+            <div class="question-box">
+                <h3>Question 6: Comparison (Short Answer)</h3>
+                <p>
+                    When determining if there are elements in a doubly linked list, which function between
+                    <code>empty()</code> and <code>size()</code> is better to use in terms of efficiency?
+                    Give reasons for your answer.
+                </p>
+
+                <p><strong>Context:</strong> Assume <code>empty()</code> checks if <code>head == NULL</code>,
+                and <code>size()</code> counts all nodes by traversing the list.</p>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer6')">Show Answer</button>
+
+                <div class="answer-section" id="answer6">
+                    <p><strong>Answer: <code>empty()</code> is better.</strong></p>
+
+                    <p><strong>Detailed Explanation:</strong></p>
+
+                    <p><strong>Why <code>empty()</code> is more efficient:</strong></p>
+                    <ul>
+                        <li><strong>Time Complexity:</strong> O(1) - constant time
+                            <ul>
+                                <li>Simply checks if <code>head == NULL</code></li>
+                                <li>This is a single comparison operation</li>
+                                <li>No traversal required</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <p><strong>Why <code>size()</code> is less efficient:</strong></p>
+                    <ul>
+                        <li><strong>Time Complexity:</strong> O(n) - linear time
+                            <ul>
+                                <li>Must traverse the entire list to count nodes</li>
+                                <li>For a list with 1000 nodes, this means 1000 operations</li>
+                                <li>Wasteful when you only need to know "is it empty?"</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <p><strong>Code Comparison:</strong></p>
+
+                    <pre><code class="language-cpp">// Efficient - O(1)
+bool empty() {
+    return head == NULL;  // Single check
+}
+
+// Inefficient for checking emptiness - O(n)
+int size() {
+    int count = 0;
+    Node* current = head;
+    while (current != NULL) {  // Traverses entire list
+        count++;
+        current = current->next;
+    }
+    return count;
+}
+
+// Usage:
+if (empty()) {  // ✅ Good - O(1)
+    cout << "List is empty" << endl;
+}
+
+if (size() == 0) {  // ❌ Bad - O(n) just to check emptiness
+    cout << "List is empty" << endl;
+}</code></pre>
+
+                    <div class="note-box">
+                        <p><strong>Best Practice:</strong> Use the most specific function for your needs:</p>
+                        <ul>
+                            <li>Need to check if empty? Use <code>empty()</code></li>
+                            <li>Need the exact count? Use <code>size()</code></li>
+                            <li>Don't use <code>size() == 0</code> when <code>empty()</code> will do!</li>
+                        </ul>
+
+                        <p><strong>Optimization:</strong> Some implementations maintain a separate <code>count</code>
+                        variable that's updated during insertions/deletions. This makes <code>size()</code> O(1) as well,
+                        but requires careful maintenance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question 7: Memory Management -->
+        <section class="content-card">
+            <div class="question-box">
+                <h3>Question 7: Memory Leak Detection</h3>
+                <p>
+                    The following destructor for a singly linked list has a critical bug that causes a memory leak.
+                    Identify the bug and explain why it causes a leak.
+                </p>
+
+                <pre><code class="language-cpp">struct Node {
+    int data;
+    Node* next;
+};
+
+class List {
+private:
+    Node* head;
+
+public:
+    ~List() {
+        Node* current = head;
+        while (current != NULL) {
+            delete current;
+            current = current->next;
+        }
+    }
+};</code></pre>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer7')">Show Answer</button>
+
+                <div class="answer-section" id="answer7">
+                    <p><strong>The Bug:</strong></p>
+                    <p>
+                        The code deletes <code>current</code> and then tries to access <code>current->next</code>.
+                        This is a <strong>use-after-free</strong> error that causes undefined behavior.
+                    </p>
+
+                    <p><strong>Why this causes a memory leak (or crash):</strong></p>
+                    <ol>
+                        <li><strong>Line: <code>delete current;</code></strong>
+                            <ul>
+                                <li>The memory pointed to by <code>current</code> is freed</li>
+                                <li>The <code>current</code> pointer still holds the address, but the memory is no longer valid</li>
+                            </ul>
+                        </li>
+                        <li><strong>Line: <code>current = current->next;</code></strong>
+                            <ul>
+                                <li>We try to access <code>next</code> field of the deleted memory</li>
+                                <li>This is undefined behavior - might work, might crash, might give garbage</li>
+                                <li>If it gives garbage, we might skip nodes, causing a memory leak</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                    <p><strong>The Fix:</strong></p>
+                    <p>Save the <code>next</code> pointer BEFORE deleting the current node:</p>
+
+                    <pre><code class="language-cpp">~List() {
+    Node* current = head;
+
+    while (current != NULL) {
+        Node* temp = current->next;  // Save next BEFORE deleting
+        delete current;               // Safe to delete now
+        current = temp;               // Move to saved next
+    }
+}</code></pre>
+
+                    <p><strong>Step-by-Step Trace (Fixed Version):</strong></p>
+                    <p>List: [1] → [2] → [3] → NULL</p>
+                    <ol>
+                        <li>current = [1], temp = [2], delete [1], current = [2]</li>
+                        <li>current = [2], temp = [3], delete [2], current = [3]</li>
+                        <li>current = [3], temp = NULL, delete [3], current = NULL</li>
+                        <li>current == NULL, loop exits. All nodes deleted! ✅</li>
+                    </ol>
+
+                    <div class="note-box">
+                        <p><strong>General Rule:</strong> When deleting nodes in a linked list, always follow this pattern:</p>
+                        <pre><code class="language-cpp">while (current != NULL) {
+    Node* next = current->next;  // 1. Save next
+    delete current;              // 2. Delete current
+    current = next;              // 3. Move to saved next
+}</code></pre>
+
+                        <p><strong>Memory Management Principle:</strong> Never access an object after <code>delete</code>!
+                        Once you call <code>delete ptr</code>, any access to <code>ptr->anything</code> is undefined behavior.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question 8: Recursive Implementation -->
+        <section class="content-card">
+            <div class="question-box">
+                <h3>Question 8: Recursive Implementation (Challenge)</h3>
+                <p>
+                    Provide a recursive implementation of the <code>printReverse()</code> function that prints
+                    a singly linked list in reverse order without using any STL containers or auxiliary data structures.
+                </p>
+
+                <p><strong>Function signature:</strong></p>
+                <pre><code class="language-cpp">void printReverse(Node* head);</code></pre>
+
+                <p><strong>Node structure:</strong></p>
+                <pre><code class="language-cpp">struct Node {
+    int data;
+    Node* next;
+};</code></pre>
+
+                <p><strong>Example:</strong> If list is 1 → 2 → 3 → NULL, output should be: 3 2 1</p>
+
+                <button class="reveal-btn" onclick="toggleAnswer('answer8')">Show Answer</button>
+
+                <div class="answer-section" id="answer8">
+                    <p><strong>Solution:</strong></p>
+
+                    <pre><code class="language-cpp">void printReverse(Node* head) {
+    // Base case: empty list
+    if (head == NULL) {
+        return;
+    }
+
+    // Recursive case: print rest of list first
+    printReverse(head->next);
+
+    // Then print current node
+    cout << head->data << " ";
+}</code></pre>
+
+                    <p><strong>How it works:</strong></p>
+
+                    <p>The key insight is that recursion uses the call stack to reverse the order:</p>
+
+                    <ol>
+                        <li><strong>Recursive calls go deep first:</strong> We call <code>printReverse(head->next)</code>
+                        before printing, so we reach the end of the list before printing anything.</li>
+                        <li><strong>Print on the way back:</strong> As the recursive calls return, we print each node.
+                        This happens in reverse order!</li>
+                    </ol>
+
+                    <p><strong>Step-by-Step Trace:</strong></p>
+                    <p>List: 1 → 2 → 3 → NULL</p>
+
+                    <pre>printReverse(1)
+  → printReverse(2)
+    → printReverse(3)
+      → printReverse(NULL)  // Base case, returns immediately
+      ← prints "3"
+    ← prints "2"
+  ← prints "1"
+
+Output: 3 2 1</pre>
+
+                    <p><strong>Call Stack Visualization:</strong></p>
+                    <pre>| printReverse(NULL) |  ← Returns (base case)
+| printReverse(3)    |  ← Prints 3, then returns
+| printReverse(2)    |  ← Prints 2, then returns
+| printReverse(1)    |  ← Prints 1, then returns</pre>
+
+                    <div class="note-box">
+                        <p><strong>Time Complexity:</strong> O(n) - we visit each node once</p>
+                        <p><strong>Space Complexity:</strong> O(n) - recursion depth equals list length (uses call stack)</p>
+
+                        <p><strong>Recursion Pattern:</strong> This is a classic "process after recursive call" pattern:</p>
+                        <pre><code class="language-cpp">void function(Node* node) {
+    if (base_case) return;
+    function(node->next);  // Recurse first
+    process(node);         // Process after
+}</code></pre>
+
+                        <p><strong>Comparison with iterative approach:</strong> An iterative solution would require a stack
+                        or making two passes (one to reverse pointers, one to print). The recursive solution is more elegant
+                        but uses O(n) stack space.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+    <script>
+        // Toggle answer visibility
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+        }
+    </script>
+
+<!-- SWIFT TUITION UNIFIED BACK BUTTON -->
+<a href="../index.html" id="swift-global-back-btn" style="position: fixed; top: 12px; right: 20px; z-index: 9999; background: #6b2737; color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-family: 'Source Serif 4', Georgia, serif; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.25); border: 1px solid #c4893b; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+    <span>&larr;</span> Back to Hub
+</a>
+
+</body>
+</html>
